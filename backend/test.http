@@ -1,0 +1,35 @@
+###
+GET http://localhost:3000/Productos
+
+###
+GET http://localhost:3000/Productos/id/2
+
+###
+GET http://localhost:3000/Productos/nombre/pizza
+###
+GET http://localhost:3000/Productos/tipo/plato_principal
+###
+POST http://localhost:3000/Productos/crearProducto
+Content-Type: application/json
+
+{
+    "nombre": "Salchicha con papa",
+    "descripcion": "Con carne, lechuga y tomate",
+    "categoria": "Comida",
+    "tipo": "Plato principal",
+    "esSinGluten": false,
+    "esVegetariana": true,
+    "esVegana": false
+}
+
+###
+PATCH http://localhost:3000/Productos/actualizarProducto/16
+Content-Type: application/json
+
+{
+    "esSinGluten": true,
+    "esVegana": true
+}
+
+###
+DELETE http://localhost:3000/Productos/eliminarProducto/16
