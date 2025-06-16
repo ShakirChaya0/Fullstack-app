@@ -1,5 +1,6 @@
 import {Router} from 'express'
 import {ProductController} from '../controllers/productController.js'
+import { TipoComida } from '../interfaces/productos.js'
 
 export function productosRouter () {
     const productRouter = Router()
@@ -11,7 +12,7 @@ export function productosRouter () {
 
     productRouter.get('/id/:idProducto', (req, res) => {
         const {idProducto} = req.params
-        const producto = ProductController.getById(idProducto)
+        const producto = ProductController.getById(+idProducto)
         res.json(producto)
     })
 
@@ -23,7 +24,7 @@ export function productosRouter () {
 
     productRouter.get('/tipo/:tipo', (req, res) => {
         const {tipo} = req.params
-        const producto = ProductController.getByType(tipo)
+        const producto = ProductController.getByType(tipo as TipoComida)
         res.json(producto)
     })
 
@@ -36,13 +37,13 @@ export function productosRouter () {
     productRouter.patch('/actualizarProducto/:id', (req, res) => {
         const data = req.body
         const {id} = req.params
-        const producto = ProductController.update(data, id)
+        const producto = ProductController.update(data, +id)
         res.json(producto)
     })
 
     productRouter.delete('/eliminarProducto/:id', (req, res) => {
         const {id} = req.params
-        const producto = ProductController.delete(id)
+        const producto = ProductController.delete(+id)
         res.json(producto)
     })
 

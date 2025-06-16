@@ -9,6 +9,10 @@ app.use(express.json())
 
 app.use('/Productos', productosRouter())
 
+app.use((req, res) => {
+    res.status(404).send("Error 404")
+})
+
 app.listen(PORT, () => {
     console.log(`server running on port http://localhost:${PORT}`)
 })

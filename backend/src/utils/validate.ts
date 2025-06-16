@@ -1,9 +1,10 @@
 import z from 'zod'
+import { Bebida, Comida, Update, UpdateBebida, UpdateComida } from '../interfaces/productos.js';
 
 const ProductosSchema = z.object({
     nombre: z.string().nonempty({message: "El nombre es requerido"}).min(3).max(255),
     descripcion: z.string().nonempty({message: "La descripcion es requerida"}).min(10).max(255),
-    categoria: z.enum(["Comida", "Bebida"]),
+    estado: z.enum(["Disponible", "No Disponible"]),
     tipo: z.enum(["Entrada", "Plato principal", "Postre"]).optional(),
     esSinGluten: z.boolean().optional(),
     esVegetariana: z.boolean().optional(),
@@ -11,30 +12,17 @@ const ProductosSchema = z.object({
     esAlcoholica: z.boolean().optional(),
 });
 
+export type SchemaProductos = z.infer<typeof ProductosSchema>;
 
-export function ValidateProduct(data){
+const partialProductosSchema = ProductosSchema.partial();
+
+export type PartialSchemaProductos = z.infer<typeof partialProductosSchema>;
+
+
+export function ValidateProduct(data: Comida | Bebida){
     return ProductosSchema.safeParse(data)
 }
 
-export function ValidateProductPartial(data){
+export function ValidateProductPartial(data: UpdateComida | UpdateBebida){
     return ProductosSchema.partial().safeParse(data)
 }
-
-
-// {
-//     "idProducto": 1,
-//     "nombre": "Hamburguesa clásica",
-//     "descripcion": "Con carne, lechuga y tomate",
-//     "categoria": "Comida",
-//     "tipo": "Plato principal",
-//     "esSinGluten": false,
-//     "esVegana": false,
-//     "esVegetariana": false
-//   },
-//   {
-//     "idProducto": 7,
-//     "nombre": "Agua mineral",
-//     "descripcion": "Agua sin gas",
-//     "categoria": "Bebida",
-//     "esAlcoholica": false
-//   },

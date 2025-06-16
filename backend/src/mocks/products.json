@@ -1,0 +1,122 @@
+[
+  {
+    "idProducto": 1,
+    "nombre": "Tarta de calabaza",
+    "descripcion": "Tarta casera de calabaza con queso",
+    "estado": "Disponible",
+    "tipo": "Plato Principal",
+    "esVegetariana": true
+  },
+  {
+    "idProducto": 2,
+    "nombre": "Ensalada de quinoa",
+    "descripcion": "Con palta, tomate cherry y limón",
+    "estado": "Disponible",
+    "tipo": "Entrada",
+    "esVegana": true,
+    "esSinGluten": true
+  },
+  {
+    "idProducto": 3,
+    "nombre": "Milanesa de berenjena",
+    "descripcion": "Acompañada de papas rústicas",
+    "estado": "No Disponible",
+    "tipo": "Plato Principal",
+    "esVegetariana": true
+  },
+  {
+    "idProducto": 4,
+    "nombre": "Sopa crema de zapallo",
+    "descripcion": "Sopa suave y cremosa",
+    "estado": "Disponible",
+    "tipo": "Entrada",
+    "esVegana": true,
+    "esSinGluten": true
+  },
+  {
+    "idProducto": 5,
+    "nombre": "Ravioles de ricota",
+    "descripcion": "Con salsa mixta",
+    "estado": "Disponible",
+    "tipo": "Plato Principal",
+    "esVegetariana": true
+  },
+  {
+    "idProducto": 6,
+    "nombre": "Brownie con nuez",
+    "descripcion": "Postre dulce con chocolate amargo",
+    "estado": "Disponible",
+    "tipo": "Postre",
+    "esVegetariana": true
+  },
+  {
+    "idProducto": 7,
+    "nombre": "Helado vegano de mango",
+    "descripcion": "100% vegetal",
+    "estado": "Disponible",
+    "tipo": "Postre",
+    "esVegana": true,
+    "esVegetariana": true
+  },
+  {
+    "idProducto": 8,
+    "nombre": "Empanadas de humita",
+    "descripcion": "Empanadas horneadas de maíz",
+    "estado": "No Disponible",
+    "tipo": "Entrada",
+    "esVegetariana": true
+  },
+  {
+    "idProducto": 9,
+    "nombre": "Croquetas de mijo",
+    "descripcion": "Con vegetales y semillas",
+    "estado": "Disponible",
+    "tipo": "Plato Principal",
+    "esVegana": true
+  },
+  {
+    "idProducto": 10,
+    "nombre": "Fruta fresca",
+    "descripcion": "Mix de frutas de estación",
+    "estado": "Disponible",
+    "tipo": "Postre",
+    "esVegana": true,
+    "esVegetariana": true,
+    "esSinGluten": true
+  },
+  {
+    "idProducto": 11,
+    "nombre": "Agua con gas",
+    "descripcion": "Botella de 500ml",
+    "estado": "Disponible",
+    "esAlcoholica": false
+  },
+  {
+    "idProducto": 12,
+    "nombre": "Limonada casera",
+    "descripcion": "Con menta y jengibre",
+    "estado": "Disponible",
+    "esAlcoholica": false
+  },
+  {
+    "idProducto": 13,
+    "nombre": "Fernet con coca",
+    "descripcion": "Clásico trago argentino",
+    "estado": "Disponible",
+    "esAlcoholica": true
+  },
+  {
+    "idProducto": 14,
+    "nombre": "Café con leche",
+    "descripcion": "Café suave con leche",
+    "estado": "No Disponible",
+    "esAlcoholica": false
+  },
+  {
+    "idProducto": 15,
+    "nombre": "Sidra artesanal",
+    "descripcion": "Sidra de manzana sin conservantes",
+    "estado": "Disponible",
+    "esAlcoholica": true
+  }
+]
