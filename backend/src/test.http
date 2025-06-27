@@ -1,29 +1,30 @@
 ###
-GET http://localhost:3000/Productos
+GET http://localhost:3000/productos
 
 ###
-GET http://localhost:3000/Productos/id/15
+GET http://localhost:3000/productos/id/15
 
 ###
-GET http://localhost:3000/Productos/nombre/tarta
+GET http://localhost:3000/productos/nombre/tarta
 ###
-GET http://localhost:3000/Productos/tipo/plato_principal
+GET http://localhost:3000/productos/tipo/plato_principal
 ###
-POST http://localhost:3000/Productos/crearProducto
+POST http://localhost:3000/productos/
 Content-Type: application/json
 
 {
     "nombre": "Salchicha con papa",
     "descripcion": "Con carne, lechuga y tomate",
     "estado": "Disponible",
-    "tipo": "Plato principal",
+    "tipo": "Plato_Principal",
     "esSinGluten": false,
     "esVegetariana": true,
-    "esVegana": false
+    "esVegana": false,
+    "esAlcoholica": false
 }
 
 ###
-PATCH http://localhost:3000/Productos/actualizarProducto/1
+PATCH http://localhost:3000/productos/actualizarProducto/1
 Content-Type: application/json
 
 {   
@@ -31,7 +32,6 @@ Content-Type: application/json
     "datos": {
         "esSinGluten": false,
         "esVegana": false,
-        "cofla": "24cm"
     }
 }
 

@@ -1,0 +1,31 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Producto {
+  idProducto    Int      @id @default(autoincrement())
+  nombre        String   @db.VarChar(30)
+  descripcion   String   @db.VarChar(255)
+  estado        estado
+  esAlcoholica  Boolean?
+  esVegetariana Boolean?
+  esVegana      Boolean?
+  tipo          tipo?
+  esSinGluten   Boolean?
+}
+
+enum estado {
+  Disponible
+  No_Disponible @map("No Disponible")
+}
+
+enum tipo {
+  Plato_Principal @map("Plato Principal")
+  Entrada
+  Postre
+}
