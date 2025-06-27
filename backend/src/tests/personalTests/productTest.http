@@ -1,0 +1,33 @@
+###
+GET http://localhost:3000/productos
+
+###
+GET http://localhost:3000/productos/id/2
+
+###
+GET http://localhost:3000/productos/nombre/Empanada
+
+###
+GET http://localhost:3000/productos/tipoProducto/Comida
+###
+POST http://localhost:3000/productos/
+Content-Type: application/json
+
+{
+    "nombre": "Cerveza Andes Negra",
+    "descripcion": "Cerveza oscura con un sabor intenso y un toque de malta tostada.",
+    "estado": "Disponible",
+    "tipo": "",
+    "esSinGluten": false,
+    "esVegetariana": false,
+    "esVegana": false,
+    "esAlcoholica": true
+}
+
+###
+PATCH http://localhost:3000/productos/id/3
+Content-Type: application/json
+
+{   
+    "estado": "No_Disponible"
+}

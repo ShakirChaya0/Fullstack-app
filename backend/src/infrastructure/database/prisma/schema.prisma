@@ -9,7 +9,7 @@ datasource db {
 
 model Producto {
   idProducto    Int      @id @default(autoincrement())
-  nombre        String   @db.VarChar(30)
+  nombre        String   @unique(map: "uniqueName") @db.VarChar(30)
   descripcion   String   @db.VarChar(255)
   estado        estado
   esAlcoholica  Boolean?
@@ -25,7 +25,8 @@ enum estado {
 }
 
 enum tipo {
-  Plato_Principal @map("Plato Principal")
+  Plato_Principal  @map("Plato Principal")
   Entrada
   Postre
+  EMPTY_ENUM_VALUE @map("")
 }
