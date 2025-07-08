@@ -1,0 +1,10 @@
+GET http://localhost:3000/politicas/id/1
+
+### This request retrieves the policy with ID 1
+PATCH http://localhost:3000/politicas/id/1
+Content-Type: application/json
+
+{
+    "horarioMaximoDeReserva": "11:30",
+    "horasDeAnticipacionParaReservar": -1
+}

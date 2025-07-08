@@ -1,18 +1,35 @@
-import { PoliticyRepository } from '../../../infrastructure/database/repository/policyRepository.js';
+import { PolicyRepository } from '../../../infrastructure/database/repository/PolicyRepository.js';
 import { PoliticasRestaurante } from '@prisma/client';
-import { SchemaPoliticy } from '../../../presentation/validators/policyZod.js';
+import { PartialSchemaPolicy } from '../../../shared/validators/policyZod.js';
 
-export class CUU25ModifyPoliticys {
-  static async execute(idPolitica: number, data: SchemaPoliticy): Promise<PoliticasRestaurante> {
+export class CUU25ModifyPolicys {
+  constructor(
+    private readonly policyRepository: PolicyRepository = new PolicyRepository()
+  ){}
+
+
+  public async execute(idPolitica: number, data: PartialSchemaPolicy): Promise<PoliticasRestaurante> {
     // Importar el repositorio de políticas
-    const existingPolitic = await PoliticyRepository.getById(idPolitica);
+    const existingPolitic = await this.policyRepository.getById(idPolitica);
 
     // Actualizar la política en la base de datos
     const updatedPolitic = {
         ...existingPolitic,
         ...data,
     }
-    const politicDatabase = await PoliticyRepository.updatePoliticy(idPolitica, updatedPolitic);
+
+    const draft = {
+      minutosTolerancia: updatedPolitic.minutosTolerancia,
+      horarioMaximoDeReserva: updatedPolitic.horarioMaximoDeReserva,
+      horasDeAnticipacionParaCancelar: updatedPolitic.horasDeAnticipacionParaCancelar,
+      horasDeAnticipacionParaReservar: updatedPolitic.horasDeAnticipacionParaReservar,
+      limiteDeNoAsistencias: updatedPolitic.limiteDeNoAsistencias,
+      cantDiasDeshabilitacion: updatedPolitic.cantDiasDeshabilitacion,
+      porcentajeIVA: updatedPolitic.porcentajeIVA,
+      montoCubiertosPorPersona: updatedPolitic.montoCubiertosPorPersona
+    }
+
+    const politicDatabase = await this.policyRepository.updatePolicy(idPolitica, draft);
     return politicDatabase;
   }
 }

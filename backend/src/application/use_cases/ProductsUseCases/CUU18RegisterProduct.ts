@@ -1,6 +1,6 @@
 import { Product } from "../../../domain/entities/Product.js";
 import { ProductRepository } from "../../../infrastructure/database/repository/ProductRepository.js";
-import { SchemaProductos } from '../../../presentation/validators/productZod.js';
+import { SchemaProductos } from '../../../shared/validators/productZod.js';
 
 export class CUU18RegisterProduct {
   constructor(

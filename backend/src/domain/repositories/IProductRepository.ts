@@ -1,4 +1,4 @@
-import { PartialSchemaProductos, SchemaProductos } from "../../presentation/validators/productZod.js";
+import { PartialSchemaProductos, SchemaProductos } from "../../shared/validators/productZod.js";
 import { Product } from "../entities/Product.js";
 
 export interface IProductoRepository {

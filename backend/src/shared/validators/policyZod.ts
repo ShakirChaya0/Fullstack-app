@@ -1,7 +1,8 @@
 import { PoliticasRestaurante } from '@prisma/client';
 import { z } from 'zod';
+import { Policy } from '../../domain/entities/Policy.js';
 
-export const PoliticySchema = z.object({
+export const PolicySchema = z.object({
   minutosTolerancia: z.number()
     .int('Los minutos de tolerancia deben ser un número entero')
     .min(0, 'Los minutos de tolerancia no pueden ser negativos')
@@ -41,9 +42,21 @@ export const PoliticySchema = z.object({
 });
 
 
-export type SchemaPoliticy = z.infer<typeof PoliticySchema>;
+export type SchemaPolicy = z.infer<typeof PolicySchema>;
 
+const PolicySchemaPartial = PolicySchema.partial();
 
-export function ValidatePolticyPartial(data: Partial<PoliticasRestaurante>) {
-    return PoliticySchema.partial().safeParse(data);
+export type PartialSchemaPolicy = z.infer<typeof PolicySchemaPartial>;
+
+export function ValidatePolicy(data: Policy | PoliticasRestaurante) {
+    return PolicySchema.safeParse(data); 
+}
+
+export function ValidatePolicyPartial(data: Partial<PoliticasRestaurante> | Partial<Policy>) {
+    const validate = PolicySchema.partial().safeParse(data);  
+    if (!validate.success) {
+      const mensajes = validate.error.errors.map(e => e.message).join(", ")
+            throw new Error(mensajes);
+        }
+    return validate.data;
 }

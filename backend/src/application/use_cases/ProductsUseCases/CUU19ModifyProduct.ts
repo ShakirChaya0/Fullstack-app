@@ -1,7 +1,7 @@
 import { Producto } from "@prisma/client";
 import { Drink, Food, Product } from "../../../domain/entities/Product.js";
 import { ProductRepository } from "../../../infrastructure/database/repository/ProductRepository.js";
-import { PartialSchemaProductos } from '../../../presentation/validators/productZod.js';
+import { PartialSchemaProductos } from '../../../shared/validators/productZod.js';
 
 export class CUU19ModifyProduct {
   constructor(
