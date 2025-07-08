@@ -2,32 +2,32 @@
 GET http://localhost:3000/productos
 
 ###
-GET http://localhost:3000/productos/id/2
+GET http://localhost:3000/productos/id/3
 
 ###
 GET http://localhost:3000/productos/nombre/Empanada
 
 ###
-GET http://localhost:3000/productos/tipoProducto/Comida
+GET http://localhost:3000/productos/tipoProducto/Bebida
 ###
 POST http://localhost:3000/productos/
 Content-Type: application/json
 
 {
-    "nombre": "Cerveza Andes Negra",
-    "descripcion": "Cerveza oscura con un sabor intenso y un toque de malta tostada.",
+    "nombre": "Empanada Capresse",
+    "descripcion": "Flan casero con dulce de leche y caramelo.",
     "estado": "Disponible",
-    "tipo": "",
-    "esSinGluten": false,
-    "esVegetariana": false,
+    "tipo": "Postre",
+    "esVegetariana": true,
     "esVegana": false,
-    "esAlcoholica": true
-}
+    "esSinGluten": false
+}   
 
 ###
 PATCH http://localhost:3000/productos/id/3
 Content-Type: application/json
 
-{   
+{
+    "nombre": "Coca-Cola Zero",   
     "estado": "No_Disponible"
 }

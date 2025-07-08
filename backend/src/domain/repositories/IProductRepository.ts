@@ -1,0 +1,16 @@
+import { PartialSchemaProductos, SchemaProductos } from "../../presentation/validators/productZod.js";
+import { Product } from "../entities/Product.js";
+
+export interface IProductoRepository {
+    getAll(): Promise<Product[]>;
+
+    getById(idProducto: number): Promise<Product | null>;
+
+    getByName(nombreProducto: string): Promise<Product[] | null>;
+
+    getByType(tipoProducto: string): Promise<Product[] | null>;
+
+    create(product: SchemaProductos): Promise<Product>;
+
+    update(product: PartialSchemaProductos, productId: number): Promise<Product>;
+}

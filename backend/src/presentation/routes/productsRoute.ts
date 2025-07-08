@@ -1,9 +1,10 @@
 import { Router } from "express";
-import { productController } from "../controllers/productsController.js";
+import { ProductController } from "../controllers/ProductsController.js";
 
 export function productosRouter () {
     const productRouter = Router();
-
+    const productController = new ProductController();
+    
     productRouter.get("/", (req, res) => { productController.getAll(req, res) });
 
     productRouter.get("/id/:idProducto", (req, res) => { productController.getById(req, res) });

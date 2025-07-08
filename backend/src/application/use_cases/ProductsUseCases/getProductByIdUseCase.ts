@@ -1,8 +1,12 @@
-import { Producto } from "@prisma/client";
-import { ProductoRepository } from "../../infrastructure/database/repository/productsRepository.js";
+import { Product } from "../../../domain/entities/Product.js";
+import { ProductRepository } from "../../../infrastructure/database/repository/ProductRepository.js";
 
 export class GetProductByIdUseCase {
-    static async execute(idProducto: number): Promise<Producto | null> {
-        return await ProductoRepository.getById(idProducto);
+    constructor(
+        private readonly productRepository = new ProductRepository()
+    ) {}
+    
+    public async execute(idProducto: number): Promise<Product | null> {
+        return await this.productRepository.getById(idProducto);
     }
 }

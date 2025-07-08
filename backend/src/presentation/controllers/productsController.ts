@@ -1,30 +1,39 @@
 import { Request, Response } from "express"
-import { CUU18RegisterProducts } from "../../application/use_cases/CUU18-registerProduct.js";
-import { GetProductsUseCase } from "../../application/use_cases/getProductsUseCase.js";
-import { GetProductByIdUseCase } from "../../application/use_cases/getProductByIdUseCase.js";
-import { CUU19ModifyProduct } from "../../application/use_cases/ProductsUseCases/CUU19-modifyProduct.js";
+import { CUU18RegisterProduct } from "../../application/use_cases/ProductsUseCases/CUU18RegisterProduct.js";
+import { CUU19ModifyProduct } from "../../application/use_cases/ProductsUseCases/CUU19ModifyProduct.js";
+import { GetProductsUseCase } from "../../application/use_cases/ProductsUseCases/GetProductsUseCase.js";
+import { GetProductByIdUseCase } from "../../application/use_cases/ProductsUseCases/GetProductByIdUseCase.js";
 import { PartialSchemaProductos, ValidateProduct, ValidateProductPartial } from "../validators/productZod.js";
-import { GetProductByNameUseCase } from "../../application/use_cases/getProductByNameUseCase.js";
-import { getProductByTypeUseCase } from "../../application/use_cases/getProductByTypeUseCase.js";
+import { GetProductByNameUseCase } from "../../application/use_cases/ProductsUseCases/GetProductByNameUseCase.js";
+import { GetProductByTypeUseCase } from "../../application/use_cases/ProductsUseCases/GetProductByTypeUseCase.js";
 
-export class productController {
-    static getAll = async (req: Request, res: Response) => {
+export class ProductController {
+    constructor(
+        private readonly CU18RegisterProduct = new CUU18RegisterProduct(),
+        private readonly CU19ModifyProduct = new CUU19ModifyProduct(),
+        private readonly getProductsUseCase = new GetProductsUseCase(),
+        private readonly getProductByIdUseCase = new GetProductByIdUseCase(),
+        private readonly getProductByNameUseCase = new GetProductByNameUseCase(),
+        private readonly getProductByTypeUseCase = new GetProductByTypeUseCase()
+    ) {}
+
+    public getAll = async (req: Request, res: Response) => {
         try {
-            const products = await GetProductsUseCase.execute();
+            const products = await this.getProductsUseCase.execute();
             res.status(200).json(products);
         } catch (error: any) {
             res.status(500).json({ error: error.message })
         }
     }
 
-    static getById = async (req: Request, res: Response) => {
+    public getById = async (req: Request, res: Response) => {
         try {
             const idProducto = req.params.idProducto;
             if (!idProducto || isNaN(+idProducto)) {
                 throw new Error("ID sent must be a number");
             }
 
-            const product = await GetProductByIdUseCase.execute(+idProducto);
+            const product = await this.getProductByIdUseCase.execute(+idProducto);
             if (!product) {
                 res.status(404).json({ error: "Product not found" });
                 return;
@@ -35,7 +44,7 @@ export class productController {
         }
     }
 
-    static getByName = async (req: Request, res: Response) => {
+    public getByName = async (req: Request, res: Response) => {
         try {
             const draft = req.params.nombreProducto;
             if (!draft) {
@@ -43,7 +52,7 @@ export class productController {
             }
 
             const nombreProducto = draft.replace(/_/g, ' ');
-            const product = await GetProductByNameUseCase.execute(nombreProducto);
+            const product = await this.getProductByNameUseCase.execute(nombreProducto);
             if (!product) {
                 res.status(404).json({ error: "Product not found" });
                 return;
@@ -54,14 +63,14 @@ export class productController {
         }
     }
 
-    static getByType = async (req: Request, res: Response) => {
+    public getByType = async (req: Request, res: Response) => {
         try {
             const tipoProducto = req.params.tipoProducto;
             if (!tipoProducto) {
                 throw new Error("Product type is required");
             }
 
-            const products = await getProductByTypeUseCase.execute(tipoProducto);
+            const products = await this.getProductByTypeUseCase.execute(tipoProducto);
             if (products == null) {
                 res.status(404).json({ error: "No products found for this type" });
                 return;
@@ -72,7 +81,7 @@ export class productController {
         }
     }
 
-    static create = async (req: Request, res: Response) => {
+    public create = async (req: Request, res: Response) => {
         try {
             const validatedProduct = ValidateProduct(req.body);
             if(!validatedProduct.success) throw new Error(`Validation failed: ${validatedProduct.error.message}`);
@@ -80,7 +89,7 @@ export class productController {
               ...validatedProduct.data
             };
 
-            const product = await CUU18RegisterProducts.execute(registeredProducts);
+            const product = await this.CU18RegisterProduct.execute(registeredProducts);
             res.status(201).json(product);
             return;
         }
@@ -90,7 +99,7 @@ export class productController {
         }
     }
 
-    static update = async (req: Request, res: Response) => {
+    public update = async (req: Request, res: Response) => {
         try {
             const idProducto = req.params.idProducto;
             if (!idProducto || isNaN(+idProducto)) {
@@ -101,7 +110,7 @@ export class productController {
             if(!validatedProduct.success) throw new Error(`Validation failed: ${validatedProduct.error.message}`);
             const partialProduct: PartialSchemaProductos = validatedProduct.data;
 
-            const product = await CUU19ModifyProduct.execute(+idProducto, partialProduct);
+            const product = await this.CU19ModifyProduct.execute(+idProducto, partialProduct);
             if (!product) {
                 res.status(404).json({ error: "Product not found" });
                 return;
