@@ -19,6 +19,26 @@ model Producto {
   esSinGluten   Boolean?
 }
 
+model PoliticasRestaurante {
+  idPolitica                      Int    @id @default(autoincrement())
+  minutosTolerancia               Int    @default(15)
+  horarioMaximoDeReserva          String @db.VarChar
+  horasDeAnticipacionParaCancelar Int    @default(6)
+  horasDeAnticipacionParaReservar Int    @default(6)
+  limiteDeNoAsistencias           Int    @default(3)
+  cantDiasDeshabilitacion         Int    @default(90)
+  porcentajeIVA                   Int    @default(21)
+  montoCubiertosPorPersona        Int    @default(5)
+}
+
+model Novedades {
+  idNovedad   Int    @id @default(autoincrement())
+  titulo      String @unique(map: "titulo_unique") @db.VarChar
+  descripcion String @db.VarChar
+  fechaInicio String @db.VarChar
+  fechaFin    String @db.VarChar
+}
+
 enum estado {
   Disponible
   No_Disponible @map("No Disponible")
@@ -30,17 +50,3 @@ enum tipo {
   Postre
   EMPTY_ENUM_VALUE @map("")
 }
-
-model PoliticasRestaurante {
-  idPolitica                      Int    @id @default(autoincrement())
-  minutosTolerancia               Int    @default(15)
-  horarioMaximoDeReserva          String @db.VarChar
-  horasDeAnticipacionParaCancelar Int    @default(6)
-  horasDeAnticipacionParaReservar Int    @default(6)
-  limiteDeNoAsistencias           Int    @default(3)
-  cantDiasDeshabilitacion         Int    @default(90)
-  porcentajeIVA                   Int    @default(21)
-  montoCubiertosPorPersona        Int    @default(5)
-
-}
-
