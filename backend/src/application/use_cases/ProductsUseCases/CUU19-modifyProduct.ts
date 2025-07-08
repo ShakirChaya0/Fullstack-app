@@ -1,6 +1,6 @@
-import { ProductoRepository } from '../../infrastructure/database/repository/productsRepository.js';
+import { ProductoRepository } from '../../../infrastructure/database/repository/productsRepository.js';
 import { Producto } from '@prisma/client';
-import { PartialSchemaProductos } from '../../presentation/validators/productZod.js';
+import { PartialSchemaProductos } from '../../../presentation/validators/productZod.js';
 
 export class CUU19ModifyProduct {
   static async execute(idProducto: number, partialProduct: PartialSchemaProductos): Promise<Producto> {

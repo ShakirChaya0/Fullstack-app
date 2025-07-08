@@ -2,7 +2,7 @@ import { Request, Response } from "express"
 import { CUU18RegisterProducts } from "../../application/use_cases/CUU18-registerProduct.js";
 import { GetProductsUseCase } from "../../application/use_cases/getProductsUseCase.js";
 import { GetProductByIdUseCase } from "../../application/use_cases/getProductByIdUseCase.js";
-import { CUU19ModifyProduct } from "../../application/use_cases/CUU19-modifyProduct.js";
+import { CUU19ModifyProduct } from "../../application/use_cases/ProductsUseCases/CUU19-modifyProduct.js";
 import { PartialSchemaProductos, ValidateProduct, ValidateProductPartial } from "../validators/productZod.js";
 import { GetProductByNameUseCase } from "../../application/use_cases/getProductByNameUseCase.js";
 import { getProductByTypeUseCase } from "../../application/use_cases/getProductByTypeUseCase.js";
