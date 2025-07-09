@@ -1,6 +1,7 @@
-import { PolicyRepository } from '../../../infrastructure/database/repository/PolicyRepository.js';
+import { PolicyRepository } from '../../../infrastructure/database/repository/PolicyRepository.js'
 import { PoliticasRestaurante } from '@prisma/client';
 import { PartialSchemaPolicy } from '../../../shared/validators/policyZod.js';
+
 
 export class CUU25ModifyPolicys {
   constructor(
@@ -9,25 +10,23 @@ export class CUU25ModifyPolicys {
 
 
   public async execute(idPolitica: number, data: PartialSchemaPolicy): Promise<PoliticasRestaurante> {
-    // Importar el repositorio de políticas
-    const existingPolitic = await this.policyRepository.getById(idPolitica);
+        const existingPolitic = await this.policyRepository.getById(idPolitica);
 
-    // Actualizar la política en la base de datos
-    const updatedPolitic = {
-        ...existingPolitic,
-        ...data,
-    }
+        const updatedPolitic = {
+            ...existingPolitic,
+            ...data,
+        }
 
-    const draft = {
-      minutosTolerancia: updatedPolitic.minutosTolerancia,
-      horarioMaximoDeReserva: updatedPolitic.horarioMaximoDeReserva,
-      horasDeAnticipacionParaCancelar: updatedPolitic.horasDeAnticipacionParaCancelar,
-      horasDeAnticipacionParaReservar: updatedPolitic.horasDeAnticipacionParaReservar,
-      limiteDeNoAsistencias: updatedPolitic.limiteDeNoAsistencias,
-      cantDiasDeshabilitacion: updatedPolitic.cantDiasDeshabilitacion,
-      porcentajeIVA: updatedPolitic.porcentajeIVA,
-      montoCubiertosPorPersona: updatedPolitic.montoCubiertosPorPersona
-    }
+        const draft = {
+            minutosTolerancia: updatedPolitic.minutosTolerancia,
+            horarioMaximoDeReserva: updatedPolitic.horarioMaximoDeReserva,
+            horasDeAnticipacionParaCancelar: updatedPolitic.horasDeAnticipacionParaCancelar,
+            horasDeAnticipacionParaReservar: updatedPolitic.horasDeAnticipacionParaReservar,
+            limiteDeNoAsistencias: updatedPolitic.limiteDeNoAsistencias,
+            cantDiasDeshabilitacion: updatedPolitic.cantDiasDeshabilitacion,
+            porcentajeIVA: updatedPolitic.porcentajeIVA,
+            montoCubiertosPorPersona: updatedPolitic.montoCubiertosPorPersona
+        }   
 
     const politicDatabase = await this.policyRepository.updatePolicy(idPolitica, draft);
     return politicDatabase;

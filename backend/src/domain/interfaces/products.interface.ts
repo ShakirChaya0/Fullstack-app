@@ -7,7 +7,6 @@ export interface ProductsInterface {
 
 export type TipoComida = "Entrada" | "Plato Principal" | "Postre"
 type EstadoComida = "Disponible" | "No Disponible"
-type Categoria = "Comida" | "Bebida"
 
 
 export interface Comida extends ProductsInterface {

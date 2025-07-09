@@ -3,16 +3,19 @@ POST http://localhost:3000/novedades
 Content-Type: application/json
 
 {
-    "titulo": "Nuevo super mcdonalds",
-    "descripcion": "ajfhbaskjfdhbaskdjfadf",
-    "fechaInicio": "2025/07/25",
-    "fechaFin": "2025/12/25"
+    "titulo": "Nasdasdasdas",
+    "descripcion": "ajasfafsdafasdadasdf",
+    "fechaInicio": "2025/01/25",
+    "fechaFin": "2025/02/25"
 }
 
 ###
-POST http://localhost:3000/novedades/update/15 
+PATCH http://localhost:3000/novedades/update/40
 Content-Type: application/json
 
 {
-    "titulo": "no hay mas mca"
+    "titulo": "asasdasdasd",
+    "descripcion": "aasdasdasdasdasdas",
+    "fechaInicio": "2025/07/25",
+    "fechaFin": "2025/08/25"
 }

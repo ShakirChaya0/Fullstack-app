@@ -1,4 +1,4 @@
-import { PolicyRepository } from '../../../infrastructure/database/repository/PolicyRepository.js';
+import { PolicyRepository } from '../../../infrastructure/database/repository/policyRepository.js';
 import { Policy } from '../../../domain/entities/Policy.js';
 
 export class GetPolicyByIdUseCase {
