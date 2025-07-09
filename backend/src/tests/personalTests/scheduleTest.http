@@ -1,0 +1,5 @@
+###
+GET http://localhost:3000/horarios/
+
+###
+GET http://localhost:3000/horarios/id/1
