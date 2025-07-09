@@ -32,11 +32,11 @@ model PoliticasRestaurante {
 }
 
 model Novedades {
-  idNovedad   Int    @id @default(autoincrement())
-  titulo      String @unique(map: "titulo_unique") @db.VarChar
-  descripcion String @db.VarChar
-  fechaInicio String @db.VarChar
-  fechaFin    String @db.VarChar
+  idNovedad   Int      @id @default(autoincrement())
+  titulo      String   @unique(map: "titulo_unique") @db.VarChar
+  descripcion String   @db.VarChar
+  fechaInicio DateTime @db.Date
+  fechaFin    DateTime @db.Date
 }
 
 model InformacionRestaurante {

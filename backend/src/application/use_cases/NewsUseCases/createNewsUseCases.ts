@@ -8,7 +8,7 @@ export class CreateNewsUseCases {
     ){}
     
     async execute(data: SchemaNews){
-        const newData = new NewsClass(0, data.titulo, data.descripcion, data.fechaInicio, data.fechaFin)
+        const newData = new NewsClass(0, data.titulo, data.descripcion, new Date(data.fechaInicio), new Date(data.fechaFin))
         const news = await this.newsRepo.register(newData)
         return news
     }

@@ -5,19 +5,15 @@ export class NewsClass {
         private readonly _newsId: number,
         private _title: string,
         private _description: string,
-        private _startDate: string,
-        private _endDate: string
+        private _startDate: Date,
+        private _endDate: Date
     ){
-        const result = ValidateNews({
+        ValidateNews({
             titulo: _title,
             descripcion: _description,
             fechaInicio: _startDate,
             fechaFin: _endDate,
         })
-
-        if (!result.success) {
-            throw new Error(result.error.errors.map(e => e.message).join(", "))
-        }
         this.validar()
     }
 
@@ -37,36 +33,34 @@ export class NewsClass {
         this._description = descripcion
     }
 
-    public set startDate(fechaInicio: string) { 
+    public set startDate(fechaInicio: Date) { 
         ValidateNewsPartial({fechaInicio})
         this._startDate = fechaInicio 
     }
     
-    public set endDate(fechaFin: string) { 
+    public set endDate(fechaFin: Date) { 
         ValidateNewsPartial({fechaFin})
         this._endDate = fechaFin 
     }
 
     private validar () {
-        if(!this.isValidDate(this._startDate)) throw new Error("Formato de fecha no valido")
-        if(!this.isValidDate(this._endDate)) throw new Error("Formato de fecha no valido")
-            
-        const start = new Date(this._startDate.replace('/', '-'))
-        const end = new Date(this._endDate.replace('/', '-'))
-        const hoy = new Date()
-        hoy.setHours(0, 0, 0, 0)
+        if (!(this._startDate instanceof Date) || isNaN(this._startDate.getTime())) {
+            throw new Error("Fecha de inicio no válida");
+        }
+        if (!(this._endDate instanceof Date) || isNaN(this._endDate.getTime())) {
+            throw new Error("Fecha final no válida");
+        }
 
-        if (start < hoy) {
-          throw new Error("La fecha de inicio no puede ser anterior a la fecha actual")
+        const hoy = new Date();
+        hoy.setHours(0, 0, 0, 0);
+
+        if (this._startDate < hoy) {
+            throw new Error("La fecha de inicio no puede ser anterior a la fecha actual");
         }
-    
-        if (end < start) {
-          throw new Error("La fecha final no puede ser anterior a la fecha de inicio")
+
+        if (this._endDate < this._startDate) {
+            throw new Error("La fecha final no puede ser anterior a la fecha de inicio");
         }
-    }
-    private isValidDate (date: string){
-        const regex = /^\d{4}\/\d{2}\/\d{2}$/
-        return regex.test(date)
     }
 
 }

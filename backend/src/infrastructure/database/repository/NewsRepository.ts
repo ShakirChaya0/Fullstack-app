@@ -12,8 +12,8 @@ export class NewsRepository implements INewsRepository{
                 data: {
                     titulo: data.title,
                     descripcion: data.description,
-                    fechaInicio: data.startDate,
-                    fechaFin: data.endDate
+                    fechaInicio: new Date(data.startDate),
+                    fechaFin: new Date(data.endDate)
                 }
             })
             return new NewsClass(novedad.idNovedad, novedad.titulo, novedad.descripcion, novedad.fechaInicio, novedad.fechaFin)
