@@ -48,7 +48,12 @@ const PolicySchemaPartial = PolicySchema.partial();
 export type PartialSchemaPolicy = z.infer<typeof PolicySchemaPartial>;
 
 export function ValidatePolicy(data: Policy | PoliticasRestaurante) {
-    return PolicySchema.safeParse(data); 
+    const result = PolicySchema.safeParse(data);
+    if (!result.success) {
+        const mensajes = result.error.errors.map(e => e.message).join(", ");
+        throw new Error(mensajes);
+    }
+    return result.data; 
 }
 
 export function ValidatePolicyPartial(data: Partial<PoliticasRestaurante> | Partial<Policy>) {

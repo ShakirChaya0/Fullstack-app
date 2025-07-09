@@ -5,7 +5,7 @@ import { PartialSchemaPolicy } from '../../../shared/validators/policyZod.js';
 
 export class CUU25ModifyPolicys {
   constructor(
-    private readonly policyRepository: PolicyRepository = new PolicyRepository()
+    private readonly policyRepository = new PolicyRepository()
   ){}
 
 

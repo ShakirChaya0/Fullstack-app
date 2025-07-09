@@ -5,6 +5,7 @@ import { IPolicyRepository } from '../../../domain/repositories/IPolicyRepositor
 
 const prisma = new PrismaClient();
 
+
 export class PolicyRepository implements IPolicyRepository {
     public async updatePolicy(idPolitica: number,data: PartialSchemaPolicy): Promise<Policy> {
         const updatePolicy = await prisma.politicasRestaurante.update({

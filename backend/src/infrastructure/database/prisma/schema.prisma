@@ -39,6 +39,14 @@ model Novedades {
   fechaFin    String @db.VarChar
 }
 
+model InformacionRestaurante {
+  idInformacion        Int    @id @default(autoincrement())
+  nombreRestaurante    String @db.VarChar
+  direccionRestaurante String @db.VarChar
+  razonSocial          String @db.VarChar
+  telefonoContacto     String @db.VarChar
+}
+
 enum estado {
   Disponible
   No_Disponible @map("No Disponible")

@@ -1,0 +1,11 @@
+GET http://localhost:3000/informacion/id/1
+
+### This request retrieves the policy with ID 1
+PATCH http://localhost:3000/informacion/id/1
+Content-Type: application/json
+
+{
+    "nombreRestaurante": "Restaurante Actualizado",
+    "direccionRestaurante": "Calle Actualizada 123"
+}
+
