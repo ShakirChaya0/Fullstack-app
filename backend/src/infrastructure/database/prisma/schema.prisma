@@ -41,11 +41,12 @@ model Novedades {
 }
 
 model Sugerencias {
-  idSugerencia Int      @id @default(autoincrement())
-  fechaDesde   DateTime @db.Date
-  fechaHasta   DateTime @db.Date
-  idProducto   Int
-  Producto     Producto @relation(fields: [idProducto], references: [idProducto], onDelete: NoAction, onUpdate: NoAction, map: "producto_sugerencia")
+  fechaDesde DateTime @db.Date
+  fechaHasta DateTime @db.Date
+  idProducto Int
+  Producto   Producto @relation(fields: [idProducto], references: [idProducto], onDelete: NoAction, onUpdate: NoAction, map: "producto_sugerencia")
+
+  @@id([idProducto, fechaDesde], map: "Sugerencias_PK")
 }
 
 enum estado {

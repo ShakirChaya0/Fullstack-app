@@ -1,0 +1,24 @@
+import { Suggestion } from "../../../domain/entities/Suggestion.js";
+import { ProductRepository } from "../../../infrastructure/database/repository/ProductRepository.js";
+import { SuggestionRepository } from "../../../infrastructure/database/repository/SuggestionRepository.js";
+import { PartialSchemaSuggestion } from "../../../shared/validators/suggestionZod.js";
+
+export class CUU21ModifySuggestion {
+    constructor(
+        private readonly productRepository = new ProductRepository(),
+        private readonly suggestionRepository = new SuggestionRepository()
+    ) {}
+
+    public async execute(data: PartialSchemaSuggestion, idProducto: number, fechaDesde: Date): Promise<Suggestion> {
+        const sugg = await this.suggestionRepository.findByProductAndDate(idProducto, fechaDesde);
+        if (!sugg) throw new Error("No se encontró una sugerencia con el producto y fecha especificados");
+
+        if (data.idProducto) {
+            const product = await this.productRepository.getById(data.idProducto);
+            if (!product) throw new Error("Producto no encontrado");
+        }
+
+        const modifiedSuggestion = await this.suggestionRepository.update(data, idProducto, fechaDesde);
+        return modifiedSuggestion;
+    }
+}

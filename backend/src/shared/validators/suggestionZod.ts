@@ -13,10 +13,10 @@ const partialProductosSchema = SugerenciaSchema.partial();
 
 export type PartialSchemaSuggestion = z.infer<typeof partialProductosSchema>;
 
-export function ValidateProduct(data: Sugerencias){
+export function ValidateSuggestion(data: Sugerencias){
     return SugerenciaSchema.safeParse(data)
 }
 
-export function ValidateProductPartial(data: Partial<Sugerencias>){
+export function ValidateSuggestionPartial(data: Partial<Sugerencias>){
     return SugerenciaSchema.partial().safeParse(data)
 }

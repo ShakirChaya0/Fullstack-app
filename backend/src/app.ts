@@ -3,6 +3,7 @@ import {productosRouter} from './presentation/routes/productsRoute.js'
 import cors from "cors"
 import { NewsRouter } from './presentation/routes/newsRoute.js'
 import { PolicyRouter } from './presentation/routes/policyRoute.js'
+import { SuggestionsRouter } from './presentation/routes/suggestionsRoute.js'
 
 const app = express()
 
@@ -17,6 +18,8 @@ app.use('/productos', productosRouter())
 app.use("/novedades", NewsRouter())
 
 app.use("/politicas", PolicyRouter())
+
+app.use("/sugerencias", SuggestionsRouter())
 
 app.use((req, res) => {
     res.status(404).send("Error 404")
