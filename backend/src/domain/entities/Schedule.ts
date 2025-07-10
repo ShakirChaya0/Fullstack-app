@@ -1,52 +1,27 @@
 export class Schedule {
-    private _horaApertura: Date;
-    private _horaCierre: Date;
 
     constructor(
-        readonly idHorario: number,
-        horaApertura: Date,
-        horaCierre: Date
+        readonly diaSemana: number,
+        private _horaApertura: string,
+        private _horaCierre: string
 
-    ) {
-        this._horaApertura = horaApertura;
-        this._horaCierre = horaCierre;
-        this.validarHorarios();
-    }
+    ) {}
 
-    private validarHorarios(): void {
-        if (this._horaApertura >= this._horaCierre) {
-            throw new Error("Opening time must be earlier than Closing time");
-        }
-    }
-
-    public get horaApertura(): Date {
+    public get horaApertura(): string {
         return this._horaApertura;
     }
 
-    public get horaCierre(): Date {
+    public get horaCierre(): string {
         return this._horaCierre;
     }
 
-    public set horaApertura(nuevaHora: Date) {
-        if (nuevaHora >= this._horaCierre) {
-            throw new Error("Opening time must be earlier than closing time");
-        }
-        this._horaApertura = nuevaHora;
-    }
 
-    public set horaCierre(nuevaHora: Date) {
-        if (this._horaApertura >= nuevaHora) {
-            throw new Error("Closing time must be later than opening time");
-        }
-        this._horaCierre = nuevaHora;
-    }
-
-    public modificarHorarios(nuevaApertura: Date, nuevoCierre: Date): void {
-        if (nuevaApertura >= nuevoCierre) {
-            throw new Error("Opening time must be earlier than closing time");
-        }
+    // public modificarHorarios(nuevaApertura: Date, nuevoCierre: Date): void {
+    //     if (nuevaApertura >= nuevoCierre) {
+    //         throw new Error("Opening time must be earlier than closing time");
+    //     }
         
-        this._horaApertura = nuevaApertura;
-        this._horaCierre = nuevoCierre;
-    }
+    //     this._horaApertura = nuevaApertura;
+    //     this._horaCierre = nuevoCierre;
+    // }
 }

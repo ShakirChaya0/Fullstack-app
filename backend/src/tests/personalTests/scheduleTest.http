@@ -2,4 +2,23 @@
 GET http://localhost:3000/horarios/
 
 ###
-GET http://localhost:3000/horarios/id/1
+GET http://localhost:3000/horarios/id/7
+
+###
+POST http://localhost:3000/horarios/
+Content-Type: application/json
+
+{
+    "diaSemana": 7,   
+    "horaApertura": "22:00",
+    "horaCierre": "03:00"
+}
+
+###
+PATCH http://localhost:3000/horarios/update/7
+Content-Type: application/json
+
+{
+    "horaApertura": "15:00",
+    "horaCierre": "10:00"
+}

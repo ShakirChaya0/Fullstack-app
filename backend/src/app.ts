@@ -4,6 +4,7 @@ import cors from "cors"
 import { NewsRouter } from './presentation/routes/newsRoute.js'
 import { PolicyRouter } from './presentation/routes/policyRoute.js'
 import { InformationRouter } from './presentation/routes/informationRoute.js'
+import { horariosRouter } from './presentation/routes/scheduleRoute.js'
 
 const app = express()
 
@@ -20,6 +21,8 @@ app.use("/novedades", NewsRouter())
 app.use("/politicas", PolicyRouter())
 
 app.use('/informacion', InformationRouter())
+
+app.use('/horarios', horariosRouter())
 
 app.use((req, res) => {
     res.status(404).send("Error 404")

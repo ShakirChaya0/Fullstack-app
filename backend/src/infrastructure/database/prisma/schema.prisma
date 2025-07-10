@@ -47,6 +47,12 @@ model InformacionRestaurante {
   telefonoContacto     String @db.VarChar
 }
 
+model Horarios {
+  diaSemana     Int      @id @default(autoincrement())
+  horaApertura  DateTime @db.Time
+  horaCierre    DateTime @db.Time
+}
+
 enum estado {
   Disponible
   No_Disponible @map("No Disponible")
