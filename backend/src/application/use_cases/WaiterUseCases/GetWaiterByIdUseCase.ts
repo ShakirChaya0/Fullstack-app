@@ -5,7 +5,7 @@ export class GetWaiterById {
     constructor(
         private readonly waiterRepository = new WaiterRepository()
     ) {}
-    public async execute(id: number): Promise<Waiter | null> {
-        return await this.waiterRepository.getWaiterById(id);
+    public async execute(idMozo: string): Promise<Waiter | null> {
+        return await this.waiterRepository.getWaiterById(idMozo);
     }
 }

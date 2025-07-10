@@ -2,7 +2,7 @@ import { ValidateWaiter, ValidateWaiterPartial } from "../../shared/validators/w
 
 export class Waiter {
     constructor(
-        private readonly _waiterId: number,
+        private readonly _waiterId: string,
         private _userName: string,
         private _password: string,
         private _name: string,
@@ -12,44 +12,44 @@ export class Waiter {
         private _email: string
     ) { ValidateWaiter(this) }
 
-    get waiterId(): number {
+    get idMozo(): string {
         return this._waiterId;
     }
-    get userName(): string {
+    get nombreUsuario(): string {
         return this._userName;
     }
-    get password(): string {
+    get contrasenia(): string {
         return this._password;
     }
-    get name(): string {
+    get nombre(): string {
         return this._name;
     }
-    get lastName(): string {
+    get apellido(): string {
         return this._lastName;
     }
     get DNI(): number {
         return this._DNI;
     }
-    get phone(): string {
+    get telefono(): string {
         return this._phone;
     }
     get email(): string {
         return this._email;
     }
 
-    set userName(nombreUsuario: string) {
+    set nombreUsuario(nombreUsuario: string) {
         ValidateWaiterPartial({ nombreUsuario});
         this._userName = nombreUsuario;
     }
-    set password(contrasenia: string) {
+    set contrasenia(contrasenia: string) {
         ValidateWaiterPartial({ contrasenia });
         this._password = contrasenia;
     }
-    set name(nombre: string) {
+    set nombre(nombre: string) {
         ValidateWaiterPartial({ nombre });
         this._name = nombre;
     }
-    set lastName(apellido: string) {
+    set apellido(apellido: string) {
         ValidateWaiterPartial({ apellido });
         this._lastName = apellido;
     }
@@ -57,7 +57,7 @@ export class Waiter {
         ValidateWaiterPartial({ DNI });
         this._DNI = DNI;
     }
-    set phone(telefono: string) {
+    set telefono(telefono: string) {
         ValidateWaiterPartial({ telefono });
         this._phone = telefono;
     }

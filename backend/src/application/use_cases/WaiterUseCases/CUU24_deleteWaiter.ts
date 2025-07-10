@@ -5,7 +5,7 @@ export class CUU24DeleteWaiter {
         private readonly waiterRepository = new WaiterRepository()
     ) {}
 
-    public async execute(id: number): Promise<{ message: string }> {
-        return await this.waiterRepository.deleteWaiter(id);
+    public async execute(idMozo: string): Promise<{ message: string }> {
+        return await this.waiterRepository.deleteWaiter(idMozo);
     }
 }

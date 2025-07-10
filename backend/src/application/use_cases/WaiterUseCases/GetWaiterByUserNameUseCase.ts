@@ -6,7 +6,10 @@ export class GetWaiterByUserName {
         private readonly waiterRepository = new WaiterRepository()
     ) {}
 
-    public async execute(userName: string): Promise<Waiter | null> {
+    public async execute(userName: string | null): Promise<Waiter> {
+        if (!userName) {
+            throw new Error("El nombre de usuario es obligatorio");
+        }
         return await this.waiterRepository.getWaiterByUserName(userName);
     }
 }

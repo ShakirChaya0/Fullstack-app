@@ -1,11 +1,11 @@
 import { Request, Response } from "express"
 import { CUU18RegisterProduct } from "../../application/use_cases/ProductsUseCases/CUU18RegisterProduct.js";
 import { CUU19ModifyProduct } from "../../application/use_cases/ProductsUseCases/CUU19ModifyProduct.js";
-import { GetProductsUseCase } from "../../application/use_cases/ProductsUseCases/getProductsUseCase.js";
-import { GetProductByIdUseCase } from "../../application/use_cases/ProductsUseCases/getProductByIdUseCase.js";
+import { GetProductsUseCase } from "../../application/use_cases/ProductsUseCases/GetProductsUseCase.js";
+import { GetProductByIdUseCase } from "../../application/use_cases/ProductsUseCases/GetProductByIdUseCase.js";
 import { PartialSchemaProductos, ValidateProduct, ValidateProductPartial } from "../../shared/validators/productZod.js";
-import { GetProductByNameUseCase } from "../../application/use_cases/ProductsUseCases/getProductByNameUseCase.js";
-import { GetProductByTypeUseCase } from "../../application/use_cases/ProductsUseCases/getProductByTypeUseCase.js";
+import { GetProductByNameUseCase } from "../../application/use_cases/ProductsUseCases/GetProductByNameUseCase.js";
+import { GetProductByTypeUseCase } from "../../application/use_cases/ProductsUseCases/GetProductByTypeUseCase.js";
 
 export class ProductController {
     constructor(

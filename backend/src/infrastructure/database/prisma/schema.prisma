@@ -48,14 +48,14 @@ model InformacionRestaurante {
 }
 
 model Mozo {
-  idMozo        Int         @id @default(autoincrement())
-  nombreUsuario String      @unique(map: "nombreUsuario") @db.VarChar
-  contrasenia   String      @db.VarChar
-  nombre        String      @db.VarChar
-  apellido      String      @db.VarChar
+  nombreUsuario String @unique(map: "nombreUsuario") @db.VarChar
+  contrasenia   String @db.VarChar
+  nombre        String @db.VarChar
+  apellido      String @db.VarChar
   DNI           Int
-  email         String      @db.VarChar
-  telefono      String      @db.VarChar
+  email         String @db.VarChar
+  telefono      String @db.VarChar
+  idMozo        String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
 }
 
 enum estado {

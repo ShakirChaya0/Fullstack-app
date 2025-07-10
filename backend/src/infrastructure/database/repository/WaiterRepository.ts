@@ -7,6 +7,7 @@ const prisma = new PrismaClient();
 
 export class WaiterRepository implements IWaiterRepository {
     public async createWaiter(data: SchemaWaiter): Promise<Waiter> {
+        try {
         const newWaiter = await prisma.mozo.create({
             data: {
                 ...data
@@ -22,9 +23,17 @@ export class WaiterRepository implements IWaiterRepository {
             newWaiter.telefono,
             newWaiter.email
         );
+        }
+        catch (error: any) {
+            if (error?.code === 'P2002' && error?.meta?.target?.includes('nombreUsuario')) {
+                throw new Error("Ya existe un Mozo con ese nombre de usuario");
+            } else {
+                throw new Error(`Error al crear el Mozo: ${error.message}`);
+            }
+        }
     }
 
-    public async deleteWaiter(idMozo: number): Promise<{message: string}> {
+    public async deleteWaiter(idMozo: string): Promise<{message: string}> {
         const deletedWaiter = await prisma.mozo.delete({
             where: { idMozo: idMozo }
         });
@@ -48,7 +57,7 @@ export class WaiterRepository implements IWaiterRepository {
         ));
     }
 
-    public async getWaiterByUserName(userName: string): Promise<Waiter | null> {
+    public async getWaiterByUserName(userName: string): Promise<Waiter> {
         const waiter = await prisma.mozo.findUnique({
             where: { nombreUsuario: userName }
         }); 
@@ -68,13 +77,15 @@ export class WaiterRepository implements IWaiterRepository {
     }
 
     
-    public async updateWaiter(idMozo: number, data: PartialSchemaWaiter): Promise<Waiter> {
+    public async updateWaiter(idMozo: string, data: PartialSchemaWaiter): Promise<Waiter> {
+        console.log("Updating waiter with id:", data);
         const updatedWaiter = await prisma.mozo.update({
             where: { idMozo: idMozo },
             data: {
                 ...data
             }
         });
+        console
         return new Waiter(
             updatedWaiter.idMozo,
             updatedWaiter.nombreUsuario,
@@ -87,7 +98,7 @@ export class WaiterRepository implements IWaiterRepository {
         );
     }
 
-    public async getWaiterById(idMozo: number): Promise<Waiter> {
+    public async getWaiterById(idMozo: string): Promise<Waiter> {
         const waiter = await prisma.mozo.findUnique({
             where: { idMozo: idMozo }
         });
