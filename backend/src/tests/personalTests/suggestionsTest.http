@@ -1,0 +1,33 @@
+### GET ALL
+GET http://localhost:3000/sugerencias
+
+### GET ACTIVES
+GET http://localhost:3000/sugerencias/activas
+
+### REGISTER SUGGESTION USE CASE
+### STEP 1
+GET http://localhost:3000/sugerencias/producto/2
+
+### STEP 2
+POST http://localhost:3000/sugerencias
+Content-Type: application/json
+
+{
+    "idProducto": 2,
+    "fechaDesde": "2025-06-25T00:00:00Z",
+    "fechaHasta": "2025-07-17T23:59:59Z"
+}
+
+
+### MODIFY SUGGESTION USE CASE
+### STEP 1
+GET http://localhost:3000/sugerencias/search?idProducto=2&fechaDesde=2025-06-25T00:00:00.000Z
+
+### STEP 2
+PATCH http://localhost:3000/sugerencias?idProducto=2&fechaDesde=2025-06-25T00:00:00.000Z
+Content-Type: application/json
+
+{
+    "idProducto": 1,
+    "fechaHasta": "2025-07-20T23:59:59Z"
+}

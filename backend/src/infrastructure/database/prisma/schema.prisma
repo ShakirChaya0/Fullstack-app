@@ -8,15 +8,16 @@ datasource db {
 }
 
 model Producto {
-  idProducto    Int      @id @default(autoincrement())
-  nombre        String   @unique(map: "uniqueName") @db.VarChar(30)
-  descripcion   String   @db.VarChar(255)
+  idProducto    Int           @id @default(autoincrement())
+  nombre        String        @unique(map: "uniqueName") @db.VarChar(30)
+  descripcion   String        @db.VarChar(255)
   estado        estado
   esAlcoholica  Boolean?
   esVegetariana Boolean?
   esVegana      Boolean?
   tipo          tipo?
   esSinGluten   Boolean?
+  Sugerencias   Sugerencias[]
 }
 
 model PoliticasRestaurante {
@@ -45,6 +46,15 @@ model InformacionRestaurante {
   direccionRestaurante String @db.VarChar
   razonSocial          String @db.VarChar
   telefonoContacto     String @db.VarChar
+}
+
+model Sugerencias {
+  fechaDesde DateTime @db.Date
+  fechaHasta DateTime @db.Date
+  idProducto Int
+  Producto   Producto @relation(fields: [idProducto], references: [idProducto], onDelete: NoAction, onUpdate: NoAction, map: "producto_sugerencia")
+
+  @@id([idProducto, fechaDesde], map: "Sugerencias_PK")
 }
 
 enum estado {
