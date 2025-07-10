@@ -1,4 +1,4 @@
-import { Request, Response } from "express";
+import { Request, Response, NextFunction } from "express";
 import { CreateNewsUseCases } from "../../application/use_cases/NewsUseCases/createNewsUseCases.js";
 import { ModifyNewsUseCases } from "../../application/use_cases/NewsUseCases/modifyNewsUseCases.js";
 import { ValidateNewsPartial } from "../../shared/validators/newsZod.js";
@@ -8,16 +8,16 @@ export class NewsController {
         private createNewsUC = new CreateNewsUseCases(),
         private modifyNewsUC = new ModifyNewsUseCases()
     ){}
-    async create(req: Request, res: Response) {
+    async create(req: Request, res: Response, next: NextFunction) {
         try{
             const news = await this.createNewsUC.execute(req.body)
             res.status(200).json(news)
         }
-        catch(error: any){
-            res.status(500).json({error: error.message})
+        catch(error){
+            next(error);
         }
     }
-    async modify (req: Request, res: Response){
+    async modify (req: Request, res: Response, next: NextFunction){
         try{
             const {newsId} = req.params
             if (!newsId || isNaN(+newsId)) throw new Error("ID sent must be a number")
@@ -35,8 +35,8 @@ export class NewsController {
             const news = await this.modifyNewsUC.execute(+newsId, dataValidated)
             res.status(200).json(news)
         }
-        catch(error: any){
-            res.status(500).json({ error: error.message })
+        catch(error){
+            next(error);
         }
     }
 }
