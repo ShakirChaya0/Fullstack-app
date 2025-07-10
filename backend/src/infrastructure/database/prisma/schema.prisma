@@ -32,11 +32,11 @@ model PoliticasRestaurante {
 }
 
 model Novedades {
-  idNovedad   Int      @id @default(autoincrement())
-  titulo      String   @unique(map: "titulo_unique") @db.VarChar
-  descripcion String   @db.VarChar
-  fechaInicio DateTime @db.Date
-  fechaFin    DateTime @db.Date
+  idNovedad   Int    @id @default(autoincrement())
+  titulo      String @unique(map: "titulo_unique") @db.VarChar
+  descripcion String @db.VarChar
+  fechaInicio String @db.VarChar
+  fechaFin    String @db.VarChar
 }
 
 model InformacionRestaurante {
@@ -45,6 +45,17 @@ model InformacionRestaurante {
   direccionRestaurante String @db.VarChar
   razonSocial          String @db.VarChar
   telefonoContacto     String @db.VarChar
+}
+
+model Mozo {
+  idMozo        Int         @id @default(autoincrement())
+  nombreUsuario String      @unique(map: "nombreUsuario") @db.VarChar
+  contrasenia   String      @db.VarChar
+  nombre        String      @db.VarChar
+  apellido      String      @db.VarChar
+  DNI           Int
+  email         String      @db.VarChar
+  telefono      String      @db.VarChar
 }
 
 enum estado {
