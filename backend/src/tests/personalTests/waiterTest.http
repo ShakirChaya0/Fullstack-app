@@ -1,0 +1,33 @@
+###
+GET http://localhost:3000/mozos
+
+###
+GET http://localhost:3000/mozos/id/decf5cf8-1e88-4741-9723-eae9896180b4
+
+###
+GET http://localhost:3000/mozos/nombre/franconicolas
+
+###
+POST http://localhost:3000/mozos/
+Content-Type: application/json
+
+{
+    "nombreUsuario": "franconicolas",
+    "contrasenia": "123456",
+    "nombre": "franco Nicolas",
+    "apellido": "Sussi",
+    "DNI": 12345678,
+    "telefono": "123456789",
+    "email": "franconicolas@gmail.com"
+}   
+
+###
+PATCH http://localhost:3000/mozos/id/decf5cf8-1e88-4741-9723-eae9896180b4
+Content-Type: application/json
+
+{
+    "nombre": "Franco Nicolas"
+}
+
+###
+DELETE http://localhost:3000/mozos/id/decf5cf8-1e88-4741-9723-eae9896180b4
