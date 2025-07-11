@@ -2,22 +2,35 @@ import z from "zod";
 import { Table } from "../../domain/entities/Table.js";
 
 const tableSchema = z.object({
-    capacity: z.number({message: "La capacidad debe ser un numero entero"}).min(1).max(10), 
-    state : z.enum(["Libre", "Ocupado", "Reservado"])
+    capacidad: z.number({message: "La capacidad debe ser un numero entero"}).min(1).max(10), 
+    estado : z.enum(["Libre", "Ocupado", "Reservado"])
 }); 
 
 export type schemaTable = z.infer<typeof tableSchema>; 
 
 export function validateTable(data: Table) {
-    return tableSchema.safeParse(data);
+    const result = tableSchema.safeParse(data);
+    if (!result.success) {
+        throw new Error(
+        JSON.stringify(result.error.flatten().fieldErrors)
+        );
+    }
+    return result.data;
 }
 
-// const schemaTablePartial = tableSchema.partial(); 
-// export type SchemaPartialTable = z.infer<typeof schemaTablePartial>; 
+const schemaTablePartial = tableSchema.partial(); 
+export type SchemaPartialTable = z.infer<typeof schemaTablePartial>; 
 
-// export function validatePartialTable (data: Table) {
-//     return tableSchema.partial().safeParse(data);
-// }
+export function validatePartialTable (data: Partial<Table>) {
+    const result = tableSchema.partial().safeParse(data);
+    if (!result.success) {
+        throw new Error(
+            JSON.stringify(result.error.flatten().fieldErrors)
+            );
+    }
+
+    return result.data;
+}
 
 
 

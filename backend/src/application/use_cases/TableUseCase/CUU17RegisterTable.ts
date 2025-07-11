@@ -8,7 +8,7 @@ export class CUU17RegisterTable {
     ){}
 
     public async execute (table: schemaTable) : Promise<Table>{
-        const existingTable = await this.tableRepository.create(table);
+        const existingTable = await this.tableRepository.createTable(table);
         return existingTable;
     }
 }

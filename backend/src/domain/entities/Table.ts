@@ -1,29 +1,25 @@
+import { validatePartialTable, validateTable } from "../../presentation/validators/tableZod.js";
+
 export type TableState = "Libre" | "Ocupado" | "Reservado"; 
 
-export class Table {
+export class Table  {
     constructor(
         private readonly _tableNum : number, 
         private _capacity: number, 
         private _state: TableState
-    ){}
+    ){validateTable(this)}
 
-    public get tableNum() {return this._tableNum} 
-    public get capacity () {return this._capacity}
-    public get state () {return this._state}
+    public get nroMesa() : number {return this._tableNum} 
+    public get capacidad () : number {return this._capacity}
+    public get estado () : TableState {return this._state}
 
-    public set capacity(capacity:number) {
-        if(capacity > 0 ){
-            this._capacity = capacity;
-        }
-        else {
-            throw new Error ("La capacidad debe ser mayor a 0");
-        }
+    public set capacity(capacidad :number) {
+        validatePartialTable({capacidad}); 
+        this._capacity = capacidad;
     }
 
-    public set state(state: TableState) {
-        if(state !== "Libre" && state !== "Ocupado" && state !== "Reservado"){
-            throw new Error ("El estado de la mesa debe ser Libre o Reservado o Ocupado");
-        }
-        this._state = state;
+    public set state(estado: TableState) {
+        validatePartialTable({estado}); 
+        this._state = estado;
     }
 }

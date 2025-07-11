@@ -2,6 +2,11 @@ import express from 'express'
 import {productosRouter} from './presentation/routes/productsRoute.js'
 import cors from "cors"
 
+
+
+
+
+import { mesaRouter } from './presentation/routes/tableRoute.js'
 const app = express()
 
 const PORT = process.env.PORT ?? 3000
@@ -11,6 +16,20 @@ app.use(cors())
 app.use(express.json())
 
 app.use('/productos', productosRouter())
+
+
+
+
+
+
+
+
+
+
+
+
+
+app.use ('/mesas', mesaRouter())
 
 app.use((req, res) => {
     res.status(404).send("Error 404")
