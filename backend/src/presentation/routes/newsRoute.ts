@@ -7,9 +7,9 @@ export function NewsRouter(){
 
     const newsController = new NewsController()
 
-    newsRouter.post("/", (req, res) => {newsController.create(req, res)})
+    newsRouter.post("/", (req, res, next) => {newsController.create(req, res, next)})
     
-    newsRouter.patch("/update/:newsId", (req, res) => {newsController.modify(req, res)})
+    newsRouter.patch("/update/:newsId", (req, res, next) => {newsController.modify(req, res, next)})
 
     return newsRouter
 }

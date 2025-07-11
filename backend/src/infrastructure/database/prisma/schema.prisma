@@ -48,15 +48,6 @@ model InformacionRestaurante {
   telefonoContacto     String @db.VarChar
 }
 
-model Sugerencias {
-  fechaDesde DateTime @db.Date
-  fechaHasta DateTime @db.Date
-  idProducto Int
-  Producto   Producto @relation(fields: [idProducto], references: [idProducto], onDelete: NoAction, onUpdate: NoAction, map: "producto_sugerencia")
-
-  @@id([idProducto, fechaDesde], map: "Sugerencias_PK")
-}
-
 model Mozo {
   nombreUsuario String @unique(map: "nombreUsuario") @db.VarChar
   contrasenia   String @db.VarChar
@@ -72,6 +63,15 @@ model Mesa {
   nroMesa   Int        @id @default(autoincrement())
   capacidad Int
   estado    estadoMesa
+}
+
+model Sugerencias {
+  fechaDesde DateTime @db.Date
+  fechaHasta DateTime @db.Date
+  idProducto Int
+  Producto   Producto @relation(fields: [idProducto], references: [idProducto], onDelete: NoAction, onUpdate: NoAction, map: "producto_sugerencia")
+
+  @@id([idProducto, fechaDesde], map: "Sugerencias_PK")
 }
 
 enum estado {

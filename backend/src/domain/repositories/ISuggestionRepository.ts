@@ -6,6 +6,8 @@ export interface ISuggestionRepository {
 
     getActiveSuggestions(): Promise<Suggestion[]>;
 
+    findByProductAndDate(productId: number, dateFrom: Date): Promise<Suggestion | null>
+
     create(sugg: Suggestion): Promise<Suggestion>;
 
     update(data: PartialSchemaSuggestion, idProducto: number, fechaDesde: Date): Promise<Suggestion>;
