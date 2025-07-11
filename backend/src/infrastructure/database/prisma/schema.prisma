@@ -48,7 +48,6 @@ model InformacionRestaurante {
   telefonoContacto     String @db.VarChar
 }
 
-<<<<<<< HEAD
 model Sugerencias {
   fechaDesde DateTime @db.Date
   fechaHasta DateTime @db.Date
@@ -56,7 +55,8 @@ model Sugerencias {
   Producto   Producto @relation(fields: [idProducto], references: [idProducto], onDelete: NoAction, onUpdate: NoAction, map: "producto_sugerencia")
 
   @@id([idProducto, fechaDesde], map: "Sugerencias_PK")
-=======
+}
+
 model Mozo {
   nombreUsuario String @unique(map: "nombreUsuario") @db.VarChar
   contrasenia   String @db.VarChar
@@ -66,7 +66,12 @@ model Mozo {
   email         String @db.VarChar
   telefono      String @db.VarChar
   idMozo        String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
->>>>>>> feature/WaiterRegister
+}
+
+model Mesa {
+  nroMesa   Int        @id @default(autoincrement())
+  capacidad Int
+  estado    estadoMesa
 }
 
 enum estado {
@@ -79,4 +84,10 @@ enum tipo {
   Entrada
   Postre
   EMPTY_ENUM_VALUE @map("")
+}
+
+enum estadoMesa {
+  Libre
+  Ocupado
+  Reservado
 }

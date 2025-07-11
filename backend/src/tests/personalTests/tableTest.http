@@ -1,0 +1,26 @@
+###
+GET http://localhost:3000/mesas/
+
+###
+GET http://localhost:3000/mesas/capacidad/9
+
+
+###
+POST http://localhost:3000/mesas/
+Content-Type: application/json
+
+{
+    "capacidad" : 9,
+    "estado" :"Ocupado"
+}
+
+###
+PATCH http://localhost:3000/mesas/nromesa/2
+Content-Type: application/json
+
+{
+    "estado" :"Reservado"
+}
+
+###
+DELETE http://localhost:3000/mesas/nromesa/2

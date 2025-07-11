@@ -6,8 +6,7 @@ import { PolicyRouter } from './presentation/routes/policyRoute.js'
 import { InformationRouter } from './presentation/routes/informationRoute.js'
 import { SuggestionsRouter } from './presentation/routes/suggestionsRoute.js'
 import { WaiterRouter } from './presentation/routes/waiterRoute.js'
-
-
+import { mesaRouter } from './presentation/routes/tableRoute.js'
 const app = express()
 
 const PORT = process.env.PORT ?? 3000
@@ -27,6 +26,8 @@ app.use('/informacion', InformationRouter())
 app.use("/sugerencias", SuggestionsRouter())
 
 app.use('/mozos', WaiterRouter())
+
+app.use ('/mesas', mesaRouter())
 
 app.use((req, res) => {
     res.status(404).send("Error 404")
