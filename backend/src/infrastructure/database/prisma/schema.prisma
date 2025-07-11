@@ -32,14 +32,6 @@ model PoliticasRestaurante {
   montoCubiertosPorPersona        Int    @default(5)
 }
 
-model Novedades {
-  idNovedad   Int    @id @default(autoincrement())
-  titulo      String @unique(map: "titulo_unique") @db.VarChar
-  descripcion String @db.VarChar
-  fechaInicio String @db.VarChar
-  fechaFin    String @db.VarChar
-}
-
 model InformacionRestaurante {
   idInformacion        Int    @id @default(autoincrement())
   nombreRestaurante    String @db.VarChar
@@ -72,6 +64,14 @@ model Sugerencias {
   Producto   Producto @relation(fields: [idProducto], references: [idProducto], onDelete: NoAction, onUpdate: NoAction, map: "producto_sugerencia")
 
   @@id([idProducto, fechaDesde], map: "Sugerencias_PK")
+}
+
+model Novedad {
+  idNovedad   Int      @id(map: "Novedades_pkey") @default(autoincrement())
+  titulo      String   @unique(map: "titulo_unique") @db.VarChar
+  descripcion String   @db.VarChar
+  fechaInicio DateTime @db.Date
+  fechaFin    DateTime @db.Date
 }
 
 enum estado {

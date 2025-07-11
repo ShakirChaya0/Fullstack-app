@@ -1,16 +1,25 @@
 ###
+GET http://localhost:3000/novedades
+
+###
+GET http://localhost:3000/novedades/id/45
+
+###
+GET http://localhost:3000/novedades/actives
+
+###
 POST http://localhost:3000/novedades
 Content-Type: application/json
 
 {
-    "titulo": "Nasdasdasdas",
+    "titulo": "Nasdasdaa",
     "descripcion": "ajasfafsdafasdadasdf",
     "fechaInicio": "2025/07/25",
     "fechaFin": "2025/08/25"
 }
 
 ###
-PATCH http://localhost:3000/novedades/update/43
+PATCH http://localhost:3000/novedades/45
 Content-Type: application/json
 
 {

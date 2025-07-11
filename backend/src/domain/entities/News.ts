@@ -1,4 +1,5 @@
-import { ValidateNews, ValidateNewsPartial } from "../../shared/validators/newsZod.js"
+import { BusinessError } from "../../shared/exceptions/BusinessError.js"
+import { ValidateNews } from "../../shared/validators/newsZod.js"
 
 export class NewsClass {
     constructor (
@@ -14,7 +15,7 @@ export class NewsClass {
             fechaInicio: _startDate,
             fechaFin: _endDate,
         })
-        this.validar()
+        this.validar(this._startDate, this._endDate)
     }
 
     public get newsId() { return this._newsId }
@@ -23,44 +24,25 @@ export class NewsClass {
     public get startDate() { return this._startDate }
     public get endDate() { return this._endDate }
 
-    public set title(titulo: string) {
-        ValidateNewsPartial({titulo})
-        this._title = titulo
-    }
+    public set title(titulo: string) {this._title = titulo}
 
-    public set description(descripcion: string) { 
-        ValidateNewsPartial({descripcion})
-        this._description = descripcion
-    }
+    public set description(descripcion: string) { this._description = descripcion}
 
-    public set startDate(fechaInicio: Date) { 
-        ValidateNewsPartial({fechaInicio})
-        this._startDate = fechaInicio 
-    }
+    public set startDate(fechaInicio: Date) { this._startDate = fechaInicio }
     
-    public set endDate(fechaFin: Date) { 
-        ValidateNewsPartial({fechaFin})
-        this._endDate = fechaFin 
-    }
+    public set endDate(fechaFin: Date) { this._endDate = fechaFin }
 
-    private validar () {
-        if (!(this._startDate instanceof Date) || isNaN(this._startDate.getTime())) {
-            throw new Error("Fecha de inicio no válida");
-        }
-        if (!(this._endDate instanceof Date) || isNaN(this._endDate.getTime())) {
-            throw new Error("Fecha final no válida");
-        }
-
+    public validar (startDate: Date, endDate: Date) {
         const hoy = new Date();
-        hoy.setHours(0, 0, 0, 0);
 
-        if (this._startDate < hoy) {
-            throw new Error("La fecha de inicio no puede ser anterior a la fecha actual");
+        if (startDate < hoy) {
+            throw new BusinessError("La fecha de inicio no puede ser anterior a la fecha actual");
         }
 
-        if (this._endDate < this._startDate) {
-            throw new Error("La fecha final no puede ser anterior a la fecha de inicio");
+        if (endDate < startDate) {
+            throw new BusinessError("La fecha final no puede ser anterior a la fecha de inicio");
         }
+        return {startDate, endDate}
     }
 
 }
