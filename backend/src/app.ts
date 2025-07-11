@@ -7,6 +7,7 @@ import { PolicyRouter } from './presentation/routes/policyRoute.js'
 import { InformationRouter } from './presentation/routes/informationRoute.js'
 import { SuggestionsRouter } from './presentation/routes/suggestionsRoute.js'
 import { WaiterRouter } from './presentation/routes/waiterRoute.js'
+import { NotFoundError } from './shared/exceptions/NotFoundError.js'
 
 const app = express()
 
@@ -28,12 +29,12 @@ app.use("/sugerencias", SuggestionsRouter())
 
 app.use('/mozos', WaiterRouter())
 
+app.use((req, res, next) => {
+    const error =  new NotFoundError("Endpoint not found");
+    next(error);
+})
 
 app.use(ErrorHandler)
-
-app.use((req, res) => {
-    res.status(404).send("Error 404")
-})
 
 app.listen(PORT, () => {
     console.log(`Server running on port http://localhost:${PORT}`)
