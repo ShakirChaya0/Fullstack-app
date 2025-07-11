@@ -1,4 +1,4 @@
-import { Request, Response } from "express"
+import { Request, Response, NextFunction } from "express"
 import { CUU18RegisterProduct } from "../../application/use_cases/ProductsUseCases/CUU18RegisterProduct.js";
 import { CUU19ModifyProduct } from "../../application/use_cases/ProductsUseCases/CUU19ModifyProduct.js";
 import { GetProductsUseCase } from "../../application/use_cases/ProductsUseCases/GetProductsUseCase.js";
@@ -6,6 +6,8 @@ import { GetProductByIdUseCase } from "../../application/use_cases/ProductsUseCa
 import { PartialSchemaProductos, ValidateProduct, ValidateProductPartial } from "../../shared/validators/productZod.js";
 import { GetProductByNameUseCase } from "../../application/use_cases/ProductsUseCases/GetProductByNameUseCase.js";
 import { GetProductByTypeUseCase } from "../../application/use_cases/ProductsUseCases/GetProductByTypeUseCase.js";
+import { ValidationError } from "../../shared/exceptions/ValidationError.js";
+import { NotFoundError } from "../../shared/exceptions/NotFoundError.js";
 
 export class ProductController {
     constructor(
@@ -17,107 +19,101 @@ export class ProductController {
         private readonly getProductByTypeUseCase = new GetProductByTypeUseCase()
     ) {}
 
-    public getAll = async (req: Request, res: Response) => {
+    public getAll = async (req: Request, res: Response, next: NextFunction) => {
         try {
             const products = await this.getProductsUseCase.execute();
             res.status(200).json(products);
-        } catch (error: any) {
-            res.status(500).json({ error: error.message })
+        } catch (error) {
+            next(error);
         }
     }
 
-    public getById = async (req: Request, res: Response) => {
+    public getById = async (req: Request, res: Response, next: NextFunction) => {
         try {
             const idProducto = req.params.idProducto;
             if (!idProducto || isNaN(+idProducto)) {
-                throw new Error("ID sent must be a number");
+                throw new ValidationError("El ID ingresado debe ser un número");
             }
 
             const product = await this.getProductByIdUseCase.execute(+idProducto);
             if (!product) {
-                res.status(404).json({ error: "Product not found" });
-                return;
+                throw new NotFoundError("Producto no encontrado");
             }
             res.status(200).json(product);
-        } catch (error: any) {
-            res.status(500).json({ error: error.message });
+        } catch (error) {
+            next(error);
         }
     }
 
-    public getByName = async (req: Request, res: Response) => {
+    public getByName = async (req: Request, res: Response, next: NextFunction) => {
         try {
             const draft = req.params.nombreProducto;
             if (!draft) {
-                throw new Error("Product name is required");
+                throw new ValidationError("El nombre del producto es requerido");
             }
 
             const nombreProducto = draft.replace(/_/g, ' ');
             const product = await this.getProductByNameUseCase.execute(nombreProducto);
             if (!product) {
-                res.status(404).json({ error: "Product not found" });
-                return;
+                throw new NotFoundError("Producto no encontrado");
             }
             res.status(200).json(product);
-        } catch (error: any) {
-            res.status(500).json({ error: error.message });
+        } catch (error) {
+            next(error);
         }
     }
 
-    public getByType = async (req: Request, res: Response) => {
+    public getByType = async (req: Request, res: Response, next: NextFunction) => {
         try {
             const tipoProducto = req.params.tipoProducto;
             if (!tipoProducto) {
-                throw new Error("Product type is required");
+                throw new ValidationError("El nombre del producto es requerido");
             }
 
             const products = await this.getProductByTypeUseCase.execute(tipoProducto);
-            if (products == null) {
-                res.status(404).json({ error: "No products found for this type" });
-                return;
+            if (!products) {
+                throw new NotFoundError("Producto no encontrado");
             }
             res.status(200).json(products);
-        } catch (error: any) {
-            res.status(500).json({ error: error.message });
+        } catch (error) {
+            next(error);
         }
     }
 
-    public create = async (req: Request, res: Response) => {
+    public create = async (req: Request, res: Response, next: NextFunction) => {
         try {
             const validatedProduct = ValidateProduct(req.body);
-            if(!validatedProduct.success) throw new Error(`Validation failed: ${validatedProduct.error.message}`);
+            if(!validatedProduct.success) throw new ValidationError(`Validation failed: ${validatedProduct.error.message}`);
             const registeredProducts = {
               ...validatedProduct.data
             };
 
             const product = await this.CU18RegisterProduct.execute(registeredProducts);
             res.status(201).json(product);
-            return;
         }
-        catch(error: any) {
-            res.status(500).json({ error: error.message });
-            return;
+        catch(error) {
+            next(error);
         }
     }
 
-    public update = async (req: Request, res: Response) => {
+    public update = async (req: Request, res: Response, next: NextFunction) => {
         try {
             const idProducto = req.params.idProducto;
             if (!idProducto || isNaN(+idProducto)) {
-                throw new Error("ID sent must be a number");
+                throw new ValidationError("El ID ingresado debe ser un número");
             }
 
             const validatedProduct = ValidateProductPartial(req.body);
-            if(!validatedProduct.success) throw new Error(`Validation failed: ${validatedProduct.error.message}`);
+            if(!validatedProduct.success) throw new ValidationError(`Validation failed: ${validatedProduct.error.message}`);
             const partialProduct: PartialSchemaProductos = validatedProduct.data;
 
             const product = await this.CU19ModifyProduct.execute(+idProducto, partialProduct);
             if (!product) {
-                res.status(404).json({ error: "Product not found" });
-                return;
+                throw new NotFoundError("Producto no encontrado");
             }
             res.status(200).json(product);
-        } catch (error: any) {
-            res.status(500).json({ error: error.message });
+        } catch (error) {
+            next(error);
         }
     }
 }

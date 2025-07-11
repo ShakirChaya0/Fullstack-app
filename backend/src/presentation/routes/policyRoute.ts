@@ -5,12 +5,12 @@ export function PolicyRouter() {
     const policyRouter = Router();
     const policyController = new PolicyController();
 
-    policyRouter.patch('/id/:idPolitica', (req, res) => { 
-        policyController.updatePoliticy(req, res); 
+    policyRouter.patch('/id/:idPolitica', (req, res, next) => { 
+        policyController.updatePoliticy(req, res, next); 
     });
 
-    policyRouter.get('/id/:idPolitica', (req, res) => { 
-        policyController.getById(req, res); 
+    policyRouter.get('/id/:idPolitica', (req, res, next) => { 
+        policyController.getById(req, res, next); 
     });
 
     return policyRouter;

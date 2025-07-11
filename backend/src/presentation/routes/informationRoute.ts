@@ -5,12 +5,12 @@ export function InformationRouter() {
     const informationRouter = Router();
     const informationController = new InformationController();
 
-    informationRouter.patch('/id/:idInformacion', (req, res) => { 
-        informationController.updateInformation(req, res); 
+    informationRouter.patch('/id/:idInformacion', (req, res, next) => { 
+        informationController.updateInformation(req, res, next); 
     });
 
-    informationRouter.get('/id/:idInformacion', (req, res) => { 
-        informationController.getById(req, res); 
+    informationRouter.get('/id/:idInformacion', (req, res, next) => { 
+        informationController.getById(req, res, next); 
     });
 
     return informationRouter;

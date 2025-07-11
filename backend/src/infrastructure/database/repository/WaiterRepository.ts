@@ -2,6 +2,9 @@ import { PrismaClient } from "@prisma/client";
 import { Waiter } from "../../../domain/entities/Waiter.js";
 import { IWaiterRepository } from "../../../domain/repositories/IWaiterRepository.js";
 import { SchemaWaiter ,PartialSchemaWaiter } from "../../../shared/validators/waiterZod.js";
+import { ConflictError } from "../../../shared/exceptions/ConflictError.js";
+import { ServiceError } from "../../../shared/exceptions/ServiceError.js";
+import { NotFoundError } from "../../../shared/exceptions/NotFoundError.js";
 
 const prisma = new PrismaClient();
 
@@ -26,19 +29,19 @@ export class WaiterRepository implements IWaiterRepository {
         }
         catch (error: any) {
             if (error?.code === 'P2002' && error?.meta?.target?.includes('nombreUsuario')) {
-                throw new Error("Ya existe un Mozo con ese nombre de usuario");
+                throw new ConflictError("Ya existe un Mozo con ese nombre de usuario");
             } else {
-                throw new Error(`Error al crear el Mozo: ${error.message}`);
+                throw new ServiceError(`Error al crear el Mozo: ${error.message}`);
             }
         }
     }
 
-    public async deleteWaiter(idMozo: string): Promise<{message: string}> {
+    public async deleteWaiter(idMozo: string): Promise<{ message: string }> {
         const deletedWaiter = await prisma.mozo.delete({
             where: { idMozo: idMozo }
         });
         if (!deletedWaiter) {
-            throw new Error(`No se pudo eliminar el Mozo con el id: ${idMozo}`);
+            throw new NotFoundError("Mozo no encontrado");
         }
         return { message: `Mozo con id ${idMozo} eliminado correctamente` };
     }
@@ -62,7 +65,7 @@ export class WaiterRepository implements IWaiterRepository {
             where: { nombreUsuario: userName }
         }); 
         if (!waiter) {
-            throw new Error(`No se encontro un Mozo con el nombre de usuario: ${userName}`);
+            throw new NotFoundError(`No se encontro un Mozo con el nombre de usuario: ${userName}`);
         }
         return new Waiter(
             waiter.idMozo,
@@ -78,14 +81,14 @@ export class WaiterRepository implements IWaiterRepository {
 
     
     public async updateWaiter(idMozo: string, data: PartialSchemaWaiter): Promise<Waiter> {
-        console.log("Updating waiter with id:", data);
+        // console.log("Updating waiter with id:", data);
         const updatedWaiter = await prisma.mozo.update({
             where: { idMozo: idMozo },
             data: {
                 ...data
             }
         });
-        console
+        // console <-- ????????
         return new Waiter(
             updatedWaiter.idMozo,
             updatedWaiter.nombreUsuario,
@@ -103,7 +106,7 @@ export class WaiterRepository implements IWaiterRepository {
             where: { idMozo: idMozo }
         });
         if (!waiter) {
-            throw new Error(`No se encontro un Mozo con el id: ${idMozo}`);
+            throw new NotFoundError(`No se encontro un Mozo con el id: ${idMozo}`);
         }
         return new Waiter(
             waiter.idMozo,

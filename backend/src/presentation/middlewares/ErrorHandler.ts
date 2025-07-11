@@ -12,30 +12,30 @@ export const ErrorHandler: ErrorRequestHandler = (error: Error, req: Request, re
         res.status(error.statusCode).json({ name: error.name, message: error.message });
     }
 
-    if (error instanceof ValidationError) {
+    else if (error instanceof ValidationError) {
         res.status(error.statusCode).json({ name: error.name, message: error.message });
     }
 
-    if (error instanceof UnauthorizedError) {
+    else if (error instanceof UnauthorizedError) {
         res.status(error.statusCode).json({ name: error.name, message: error.message });
     }
 
-    if (error instanceof ForbiddenError) {
+    else if (error instanceof ForbiddenError) {
         res.status(error.statusCode).json({ name: error.name, message: error.message });
     }
 
-    if (error instanceof NotFoundError) {
+    else if (error instanceof NotFoundError) {
         res.status(error.statusCode).json({ name: error.name, message: error.message });
     }
 
-    if (error instanceof ConflictError) {
+    else if (error instanceof ConflictError) {
         res.status(error.statusCode).json({ name: error.name, message: error.message });
     }
 
-    if (error instanceof ServiceError) {
+    else if (error instanceof ServiceError) {
         res.status(error.statusCode).json({ name: error.name, message: error.message });
     }
 
     // Si el error no es ninguno de los anteriores, se considera un error interno del servidor
-    res.status(500).json({ name: "ServerError", message: 'Internal Server Error' });
+    else res.status(500).json({ name: "ServerError", message: 'Internal Server Error' });
 }

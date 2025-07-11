@@ -1,6 +1,7 @@
 import z from 'zod';
 import { Information } from '../../domain/entities/Information.js';
 import { InformacionRestaurante } from '@prisma/client';
+import { ValidationError } from '../exceptions/ValidationError.js';
 
 export const InformationSchema = z.object({ 
     nombreRestaurante: z.string({message: "El nombre debe ser un string"}).min(3, "Nombre del restaurante es requerido"),
@@ -19,7 +20,7 @@ export function ValidateInformation(data: Information) {
     const result = InformationSchema.safeParse(data);
     if (!result.success) {
         const mensajes = result.error.errors.map(e => e.message).join(", ");
-        throw new Error(mensajes);
+        throw new ValidationError(mensajes);
     }
     return result.data;
 }
@@ -28,7 +29,7 @@ export function ValidatePartialInformation(data: Partial<InformacionRestaurante>
     const validate = PartialInformationSchema.partial().safeParse(data);
     if (!validate.success) {
         const mensajes = validate.error.errors.map(e => e.message).join(", ");
-        throw new Error(mensajes);
+        throw new ValidationError(mensajes);
     }
     return validate.data;
 }

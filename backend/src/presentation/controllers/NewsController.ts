@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import { CreateNewsUseCases } from "../../application/use_cases/NewsUseCases/createNewsUseCases.js";
 import { ModifyNewsUseCases } from "../../application/use_cases/NewsUseCases/modifyNewsUseCases.js";
 import { ValidateNewsPartial } from "../../shared/validators/newsZod.js";
+import { ValidationError } from "../../shared/exceptions/ValidationError.js";
 
 export class NewsController {
     constructor(
@@ -20,9 +21,9 @@ export class NewsController {
     async modify (req: Request, res: Response, next: NextFunction){
         try{
             const {newsId} = req.params
-            if (!newsId || isNaN(+newsId)) throw new Error("ID sent must be a number")
+            if (!newsId || isNaN(+newsId)) throw new ValidationError("El ID ingresado debe ser un número");
             
-            const {fechaInicio, fechaFin} = req.body
+            const { fechaInicio, fechaFin } = req.body
 
             const data = {
                 ...req.body,

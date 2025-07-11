@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { Waiter } from '../../domain/entities/Waiter.js';
 import  { Mozo } from '@prisma/client';
+import { ValidationError } from '../exceptions/ValidationError.js';
 
 export const WaiterSchema = z.object({
     nombreUsuario: z.string()
@@ -43,7 +44,7 @@ export type PartialSchemaWaiter = z.infer<typeof partialWaiterSchema>;
 export function ValidateWaiter(data: Mozo | Waiter) {
     const result = WaiterSchema.safeParse(data);
     if (!result.success) {
-        throw new Error(result.error.errors.map(e => e.message).join(", "))
+        throw new ValidationError(result.error.errors.map(e => e.message).join(", "))
     }
     return result.data;
 }
@@ -51,7 +52,7 @@ export function ValidateWaiter(data: Mozo | Waiter) {
 export function ValidateWaiterPartial(data: Partial<Mozo | Waiter>) {
     const result = partialWaiterSchema.safeParse(data);
     if (!result.success) {
-        throw new Error(result.error.errors.map(e => e.message).join(", "))
+        throw new ValidationError(result.error.errors.map(e => e.message).join(", "))
     }
     return result.data;
 }

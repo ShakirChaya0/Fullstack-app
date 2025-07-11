@@ -1,6 +1,7 @@
 import { PoliticasRestaurante } from '@prisma/client';
 import { z } from 'zod';
 import { Policy } from '../../domain/entities/Policy.js';
+import { ValidationError } from '../exceptions/ValidationError.js';
 
 export const PolicySchema = z.object({
   minutosTolerancia: z.number()
@@ -51,7 +52,7 @@ export function ValidatePolicy(data: Policy | PoliticasRestaurante) {
     const result = PolicySchema.safeParse(data);
     if (!result.success) {
         const mensajes = result.error.errors.map(e => e.message).join(", ");
-        throw new Error(mensajes);
+        throw new ValidationError(mensajes);
     }
     return result.data; 
 }
@@ -60,7 +61,7 @@ export function ValidatePolicyPartial(data: Partial<PoliticasRestaurante> | Part
     const validate = PolicySchema.partial().safeParse(data);  
     if (!validate.success) {
       const mensajes = validate.error.errors.map(e => e.message).join(", ")
-            throw new Error(mensajes);
+            throw new ValidationError(mensajes);
         }
     return validate.data;
 }

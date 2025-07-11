@@ -1,6 +1,7 @@
 import { Table } from "../../../domain/entities/Table.js";
 import { TableRepository } from "../../../infrastructure/database/repository/TableRepository.js";
 import { SchemaPartialTable } from "../../../presentation/validators/tableZod.js";
+import { NotFoundError } from "../../../shared/exceptions/NotFoundError.js";
 
 export class UpdateTable {
     constructor(
@@ -10,7 +11,7 @@ export class UpdateTable {
     public async execute(numTable: number , table: SchemaPartialTable): Promise<Table>{
         const existingTable = await this.tableRepository.getByNumTable(numTable);
         if (!existingTable) {
-            throw new Error(`El número de la mesa ${numTable} no se encontro`);
+            throw new NotFoundError(`El número de la mesa ${numTable} no se encontro`);
         }
 
         const updatedData = {

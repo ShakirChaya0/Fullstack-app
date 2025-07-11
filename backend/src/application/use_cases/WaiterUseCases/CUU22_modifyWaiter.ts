@@ -2,6 +2,7 @@ import { PartialSchemaWaiter } from '../../../shared/validators/waiterZod.js';
 import { WaiterRepository } from '../../../infrastructure/database/repository/WaiterRepository.js';
 import { PasswordHashingService } from '../../services/PasswordHashing.js';
 import { Waiter } from '../../../domain/entities/Waiter.js';
+import { NotFoundError } from '../../../shared/exceptions/NotFoundError.js';
 
 export class CUU22ModifyWaiter {
     constructor(
@@ -12,7 +13,7 @@ export class CUU22ModifyWaiter {
     public async execute(idMozo: string, data: PartialSchemaWaiter): Promise<Waiter> {
         const existingWaiter = await this.waiterRepository.getWaiterById(idMozo);
         if (!existingWaiter) {
-            throw new Error(`Waiter with ID ${idMozo} not found`);
+            throw new NotFoundError("Mozo no encontrado");
         }
 
         if (data.contrasenia) {

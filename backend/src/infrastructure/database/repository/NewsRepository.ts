@@ -2,6 +2,8 @@ import { PrismaClient } from "@prisma/client";
 import { INewsRepository } from "../../../domain/repositories/INewsRepository.js";
 import { NewsClass } from "../../../domain/entities/News.js";
 import { PartialNews } from "../../../domain/interfaces/newsInterface.js";
+import { ConflictError } from "../../../shared/exceptions/ConflictError.js";
+import { ServiceError } from "../../../shared/exceptions/ServiceError.js";
 
 const prisma = new PrismaClient();
 
@@ -20,10 +22,10 @@ export class NewsRepository implements INewsRepository{
         }
         catch(error: any){
             if (error?.code === 'P2002' && error?.meta?.target?.includes('titulo')) {
-                throw new Error("Ya existe una novedad con ese título")
+                throw new ConflictError("Ya existe una novedad con ese título")
             }
             else{
-                throw new Error(`Error al cargar la novedad`)
+                throw new ServiceError("Error al registrar la novedad en la base de datos")
             }
         }
     }

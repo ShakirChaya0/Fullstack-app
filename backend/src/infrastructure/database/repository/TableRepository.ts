@@ -1,6 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import { Table } from "../../../domain/entities/Table.js";
 import { schemaTable, SchemaPartialTable } from "../../../presentation/validators/tableZod.js";
+import { NotFoundError } from "../../../shared/exceptions/NotFoundError.js";
 
 
 const prisma = new PrismaClient;
@@ -23,7 +24,7 @@ export class TableRepository {
         }); 
 
         if(!table) {
-            throw new Error(`No se encontro un la mesa con el numero de mesa: ${numTable}`);
+            throw new NotFoundError(`No se encontro un la mesa con el numero de mesa: ${numTable}`);
         }
 
         return new Table (
@@ -80,12 +81,12 @@ export class TableRepository {
         )
     }
 
-    public async deleteTable(numTable: number) {
+    public async deleteTable(numTable: number): Promise<{ message: string }> {
         const deleteTable = await prisma.mesa.delete({
             where: {nroMesa: numTable}
         }); 
         if (!deleteTable) {
-            throw new Error(`No se pudo eliminar la mesa con el número de mesa: ${numTable}`);
+            throw new NotFoundError("Mesa no encontrada");
         }
         return { message: `Mesa con el numero ${numTable} eliminado correctamente` };
     }

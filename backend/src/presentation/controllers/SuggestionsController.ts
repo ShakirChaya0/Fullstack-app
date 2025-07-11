@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import { CUU20RegisterSuggestion } from '../../application/use_cases/SuggestionsUseCases/CUU20RegisterSuggestion.js';
 import { CUU21ModifySuggestion } from '../../application/use_cases/SuggestionsUseCases/CUU21ModifySuggestion.js';
 import { GetActiveSuggestionsUseCase } from '../../application/use_cases/SuggestionsUseCases/GetActiveSuggestionsUseCase.js';
@@ -6,6 +6,8 @@ import { GetSuggestionsUseCase } from '../../application/use_cases/SuggestionsUs
 import { GetOneSuggestionUseCase } from '../../application/use_cases/SuggestionsUseCases/GetOneSuggestion.js';
 import { GetProductByIdUseCase } from '../../application/use_cases/ProductsUseCases/GetProductByIdUseCase.js';
 import { ValidateSuggestion, ValidateSuggestionPartial } from '../../shared/validators/suggestionZod.js';
+import { ValidationError } from '../../shared/exceptions/ValidationError.js';
+import { NotFoundError } from '../../shared/exceptions/NotFoundError.js';
 
 export class SuggestionsController {
     constructor(
@@ -17,94 +19,94 @@ export class SuggestionsController {
         private readonly modifySuggestionUseCase = new CUU21ModifySuggestion()
     ) {}
 
-    public async getAll(req: Request, res: Response) {
+    public async getAll(req: Request, res: Response, next: NextFunction) {
         try {
             const suggestions = await this.getSuggestionsUseCase.execute();
             res.json(suggestions);
         } 
-        catch (error: any) {
-            res.status(500).json({ error: error.message });
+        catch (error) {
+            next(error);
         }
     }
 
-    public async getActive(req: Request, res: Response) {
+    public async getActive(req: Request, res: Response, next: NextFunction) {
         try {
             const suggestions = await this.getActiveSuggestionsUseCase.execute();
             res.json(suggestions);
         } 
-        catch (error: any) {
-            res.status(500).json({ error: error.message });
+        catch (error) {
+            next(error);
         }
     }
 
-    public async findProduct(req: Request, res: Response) {
+    public async findProduct(req: Request, res: Response, next: NextFunction) {
         try {
             const idProducto = req.params.id;
-            if (!idProducto || isNaN(+idProducto)) throw new Error("El ID enviado debe ser un número");
+            if (!idProducto || isNaN(+idProducto)) throw new ValidationError("El ID enviado debe ser un número");
 
             const product = await this.getProductByIdUseCase.execute(+idProducto);
-            if (!product) throw new Error("Producto no encontrado");
+            if (!product) throw new NotFoundError("Producto no encontrado");
             res.json(product);
         } 
-        catch (error: any) {
-            res.status(500).json({ error: error.message });
+        catch (error) {
+            next(error);
         }
     }
 
-    public async registerSuggestion(req: Request, res: Response) {
+    public async registerSuggestion(req: Request, res: Response, next: NextFunction) {
         try {
             const SuggestionData = ValidateSuggestion(req.body);
             if (!SuggestionData.success) {
                 const mensajes = SuggestionData.error.errors.map(e => e.message).join(", ")
-                throw new Error(`${mensajes}`);
+                throw new ValidationError(`${mensajes}`);
             }
             
             const suggestion = await this.registerSuggestionUseCase.execute(SuggestionData.data);
-            res.json(suggestion);
+            res.status(201).json(suggestion);
         } 
-        catch (error: any) {
-            res.status(500).json({ error: error.message });
+        catch (error) {
+            next(error);
         }
     }
 
-    public async findSuggestion(req: Request, res: Response) {
+    public async findSuggestion(req: Request, res: Response, next: NextFunction) {
         try {
             const { idProducto, fechaDesde } = req.query;
-            if (!idProducto || isNaN(+idProducto)) throw new Error("El ID enviado debe ser un número");
-            if (!fechaDesde) throw new Error("La fecha desde es requerida");
+            if (!idProducto || isNaN(+idProducto)) throw new ValidationError("El ID enviado debe ser un número");
+            if (!fechaDesde) throw new ValidationError("La fecha desde es requerida");
 
             const date = new Date(fechaDesde as string);
-            if (isNaN(date.getTime())) throw new Error("Fecha inválida");
+            if (isNaN(date.getTime())) throw new ValidationError("Fecha inválida");
 
             const suggestion = await this.getOneSuggestionUseCase.execute(+idProducto, date);
-            if (!suggestion) throw new Error("Sugerencia no encontrada");
+            if (!suggestion) throw new NotFoundError("Sugerencia no encontrada");
             res.json(suggestion);
         }
-        catch (error: any) {
-            res.status(500).json({ error: error.message });
+        catch (error) {
+            next(error);
         }
     }
 
-    public async modifySuggestion(req: Request, res: Response) {
+    public async modifySuggestion(req: Request, res: Response, next: NextFunction) {
         try {
             const { idProducto, fechaDesde } = req.query;
-            if (!idProducto || isNaN(+idProducto)) throw new Error("El ID enviado debe ser un número");
-            if (!fechaDesde) throw new Error("La fecha desde es requerida");
+            if (!idProducto || isNaN(+idProducto)) throw new ValidationError("El ID enviado debe ser un número");
+            if (!fechaDesde) throw new ValidationError("La fecha desde es requerida");
 
             const date = new Date(fechaDesde as string);
-            if (isNaN(date.getTime())) throw new Error("Fecha inválida");
+            if (isNaN(date.getTime())) throw new ValidationError("Fecha inválida");
 
             const suggestionData = ValidateSuggestionPartial(req.body);
             if (!suggestionData.success) {
                 const mensajes = suggestionData.error.errors.map(e => e.message).join(", ");
-                throw new Error(`${mensajes}`);
+                throw new ValidationError(`${mensajes}`);
             }
 
             const modifiedSuggestion = await this.modifySuggestionUseCase.execute(suggestionData.data, +idProducto, date);
-            res.json(modifiedSuggestion);
+            res.status(201).json(modifiedSuggestion);
         }
-        catch (error: any) {
-            res.status(500).json({ error: error.message });
+        catch (error) {
+            next(error);
         }
     }
 }

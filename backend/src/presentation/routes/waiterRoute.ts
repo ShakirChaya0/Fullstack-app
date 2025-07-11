@@ -5,17 +5,17 @@ export function WaiterRouter () {
     const waiterRouter = Router();
     const waiterController = new WaiterController();
     
-    waiterRouter.get("/", (req, res) => { waiterController.getWaiters(req, res) });
+    waiterRouter.get("/", (req, res, next) => { waiterController.getWaiters(req, res, next) });
 
-    waiterRouter.get("/id/:idMozo", (req, res) => { waiterController.getWaiterById(req, res) });
+    waiterRouter.get("/id/:idMozo", (req, res, next) => { waiterController.getWaiterById(req, res, next) });
     
-    waiterRouter.get("/nombre/:nombreUsuario", (req, res) => { waiterController.getWaiterByUserName(req, res) });
+    waiterRouter.get("/nombre/:nombreUsuario", (req, res, next) => { waiterController.getWaiterByUserName(req, res, next) });
 
-    waiterRouter.delete("/id/:idMozo", (req, res) => { waiterController.deleteWaiter(req, res) });
+    waiterRouter.delete("/id/:idMozo", (req, res, next) => { waiterController.deleteWaiter(req, res, next) });
 
-    waiterRouter.post("/", (req, res) => { waiterController.createWaiter(req, res) });
+    waiterRouter.post("/", (req, res, next) => { waiterController.createWaiter(req, res, next) });
 
-    waiterRouter.patch("/id/:idMozo", (req, res) => { waiterController.modifyWaiter(req, res) });
+    waiterRouter.patch("/id/:idMozo", (req, res, next) => { waiterController.modifyWaiter(req, res, next) });
 
     return waiterRouter;
 }

@@ -5,15 +5,15 @@ export function mesaRouter (){
     const tableRouter = Router(); 
     const tableController = new TableController; 
 
-    tableRouter.get('/', (req,res)=> {tableController.getAll(req,res)}); 
+    tableRouter.get('/', (req, res, next)=> { tableController.getAll(req, res, next) }); 
 
-    tableRouter.get('/capacidad/:capacity', (req,res)=> {tableController.getByCapacity(req,res)}); 
+    tableRouter.get('/capacidad/:capacity', (req, res, next)=> { tableController.getByCapacity(req, res, next) }); 
 
-    tableRouter.patch('/nromesa/:numTable', (req,res) => {tableController.update(req,res)});
+    tableRouter.patch('/nromesa/:numTable', (req, res, next) => { tableController.update(req, res, next)});
 
-    tableRouter.post('/', (req,res) => {tableController.create(req,res)}); 
+    tableRouter.post('/', (req, res, next) => { tableController.create(req, res, next) }); 
     
-    tableRouter.delete('/nromesa/:numTable', (req,res) => {tableController.delete(req,res)}); 
+    tableRouter.delete('/nromesa/:numTable', (req, res, next) => { tableController.delete(req, res, next) }); 
 
     return tableRouter;
 }
