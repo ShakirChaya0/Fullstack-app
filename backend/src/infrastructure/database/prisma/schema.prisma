@@ -40,6 +40,12 @@ model InformacionRestaurante {
   telefonoContacto     String @db.VarChar
 }
 
+model Horarios {
+  diaSemana     Int      @id @default(autoincrement())
+  horaApertura  DateTime @db.Time
+  horaCierre    DateTime @db.Time
+}
+
 model Mozo {
   nombreUsuario String @unique(map: "nombreUsuario") @db.VarChar
   contrasenia   String @db.VarChar

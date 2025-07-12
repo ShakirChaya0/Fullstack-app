@@ -5,6 +5,7 @@ import { productosRouter } from './presentation/routes/productsRoute.js'
 import { NewsRouter } from './presentation/routes/newsRoute.js'
 import { PolicyRouter } from './presentation/routes/policyRoute.js'
 import { InformationRouter } from './presentation/routes/informationRoute.js'
+import { horariosRouter } from './presentation/routes/scheduleRoute.js'
 import { SuggestionsRouter } from './presentation/routes/suggestionsRoute.js'
 import { WaiterRouter } from './presentation/routes/waiterRoute.js'
 import { mesaRouter } from './presentation/routes/tableRoute.js'
@@ -25,6 +26,8 @@ app.use("/novedades", NewsRouter())
 app.use("/politicas", PolicyRouter())
 
 app.use('/informacion', InformationRouter())
+
+app.use('/horarios', horariosRouter())
 
 app.use("/sugerencias", SuggestionsRouter())
 
