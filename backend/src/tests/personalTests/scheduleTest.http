@@ -15,10 +15,10 @@ Content-Type: application/json
 }
 
 ###
-PATCH http://localhost:3000/horarios/update/7
+PATCH http://localhost:3000/horarios/update/3
 Content-Type: application/json
 
 {
-    "horaApertura": "15:00",
-    "horaCierre": "10:00"
+    "horaApertura": "22:00",
+    "horaCierre": "05:00"
 }

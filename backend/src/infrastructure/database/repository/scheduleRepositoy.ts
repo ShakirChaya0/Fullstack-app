@@ -16,7 +16,6 @@ export class ScheduleRepositoy implements IScheduleRepository{
             horario.horaApertura.toTimeString().slice(0,5),
             horario.horaCierre.toTimeString().slice(0,5)
         ))
-        
     }
 
     public async getById(idHorario: number): Promise<Schedule | null> {
@@ -36,7 +35,6 @@ export class ScheduleRepositoy implements IScheduleRepository{
     }
 
     public async create(horario: SchemaSchedule): Promise<Schedule> {
-
         const nuevoHorario = await prisma.horarios.create({
             data: {
                 diaSemana: horario.diaSemana,
@@ -52,13 +50,11 @@ export class ScheduleRepositoy implements IScheduleRepository{
             nuevoHorario.horaApertura.toTimeString().slice(0,5),
             nuevoHorario.horaCierre.toTimeString().slice(0,5)
         );
-
     }
 
     public async update(diaSemana: number, horarioApertura: string | undefined, horarioCierre: string | undefined): Promise<Schedule>{
-        //Como los datos enviados por prisma requieren que las variables de horario sean
-        //del tipo Date tengo que crear una interfaz provisoria para ejecutar el update
-        
+        //Como se desean guardar los horarios como variables del tipo Time y debido a que prisma requiere que estas mismas variables sean
+        //del tipo Date se implementa una interfaz provisoria para ejecutar el update
         const camposQueActualizar: IUpdateSchedule = {} 
 
         if (horarioApertura){

@@ -3,7 +3,7 @@ import { GetSchedules } from "../../application/use_cases/ScheduleUseCases/getSc
 import { GetScheduleById } from "../../application/use_cases/ScheduleUseCases/getScheduleById.js";
 import { CUU13RegisterSchedule } from "../../application/use_cases/ScheduleUseCases/CUU13RegisterSchedule.js";
 import { CUU14ModifySchedule } from "../../application/use_cases/ScheduleUseCases/CUU14ModifySchedule.js";
-import { ValidatePartialSchedule , PartialSchemaSchedule} from "../../shared/validators/scheduleZod.js";
+import { ValidatePartialSchedule , PartialSchemaSchedule, ValidateSchedule} from "../../shared/validators/scheduleZod.js";
 
 
 export class HorarioController {
@@ -33,7 +33,8 @@ export class HorarioController {
             const idHorario = req.params.idHorario;
             
             if (!idHorario || isNaN(+idHorario)) {
-                throw new Error("ID debe ser un número");
+                res.status(400).json({ error: "ID debe ser un número" });
+                return;
             }
 
             const horario = await this.getScheduleById.execute(+idHorario);
@@ -45,9 +46,9 @@ export class HorarioController {
 
             res.status(200).json(horario);
 
-        }catch(error){
+        }catch(error: any){
             console.log("Error al obtener el horario ", error);
-            res.status(500);
+            res.status(500).json({ error: error.message });
         }
     }
 
@@ -60,9 +61,19 @@ export class HorarioController {
                 return;
             }
 
+            const validarHorario = ValidateSchedule(req.body);
+            if(!validarHorario.success) {
+                res.status(400).json({ 
+                error: "Datos inválidos", 
+                details: validarHorario.error.message
+                });
+                return;
+            }
+
             const horario = await this.cUU13RegisterSchedule.execute(req.body);
 
             res.status(201).json(horario);
+
         } catch (error: any) {
             console.log("Error al crear el horario: ", error);
             res.status(500).json({ error: error.message });
@@ -73,20 +84,25 @@ export class HorarioController {
         try {
             const diaSemana = req.params.idHorario;
             if (!diaSemana || isNaN(+diaSemana)) {
-                throw new Error("ID debe ser un número");
+                res.status(400).json({ error: "ID debe ser un número" });
+                return;
             }
 
             const validarHorario = ValidatePartialSchedule(req.body);
-            if(!validarHorario.success) throw new Error(`Validación fallida: ${validarHorario.error.message}`);
-
+            if(!validarHorario.success){
+                res.status(400).json({ 
+                error: "Datos inválidos", 
+                details: validarHorario.error.message
+                });
+                return;
+            }
+                
             const horarioParcial: PartialSchemaSchedule = validarHorario.data;
 
             const horario = await this.cUU14ModifySchedule.execute(+diaSemana, horarioParcial);
 
-            // if(!horario){
-            //     res.status(404).json({error: "Horario no encontrado"})
-            // }
             res.status(200).json(horario);
+            
         } catch (error: any) {
             res.status(500).json({error: error.message});
         }

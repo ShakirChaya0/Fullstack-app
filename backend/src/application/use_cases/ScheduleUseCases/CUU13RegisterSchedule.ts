@@ -9,15 +9,10 @@ export class CUU13RegisterSchedule {
     ) {}
 
     public async execute(horario: SchemaSchedule): Promise<Schedule> {
+
         const validarExistencia = await this.scheduleRepository.getById(horario.diaSemana);
 
         if(validarExistencia !== null) throw new Error ('El día ' + horario.diaSemana + ' ya se encuentra registrado');
-
-        //Validación no aplicable ya que todas las entradas de horarios son validas
-        // const validarHorario = horarioCorrecto.safeParse(horario);
-        // if (!validarHorario.success) {
-        //     throw new Error('El horario de Apertura debe ser menor que el horario de Cierre');
-        // }
 
         const validarDia = diaDentroSemana(horario.diaSemana);
 

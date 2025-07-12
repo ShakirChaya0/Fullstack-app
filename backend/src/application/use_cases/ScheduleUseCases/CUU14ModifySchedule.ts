@@ -18,7 +18,6 @@ export class CUU14ModifySchedule {
         //     throw new Error('El horario de Apertura debe ser menor que el horario de Cierre');
         // }
 
-
         const horarioBD = await this.scheduleRepository.update(diaSemana, horarioParcial.horaApertura, horarioParcial.horaCierre);
         return horarioBD
     }

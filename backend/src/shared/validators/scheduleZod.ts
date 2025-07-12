@@ -16,7 +16,8 @@ export const ScheduleSchema = z.object({
     .regex(/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/, "Formato de hora inválido. Use HH:MM (24 horas)")
 });
 
-//Al no implementarse el checkbox de si la horaCierre es del siguiente día --> Todos los horarios que se ingresan son validos
+//Al no implementarse el checkbox que especifica si horaCierre es del siguiente día --> Todos los horarios que se ingresan son validos
+//De igual forma se deja comentada la función en caso de cambio de opinión
 // export const horarioCorrecto = ScheduleSchema.refine((data) => {
 //   // Validar que horaApertura < horaCierre
 //   const [horaAp, minAp] = data.horaApertura.split(':').map(Number);

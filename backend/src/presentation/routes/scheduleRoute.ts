@@ -4,7 +4,7 @@ import { HorarioController } from "../controllers/scheduleController.js";
 
 export function horariosRouter() {
     const horarioRouter = Router();
-    const horarioController = new HorarioController(); //Importar
+    const horarioController = new HorarioController();
 
     horarioRouter.post('/', (req, res) => {horarioController.create(req, res)});
 
