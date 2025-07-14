@@ -11,7 +11,13 @@ export class KitchenController {
     async getKitchen(req: Request, res: Response, next: NextFunction) {
         try{
             const kitchen = await this.getKitchenUC.execute()
-            res.status(200).json(kitchen)
+
+            const filteredKitchen = {
+                nombreUsuario: kitchen.userName,
+                email: kitchen.email
+            }
+
+            res.status(200).json(filteredKitchen)
         }
         catch(error){
             next(error)
@@ -23,7 +29,13 @@ export class KitchenController {
             const validatedData = ValidateKitchenPartial(data)
          
             const kitchen = await this.updateKitchenUC.execute(validatedData)
-            res.status(200).json(kitchen)
+
+            const filteredKitchen = {
+                nombreUsuario: kitchen.userName,
+                email: kitchen.email
+            }
+
+            res.status(200).json(filteredKitchen)
         }
         catch(error){
             next(error)

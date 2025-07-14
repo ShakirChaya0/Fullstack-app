@@ -12,6 +12,4 @@ export class Kitchen extends User {
     ) {
         super(_userId, _userName, _email , _password, _userType);
     }
-
-    
 }

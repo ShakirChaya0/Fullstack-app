@@ -3,7 +3,7 @@ import { ValidationError } from '../exceptions/ValidationError.js';
 
 const kitchenSchema = z.object({
     nombreUsuario: z.string({message: "El titulo debe ser un string"}).nonempty({message: "Este campo es requerido"}).min(6),
-    email: z.string({message: "La descripcion debe ser un string"}).nonempty({message: "Este campo es requerido"}).min(6),
+    email: z.string({message: "La descripcion debe ser un string"}).nonempty({message: "Este campo es requerido"}).min(6).email({message: "Debe ser un email lo ingresado"}),
     contrasenia: z.string({message: "La contraseña debe ser un string"}).nonempty({message: "Este campo es requerido"}).min(7),
 });
 
