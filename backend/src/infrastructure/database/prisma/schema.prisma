@@ -42,20 +42,9 @@ model InformacionRestaurante {
 }
 
 model Horarios {
-  diaSemana     Int      @id @default(autoincrement())
-  horaApertura  DateTime @db.Time
-  horaCierre    DateTime @db.Time
-}
-
-model Mozo {
-  nombreUsuario String @unique(map: "nombreUsuario") @db.VarChar
-  contrasenia   String @db.VarChar
-  nombre        String @db.VarChar
-  apellido      String @db.VarChar
-  DNI           Int
-  email         String @db.VarChar
-  telefono      String @db.VarChar
-  idMozo        String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  diaSemana    Int      @id @default(autoincrement())
+  horaApertura DateTime @db.Time(6)
+  horaCierre   DateTime @db.Time(6)
 }
 
 model Mesa {
@@ -90,6 +79,44 @@ model Precios {
   @@id([idProducto, fechaActual])
 }
 
+model Administrador {
+  idAdmin  String   @id @db.Uuid
+  nombre   String   @db.VarChar(255)
+  apellido String   @db.VarChar(255)
+  dni      String   @unique(map: "unique_dni") @db.VarChar(10)
+  telefono String   @db.VarChar(20)
+  Usuarios Usuarios @relation(fields: [idAdmin], references: [idUsuario], onDelete: NoAction, onUpdate: NoAction, map: "Admin_fkey")
+}
+
+model Clientes {
+  idCliente       String   @id @db.Uuid
+  nombre          String   @db.VarChar(255)
+  apellido        String   @db.VarChar(255)
+  telefono        String   @db.VarChar(20)
+  fechaNacimiento DateTime @db.Date
+  Usuarios        Usuarios @relation(fields: [idCliente], references: [idUsuario], onDelete: NoAction, onUpdate: NoAction, map: "Cliente_fkey")
+}
+
+model Mozos {
+  nombre   String   @db.VarChar(255)
+  apellido String   @db.VarChar(255)
+  telefono String   @db.VarChar(20)
+  idMozo   String   @id(map: "Mozo_pkey") @db.Uuid
+  dni      String   @unique(map: "unique_dni_mozo") @db.VarChar(10)
+  Usuarios Usuarios @relation(fields: [idMozo], references: [idUsuario], onDelete: NoAction, onUpdate: NoAction, map: "Mozo_fkey")
+}
+
+model Usuarios {
+  idUsuario     String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  nombreUsuario String           @unique(map: "unique_username") @db.VarChar(255)
+  email         String           @unique(map: "unique_email") @db.VarChar(255)
+  contrasenia   String           @db.VarChar(255)
+  tipoUsuario   TipoUsuario_Type
+  Administrador Administrador?
+  Clientes      Clientes?
+  Mozos         Mozos?
+}
+
 enum estado {
   Disponible
   No_Disponible @map("No Disponible")
@@ -106,4 +133,11 @@ enum estadoMesa {
   Libre
   Ocupado
   Reservado
+}
+
+enum TipoUsuario_Type {
+  Administrador
+  SectorCocina
+  Mozo
+  Cliente
 }

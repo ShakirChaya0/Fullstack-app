@@ -1,9 +1,8 @@
 import { UUID } from "crypto";
-import { ValidateWaiter, ValidateWaiterPartial } from "../../shared/validators/waiterZod.js";
 import { User } from "./User.js";
 import { TipoUsuario_Type } from "@prisma/client";
 
-export class Waiter extends User {
+export class Client extends User {
     constructor(
         _userId: UUID,
         _userName: string,
@@ -16,50 +15,41 @@ export class Waiter extends User {
         private _phone: string,
     ) { 
         super(_userId, _userName, _email , _password, _userType);
-        ValidateWaiter(this);
     }
 
-    get nombre(): string {
+    get name(): string {
         return this._name;
     }
-    get apellido(): string {
+    get lastname(): string {
         return this._lastName;
     }
     get dni(): number {
         return this._dni;
     }
-    get telefono(): string {
+    get phone(): string {
         return this._phone;
     }
 
 
     set nombreUsuario(nombreUsuario: string) {
-        ValidateWaiterPartial({ nombreUsuario});
         this._userName = nombreUsuario;
     }
     set contrasenia(contrasenia: string) {
-        ValidateWaiterPartial({ contrasenia });
         this._password = contrasenia;
     }
     set nombre(nombre: string) {
-        ValidateWaiterPartial({ nombre });
         this._name = nombre;
     }
     set apellido(apellido: string) {
-        ValidateWaiterPartial({ apellido });
         this._lastName = apellido;
     }
     set dni(dni: number) {
-        ValidateWaiterPartial({ dni });
         this._dni = dni;
     }
     set telefono(telefono: string) {
-        ValidateWaiterPartial({ telefono });
         this._phone = telefono;
     }
     set email(email: string) {
-        ValidateWaiterPartial({ email });
         this._email = email;
     }
-
 }
