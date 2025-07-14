@@ -11,6 +11,7 @@ import { WaiterRouter } from './presentation/routes/waiterRoute.js'
 import { mesaRouter } from './presentation/routes/tableRoute.js'
 import { NotFoundError } from './shared/exceptions/NotFoundError.js'
 import { PricesRouter } from './presentation/routes/pricesRoute.js'
+import { KitchenRouter } from './presentation/routes/kitchenRoute.js'
 
 const app = express()
 
@@ -37,6 +38,8 @@ app.use('/mozos', WaiterRouter())
 app.use ('/mesas', mesaRouter())
 
 app.use("/precios", PricesRouter())
+
+app.use("/cocina", KitchenRouter())
 
 app.use((req, res, next) => {
     const error =  new NotFoundError("Endpoint not found");
