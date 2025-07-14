@@ -12,11 +12,11 @@ export class Waiter extends User {
         _userType: TipoUsuario_Type,
         private _name: string,
         private _lastName: string,
-        private _dni: number,
+        private _dni: string,
         private _phone: string,
     ) { 
         super(_userId, _userName, _email , _password, _userType);
-        ValidateWaiter(this);
+        //ValidateWaiter(this);
     }
 
     get nombre(): string {
@@ -25,7 +25,7 @@ export class Waiter extends User {
     get apellido(): string {
         return this._lastName;
     }
-    get dni(): number {
+    get dni(): string {
         return this._dni;
     }
     get telefono(): string {
@@ -49,7 +49,7 @@ export class Waiter extends User {
         ValidateWaiterPartial({ apellido });
         this._lastName = apellido;
     }
-    set dni(dni: number) {
+    set dni(dni: string) {
         ValidateWaiterPartial({ dni });
         this._dni = dni;
     }

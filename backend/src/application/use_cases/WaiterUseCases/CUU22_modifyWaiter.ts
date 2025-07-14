@@ -30,7 +30,7 @@ export class CUU22ModifyWaiter {
             contrasenia: updatedData.contrasenia,
             nombre: updatedData.nombre,
             apellido: updatedData.apellido,
-            DNI: updatedData.DNI,
+            dni: updatedData.dni,
             telefono: updatedData.telefono,
             email: updatedData.email
         };

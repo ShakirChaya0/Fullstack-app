@@ -2,32 +2,32 @@
 GET http://localhost:3000/mozos
 
 ###
-GET http://localhost:3000/mozos/id/decf5cf8-1e88-4741-9723-eae9896180b4
+GET http://localhost:3000/mozos/id/9ae3b11b-f8ff-4a1e-ac7d-2867dbcf77ff
 
 ###
 GET http://localhost:3000/mozos/nombre/franconicolas
 
 ###
-POST http://localhost:3000/mozos/
+POST http://localhost:3000/mozos
 Content-Type: application/json
 
 {
-    "nombreUsuario": "franconicolas",
-    "contrasenia": "123456",
-    "nombre": "franco Nicolas",
-    "apellido": "Sussi",
-    "DNI": 12345678,
-    "telefono": "123456789",
-    "email": "franconicolas@gmail.com"
+    "nombreUsuario": "JoseB_2004",
+    "contrasenia": "(a+b)2=a2+b2+2ab",
+    "nombre": "Jose Sebastian Alberto",
+    "apellido": "Barragan Landriel",
+    "dni": "46495171",
+    "telefono": "3415052791",
+    "email": "josebpp@gmail.com"
 }   
 
 ###
-PATCH http://localhost:3000/mozos/id/decf5cf8-1e88-4741-9723-eae9896180b4
+PATCH http://localhost:3000/mozos/id/99023c62-9b66-41a3-aac2-c857099fd573
 Content-Type: application/json
 
 {
-    "nombre": "Franco Nicolas"
+    "nombre": "Franco Nicolás"
 }
 
 ###
-DELETE http://localhost:3000/mozos/id/decf5cf8-1e88-4741-9723-eae9896180b4
+DELETE http://localhost:3000/mozos/id/d701b3f5-477c-41cd-b453-5606d25ce8b0

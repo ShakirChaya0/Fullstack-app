@@ -103,7 +103,7 @@ model Mozos {
   telefono String   @db.VarChar(20)
   idMozo   String   @id(map: "Mozo_pkey") @db.Uuid
   dni      String   @unique(map: "unique_dni_mozo") @db.VarChar(10)
-  Usuarios Usuarios @relation(fields: [idMozo], references: [idUsuario], onDelete: NoAction, onUpdate: NoAction, map: "Mozo_fkey")
+  Usuarios Usuarios @relation(fields: [idMozo], references: [idUsuario], onDelete: Cascade, onUpdate: NoAction, map: "Mozo_fkey")
 }
 
 model Usuarios {

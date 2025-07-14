@@ -1,10 +1,14 @@
 import { ISuggestionRepository } from "../../../domain/repositories/ISuggestionRepository.js";
 import { Suggestion } from "../../../domain/entities/Suggestion.js";
 import { Drink, Food, Product } from "../../../domain/entities/Product.js";
-import { PrismaClient } from "@prisma/client";
+import { Prisma, PrismaClient } from "@prisma/client";
 import { PartialSchemaSuggestion } from "../../../shared/validators/suggestionZod.js";
 
 const prisma = new PrismaClient();
+
+type SuggestionWithProduct = Prisma.SugerenciasGetPayload<{
+    include: { Producto: true }
+}>;
 
 export class SuggestionRepository implements ISuggestionRepository {
     
@@ -15,34 +19,7 @@ export class SuggestionRepository implements ISuggestionRepository {
             }
         });
 
-        return suggestions.map((sugg) => {
-            let product: Product;
-            if (sugg.Producto.tipo !== null && sugg.Producto.tipo !== "EMPTY_ENUM_VALUE") {
-                product = new Food(
-                    sugg.Producto.idProducto,
-                    sugg.Producto.nombre,
-                    sugg.Producto.descripcion,
-                    sugg.Producto.estado,
-                    sugg.Producto.esVegetariana ?? false,
-                    sugg.Producto.esVegana ?? false,
-                    sugg.Producto.esSinGluten ?? false,
-                    sugg.Producto.tipo
-                );
-            } else {
-                product = new Drink(
-                    sugg.Producto.idProducto,
-                    sugg.Producto.nombre,
-                    sugg.Producto.descripcion,
-                    sugg.Producto.estado,
-                    sugg.Producto.esAlcoholica ?? false
-                );
-            }
-            return new Suggestion(
-                product,
-                sugg.fechaDesde,
-                sugg.fechaHasta
-            );
-        });
+        return suggestions.map((sugg) => { return this.toDomainEntity(sugg) });
     }
 
     public async getActiveSuggestions(): Promise<Suggestion[]> {
@@ -59,34 +36,7 @@ export class SuggestionRepository implements ISuggestionRepository {
             }
         });
 
-        return suggestions.map((sugg) => {
-            let product: Product;
-            if (sugg.Producto.tipo !== null && sugg.Producto.tipo !== "EMPTY_ENUM_VALUE") {
-                product = new Food(
-                    sugg.Producto.idProducto,
-                    sugg.Producto.nombre,
-                    sugg.Producto.descripcion,
-                    sugg.Producto.estado,
-                    sugg.Producto.esVegetariana ?? false,
-                    sugg.Producto.esVegana ?? false,
-                    sugg.Producto.esSinGluten ?? false,
-                    sugg.Producto.tipo
-                );
-            } else {
-                product = new Drink(
-                    sugg.Producto.idProducto,
-                    sugg.Producto.nombre,
-                    sugg.Producto.descripcion,
-                    sugg.Producto.estado,
-                    sugg.Producto.esAlcoholica ?? false
-                );
-            }
-            return new Suggestion(
-                product,
-                sugg.fechaDesde,
-                sugg.fechaHasta
-            );
-        });
+        return suggestions.map((sugg) => { return this.toDomainEntity(sugg) });
     }
 
     public async findByProductAndDate(productId: number, dateFrom: Date): Promise<Suggestion | null> {
@@ -104,33 +54,7 @@ export class SuggestionRepository implements ISuggestionRepository {
 
         if (!suggestion) return null;
 
-        let product: Product;
-        if (suggestion.Producto.tipo !== null && suggestion.Producto.tipo !== "EMPTY_ENUM_VALUE") {
-            product = new Food(
-                suggestion.Producto.idProducto,
-                suggestion.Producto.nombre,
-                suggestion.Producto.descripcion,
-                suggestion.Producto.estado,
-                suggestion.Producto.esVegetariana ?? false,
-                suggestion.Producto.esVegana ?? false,
-                suggestion.Producto.esSinGluten ?? false,
-                suggestion.Producto.tipo
-            );
-        } else {
-            product = new Drink(
-                suggestion.Producto.idProducto,
-                suggestion.Producto.nombre,
-                suggestion.Producto.descripcion,
-                suggestion.Producto.estado,
-                suggestion.Producto.esAlcoholica ?? false
-            );
-        }
-
-        return new Suggestion(
-            product,
-            suggestion.fechaDesde,
-            suggestion.fechaHasta
-        );
+        return this.toDomainEntity(suggestion);
     }
 
     public async create(sugg: Suggestion): Promise<Suggestion> {
@@ -145,33 +69,7 @@ export class SuggestionRepository implements ISuggestionRepository {
             }
         });
 
-        let product: Product;
-        if (newSuggestion.Producto.tipo !== null && newSuggestion.Producto.tipo !== "EMPTY_ENUM_VALUE") {
-            product = new Food(
-                newSuggestion.Producto.idProducto,
-                newSuggestion.Producto.nombre,
-                newSuggestion.Producto.descripcion,
-                newSuggestion.Producto.estado,
-                newSuggestion.Producto.esVegetariana ?? false,
-                newSuggestion.Producto.esVegana ?? false,
-                newSuggestion.Producto.esSinGluten ?? false,
-                newSuggestion.Producto.tipo
-            );
-        } else {
-            product = new Drink(
-                newSuggestion.Producto.idProducto,
-                newSuggestion.Producto.nombre,
-                newSuggestion.Producto.descripcion,
-                newSuggestion.Producto.estado,
-                newSuggestion.Producto.esAlcoholica ?? false
-            );
-        }
-
-        return new Suggestion(
-            product,
-            newSuggestion.fechaDesde,
-            newSuggestion.fechaHasta
-        );
+        return this.toDomainEntity(newSuggestion);
     }
 
     public async update(data: PartialSchemaSuggestion, idProducto: number, fechaDesde: Date): Promise<Suggestion> {        
@@ -188,32 +86,36 @@ export class SuggestionRepository implements ISuggestionRepository {
             }
         });
 
+        return this.toDomainEntity(updatedSuggestion);
+    }
+
+    private toDomainEntity(sugg: SuggestionWithProduct): Suggestion {
         let product: Product;
-        if (updatedSuggestion.Producto.tipo !== null && updatedSuggestion.Producto.tipo !== "EMPTY_ENUM_VALUE") {
+        if (sugg.Producto.tipo !== null && sugg.Producto.tipo !== "EMPTY_ENUM_VALUE") {
             product = new Food(
-                updatedSuggestion.Producto.idProducto,
-                updatedSuggestion.Producto.nombre,
-                updatedSuggestion.Producto.descripcion,
-                updatedSuggestion.Producto.estado,
-                updatedSuggestion.Producto.esVegetariana ?? false,
-                updatedSuggestion.Producto.esVegana ?? false,
-                updatedSuggestion.Producto.esSinGluten ?? false,
-                updatedSuggestion.Producto.tipo
+                sugg.Producto.idProducto,
+                sugg.Producto.nombre,
+                sugg.Producto.descripcion,
+                sugg.Producto.estado,
+                sugg.Producto.esVegetariana ?? false,
+                sugg.Producto.esVegana ?? false,
+                sugg.Producto.esSinGluten ?? false,
+                sugg.Producto.tipo
             );
         } else {
             product = new Drink(
-                updatedSuggestion.Producto.idProducto,
-                updatedSuggestion.Producto.nombre,
-                updatedSuggestion.Producto.descripcion,
-                updatedSuggestion.Producto.estado,
-                updatedSuggestion.Producto.esAlcoholica ?? false
+                sugg.Producto.idProducto,
+                sugg.Producto.nombre,
+                sugg.Producto.descripcion,
+                sugg.Producto.estado,
+                sugg.Producto.esAlcoholica ?? false
             );
         }
-        
+
         return new Suggestion(
             product,
-            updatedSuggestion.fechaDesde,
-            updatedSuggestion.fechaHasta
+            sugg.fechaDesde,
+            sugg.fechaHasta
         );
-    }    
+    }
 }

@@ -25,7 +25,16 @@ export class WaiterController {
 
             const newWaiter = await this.registerWaiterUseCase.execute(validation);
 
-            res.status(201).json(newWaiter);
+            const filteredWaiters = {
+                nombreUsuario: newWaiter.userName,
+                email: newWaiter.email,
+                nombre: newWaiter.nombre,
+                apellido: newWaiter.apellido,
+                dni: newWaiter.dni,
+                telefono: newWaiter.telefono
+            }
+            
+            res.status(201).json(filteredWaiters);
         }
         catch (error) {
             next(error);
@@ -44,7 +53,16 @@ export class WaiterController {
 
             const updatedWaiter = await this.modifyWaiterUseCase.execute(waiterId, validation);
 
-            res.status(200).json(updatedWaiter);
+            const filteredWaiters = {
+                nombreUsuario: updatedWaiter.userName,
+                email: updatedWaiter.email,
+                nombre: updatedWaiter.nombre,
+                apellido: updatedWaiter.apellido,
+                dni: updatedWaiter.dni,
+                telefono: updatedWaiter.telefono
+            }
+            
+            res.status(201).json(filteredWaiters);
         }
         catch (error) {
             next(error);
@@ -55,11 +73,11 @@ export class WaiterController {
         try {
             const waiterId = req.params.idMozo;
             if (!waiterId) {
-                throw new ValidationError("Se ingresar un ID válido")
+                throw new ValidationError("Se debe ingresar un ID válido")
             }
 
-            const deletedWaiter = await this.deleteWaiterUseCase.execute(waiterId);
-            res.status(200).json(deletedWaiter);
+            await this.deleteWaiterUseCase.execute(waiterId);
+            res.status(204).send();
         }
         catch (error) {
             next(error);
@@ -75,7 +93,17 @@ export class WaiterController {
             const validation = ValidateWaiterPartial({ nombreUsuario });
 
             const waiter = await this.getWaiterByUserNameUseCase.execute(validation.nombreUsuario || null);
-            res.status(200).json(waiter);
+            
+            const filteredWaiters = {
+                nombreUsuario: waiter.userName,
+                email: waiter.email,
+                nombre: waiter.nombre,
+                apellido: waiter.apellido,
+                dni: waiter.dni,
+                telefono: waiter.telefono
+            }
+            
+            res.status(201).json(filteredWaiters);
         }
         catch (error) {
             next(error);
@@ -90,7 +118,17 @@ export class WaiterController {
             }
 
             const waiter = await this.getWaiterByIdUseCase.execute(waiterId);
-            res.status(200).json(waiter);
+            
+            const filteredWaiters = {
+                nombreUsuario: waiter.userName,
+                email: waiter.email,
+                nombre: waiter.nombre,
+                apellido: waiter.apellido,
+                dni: waiter.dni,
+                telefono: waiter.telefono
+            }
+            
+            res.status(201).json(filteredWaiters);
         }
         catch (error) {
             next(error);
@@ -99,7 +137,19 @@ export class WaiterController {
     public async getWaiters(req: Request, res: Response, next: NextFunction) {
         try {
             const waiters = await this.getWaiterUseCase.execute();
-            res.status(200).json(waiters);
+            
+            const filteredWaiters = waiters.map((w) => {
+                return {
+                    nombreUsuario: w.userName,
+                    email: w.email,
+                    nombre: w.nombre,
+                    apellido: w.apellido,
+                    dni: w.dni,
+                    telefono: w.telefono
+                }
+            });
+
+            res.status(200).json(filteredWaiters);
         }
         catch (error) {
             next(error);

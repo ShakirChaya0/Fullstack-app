@@ -4,7 +4,7 @@ import z from 'zod'
 const SugerenciaSchema = z.object({
   fechaDesde: z.preprocess((val) => new Date(val as string), z.date()),
   fechaHasta: z.preprocess((val) => new Date(val as string), z.date()),
-  idProducto: z.number().int().positive()
+  idProducto: z.number({ required_error: "idProducto es obligatorio" }).int().positive()
 });
 
 export type SchemaSuggestion = z.infer<typeof SugerenciaSchema>;
