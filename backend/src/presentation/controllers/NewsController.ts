@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { CreateNewsUseCases } from "../../application/use_cases/NewsUseCases/createNewsUseCase.js";
+import { CreateNewsUseCases } from "../../application/use_cases/NewsUseCases/CreateNewsUseCase.js";
 import { ModifyNewsUseCases } from "../../application/use_cases/NewsUseCases/ModifyNewsUseCase.js";
 import { ValidateNewsPartial } from "../../shared/validators/newsZod.js";
 import { ValidationError } from "../../shared/exceptions/ValidationError.js";
