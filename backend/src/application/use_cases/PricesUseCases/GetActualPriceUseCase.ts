@@ -1,0 +1,20 @@
+import { Price } from "../../../domain/entities/Price.js";
+import { PriceRepository } from "../../../infrastructure/database/repository/PriceRepository.js";
+import { ProductRepository } from "../../../infrastructure/database/repository/ProductRepository.js";
+import { NotFoundError } from "../../../shared/exceptions/NotFoundError.js";
+
+export class GetActualPriceUseCase {
+    constructor(
+        private readonly productRepository = new ProductRepository(),
+        private readonly priceRepository = new PriceRepository()
+    ) {}
+
+    public async execute(productId: number): Promise<Price | null> {
+        const product = await this.productRepository.getById(productId);
+
+        if (!product) throw new NotFoundError("Producto no encontrado");
+
+        const price = await this.priceRepository.getActual(product);
+        return price;
+    }
+}

@@ -14,7 +14,7 @@ POST http://localhost:3000/productos/
 Content-Type: application/json
 
 {
-    "nombre": "Empanada Capresse",
+    "nombre": "Flan Casero",
     "descripcion": "Flan casero con dulce de leche y caramelo.",
     "estado": "Disponible",
     "tipo": "Postre",

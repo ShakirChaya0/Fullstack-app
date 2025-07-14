@@ -17,6 +17,7 @@ model Producto {
   esVegana      Boolean?
   tipo          tipo?
   esSinGluten   Boolean?
+  Precios       Precios[]
   Sugerencias   Sugerencias[]
 }
 
@@ -78,6 +79,15 @@ model Novedad {
   descripcion String   @db.VarChar
   fechaInicio DateTime @db.Date
   fechaFin    DateTime @db.Date
+}
+
+model Precios {
+  idProducto  Int
+  fechaActual DateTime @db.Date
+  monto       Decimal  @db.Decimal(10, 2)
+  Producto    Producto @relation(fields: [idProducto], references: [idProducto], onDelete: Cascade, onUpdate: NoAction, map: "producto_fkey")
+
+  @@id([idProducto, fechaActual])
 }
 
 enum estado {
