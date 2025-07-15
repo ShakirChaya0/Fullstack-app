@@ -27,7 +27,8 @@ export class ClientController {
                     nombre: c.name, 
                     apellido: c.lastname, 
                     telefono: c.phone, 
-                    fechaNacimiento: c.birthDate
+                    fechaNacimiento: c.birthDate,
+                    estados: c.states
                 }
             })
             res.status(200).json(filteredClient);

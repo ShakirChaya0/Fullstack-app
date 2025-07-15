@@ -89,12 +89,13 @@ model Administrador {
 }
 
 model Clientes {
-  idCliente       String   @id @db.Uuid
-  nombre          String   @db.VarChar(255)
-  apellido        String   @db.VarChar(255)
-  telefono        String   @db.VarChar(20)
-  fechaNacimiento DateTime @db.Date
-  Usuarios        Usuarios @relation(fields: [idCliente], references: [idUsuario], onDelete: NoAction, onUpdate: NoAction, map: "Cliente_fkey")
+  idCliente       String           @id @db.Uuid
+  nombre          String           @db.VarChar(255)
+  apellido        String           @db.VarChar(255)
+  telefono        String           @db.VarChar(20)
+  fechaNacimiento DateTime         @db.Date
+  Usuarios        Usuarios         @relation(fields: [idCliente], references: [idUsuario], onDelete: NoAction, onUpdate: NoAction, map: "Cliente_fkey")
+  EstadosCliente  EstadosCliente[]
 }
 
 model Mozos {
@@ -115,6 +116,15 @@ model Usuarios {
   Administrador Administrador?
   Clientes      Clientes?
   Mozos         Mozos?
+}
+
+model EstadosCliente {
+  fechaActualizacion DateTime      @db.Date
+  idCliente          String        @db.Uuid
+  estado             EstadoCliente
+  Clientes           Clientes      @relation(fields: [idCliente], references: [idCliente], onDelete: NoAction, onUpdate: NoAction, map: "idCliente")
+
+  @@id([idCliente, fechaActualizacion], map: "estadoCliente_pkey")
 }
 
 enum estado {
@@ -140,4 +150,9 @@ enum TipoUsuario_Type {
   SectorCocina
   Mozo
   Cliente
+}
+
+enum EstadoCliente {
+  Habilitado
+  Deshabilitado
 }

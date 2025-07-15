@@ -1,6 +1,7 @@
 import { UUID } from "crypto";
 import { User } from "./User.js";
 import { TipoUsuario_Type } from "@prisma/client";
+import { ClientState } from "./ClientState.js";
 
 
 export class Client extends User {
@@ -13,7 +14,8 @@ export class Client extends User {
         private _name: string,
         private _lastName: string,
         private _phone: string,
-        private _birthDate: Date
+        private _birthDate: Date,
+        private _states: ClientState[]
     ) { 
         super(_userId, _userName, _email , _password, _userType);
     }
@@ -34,6 +36,7 @@ export class Client extends User {
     get birthDate(): Date {
         return this._birthDate;
     }
+    get states(): ClientState[] { return this._states}
 
 
     set nombreUsuario(nombreUsuario: string) {
@@ -56,5 +59,8 @@ export class Client extends User {
     }
     set fechaNacimiento(fechaNacimiento: Date) {
         this._birthDate = fechaNacimiento;
+    }
+    set addState(nuevoEstado: ClientState){
+        this._states.push(nuevoEstado)
     }
 }
