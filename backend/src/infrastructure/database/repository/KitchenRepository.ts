@@ -36,8 +36,14 @@ export class KitchenRepository implements IKitchenRepository{
             
         }
         catch(error: any){
-            if (error?.code === 'P2002' && error?.meta?.target?.includes('titulo')) {
-                throw new ConflictError("Ya existe una novedad con ese título")
+            if (error?.code === 'P2002' && error?.meta?.target?.includes('nombreUsuario')) {
+                throw new ConflictError("Ya existe un usuario con ese nombre de Usuario")
+            }
+            else if(error?.code === 'P2002' && error?.meta?.target?.includes('email')){
+                throw new ConflictError("Ya existe un usuario con ese email")
+            }
+            else if(error?.code === 'P2002' && error?.meta?.target?.includes('dni')){
+                throw new ConflictError("Ya existe un usuario con ese dni")
             }
             else{
                 throw new ServiceError("Error al registrar la novedad en la base de datos")

@@ -40,6 +40,8 @@ export class WaiterRepository implements IWaiterRepository {
                 throw new ConflictError("Ya existe un Mozo con ese nombre de usuario");
             } else if (error?.code === 'P2002' && error?.meta?.target?.includes('email')) {
                 throw new ConflictError("Ya existe un Mozo con ese email");
+            } else if (error?.code === 'P2002' && error?.meta?.target?.includes('dni')) {
+                throw new ConflictError("Ya existe un Mozo con ese dni");
             }
             else {
                 throw new ServiceError(`Error al crear el Mozo: ${error.message}`);
@@ -74,16 +76,28 @@ export class WaiterRepository implements IWaiterRepository {
     }
 
     public async updateWaiter(idMozo: string, data: PartialSchemaWaiter): Promise<Waiter> {
-        // console.log("Updating waiter with id:", data);
-        const updatedWaiter = await prisma.mozos.update({
-            where: { idMozo: idMozo },
-            data: {
-                ...data
-            },
-            include: { Usuarios: true }
-        });
-        // console <-- ????????
-        return this.toDomainEntity(updatedWaiter);
+        try{
+            const updatedWaiter = await prisma.mozos.update({
+                where: { idMozo: idMozo },
+                data: {
+                    ...data
+                },
+                include: { Usuarios: true }
+            });
+            return this.toDomainEntity(updatedWaiter);
+        }
+        catch(error: any){
+            if (error?.code === 'P2002' && error?.meta?.target?.includes('nombreUsuario')) {
+                throw new ConflictError("Ya existe un Mozo con ese nombre de usuario");
+            } else if (error?.code === 'P2002' && error?.meta?.target?.includes('email')) {
+                throw new ConflictError("Ya existe un Mozo con ese email");
+            } else if (error?.code === 'P2002' && error?.meta?.target?.includes('dni')) {
+                throw new ConflictError("Ya existe un Mozo con ese dni");
+            }
+            else {
+                throw new ServiceError(`Error al crear el Mozo: ${error.message}`);
+            }
+        }
     }
 
     public async getWaiterById(idMozo: string): Promise<Waiter> {
