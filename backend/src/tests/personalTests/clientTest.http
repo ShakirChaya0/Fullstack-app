@@ -1,0 +1,27 @@
+###
+GET http://localhost:3000/clientes/
+
+###
+GET http://localhost:3000/clientes/id/4a8f3e67-827d-442d-8a04-7beb453133ea
+
+###
+POST http://localhost:3000/clientes/
+Content-Type: application/json
+
+{
+    "nombreUsuario": "Juan",
+    "contrasenia": "123456",
+    "nombre": "Tomas ",
+    "apellido": "Sussi",
+    "fechaNacimiento": "27/07/2004",
+    "telefono": "123456789",
+    "email": "juan@gmail.com"
+}
+
+###
+PATCH http://localhost:3000/clientes/id/4a8f3e67-827d-442d-8a04-7beb453133ea
+Content-Type: application/json
+
+{
+    "nombre": "franco nicolas"
+}

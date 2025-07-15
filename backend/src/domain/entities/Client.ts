@@ -2,6 +2,7 @@ import { UUID } from "crypto";
 import { User } from "./User.js";
 import { TipoUsuario_Type } from "@prisma/client";
 
+
 export class Client extends User {
     constructor(
         _userId: UUID,
@@ -11,10 +12,14 @@ export class Client extends User {
         _userType: TipoUsuario_Type,
         private _name: string,
         private _lastName: string,
-        private _dni: number,
         private _phone: string,
+        private _birthDate: Date
     ) { 
         super(_userId, _userName, _email , _password, _userType);
+    }
+
+    get email(): string {
+        return this._email;
     }
 
     get name(): string {
@@ -23,11 +28,11 @@ export class Client extends User {
     get lastname(): string {
         return this._lastName;
     }
-    get dni(): number {
-        return this._dni;
-    }
     get phone(): string {
         return this._phone;
+    }
+    get birthDate(): Date {
+        return this._birthDate;
     }
 
 
@@ -43,13 +48,13 @@ export class Client extends User {
     set apellido(apellido: string) {
         this._lastName = apellido;
     }
-    set dni(dni: number) {
-        this._dni = dni;
-    }
     set telefono(telefono: string) {
         this._phone = telefono;
     }
     set email(email: string) {
         this._email = email;
+    }
+    set fechaNacimiento(fechaNacimiento: Date) {
+        this._birthDate = fechaNacimiento;
     }
 }

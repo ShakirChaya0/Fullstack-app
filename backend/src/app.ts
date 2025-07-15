@@ -11,6 +11,7 @@ import { WaiterRouter } from './presentation/routes/waiterRoute.js'
 import { mesaRouter } from './presentation/routes/tableRoute.js'
 import { NotFoundError } from './shared/exceptions/NotFoundError.js'
 import { PricesRouter } from './presentation/routes/pricesRoute.js'
+import { ClientRouter } from './presentation/routes/ClientRouter.js'
 import { adminRouter } from './presentation/routes/adminRoute.js'
 import { KitchenRouter } from './presentation/routes/kitchenRoute.js'
 
@@ -39,6 +40,8 @@ app.use('/mozos', WaiterRouter())
 app.use ('/mesas', mesaRouter())
 
 app.use("/precios", PricesRouter())
+
+app.use("/clientes", ClientRouter() )
 
 app.use('/administradores', adminRouter())
 
