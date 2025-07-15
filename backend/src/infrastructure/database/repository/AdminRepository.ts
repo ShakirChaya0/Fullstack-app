@@ -11,28 +11,27 @@ const prisma = new PrismaClient();
 export class AdminRepository implements IAdminRepository {
 
     public async getAdmin(): Promise<Admin | null>{
-        const admin = await prisma.usuarios.findFirst({
-            where: {tipoUsuario: "Administrador"}
+        const admin = await prisma.administrador.findFirst({
+            where: {
+                Usuarios: {tipoUsuario: "Administrador"}
+            },
+            include: {
+                Usuarios: true
+            }
         });
 
         if (!admin) return null
 
-        const adminDetalle = await prisma.administrador.findFirst({
-            where: {idAdmin: admin?.idUsuario}
-        });
-
-        if (!adminDetalle) return null
-
         return new Admin(
-            admin.idUsuario as UUID,
-            admin.nombreUsuario,
-            admin.email,
-            admin.contrasenia,
-            admin.tipoUsuario,
-            adminDetalle.nombre,
-            adminDetalle.apellido,
-            adminDetalle.dni,
-            adminDetalle.telefono
+            admin.Usuarios.idUsuario as UUID,
+            admin.Usuarios.nombreUsuario,
+            admin.Usuarios.email,
+            admin.Usuarios.contrasenia,
+            admin.Usuarios.tipoUsuario,
+            admin.nombre,
+            admin.apellido,
+            admin.dni,
+            admin.telefono
         );
     }
 

@@ -16,7 +16,17 @@ export class AdminController {
     public getAdmin = async (req: Request, res:Response, next: NextFunction) => {
         try {
             const admin = await this.getAdminUseCase.execute();
-            res.status(200).json(admin);
+            
+            if(!admin) throw new NotFoundError('Administrador no encontrado');
+            const adminFiltrado = {
+                nombreUsuario: admin.userName,
+                email: admin.email,
+                nombre: admin.name,
+                apellido: admin.lastname,
+                dni: admin.dni,
+                telefono: admin.phone
+            }
+            res.status(200).json(adminFiltrado);
         }catch(error){
             next(error);
         }
@@ -34,7 +44,15 @@ export class AdminController {
 
             const admin = await this.updateAdminProfileUseCase.execute(idAdmin, adminActualizar);
             if(!admin) throw new NotFoundError('Administrador no encontrado');
-            res.status(200).json(admin);
+            const adminFiltrado = {
+                nombreUsuario: admin.userName,
+                email: admin.email,
+                nombre: admin.name,
+                apellido: admin.lastname,
+                dni: admin.dni,
+                telefono: admin.phone
+            }
+            res.status(200).json(adminFiltrado);
         } catch (error) {
             next(error);
         }
