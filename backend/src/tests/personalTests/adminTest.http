@@ -1,0 +1,10 @@
+###
+GET http://localhost:3000/administradores/
+
+###
+PATCH http://localhost:3000/administradores/update/e534b521-b710-4a64-8e28-b16d169d5eb4
+Content-Type: application/json
+
+{
+    "email": "pepe@gmail.com"
+}
