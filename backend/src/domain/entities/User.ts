@@ -1,7 +1,7 @@
 import { UUID } from 'crypto';
 import { TipoUsuario_Type } from "@prisma/client";
 
-export abstract class User {
+export class User {
     constructor(
         protected readonly _userId: UUID,
         protected _userName: string,

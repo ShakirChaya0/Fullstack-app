@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { WaiterController } from "../controllers/WaiterControllers.js";
+import { RoleMiddleware } from "../middlewares/RoleMiddleware.js";
 
 export function WaiterRouter () {
     const waiterRouter = Router();
@@ -13,7 +14,7 @@ export function WaiterRouter () {
 
     waiterRouter.delete("/id/:idMozo", (req, res, next) => { waiterController.deleteWaiter(req, res, next) });
 
-    waiterRouter.post("/", (req, res, next) => { waiterController.createWaiter(req, res, next) });
+    waiterRouter.post("/", RoleMiddleware(["Administrador"]), (req, res, next) => { waiterController.createWaiter(req, res, next) });
 
     waiterRouter.patch("/id/:idMozo", (req, res, next) => { waiterController.modifyWaiter(req, res, next) });
 

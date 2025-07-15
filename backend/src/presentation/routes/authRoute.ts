@@ -1,0 +1,15 @@
+import { Router } from "express";
+import { AuthController } from "../controllers/AuthController.js";
+
+export function AuthRouter() {
+    const authRouter = Router();
+    const authController = new AuthController(); 
+
+    authRouter.post('/login', (req, res, next) => { authController.login(req, res, next) });
+
+    authRouter.post('/refresh', (req, res, next) => { authController.refresh(req, res, next) });
+
+    authRouter.get('/logout', (req, res, next) => { authController.logout(req, res, next) });
+
+    return authRouter
+}

@@ -14,6 +14,9 @@ import { PricesRouter } from './presentation/routes/pricesRoute.js'
 import { ClientRouter } from './presentation/routes/ClientRouter.js'
 import { adminRouter } from './presentation/routes/adminRoute.js'
 import { KitchenRouter } from './presentation/routes/kitchenRoute.js'
+import cookieParser from 'cookie-parser'
+import { AuthRouter } from './presentation/routes/authRoute.js'
+import { AuthMiddleware } from './presentation/middlewares/AuthMiddleware.js'
 
 const app = express()
 
@@ -22,6 +25,10 @@ const PORT = process.env.PORT ?? 3000
 app.use(cors())
 
 app.use(express.json())
+
+app.use(cookieParser())
+
+app.use("/auth", AuthRouter())
 
 app.use('/productos', productosRouter())
 
@@ -35,9 +42,9 @@ app.use('/horarios', horariosRouter())
 
 app.use("/sugerencias", SuggestionsRouter())
 
-app.use('/mozos', WaiterRouter())
+app.use('/mozos', AuthMiddleware, WaiterRouter())
 
-app.use ('/mesas', mesaRouter())
+app.use('/mesas', mesaRouter())
 
 app.use("/precios", PricesRouter())
 
