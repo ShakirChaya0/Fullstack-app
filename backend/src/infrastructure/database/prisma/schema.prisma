@@ -96,6 +96,7 @@ model Clientes {
   fechaNacimiento DateTime         @db.Date
   Usuarios        Usuarios         @relation(fields: [idCliente], references: [idUsuario], onDelete: NoAction, onUpdate: NoAction, map: "Cliente_fkey")
   EstadosCliente  EstadosCliente[]
+  Reserva         Reserva[]
 }
 
 model Mozos {
@@ -138,6 +139,24 @@ model RefreshTokens {
   Usuarios        Usuarios @relation(fields: [idUsuario], references: [idUsuario], onDelete: NoAction, onUpdate: NoAction, map: "userFK")
 }
 
+model Mesas_Reservas {
+  idReserva Int
+  idMesa    Int
+
+  @@id([idReserva, idMesa])
+}
+
+model Reserva {
+  idReserva          Int           @id @default(autoincrement())
+  fechaReserva       DateTime      @db.Date
+  horarioReserva     DateTime      @db.Time(6)
+  fechaCancelacion   DateTime?     @db.Date
+  cantidadComensales Int
+  estado             EstadoReserva
+  idCliente          String        @db.Uuid
+  Clientes           Clientes      @relation(fields: [idCliente], references: [idCliente], onDelete: NoAction, onUpdate: NoAction, map: "idCliente_fKey")
+}
+
 enum estado {
   Disponible
   No_Disponible @map("No Disponible")
@@ -166,4 +185,11 @@ enum TipoUsuario_Type {
 enum EstadoCliente {
   Habilitado
   Deshabilitado
+}
+
+enum EstadoReserva {
+  Realizada
+  Asistida
+  No_Asistida @map("No Asistida")
+  Cancelada
 }
