@@ -48,9 +48,10 @@ model Horarios {
 }
 
 model Mesa {
-  nroMesa   Int        @id @default(autoincrement())
-  capacidad Int
-  estado    estadoMesa
+  nroMesa        Int              @id @default(autoincrement())
+  capacidad      Int
+  estado         estadoMesa
+  Mesas_Reservas Mesas_Reservas[]
 }
 
 model Sugerencias {
@@ -141,20 +142,23 @@ model RefreshTokens {
 
 model Mesas_Reservas {
   idReserva Int
-  idMesa    Int
+  nroMesa   Int
+  Mesa      Mesa    @relation(fields: [nroMesa], references: [nroMesa], onDelete: NoAction, onUpdate: NoAction, map: "Mesa_fKey")
+  Reserva   Reserva @relation(fields: [idReserva], references: [idReserva], onDelete: NoAction, onUpdate: NoAction, map: "Reserva_fKey")
 
-  @@id([idReserva, idMesa])
+  @@id([idReserva, nroMesa])
 }
 
 model Reserva {
-  idReserva          Int           @id @default(autoincrement())
-  fechaReserva       DateTime      @db.Date
-  horarioReserva     DateTime      @db.Time(6)
-  fechaCancelacion   DateTime?     @db.Date
+  idReserva          Int              @id @default(autoincrement())
+  fechaReserva       DateTime         @db.Date
+  horarioReserva     DateTime         @db.Time(6)
+  fechaCancelacion   DateTime?        @db.Date
   cantidadComensales Int
   estado             EstadoReserva
-  idCliente          String        @db.Uuid
-  Clientes           Clientes      @relation(fields: [idCliente], references: [idCliente], onDelete: NoAction, onUpdate: NoAction, map: "idCliente_fKey")
+  idCliente          String           @db.Uuid
+  Mesas_Reservas     Mesas_Reservas[]
+  Clientes           Clientes         @relation(fields: [idCliente], references: [idCliente], onDelete: NoAction, onUpdate: NoAction, map: "idCliente_fKey")
 }
 
 enum estado {

@@ -1,7 +1,6 @@
 import { Client } from "./Client.js";
 import { EstadoReserva } from "@prisma/client";
 
-
 export class Reservation {
     constructor(
         private readonly _reserveId: number,
@@ -10,6 +9,7 @@ export class Reservation {
         private _reserveTime: string,
         private _reserveDate: Date,
         private _status: EstadoReserva,
+        private _tableIds: number[],
     ) {}
 
     public get reserveId(): number {
@@ -30,6 +30,9 @@ export class Reservation {
     public get status(): EstadoReserva {
         return this._status;
     }
+    public get tableIds(): number[] {
+        return this._tableIds;
+    }
 
     public set client(client: Client) {
         this._client = client;
@@ -45,5 +48,8 @@ export class Reservation {
     }
     public set status(status: EstadoReserva) {
         this._status = status;
+    }
+    public set tableIds(tableIds: number) {
+        this._tableIds.push(tableIds);
     }
 }

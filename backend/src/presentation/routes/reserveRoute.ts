@@ -1,10 +1,10 @@
 import { Router } from "express";
-import { ReserveController } from "../controllers/ReserveController.js";
+import { ReservationController } from "../controllers/ReservationController.js";
 
-export function ReserveRouter () {
-    const reserveRouter = Router(); 
-    const reserveController = new ReserveController; 
+export function ReservationRouter () {
+    const reservationRouter = Router(); 
+    const reservationController = new ReservationController; 
 
-    reserveRouter.get('/fecha/:fechaHoy', (req,res,next) => {reserveController.getReserveToday(req,res,next)})
+    reservationRouter.get('/fecha/:fechaHoy', (req,res,next) => {reservationController.getReservationToday(req,res,next)})
 
 }
