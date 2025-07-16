@@ -2,7 +2,7 @@ import { Client } from "./Client.js";
 import { EstadoReserva } from "@prisma/client";
 
 
-export class Reserve {
+export class Reservation {
     constructor(
         private readonly _reserveId: number,
         private _client: Client,
