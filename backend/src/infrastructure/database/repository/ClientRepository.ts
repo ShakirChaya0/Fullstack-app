@@ -5,6 +5,7 @@ import { SchemaCliente, PartialClientSchema } from "../../../shared/validators/c
 import { ConflictError } from "../../../shared/exceptions/ConflictError.js";
 import { ServiceError } from "../../../shared/exceptions/ServiceError.js";
 import { ClientState } from "../../../domain/entities/ClientState.js";
+import { IClientRepository } from "../../../domain/repositories/IClientRepository.js";
 
 
 
@@ -15,8 +16,8 @@ type ClientWithUsuario = Prisma.ClientesGetPayload<{
 const prisma = new PrismaClient();
 
 
-export class ClientRepository {
-    public async getAllClient() : Promise<Client[]> {
+export class ClientRepository implements IClientRepository {
+    async getAllClient() : Promise<Client[]> {
         const clients = await prisma.clientes.findMany({
             include: {
                 Usuarios: true,
@@ -26,7 +27,7 @@ export class ClientRepository {
         return clients.map((client) => { return this.toDomainEntity(client) });
     }
 
-    public async getClientByidUser (id: string): Promise <Client | null> {
+    async getClientByidUser (id: string): Promise <Client | null> {
         const client = await prisma.clientes.findUnique({
             where: {idCliente : id},
             include: {Usuarios:true, EstadosCliente: true}
@@ -39,7 +40,7 @@ export class ClientRepository {
         return this.toDomainEntity(client);
     }
 
-    public async getClientByUserName(userName: string) : Promise<Client | null> {
+    async getClientByUserName(userName: string) : Promise<Client | null> {
         const clientFound = await prisma.clientes.findFirst({
             where: {
                 Usuarios: {nombreUsuario: userName}
@@ -53,7 +54,7 @@ export class ClientRepository {
         return this.toDomainEntity(clientFound);
     } 
     
-    public async createClient (data:SchemaCliente) :Promise <Client> {
+    async createClient (data:SchemaCliente) :Promise <Client> {
         try {
             const newClient = await prisma.clientes.create({
                 data: {
@@ -86,7 +87,7 @@ export class ClientRepository {
         }
     }
 
-    public async updateClient(id: string, data: PartialClientSchema): Promise<Client> {
+    async updateClient(id: string, data: PartialClientSchema): Promise<Client> {
         const updatedClient = await prisma.clientes.update ({
             where: {idCliente : id}, 
             data: {
