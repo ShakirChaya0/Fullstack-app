@@ -17,6 +17,7 @@ import { KitchenRouter } from './presentation/routes/kitchenRoute.js'
 import cookieParser from 'cookie-parser'
 import { AuthRouter } from './presentation/routes/authRoute.js'
 import { AuthMiddleware } from './presentation/middlewares/AuthMiddleware.js'
+import { ReservationRouter } from './presentation/routes/reservationRoute.js'
 
 const app = express()
 
@@ -53,6 +54,8 @@ app.use("/clientes", ClientRouter() )
 app.use('/administradores', adminRouter())
 
 app.use("/cocina", KitchenRouter())
+
+app.use("/reservas", ReservationRouter());
 
 app.use((req, res, next) => {
     const error =  new NotFoundError("Endpoint not found");

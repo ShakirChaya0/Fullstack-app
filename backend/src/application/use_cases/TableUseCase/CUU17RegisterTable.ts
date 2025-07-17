@@ -1,5 +1,5 @@
 import { Table } from "../../../domain/entities/Table.js";
-import {schemaTable } from "../../../presentation/validators/tableZod.js";
+import {schemaTable } from "../../../shared/validators/tableZod.js";
 import { TableRepository } from "../../../infrastructure/database/repository/TableRepository.js";
 
 export class CUU17RegisterTable {

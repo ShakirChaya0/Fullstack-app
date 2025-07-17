@@ -1,6 +1,6 @@
 import { Table } from "../../../domain/entities/Table.js";
 import { TableRepository } from "../../../infrastructure/database/repository/TableRepository.js";
-import { SchemaPartialTable } from "../../../presentation/validators/tableZod.js";
+import { SchemaPartialTable } from "../../../shared/validators/tableZod.js";
 import { NotFoundError } from "../../../shared/exceptions/NotFoundError.js";
 
 export class UpdateTable {

@@ -1,4 +1,4 @@
-import { validatePartialTable, validateTable } from "../../presentation/validators/tableZod.js";
+import { validatePartialTable, validateTable } from "../../shared/validators/tableZod.js";
 
 export type TableState = "Libre" | "Ocupado" | "Reservado"; 
 

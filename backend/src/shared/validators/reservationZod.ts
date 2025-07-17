@@ -1,13 +1,19 @@
 import z from "zod";
 import { ValidationError } from "../exceptions/ValidationError.js";
 
+const tableSchema = z.object({
+    capacidad: z.number({message: "La capacidad debe ser un numero entero"}).min(1).max(10), 
+    estado : z.enum(["Libre", "Ocupado", "Reservado"])
+}); 
+
 const ReservationSchema = z.object({
   cancelationDate: z.date().optional(),
   reservationDate: z.date(),
   reservationTime: z.string().regex(/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/, "Formato de hora inválido. Use HH:MM (24 horas)"),
+  commensalsNumber: z.number().int().min(1, "El número de comensales debe ser al menos 1"),
   status: z.enum(["Realizada", "Asistida", "No Asistida", "Cancelada"]),
   clientId: z.string(),
-  tableIds: z.array(z.number().int().positive("El ID de mesa debe ser un número entero positivo")).min(1, "Debe seleccionar al menos una mesa"),
+  table: z.array(tableSchema).min(1, "Debe seleccionar al menos una mesa"),
 });
 
 export type SchemaReservation = z.infer<typeof ReservationSchema>;

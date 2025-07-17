@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { CUU17RegisterTable } from "../../application/use_cases/TableUseCase/CUU17RegisterTable.js";
-import { validatePartialTable, validateTable } from "../validators/tableZod.js";
+import { validatePartialTable, validateTable } from "../../shared/validators/tableZod.js";
 import { GetAllTable} from "../../application/use_cases/TableUseCase/getTablesUseCase.js";
 import { GetTableByCapacity } from "../../application/use_cases/TableUseCase/getTablesByCapacity.js";
 import { DeleteTable } from "../../application/use_cases/TableUseCase/deleteTable.js";
