@@ -90,23 +90,23 @@ export class TableRepository {
         }
         return { message: `Mesa con el numero ${numTable} eliminado correctamente` };
     }
-    public async getAvailableTables(
-      reservationDate: Date,
-      reservationTime: string
-    ) {
-      return prisma.mesa.findMany({
-        where: {
-          Mesas_Reservas: {
-            none: {
-              Reserva: {
-                fechaReserva: reservationDate,
-                horarioReserva: reservationTime,
-                estado: { notIn: ["Cancelada", "No_Asistida"] as any },
-              },
-            },
-          },
-        },
-        orderBy: { nroMesa: "asc" },
-      });
-    }
+// public async getAvailableTables(reservationDate: Date, reservationTime: string) {
+//   return await prisma.mesa.findMany({
+//     where: {
+//       Mesas_Reservas: {
+//         none: {
+//           Reserva: {
+//             AND: [
+//               { fechaReserva: reservationDate },
+//               { horarioReserva: reservationTime },
+//               { estado: { notIn: ["Cancelada", "No_Asistida"] } },
+//             ]
+//           }
+//         }
+//       }
+//     },
+//     orderBy: { nroMesa: "asc" },
+//   });
+// }
+
 }

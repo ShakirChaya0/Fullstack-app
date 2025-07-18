@@ -1,25 +1,24 @@
-import { Client } from "./Client.js";
 import { EstadoReserva, Mesa } from "@prisma/client";
 
 export class Reservation {
     constructor(
         private readonly _reserveId: number,
-        private _cancelationDate: Date,
         private _reserveDate: Date,
         private _reserveTime: string,
+        private _cancelationDate: Date | null,
         private _commensalsNumber: number,
         private _status: EstadoReserva, 
-        private _client: Client | null, 
-        private _table: Mesa[],    
+        private _clientId: string, 
+        // private _table: Mesa[],    
     ) {}   
 
     public get reserveId(): number {
         return this._reserveId;
     }
-    public get client(): Client | null {
-        return this._client;
+    public get clientId(): string | null {
+        return this._clientId;
     }
-    public get cancelationDate(): Date {
+    public get cancelationDate(): Date | null {
         return this._cancelationDate;
     }
     public get reserveTime(): string {
@@ -34,12 +33,12 @@ export class Reservation {
     public get status(): EstadoReserva {
         return this._status;
     }
-    public get table(): Mesa[] {
-        return this._table;
-    }
+    // public get table(): Mesa[] {
+    //     return this._table;
+    // }
 
-    public set client(client: Client) {
-        this._client = client;
+    public set clientId(clientId: string) {
+        this._clientId = clientId;
     }
     public set cancelationDate(date: Date) {
         this._cancelationDate = date;
@@ -56,7 +55,7 @@ export class Reservation {
     public set status(status: EstadoReserva) {
         this._status = status;
     }
-    public set table(table: Mesa) {
-        this._table.push(table);   
-    }
+    // public set table(table: Mesa) {
+    //     this._table.push(table);   
+    // }
 }

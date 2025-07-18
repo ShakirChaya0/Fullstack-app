@@ -2,9 +2,9 @@ import { PrismaClient,Prisma } from "@prisma/client";
 import { Reservation } from "../../../domain/entities/Reservation.js";
 import { PartialSchemaReservation, SchemaReservation } from "../../../shared/validators/reservationZod.js";
 import { IReservationRepository } from "../../../domain/repositories/IReservationRepository.js";
-import { Client } from "../../../domain/entities/Client.js";
-import { ClientState } from "../../../domain/entities/ClientState.js";
-import { UUID } from "crypto";
+// import { Client } from "../../../domain/entities/Client.js";
+// import { ClientState } from "../../../domain/entities/ClientState.js";
+// import { UUID } from "crypto";
 import { EstadoReserva } from "@prisma/client";
 
 const prisma = new PrismaClient();
@@ -28,15 +28,15 @@ type ReservationWithClient = Prisma.ReservaGetPayload<{
 
 
 export class ReservationRepository implements IReservationRepository {
-    async create(reservation: SchemaReservation): Promise<Reservation> {
+    async create(reservation: SchemaReservation, clientId: string): Promise<Reservation> {
         const createdReservation = await prisma.reserva.create({
             data: {
-                fechaCancelacion: reservation.cancelationDate,
-                fechaReserva: reservation.reservationDate,
-                horarioReserva: new Date(`2000-01-01T${reservation.reservationTime}:00`),
-                estado: reservation.status === "No Asistida" ? "No_Asistida" : reservation.status,
-                idCliente: reservation.clientId.toString(),
-                cantidadComensales: 1 // Valor por defecto
+              fechaReserva: reservation.fechaReserva,
+              horarioReserva: new Date(`2000-01-01T${reservation.horarioReserva}:00Z`),
+              fechaCancelacion: reservation.fechaCancelacion,
+              cantidadComensales: reservation.cantidadComensales, 
+              estado: "Realizada",
+              idCliente: clientId,
             },
             include: { 
               Clientes: {
@@ -130,10 +130,12 @@ export class ReservationRepository implements IReservationRepository {
         const updatedReservation = await prisma.reserva.update({
             where: { idReserva: id},
             data: {
-                fechaCancelacion: reservation.cancelationDate,
-                fechaReserva: reservation.reservationDate,
-                horarioReserva: new Date(`2000-01-01T${reservation.reservationTime}:00`),
-                estado: reservation.status === "No Asistida" ? "No_Asistida" : reservation.status,
+                fechaCancelacion: reservation.fechaCancelacion,
+                fechaReserva: reservation.fechaReserva,
+                horarioReserva: new Date(`2000-01-01T${reservation.horarioReserva}:00Z`),
+                cantidadComensales: reservation.cantidadComensales,
+                estado: reservation.estado === "No Asistida" ? "No_Asistida" : reservation.estado,
+
             },
             include: { 
               Clientes: {
@@ -159,7 +161,7 @@ export class ReservationRepository implements IReservationRepository {
             where: { idReserva: id },
             data: {
                 estado: status,
-                fechaCancelacion: new Date(),
+                fechaCancelacion: status === "Cancelada" ? new Date() : null,
             },
             include: { 
               Clientes: {
@@ -180,7 +182,7 @@ export class ReservationRepository implements IReservationRepository {
   }
     
     
-      async getByClientId(clientId: number): Promise<Reservation[]> {
+      async getByClientId(clientId: string): Promise<Reservation[]> {
         const reservations = await prisma.reserva.findMany({
             where: { idCliente: clientId.toString() },
             include: { 
@@ -206,46 +208,46 @@ export class ReservationRepository implements IReservationRepository {
 
 
     private toDomainEntity(reservation: ReservationWithClient): Reservation {
-      const reservasCliente = reservation.Clientes.Reserva.map(r =>
-        new Reservation(
-          r.idReserva,
-          r.fechaCancelacion || new Date(),
-          r.fechaReserva,
-          r.horarioReserva.toTimeString().substring(0, 5),
-          r.cantidadComensales,
-          r.estado,
-          null,
-          [],
-        )
-      );
+      // const reservasCliente = reservation.Clientes.Reserva.map(r =>
+      //   new Reservation(
+      //     r.idReserva,
+      //     r.fechaReserva,
+      //     r.horarioReserva.toTimeString().substring(0, 5),
+      //     r.fechaCancelacion || new Date(),
+      //     r.cantidadComensales,
+      //     r.estado,
+      //     r.idCliente,
+      //     []
+      //   )
+      // );
     
-      const client = new Client(
-        reservation.Clientes.Usuarios.idUsuario as UUID,
-        reservation.Clientes.Usuarios.nombreUsuario,
-        reservation.Clientes.Usuarios.email,
-        reservation.Clientes.Usuarios.contrasenia,
-        reservation.Clientes.Usuarios.tipoUsuario,
-        reservation.Clientes.nombre,
-        reservation.Clientes.apellido,
-        reservation.Clientes.telefono,
-        reservation.Clientes.fechaNacimiento,
-        reservation.Clientes.EstadosCliente.map(
-          estado => new ClientState(estado.fechaActualizacion, estado.estado)
-        ),
-        reservasCliente
-      );
+      // const client = new Client(
+      //   reservation.Clientes.Usuarios.idUsuario as UUID,
+      //   reservation.Clientes.Usuarios.nombreUsuario,
+      //   reservation.Clientes.Usuarios.email,
+      //   reservation.Clientes.Usuarios.contrasenia,
+      //   reservation.Clientes.Usuarios.tipoUsuario,
+      //   reservation.Clientes.nombre,
+      //   reservation.Clientes.apellido,
+      //   reservation.Clientes.telefono,
+      //   reservation.Clientes.fechaNacimiento,
+      //   reservation.Clientes.EstadosCliente.map(
+      //     estado => new ClientState(estado.fechaActualizacion, estado.estado)
+      //   ),
+      //   reservasCliente
+      // );
     
-      const mesas = reservation.Mesas_Reservas.map(mr => mr.Mesa);
+      // const mesas = reservation.Mesas_Reservas.map(mr => mr.Mesa);
     
       return new Reservation(
         reservation.idReserva,
-        reservation.fechaCancelacion || new Date(),
         reservation.fechaReserva,
-        reservation.horarioReserva.toTimeString().substring(0, 5),
+        reservation.horarioReserva.toISOString().slice(11, 16),
+        reservation.fechaCancelacion ?? null,
         reservation.cantidadComensales,
         reservation.estado,
-        client,
-        mesas
+        reservation.idCliente,
+        // mesas
       );
     }
 }

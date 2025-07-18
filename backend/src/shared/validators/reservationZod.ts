@@ -1,25 +1,50 @@
 import z from "zod";
 import { ValidationError } from "../exceptions/ValidationError.js";
 
-const tableSchema = z.object({
-    capacidad: z.number({message: "La capacidad debe ser un numero entero"}).min(1).max(10), 
-    estado : z.enum(["Libre", "Ocupado", "Reservado"])
-}); 
-
-// const clientSchema = z.object({
-//     idCliente: z.string().uuid(), 
-//     nombre: z.string(), 
-//     apellido: z.string()
-// })
-
 const ReservationSchema = z.object({
-  cancelationDate: z.date().optional(),
-  reservationDate: z.date(),
-  reservationTime: z.string().regex(/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/, "Formato de hora inválido. Use HH:MM (24 horas)"),
-  commensalsNumber: z.number().int().min(1, "El número de comensales debe ser al menos 1"),
-  status: z.enum(["Realizada", "Asistida", "No Asistida", "Cancelada"]),
-  clientId: z.string(),
-  table: z.array(tableSchema).min(1, "Debe seleccionar al menos una mesa"),
+  fechaReserva: z.string()    
+    .refine(str => /^\d{2}\/\d{2}\/\d{4}$/.test(str), {
+        message: "Formato inválido. Usa dd/mm/yyyy",
+    })
+    .transform(str => {
+        const [day, month, year] = str.split("/").map(Number);
+        return new Date(year, month - 1, day);
+    })
+    .refine(date => !isNaN(date.getTime()), {
+        message: "Fecha inválida",
+    })
+    .refine(date => date >= new Date(new Date().setHours(0,0,0,0)), {
+        message: "La fecha de la reserva no puede ser en el pasado",
+    }),
+
+  horarioReserva: z.string()
+    .regex(/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/, "Formato de hora inválido. Use HH:MM (24 horas)")
+    .refine(time => {
+        const [hour] = time.split(":").map(Number);
+        return hour >= 9 && hour <= 23; // Horario permitido: 09:00 - 23:59
+    }, {
+        message: "La hora debe estar entre 09:00 y 23:59",
+    }),
+
+  fechaCancelacion: z.string()
+    .refine(str => /^\d{2}\/\d{2}\/\d{4}$/.test(str), {
+        message: "Formato inválido. Usa dd/mm/yyyy",
+    })
+    .transform(str => {
+        const [day, month, year] = str.split("/").map(Number);
+        return new Date(year, month - 1, day);
+    })
+    .refine(date => !isNaN(date.getTime()), {
+        message: "Fecha inválida",
+    })
+    .optional(),
+
+  cantidadComensales: z.number()
+    .int("Debe ser un número entero")
+    .min(1, "El número de comensales debe ser al menos 1")
+    .max(50, "El número de comensales no puede superar 50"),
+
+  estado: z.enum(["Realizada", "Asistida", "No Asistida", "Cancelada"]).optional()
 });
 
 export type SchemaReservation = z.infer<typeof ReservationSchema>;

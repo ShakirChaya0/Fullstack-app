@@ -23,7 +23,7 @@ export class ReservationController {
   public createReservation = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const data = validateReservation(req.body);
-      const newReservation = await this.registerReservation.execute(data);
+      const newReservation = await this.registerReservation.execute(data, req.params.idCliente);
       res.status(201).json(newReservation);
     } catch (error) {
       next(error);
@@ -44,22 +44,25 @@ export class ReservationController {
     }
   };
 
-  public updateReservationStatus = async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const { idReserva } = req.params;
-      if (isNaN(+idReserva)) {
-        throw new ValidationError("El ID ingresado debe ser un número");
-      }
-      const { status } = req.body;
-      if (!status) {
-        throw new ValidationError("Debe proporcionar un estado válido");
-      }
-      const updatedReservation = await this.updateStatus.execute(+idReserva);
-      res.status(200).json(updatedReservation);
-    } catch (error) {
-      next(error);
+public updateReservationStatus = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { idReserva } = req.params;
+    if (isNaN(+idReserva)) {
+      throw new ValidationError("El ID ingresado debe ser un número");
     }
-  };
+
+    const { status } = req.body;
+    if (!status) {
+      throw new ValidationError("Debe proporcionar un estado válido");
+    }
+
+    const updatedReservation = await this.updateStatus.execute(+idReserva, status);
+    res.status(200).json(updatedReservation);
+  } catch (error) {
+    next(error);
+  }
+};
+
 
   public getById = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -90,10 +93,7 @@ export class ReservationController {
   public getByClientId = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { clientId } = req.params;
-      if (isNaN(+clientId)) {
-        throw new ValidationError("El ID del cliente debe ser un número");
-      }
-      const reservations = await this.getByClientIdUseCase.execute(+clientId);
+      const reservations = await this.getByClientIdUseCase.execute(clientId);
       res.status(200).json(reservations);
     } catch (error) {
       next(error);

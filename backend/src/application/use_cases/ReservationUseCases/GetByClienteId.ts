@@ -8,7 +8,7 @@ export class GetByClientId {
         private readonly reservationRepository = new ReservationRepository(),
     ){}
 
-    async execute(clientId: number): Promise<Reservation[]> {
+    async execute(clientId: string): Promise<Reservation[]> {
         const reservations = await this.reservationRepository.getByClientId(clientId);
         if (reservations.length === 0) {
             throw new NotFoundError(`No se encontraron reservas para el cliente con ID ${clientId}.`);
