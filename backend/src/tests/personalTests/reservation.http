@@ -1,0 +1,28 @@
+###
+
+
+
+
+###
+POST http://localhost:3000/reservas/
+Content-Type: application/json
+
+{
+    "fechaReserva" : "2025-07-18",
+    "horarioReserva": "20:00", 
+    "cantidadComensales": 9 , 
+    "estado" : "Realizada", 
+    "Clientes": {
+        "idCliente": "4a8f3e67-827d-442d-8a04-7beb453133ea", 
+        "nombre":"franco nicolas", 
+        "apellido": "Sussi"
+    },
+    "Mesa": [
+        {
+        "mroMesa": 1,
+        "capacidad": 9, 
+        "estado": "Libre"
+        }
+    ]
+
+}

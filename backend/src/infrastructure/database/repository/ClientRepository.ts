@@ -113,7 +113,8 @@ export class ClientRepository {
             client.apellido,
             client.telefono, 
             client.fechaNacimiento,
-            estados
+            estados, 
+            []
         );  
     }
 

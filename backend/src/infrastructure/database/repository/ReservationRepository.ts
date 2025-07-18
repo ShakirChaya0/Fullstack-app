@@ -155,7 +155,7 @@ export class ReservationRepository implements IReservationRepository {
 
 
     async updateStatus(id: number, status: EstadoReserva): Promise<Reservation> {
-       const updatedReservation = await prisma.reserva.update({
+      const updatedReservation = await prisma.reserva.update({
             where: { idReserva: id },
             data: {
                 estado: status,
@@ -180,7 +180,7 @@ export class ReservationRepository implements IReservationRepository {
   }
     
     
-       async getByClientId(clientId: number): Promise<Reservation[]> {
+      async getByClientId(clientId: number): Promise<Reservation[]> {
         const reservations = await prisma.reserva.findMany({
             where: { idCliente: clientId.toString() },
             include: { 

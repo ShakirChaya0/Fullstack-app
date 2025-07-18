@@ -16,7 +16,7 @@ export class Reservation {
     public get reserveId(): number {
         return this._reserveId;
     }
-    public get client(): Client | null{
+    public get client(): Client | null {
         return this._client;
     }
     public get cancelationDate(): Date {

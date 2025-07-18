@@ -6,6 +6,12 @@ const tableSchema = z.object({
     estado : z.enum(["Libre", "Ocupado", "Reservado"])
 }); 
 
+// const clientSchema = z.object({
+//     idCliente: z.string().uuid(), 
+//     nombre: z.string(), 
+//     apellido: z.string()
+// })
+
 const ReservationSchema = z.object({
   cancelationDate: z.date().optional(),
   reservationDate: z.date(),

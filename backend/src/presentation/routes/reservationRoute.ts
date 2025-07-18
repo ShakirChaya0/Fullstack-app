@@ -5,7 +5,7 @@ export const ReservationRouter = () => {
   const router = Router();
   const controller = new ReservationController();
 
-  router.post("/", controller.createReservation);
+  router.post("/:idCliente", controller.createReservation);
 
   router.put("/:idReserva", controller.updateReservationData);
 
