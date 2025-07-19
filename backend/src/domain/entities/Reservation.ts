@@ -1,4 +1,6 @@
-import { EstadoReserva, Mesa } from "@prisma/client";
+import { Table } from "./Table.js";
+
+export type EstadoReserva = "Realizada" | "Asistida" | "No_Asistida" | "Cancelada";
 
 export class Reservation {
     constructor(
@@ -9,7 +11,7 @@ export class Reservation {
         private _commensalsNumber: number,
         private _status: EstadoReserva, 
         private _clientId: string, 
-        // private _table: Mesa[],    
+        private _table: Table[],    
     ) {}   
 
     public get reserveId(): number {
@@ -33,9 +35,9 @@ export class Reservation {
     public get status(): EstadoReserva {
         return this._status;
     }
-    // public get table(): Mesa[] {
-    //     return this._table;
-    // }
+    public get table(): Table[] {
+        return this._table;
+    }
 
     public set clientId(clientId: string) {
         this._clientId = clientId;
@@ -55,7 +57,7 @@ export class Reservation {
     public set status(status: EstadoReserva) {
         this._status = status;
     }
-    // public set table(table: Mesa) {
-    //     this._table.push(table);   
-    // }
+    public set table(table: Table) {
+        this._table.push(table);   
+    }
 }

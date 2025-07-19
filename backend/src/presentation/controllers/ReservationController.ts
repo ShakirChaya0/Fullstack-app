@@ -44,24 +44,24 @@ export class ReservationController {
     }
   };
 
-public updateReservationStatus = async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const { idReserva } = req.params;
-    if (isNaN(+idReserva)) {
-      throw new ValidationError("El ID ingresado debe ser un número");
-    }
+  public updateReservationStatus = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { idReserva } = req.params;
+      if (isNaN(+idReserva)) {
+        throw new ValidationError("El ID ingresado debe ser un número");
+      }
 
-    const { status } = req.body;
-    if (!status) {
-      throw new ValidationError("Debe proporcionar un estado válido");
-    }
+      const { status } = req.body;
+      if (!status) {
+        throw new ValidationError("Debe proporcionar un estado válido");
+      }
 
-    const updatedReservation = await this.updateStatus.execute(+idReserva, status);
-    res.status(200).json(updatedReservation);
-  } catch (error) {
-    next(error);
-  }
-};
+      const updatedReservation = await this.updateStatus.execute(+idReserva, status);
+      res.status(200).json(updatedReservation);
+    } catch (error) {
+      next(error);
+    }
+  };
 
 
   public getById = async (req: Request, res: Response, next: NextFunction) => {

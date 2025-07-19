@@ -5,7 +5,8 @@ import { IReservationRepository } from "../../../domain/repositories/IReservatio
 // import { Client } from "../../../domain/entities/Client.js";
 // import { ClientState } from "../../../domain/entities/ClientState.js";
 // import { UUID } from "crypto";
-import { EstadoReserva } from "@prisma/client";
+import { EstadoReserva } from "../../../domain/entities/Reservation.js";
+import { Table } from "../../../domain/entities/Table.js";
 
 const prisma = new PrismaClient();
 
@@ -28,21 +29,21 @@ type ReservationWithClient = Prisma.ReservaGetPayload<{
 
 
 export class ReservationRepository implements IReservationRepository {
-    async create(reservation: SchemaReservation, clientId: string): Promise<Reservation> {
+    async create(reservation: SchemaReservation, clientId: string, tables: Table[]): Promise<Reservation | null> {
         const createdReservation = await prisma.reserva.create({
-            data: {
+        data: {
               fechaReserva: reservation.fechaReserva,
               horarioReserva: new Date(`2000-01-01T${reservation.horarioReserva}:00Z`),
               fechaCancelacion: reservation.fechaCancelacion,
               cantidadComensales: reservation.cantidadComensales, 
-              estado: "Realizada",
-              idCliente: clientId,
-            },
-            include: { 
-              Clientes: {
-                include: {
-                  Usuarios: true,
-                  EstadosCliente: true,
+              estado: "Realizada", 
+              Clientes: { connect: { idCliente: clientId } }
+        }, 
+        include: {
+          Clientes: {
+            include: {
+              Usuarios: true, 
+              EstadosCliente: true, 
                   Reserva: true,
                 },
               },
@@ -52,8 +53,38 @@ export class ReservationRepository implements IReservationRepository {
                 },
               },
             },
-        });
-        return this.toDomainEntity(createdReservation);
+          });
+
+          await prisma.mesas_Reservas.createMany({
+            data: tables.map(table => ({
+              idReserva : createdReservation.idReserva, 
+              nroMesa: table.nroMesa
+            }))
+          })
+
+          const updatedReservation = await prisma.reserva.findUnique({
+            where: { idReserva: createdReservation.idReserva },
+                include: {
+                  Clientes: {
+                    include: {
+                      Usuarios: true,
+                      EstadosCliente: true,
+                      Reserva: true,
+                    },
+                  },
+                  Mesas_Reservas: {
+                    include: {
+                      Mesa: true,
+                    },
+                  },
+                },
+            });
+
+            if(!updatedReservation){
+              return null;
+            }
+
+        return this.toDomainEntity(updatedReservation);
     }
 
     async getById(id: number): Promise<Reservation | null> {
@@ -200,6 +231,8 @@ export class ReservationRepository implements IReservationRepository {
               },
             },
         });
+
+        
         return reservations.map((reservation) => this.toDomainEntity(reservation));
     }
     
@@ -237,17 +270,20 @@ export class ReservationRepository implements IReservationRepository {
       //   reservasCliente
       // );
     
-      // const mesas = reservation.Mesas_Reservas.map(mr => mr.Mesa);
-    
+      const mesas: Table[] = reservation.Mesas_Reservas.map((mr) => {
+        const mesa = mr.Mesa;
+        return new Table(mesa.nroMesa, mesa.capacidad, mesa.estado); // adaptá a tu clase Table
+      });
+
       return new Reservation(
         reservation.idReserva,
         reservation.fechaReserva,
-        reservation.horarioReserva.toISOString().slice(11, 16),
+        reservation.horarioReserva.toTimeString().substring(0, 5),
         reservation.fechaCancelacion ?? null,
         reservation.cantidadComensales,
         reservation.estado,
         reservation.idCliente,
-        // mesas
+        mesas
       );
     }
 }

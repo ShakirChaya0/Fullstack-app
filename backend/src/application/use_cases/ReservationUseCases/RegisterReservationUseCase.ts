@@ -1,4 +1,4 @@
-import { Mesa } from '@prisma/client';
+import { Table } from '../../../domain/entities/Table.js';
 import { ReservationRepository } from '../../../infrastructure/database/repository/ReservationRepository.js';
 import { ClientRepository } from '../../../infrastructure/database/repository/ClientRepository.js';
 import { TableRepository } from '../../../infrastructure/database/repository/TableRepository.js';
@@ -14,9 +14,9 @@ export class RegisterReservation {
     private readonly tableRepository = new TableRepository()
   ) {}
 
-  private assignTables(mesasDisponibles: Mesa[], cantidadComensales: number): Mesa[] | null {
+  private assignTables(mesasDisponibles: Table[], cantidadComensales: number): Table[] | null {
     const mesasOrdenadas = mesasDisponibles.sort((a, b) => b.capacidad - a.capacidad);
-    const mesasAsignadas: Mesa[] = [];
+    const mesasAsignadas: Table[] = [];
     let capacidadAcumulada = 0;
 
     for (const mesa of mesasOrdenadas) {
@@ -29,7 +29,7 @@ export class RegisterReservation {
     return null;
   }
 
-  public async execute(data: SchemaReservation, clientId: string): Promise<Reservation> {
+  public async execute(data: SchemaReservation, clientId: string): Promise<Reservation | null> {
     const client = await this.clientRepository.getClientByidUser(clientId);
     if (!client) {
       throw new NotFoundError('Cliente no encontrado');
@@ -38,6 +38,20 @@ export class RegisterReservation {
     if (data.cantidadComensales <= 0) {
       throw new BusinessError('El número de comensales debe ser mayor a 0');
     }
+
+    const availableTables = await this.tableRepository.getTableByCapacity(data.cantidadComensales);
+
+    if(!availableTables) {
+      throw new BusinessError('No hay mesas disponibles para la cantidad de comensales');
+    }
+
+
+    const nuevaReserva = await this.reservationRepository.create(data,clientId,availableTables);
+    return nuevaReserva;
+  }
+}
+
+
     // const mesasDisponibles = await this.tableRepository.getAvailableTables(data.fechaReserva, data.horarioReserva);
     // if (mesasDisponibles.length === 0) {
     //   throw new BusinessError('No hay mesas disponibles para esta fecha y hora');
@@ -50,17 +64,3 @@ export class RegisterReservation {
 
     // Mapeamos sólo los campos necesarios para el create en Prisma (nroMesa)
     // const mesasParaGuardar = mesasAsignadas.map(({ capacidad, estado }) => ({ capacidad, estado }));
-
-    const nuevaReserva = await this.reservationRepository.create({
-      fechaReserva: data.fechaReserva,
-      horarioReserva: data.horarioReserva,
-      cantidadComensales: data.cantidadComensales,
-      estado: data.estado,
-      // table: mesasParaGuardar
-    },
-    clientId, 
-  );
-
-    return nuevaReserva;
-  }
-}
