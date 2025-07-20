@@ -14,20 +14,20 @@ export class RegisterReservation {
     private readonly tableRepository = new TableRepository()
   ) {}
 
-  private assignTables(mesasDisponibles: Table[], cantidadComensales: number): Table[] | null {
-    const mesasOrdenadas = mesasDisponibles.sort((a, b) => b.capacidad - a.capacidad);
-    const mesasAsignadas: Table[] = [];
-    let capacidadAcumulada = 0;
+  // private assignTables(mesasDisponibles: Table[], cantidadComensales: number): Table[] | null {
+  //   const mesasOrdenadas = mesasDisponibles.sort((a, b) => b.capacidad - a.capacidad);
+  //   const mesasAsignadas: Table[] = [];
+  //   let capacidadAcumulada = 0;
 
-    for (const mesa of mesasOrdenadas) {
-      mesasAsignadas.push(mesa);
-      capacidadAcumulada += mesa.capacidad;
-      if (capacidadAcumulada >= cantidadComensales) {
-        return mesasAsignadas;
-      }
-    }
-    return null;
-  }
+  //   for (const mesa of mesasOrdenadas) {
+  //     mesasAsignadas.push(mesa);
+  //     capacidadAcumulada += mesa.capacidad;
+  //     if (capacidadAcumulada >= cantidadComensales) {
+  //       return mesasAsignadas;
+  //     }
+  //   }
+  //   return null;
+  // }
 
   public async execute(data: SchemaReservation, clientId: string): Promise<Reservation | null> {
     const client = await this.clientRepository.getClientByidUser(clientId);
@@ -46,8 +46,14 @@ export class RegisterReservation {
     }
 
 
-    const nuevaReserva = await this.reservationRepository.create(data,clientId,availableTables);
-    return nuevaReserva;
+
+    const newReservation = await this.reservationRepository.create(data,clientId,availableTables);
+
+    if(!newReservation) {
+      throw new BusinessError('Usted ya tiene una reserva para esa fecha y ese horario')
+    }
+
+    return newReservation;
   }
 }
 

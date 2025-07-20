@@ -4,7 +4,7 @@ Content-Type: application/json
 
 {
     "fechaReserva" : "20/07/2025",
-    "horarioReserva": "19:00",  
+    "horarioReserva": "21:00",  
     "cantidadComensales": 9
 }
 
@@ -15,7 +15,7 @@ GET http://localhost:3000/reservas/1
 GET http://localhost:3000/reservas?date=2025-07-20
 
 ###
-GET http://localhost:3000/reservas/cliente/4a8f3e67-827d-442d-8a04-7beb453133ea
+GET http://localhost:3000/reservas/cliente/eaa2c7a3-d25c-4d55-b0b3-177f9e10c225
 
 ### 
 GET http://localhost:3000/reservas/cliente/TomasSussi

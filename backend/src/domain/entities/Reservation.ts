@@ -1,4 +1,5 @@
 import { Table } from "./Table.js";
+import {UUID} from "crypto";
 
 export type EstadoReserva = "Realizada" | "Asistida" | "No_Asistida" | "Cancelada";
 
@@ -10,14 +11,14 @@ export class Reservation {
         private _cancelationDate: Date | null,
         private _commensalsNumber: number,
         private _status: EstadoReserva, 
-        private _clientId: string, 
+        private _clientId: UUID, 
         private _table: Table[],    
     ) {}   
 
     public get reserveId(): number {
         return this._reserveId;
     }
-    public get clientId(): string | null {
+    public get clientId(): UUID | null {
         return this._clientId;
     }
     public get cancelationDate(): Date | null {
@@ -39,7 +40,7 @@ export class Reservation {
         return this._table;
     }
 
-    public set clientId(clientId: string) {
+    public set clientId(clientId: UUID) {
         this._clientId = clientId;
     }
     public set cancelationDate(date: Date) {

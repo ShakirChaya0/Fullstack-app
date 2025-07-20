@@ -7,6 +7,7 @@ import { IReservationRepository } from "../../../domain/repositories/IReservatio
 // import { UUID } from "crypto";
 import { EstadoReserva } from "../../../domain/entities/Reservation.js";
 import { Table } from "../../../domain/entities/Table.js";
+import { UUID } from "crypto";
 
 const prisma = new PrismaClient();
 
@@ -30,6 +31,19 @@ type ReservationWithClient = Prisma.ReservaGetPayload<{
 
 export class ReservationRepository implements IReservationRepository {
     async create(reservation: SchemaReservation, clientId: string, tables: Table[]): Promise<Reservation | null> {
+
+      const existingReservation = await prisma.reserva.findFirst({
+        where: {
+          idCliente: clientId, 
+          fechaReserva : reservation.fechaReserva, 
+          horarioReserva: new Date(`2000-01-01T${reservation.horarioReserva}:00Z`)
+        }
+      })
+
+      if(existingReservation){
+        return null
+      }
+
         const createdReservation = await prisma.reserva.create({
         data: {
               fechaReserva: reservation.fechaReserva,
@@ -282,7 +296,7 @@ export class ReservationRepository implements IReservationRepository {
         reservation.fechaCancelacion ?? null,
         reservation.cantidadComensales,
         reservation.estado,
-        reservation.idCliente,
+        reservation.idCliente as UUID,
         mesas
       );
     }
