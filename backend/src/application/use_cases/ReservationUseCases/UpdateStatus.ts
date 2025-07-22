@@ -16,10 +16,13 @@ export class UpdateStatus {
     }
 
     if (reservation.status === 'Cancelada') {
-      throw new BusinessError('La reserva ya está cancelada');
+      throw new BusinessError('No es posible realizar esta acción: la reserva ya se encuentra cancelada.');
     }
     if (reservation.status === 'Asistida') {
-      throw new BusinessError('No se puede cancelar una reserva asistida');
+      throw new BusinessError('La reserva ya fue asistida, por lo que no es posible modificar su estado.');
+    }
+    if (reservation.status === 'No_Asistida') {
+      throw new BusinessError('No se puede cambiar el estado de una reserva marcada como No Asistida.');
     }
 
     const updatedReservation = await this.reservationRepository.updateStatus(reservation.reserveId, status);

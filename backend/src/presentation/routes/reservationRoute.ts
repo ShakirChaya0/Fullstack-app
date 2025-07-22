@@ -7,8 +7,6 @@ export const ReservationRouter = () => {
 
   router.post("/:idCliente", controller.createReservation);
 
-  router.put("/:idReserva", controller.updateReservationData);
-
   router.patch("/:idReserva", controller.updateReservationStatus);
 
   router.get("/:idReserva", controller.getById);
@@ -16,8 +14,6 @@ export const ReservationRouter = () => {
   router.get("/", controller.getByDate);
 
   router.get("/cliente/:clientId", controller.getByClientId);
-
-  router.get("/cliente/:nombre-completo", controller.getByCompleteName);
-
+  
   return router;
 };

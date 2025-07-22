@@ -3,45 +3,24 @@ POST http://localhost:3000/reservas/597984e6-a1fc-46de-aa5d-2cf78c101542
 Content-Type: application/json
 
 {
-    "fechaReserva" : "24/07/2025",
+    "fechaReserva" : "30/07/2025",
     "horarioReserva": "21:00",  
-    "cantidadComensales": 15
+    "cantidadComensales": 13
 }
 
 ### 
-GET http://localhost:3000/reservas/7
+GET http://localhost:3000/reservas/11
 
 ###
-GET http://localhost:3000/reservas?date=2025-07-23
+GET http://localhost:3000/reservas?date=2025-07-19
 
 ###
 GET http://localhost:3000/reservas/cliente/597984e6-a1fc-46de-aa5d-2cf78c101542
 
-### 
-GET http://localhost:3000/reservas/cliente/TomasSussi
-
-// No anda porque ya no esta el Cliente entero en la reserva, solo está el idCliente y no tiene mucho sentido hacer este 
-// endPoint ahora porque para hacerlo tendrías que primero recuperar el cliente con el id y después traer el nombre y apellido
-// Se puede hacer igual, no es muy dificil, pero hay que pensarlo distinto y nose si es necesario porque no se va a usar 
-// Sussi te dejo la decisión, si queres borralo, sino lo hacemos. Después avisame
-
-
-
-### Actualizar reserva completa
-PUT http://localhost:3000/reservas/8
-Content-Type: application/json
-
-{
-  "fechaReserva": "26/07/2025",
-  "horarioReserva": "21:30",
-  "cantidadComensales": 6
-}
-
-
 ### Actualizar solo el estado de la reserva
-PATCH http://localhost:3000/reservas/8
+PATCH http://localhost:3000/reservas/11
 Content-Type: application/json
 
 {
-  "status": "No_Asistida"
+  "status": ""
 }

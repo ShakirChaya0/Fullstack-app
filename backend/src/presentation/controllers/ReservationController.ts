@@ -1,11 +1,9 @@
 import { Request, Response, NextFunction } from "express";
 import { RegisterReservation } from "../../application/use_cases/ReservationUseCases/RegisterReservationUseCase.js";
 import { UpdateStatus } from "../../application/use_cases/ReservationUseCases/UpdateStatus.js";
-import { UpdateReservation } from "../../application/use_cases/ReservationUseCases/UpdateReservation.js";
 import { GetById } from "../../application/use_cases/ReservationUseCases/GetById.js";
 import { GetByDate } from "../../application/use_cases/ReservationUseCases/GetByDate.js";
 import { GetByClientId } from "../../application/use_cases/ReservationUseCases/GetByClienteId.js";
-import { GetByCompleteName } from "../../application/use_cases/ReservationUseCases/GetByCompleteName.js";
 import { validateReservation, validatePartialReservation } from "../../shared/validators/reservationZod.js";
 import { ValidationError } from "../../shared/exceptions/ValidationError.js";
 import { EstadoReserva } from "../../domain/entities/Reservation.js";
@@ -14,37 +12,24 @@ export class ReservationController {
   constructor(
     private readonly registerReservation = new RegisterReservation(),
     private readonly updateStatus = new UpdateStatus(),
-    private readonly updateReservation = new UpdateReservation(),
     private readonly getByIdUseCase = new GetById(),
     private readonly getByDateUseCase = new GetByDate(),
     private readonly getByClientIdUseCase = new GetByClientId(),
-    private readonly getByCompleteNameUseCase = new GetByCompleteName()
   ) {}
 
   public createReservation = async (req: Request, res: Response, next: NextFunction) => {
     try {
+      const { clientId } = req.params;
+      if(!clientId) {
+        throw new ValidationError("Se ingreso un ID válido")
+      }
       const data = validateReservation(req.body);
-      const newReservation = await this.registerReservation.execute(data, req.params.idCliente);
+      const newReservation = await this.registerReservation.execute(data, clientId);
       res.status(201).json(newReservation);
     } catch (error) {
       next(error);
     }
   };
-
-  public updateReservationData = async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const { idReserva } = req.params;
-      if (isNaN(+idReserva)) {
-        throw new ValidationError("El ID ingresado debe ser un número");
-      }
-      const data = validatePartialReservation(req.body);
-      const updatedReservation = await this.updateReservation.execute(+idReserva, data);
-      res.status(200).json(updatedReservation);
-    } catch (error) {
-      next(error);
-    }
-  };
-
 
   public updateReservationStatus = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -65,8 +50,6 @@ export class ReservationController {
       next(error);
     }
   };
-
-
 
   public getById = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -97,6 +80,10 @@ export class ReservationController {
   public getByClientId = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { clientId } = req.params;
+      if(!clientId) {
+        throw new ValidationError("Se ingreso un ID válido")
+      }
+
       const reservations = await this.getByClientIdUseCase.execute(clientId);
       res.status(200).json(reservations);
     } catch (error) {
@@ -104,16 +91,4 @@ export class ReservationController {
     }
   };
 
-  public getByCompleteName = async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const { nombre, apellido } = req.query;
-      if (!nombre || !apellido) {
-        throw new ValidationError("Debe proporcionar nombre y apellido");
-      }
-      const reservations = await this.getByCompleteNameUseCase.execute(nombre as string, apellido as string);
-      res.status(200).json(reservations);
-    } catch (error) {
-      next(error);
-    }
-  };
 }

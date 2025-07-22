@@ -86,23 +86,30 @@ export class TableRepository {
             where: {nroMesa: numTable}
         }); 
     }
-// public async getAvailableTables(reservationDate: Date, reservationTime: string) {
-//   return await prisma.mesa.findMany({
-//     where: {
-//       Mesas_Reservas: {
-//         none: {
-//           Reserva: {
-//             AND: [
-//               { fechaReserva: reservationDate },
-//               { horarioReserva: reservationTime },
-//               { estado: { notIn: ["Cancelada", "No_Asistida"] } },
-//             ]
-//           }
-//         }
-//       }
-//     },
-//     orderBy: { nroMesa: "asc" },
-//   });
-// }
+
+    public async getAvailableTables(reservationDate: Date, reservationTime: string): Promise<Table[]> {
+    const tables = await prisma.mesa.findMany({
+        where: {
+        Mesas_Reservas: {
+            none: {
+            Reserva: {
+                AND: [
+                { fechaReserva: reservationDate },
+                { horarioReserva: new Date(`2000-01-01T${reservationTime}:00Z`) },
+                { estado: { notIn: ["Cancelada", "No_Asistida", "Asistida"] } },
+                ]
+            }
+            }
+        }
+        },
+        orderBy: { capacidad: "desc" },
+    });
+
+    return tables.map(table => new Table (
+                table.nroMesa,
+                table.capacidad,
+                table.estado 
+            ))
+    }
 
 }
