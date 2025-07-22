@@ -8,6 +8,7 @@ import { GetByClientId } from "../../application/use_cases/ReservationUseCases/G
 import { GetByCompleteName } from "../../application/use_cases/ReservationUseCases/GetByCompleteName.js";
 import { validateReservation, validatePartialReservation } from "../../shared/validators/reservationZod.js";
 import { ValidationError } from "../../shared/exceptions/ValidationError.js";
+import { EstadoReserva } from "../../domain/entities/Reservation.js";
 
 export class ReservationController {
   constructor(
@@ -44,6 +45,7 @@ export class ReservationController {
     }
   };
 
+
   public updateReservationStatus = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { idReserva } = req.params;
@@ -51,17 +53,19 @@ export class ReservationController {
         throw new ValidationError("El ID ingresado debe ser un número");
       }
 
-      const { status } = req.body;
-      if (!status) {
+      const { estado } = validatePartialReservation({ estado: req.body.status });
+
+      if (!estado) {
         throw new ValidationError("Debe proporcionar un estado válido");
       }
 
-      const updatedReservation = await this.updateStatus.execute(+idReserva, status);
+      const updatedReservation = await this.updateStatus.execute(+idReserva, estado as EstadoReserva);
       res.status(200).json(updatedReservation);
     } catch (error) {
       next(error);
     }
   };
+
 
 
   public getById = async (req: Request, res: Response, next: NextFunction) => {

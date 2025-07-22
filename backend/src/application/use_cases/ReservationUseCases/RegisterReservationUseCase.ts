@@ -1,4 +1,4 @@
-import { Table } from '../../../domain/entities/Table.js';
+// import { Table } from '../../../domain/entities/Table.js';
 import { ReservationRepository } from '../../../infrastructure/database/repository/ReservationRepository.js';
 import { ClientRepository } from '../../../infrastructure/database/repository/ClientRepository.js';
 import { TableRepository } from '../../../infrastructure/database/repository/TableRepository.js';
@@ -45,14 +45,14 @@ export class RegisterReservation {
       throw new BusinessError('No hay mesas disponibles para la cantidad de comensales');
     }
 
+    const existingReservation = await this.reservationRepository.getExistingReservation(clientId,data); 
+
+    if(existingReservation) {
+      throw new BusinessError('Usted ya tiene una reserva para esa fecha y ese horario');
+    }
 
 
     const newReservation = await this.reservationRepository.create(data,clientId,availableTables);
-
-    if(!newReservation) {
-      throw new BusinessError('Usted ya tiene una reserva para esa fecha y ese horario')
-    }
-
     return newReservation;
   }
 }

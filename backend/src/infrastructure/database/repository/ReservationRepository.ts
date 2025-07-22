@@ -30,21 +30,38 @@ type ReservationWithClient = Prisma.ReservaGetPayload<{
 
 
 export class ReservationRepository implements IReservationRepository {
-    async create(reservation: SchemaReservation, clientId: string, tables: Table[]): Promise<Reservation | null> {
 
-      const existingReservation = await prisma.reserva.findFirst({
+  async getExistingReservation(clientId: string, reservation: SchemaReservation): Promise<Reservation | null> {
+    const existingReservation = await prisma.reserva.findFirst({
         where: {
           idCliente: clientId, 
           fechaReserva : reservation.fechaReserva, 
           horarioReserva: new Date(`2000-01-01T${reservation.horarioReserva}:00Z`)
-        }
-      })
+        }, 
+        include: {
+          Clientes: {
+            include: {
+              Usuarios: true, 
+              EstadosCliente: true, 
+                  Reserva: true,
+                },
+              },
+              Mesas_Reservas: {
+                include: {
+                  Mesa: true
+                },
+              },
+            },
+      }); 
 
-      if(existingReservation){
-        return null
+      if(existingReservation) {
+        return this.toDomainEntity(existingReservation)
       }
+      return null
+  }
 
-        const createdReservation = await prisma.reserva.create({
+    async create(reservation: SchemaReservation, clientId: string, tables: Table[]): Promise<Reservation | null> {
+      const createdReservation = await prisma.reserva.create({
         data: {
               fechaReserva: reservation.fechaReserva,
               horarioReserva: new Date(`2000-01-01T${reservation.horarioReserva}:00Z`),
@@ -175,12 +192,9 @@ export class ReservationRepository implements IReservationRepository {
         const updatedReservation = await prisma.reserva.update({
             where: { idReserva: id},
             data: {
-                fechaCancelacion: reservation.fechaCancelacion,
                 fechaReserva: reservation.fechaReserva,
                 horarioReserva: new Date(`2000-01-01T${reservation.horarioReserva}:00Z`),
                 cantidadComensales: reservation.cantidadComensales,
-                estado: reservation.estado === "No Asistida" ? "No_Asistida" : reservation.estado,
-
             },
             include: { 
               Clientes: {
@@ -292,7 +306,7 @@ export class ReservationRepository implements IReservationRepository {
       return new Reservation(
         reservation.idReserva,
         reservation.fechaReserva,
-        reservation.horarioReserva.toTimeString().substring(0, 5),
+        reservation.horarioReserva.toISOString().slice(11, 16),
         reservation.fechaCancelacion ?? null,
         reservation.cantidadComensales,
         reservation.estado,

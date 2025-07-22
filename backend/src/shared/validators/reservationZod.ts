@@ -44,7 +44,7 @@ const ReservationSchema = z.object({
     .min(1, "El número de comensales debe ser al menos 1")
     .max(50, "El número de comensales no puede superar 50"),
 
-  estado: z.enum(["Realizada", "Asistida", "No Asistida", "Cancelada"]).optional()
+  estado: z.enum(["Realizada", "Asistida", "No_Asistida", "Cancelada"]).optional()
 });
 
 export type SchemaReservation = z.infer<typeof ReservationSchema>;

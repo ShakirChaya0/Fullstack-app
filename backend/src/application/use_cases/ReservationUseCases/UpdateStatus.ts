@@ -1,7 +1,7 @@
 import { ReservationRepository } from '../../../infrastructure/database/repository/ReservationRepository.js';
 import { Reservation } from '../../../domain/entities/Reservation.js';
 import { BusinessError } from '../../../shared/exceptions/BusinessError.js';
-import { EstadoReserva } from '@prisma/client';
+import { EstadoReserva } from '../../../domain/entities/Reservation.js';
 
 
 export class UpdateStatus {
