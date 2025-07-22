@@ -10,12 +10,12 @@ POST http://localhost:3000/mesas/
 Content-Type: application/json
 
 {
-    "capacidad" : 9,
+    "capacidad" : 10,
     "estado" :"Libre"
 }
 
 ###
-PATCH http://localhost:3000/mesas/nromesa/2
+PATCH http://localhost:3000/mesas/nromesa/3
 Content-Type: application/json
 
 {
@@ -23,4 +23,4 @@ Content-Type: application/json
 }
 
 ###
-DELETE http://localhost:3000/mesas/nromesa/2
+DELETE http://localhost:3000/mesas/nromesa/6

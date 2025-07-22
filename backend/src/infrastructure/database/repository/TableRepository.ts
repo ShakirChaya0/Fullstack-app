@@ -1,7 +1,7 @@
-import { Mesa, PrismaClient } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
 import { Table } from "../../../domain/entities/Table.js";
-import { schemaTable, SchemaPartialTable } from "../../../shared/validators/tableZod.js";
-import { NotFoundError } from "../../../shared/exceptions/NotFoundError.js";
+import { schemaTable } from "../../../shared/validators/tableZod.js";
+import { estadoMesa } from "../../../domain/interfaces/tableInterface.js";
 
 
 const prisma = new PrismaClient;
@@ -18,13 +18,13 @@ export class TableRepository {
         )
     }
 
-    public async getByNumTable (numTable: number) : Promise<Table> {
+    public async getByNumTable (numTable: number) : Promise<Table | null> {
         const table = await prisma.mesa.findUnique({
             where: {nroMesa: numTable}
         }); 
 
         if(!table) {
-            throw new NotFoundError(`No se encontro un la mesa con el numero de mesa: ${numTable}`);
+            return null;
         }
 
         return new Table (
@@ -67,11 +67,11 @@ export class TableRepository {
         return new Table(newTable.nroMesa,newTable.capacidad,newTable.estado);
     } 
 
-    public async updateTable(numTable:number, table: SchemaPartialTable ) : Promise<Table> {
+    public async updateTable(numTable:number, stateTable: estadoMesa ) : Promise<Table> {
         const updatedTable = await prisma.mesa.update({
             where: { nroMesa: numTable },
             data: {
-                ...table
+                estado : stateTable
             }
         });
         return new Table (
@@ -81,14 +81,10 @@ export class TableRepository {
         )
     }
 
-    public async deleteTable(numTable: number): Promise<{ message: string }> {
-        const deleteTable = await prisma.mesa.delete({
+    public async deleteTable(numTable: number): Promise<void> {
+        await prisma.mesa.delete({
             where: {nroMesa: numTable}
         }); 
-        if (!deleteTable) {
-            throw new NotFoundError("Mesa no encontrada");
-        }
-        return { message: `Mesa con el numero ${numTable} eliminado correctamente` };
     }
 // public async getAvailableTables(reservationDate: Date, reservationTime: string) {
 //   return await prisma.mesa.findMany({

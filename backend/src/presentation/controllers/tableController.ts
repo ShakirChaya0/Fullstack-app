@@ -59,8 +59,8 @@ export class TableController {
             }
 
             const data = req.body; 
-            const result = validatePartialTable(data);
-            const updateTable = await this.updateTable.execute(+numTable,result); 
+            const validatioState = validatePartialTable(data);
+            const updateTable = await this.updateTable.execute(+numTable, validatioState.estado); 
             res.status(200).json(updateTable);
         } catch (error) {
             next(error);
@@ -74,8 +74,8 @@ export class TableController {
             if(!nroMesa || isNaN(+nroMesa)){
                 throw new ValidationError("El numero de la mesa debe ser un entero");
             }
-            const deletedTable = await this.deletedTable.execute(+nroMesa);
-            res.status(200).json(deletedTable);
+            await this.deletedTable.execute(+nroMesa);
+            res.status(204).json({message: "Mesa eliminada exitosamente"});
         } catch (error) {
             next(error);
         }

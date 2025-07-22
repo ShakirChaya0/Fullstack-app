@@ -18,11 +18,14 @@ export function validateTable(data: Table) {
     return result.data;
 }
 
-const schemaTablePartial = tableSchema.partial(); 
-export type SchemaPartialTable = z.infer<typeof schemaTablePartial>; 
+const schemaTablePartial = z.object({
+    estado : z.enum(["Libre", "Ocupado", "Reservado"])
+})
+
+export type schemaTablePartial = z.infer<typeof schemaTablePartial> 
 
 export function validatePartialTable (data: Partial<Table>) {
-    const result = tableSchema.partial().safeParse(data);
+    const result = schemaTablePartial.safeParse(data);
     if (!result.success) {
         throw new Error(
             JSON.stringify(result.error.flatten().fieldErrors)
