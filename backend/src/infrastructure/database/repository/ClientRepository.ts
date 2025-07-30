@@ -5,22 +5,46 @@ import { SchemaCliente, PartialClientSchema } from "../../../shared/validators/c
 import { ConflictError } from "../../../shared/exceptions/ConflictError.js";
 import { ServiceError } from "../../../shared/exceptions/ServiceError.js";
 import { ClientState } from "../../../domain/entities/ClientState.js";
+import { Reservation } from "../../../domain/entities/Reservation.js";
+import { Table } from "../../../domain/entities/Table.js";
 
 
 
 type ClientWithUsuario = Prisma.ClientesGetPayload<{
-    include: { Usuarios: true , EstadosCliente: true};
+    include: {
+        Usuarios: true , 
+        EstadosCliente: true,
+        Reserva: {
+            include : {
+                Mesas_Reservas: {
+                    include: {
+                        Mesa:true
+                    }
+                }
+            }
+        }
+    };
 }>;
 
 const prisma = new PrismaClient();
-
 
 export class ClientRepository {
     public async getAllClient() : Promise<Client[]> {
         const clients = await prisma.clientes.findMany({
             include: {
                 Usuarios: true,
-                EstadosCliente: true
+                EstadosCliente: true,
+                Reserva: {
+                    include: {
+                        Mesas_Reservas: 
+                            {
+                                include:
+                                    {
+                                        Mesa:true
+                                    }
+                            }
+                    }
+                }
             }
         }); 
         return clients.map((client) => { return this.toDomainEntity(client) });
@@ -28,8 +52,24 @@ export class ClientRepository {
 
     public async getClientByidUser (id: string): Promise <Client | null> {
         const client = await prisma.clientes.findUnique({
-            where: {idCliente : id},
-            include: {Usuarios:true, EstadosCliente: true}
+            where: {
+                idCliente : id
+            },
+            include: {
+                Usuarios: true,
+                EstadosCliente: true,
+                Reserva: {
+                    include: {
+                        Mesas_Reservas: 
+                            {
+                                include:
+                                    {
+                                        Mesa:true
+                                    }
+                            }
+                    }
+                }
+            }
         });
 
         if(!client) {
@@ -39,13 +79,31 @@ export class ClientRepository {
         return this.toDomainEntity(client);
     }
 
-    public async getClientByUserName(userName: string) : Promise<Client | null> {
+    public async getClientByNameAndLastname(name: string, lastname: string) : Promise<Client | null> {
         const clientFound = await prisma.clientes.findFirst({
-            where: {
-                Usuarios: {nombreUsuario: userName}
-            }, 
-            include: {Usuarios:true, EstadosCliente: true}
-        }); 
+                where: {
+                    nombre: name,
+                    apellido: lastname,
+                },
+                include: {
+                    Usuarios: true,
+                    EstadosCliente: true,
+                Reserva: {
+                        where: {
+                            fechaReserva: {
+                                gte: new Date()
+                            },
+                        },
+                        include: {
+                            Mesas_Reservas: {
+                                include: {
+                                    Mesa: true,
+                                },
+                            },
+                        },
+                    },
+                },
+});
 
         if(!clientFound) {
             return null; 
@@ -70,7 +128,21 @@ export class ClientRepository {
                         }
                     }
                 },
-                include: { Usuarios: true , EstadosCliente: true}
+                include: {
+                Usuarios: true,
+                EstadosCliente: true,
+                Reserva: {
+                    include: {
+                        Mesas_Reservas: 
+                            {
+                                include:
+                                    {
+                                        Mesa:true
+                                    }
+                            }
+                    }
+                }
+            }
             });
             return this.toDomainEntity(newClient);
         }
@@ -92,12 +164,43 @@ export class ClientRepository {
             data: {
                 ...data
             }, 
-            include: { Usuarios:true, EstadosCliente: true}
+            include: {
+                Usuarios: true,
+                EstadosCliente: true,
+                Reserva: {
+                    include: {
+                        Mesas_Reservas: 
+                            {
+                                include:
+                                    {
+                                        Mesa:true
+                                    }
+                            }
+                    }
+                }
+            }
         }); 
         return this.toDomainEntity(updatedClient);
     }
 
     private toDomainEntity(client: ClientWithUsuario): Client {
+
+        const reservations = client.Reserva.map(reservation => {
+            return new Reservation(
+                reservation.idReserva, 
+                reservation.fechaReserva,
+                reservation.horarioReserva.toISOString().slice(11, 16), 
+                reservation.fechaCancelacion, 
+                reservation.cantidadComensales, 
+                reservation.estado, 
+                reservation.idCliente as UUID, 
+                reservation.Mesas_Reservas.map(table => new Table (
+                    table.Mesa.nroMesa, 
+                    table.Mesa.capacidad, 
+                    table.Mesa.estado
+                ))
+            )
+        })
 
         const estados = client.EstadosCliente.map( state => { 
             return new ClientState(state.fechaActualizacion, state.estado)
@@ -114,7 +217,7 @@ export class ClientRepository {
             client.telefono, 
             client.fechaNacimiento,
             estados, 
-            []
+            reservations
         );  
     }
 

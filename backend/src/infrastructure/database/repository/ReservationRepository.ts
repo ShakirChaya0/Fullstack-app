@@ -1,15 +1,15 @@
 import { PrismaClient,Prisma } from "@prisma/client";
 import { Reservation } from "../../../domain/entities/Reservation.js";
-import { PartialSchemaReservation, SchemaReservation } from "../../../shared/validators/reservationZod.js";
-import { IReservationRepository } from "../../../domain/repositories/IReservationRepository.js";
-import { EstadoReserva } from "../../../domain/entities/Reservation.js";
+import { SchemaReservation } from "../../../shared/validators/reservationZod.js";
+// import { IReservationRepository } from "../../../domain/repositories/IReservationRepository.js";
+import { StateReservation } from "../../../domain/entities/Reservation.js";
 import { Table } from "../../../domain/entities/Table.js";
-import { UUID } from "crypto";
+import { ClientPublicInfo } from "../../../domain/repositories/IClientPublicInfo.js";
 
 const prisma = new PrismaClient();
 
 type ReservationWithClient = Prisma.ReservaGetPayload<{
-  include: { 
+  include: {
     Clientes: {
       include: {
         Usuarios: true,
@@ -26,7 +26,7 @@ type ReservationWithClient = Prisma.ReservaGetPayload<{
 }>;
 
 
-export class ReservationRepository implements IReservationRepository {
+export class ReservationRepository  {
   public async getExistingReservation(clientId: string, reservation: SchemaReservation): Promise<Reservation | null> {
     const existingReservation = await prisma.reserva.findFirst({
         where: {
@@ -152,7 +152,7 @@ export class ReservationRepository implements IReservationRepository {
     return reservations.map(reservation => this.toDomainEntity(reservation));
   }
 
-  public async updateStatus(id: number, status: EstadoReserva): Promise<Reservation> {
+  public async updateStatus(id: number, status: StateReservation): Promise<Reservation> {
     const updatedReservation = await prisma.reserva.update({
           where: { idReserva: id },
           data: {
@@ -198,11 +198,49 @@ export class ReservationRepository implements IReservationRepository {
     return reservations.map((reservation) => this.toDomainEntity(reservation));
   }
 
+  public async getReservationByNameAndLastnameClient(name: string, lastname:string): Promise<Reservation[]> {
+    const reservations: ReservationWithClient[] = await prisma.reserva.findMany({
+            where: {
+              fechaReserva: new Date(),
+              Clientes: {
+                  nombre: name,
+                  apellido: lastname
+                }
+            },
+            include: {
+                Clientes: {
+                  include: {
+                    Usuarios: true,
+                    EstadosCliente: true,
+                    Reserva: true
+                  }
+                },
+              Mesas_Reservas: {
+                include: {
+                    Mesa: true
+                  }
+                }
+            }
+        });
+    return reservations.map((reservation) => this.toDomainEntity(reservation));
+  }
+
+
+
+
+
   private toDomainEntity(reservation: ReservationWithClient): Reservation {
-    const mesas: Table[] = reservation.Mesas_Reservas.map((mr) => {
-      const mesa = mr.Mesa;
-      return new Table(mesa.nroMesa, mesa.capacidad, mesa.estado); 
+    const tables: Table[] = reservation.Mesas_Reservas.map((mr) => {
+      const table = mr.Mesa;
+      return new Table(table.nroMesa, table.capacidad, table.estado); 
     });
+
+    const clientPublicInfo: ClientPublicInfo = {
+      nombre: reservation.Clientes.nombre, 
+      apellido: reservation.Clientes.apellido, 
+      telefono: reservation.Clientes.telefono
+    }
+
     return new Reservation(
       reservation.idReserva,
       reservation.fechaReserva,
@@ -210,8 +248,8 @@ export class ReservationRepository implements IReservationRepository {
       reservation.fechaCancelacion ?? null,
       reservation.cantidadComensales,
       reservation.estado,
-      reservation.idCliente as UUID,
-      mesas
+      clientPublicInfo,
+      tables
     );
   }
 }

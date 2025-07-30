@@ -15,5 +15,7 @@ export const ReservationRouter = () => {
 
   router.get("/cliente/:clientId", controller.getByClientId);
   
+  router.get("/",controller.getReservationByNameClient)
+
   return router;
 };

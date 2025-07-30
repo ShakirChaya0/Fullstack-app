@@ -5,8 +5,9 @@ import { GetById } from "../../application/use_cases/ReservationUseCases/GetById
 import { GetByDate } from "../../application/use_cases/ReservationUseCases/GetByDate.js";
 import { GetByClientId } from "../../application/use_cases/ReservationUseCases/GetByClienteId.js";
 import { validateReservation, validatePartialReservation } from "../../shared/validators/reservationZod.js";
+import { CUU01RegisterAttendance } from "../../application/use_cases/ReservationUseCases/CUU01RegisterAttendance.js";
 import { ValidationError } from "../../shared/exceptions/ValidationError.js";
-import { EstadoReserva } from "../../domain/entities/Reservation.js";
+import { StateReservation } from "../../domain/entities/Reservation.js";
 
 export class ReservationController {
   constructor(
@@ -15,6 +16,7 @@ export class ReservationController {
     private readonly getByIdUseCase = new GetById(),
     private readonly getByDateUseCase = new GetByDate(),
     private readonly getByClientIdUseCase = new GetByClientId(),
+    private readonly cuu01RegisterAttendance = new CUU01RegisterAttendance()
   ) {}
 
   public createReservation = async (req: Request, res: Response, next: NextFunction) => {
@@ -44,7 +46,7 @@ export class ReservationController {
         throw new ValidationError("Debe proporcionar un estado válido");
       }
 
-      const updatedReservation = await this.updateStatus.execute(+idReserva, estado as EstadoReserva);
+      const updatedReservation = await this.updateStatus.execute(+idReserva, estado as StateReservation);
       res.status(200).json(updatedReservation);
     } catch (error) {
       next(error);
@@ -89,6 +91,23 @@ export class ReservationController {
     } catch (error) {
       next(error);
     }
+  };
+
+  public getReservationByNameClient = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { name, lastname} = req.query; 
+    
+      if(typeof name !== 'string' || typeof lastname !== 'string' ) {
+        throw new ValidationError('Debe enviar un nombre y apellido valido'); 
+      }
+
+      const reservation = await this.cuu01RegisterAttendance.execute(name , lastname); 
+      res.status(200).json(reservation);
+    } 
+    catch (error) {
+      next(error);
+    }
+
   };
 
 }

@@ -1,7 +1,7 @@
 import { Table } from "./Table.js";
-import {UUID} from "crypto";
+import { ClientPublicInfo } from "../repositories/IClientPublicInfo.js";
 
-export type EstadoReserva = "Realizada" | "Asistida" | "No_Asistida" | "Cancelada";
+export type StateReservation = "Realizada" | "Asistida" | "No_Asistida" | "Cancelada";
 
 export class Reservation {
     constructor(
@@ -10,17 +10,15 @@ export class Reservation {
         private _reserveTime: string,
         private _cancelationDate: Date | null,
         private _commensalsNumber: number,
-        private _status: EstadoReserva, 
-        private _clientId: UUID, 
+        private _status: StateReservation, 
+        private _clientPublicInfo: ClientPublicInfo,
         private _table: Table[],    
     ) {}   
 
     public get reserveId(): number {
         return this._reserveId;
     }
-    public get clientId(): UUID | null {
-        return this._clientId;
-    }
+
     public get cancelationDate(): Date | null {
         return this._cancelationDate;
     }
@@ -33,16 +31,13 @@ export class Reservation {
     public get commensalsNumber(): number {
         return this._commensalsNumber;
     }
-    public get status(): EstadoReserva {
+    public get status(): StateReservation {
         return this._status;
     }
     public get table(): Table[] {
         return this._table;
     }
 
-    public set clientId(clientId: UUID) {
-        this._clientId = clientId;
-    }
     public set cancelationDate(date: Date) {
         this._cancelationDate = date;
     }
@@ -55,10 +50,18 @@ export class Reservation {
     public set commensalsNumber(number: number) {
         this._commensalsNumber = number;
     }
-    public set status(status: EstadoReserva) {
+    public set status(status: StateReservation) {
         this._status = status;
     }
     public set table(table: Table) {
         this._table.push(table);   
+    }
+
+    public get toPublicInfo() : ClientPublicInfo {
+        return {
+            nombre: this._clientPublicInfo.nombre, 
+            apellido: this._clientPublicInfo.apellido, 
+            telefono:this._clientPublicInfo.telefono
+        }   
     }
 }

@@ -3,7 +3,7 @@ import { GetClientUseCase } from "../../application/use_cases/ClientUseCases/Get
 import { ValidationError } from "../../shared/exceptions/ValidationError.js";
 import { GetClientByIdUser } from "../../application/use_cases/ClientUseCases/GetClientByIdUser.js";
 import { validateClient, validateClientPartial } from "../../shared/validators/clientZod.js";
-import { GetClientByIdUserName } from "../../application/use_cases/ClientUseCases/GetClientByUserName.js";
+import { GetClientByIdUserName } from "../../application/use_cases/ClientUseCases/GetClientByNameAndLastname.js";
 import { RegisterClientUseCase } from "../../application/use_cases/ClientUseCases/RegisterClientUseCase.js";
 import { UpdateClientUseCase } from "../../application/use_cases/ClientUseCases/UpdateClientUseCase.js";
 

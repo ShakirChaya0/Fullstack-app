@@ -8,7 +8,7 @@ export class GetClientByIdUserName {
     ){}
 
     public async execute(usern: string): Promise<Client> {
-        const client = await this.clientRepository.getClientByUserName(usern); 
+        const client = await this.clientRepository.getClientByNameAndLastname(); 
         if(!client) {
             throw new NotFoundError('Cliente no encontrado');
         }
