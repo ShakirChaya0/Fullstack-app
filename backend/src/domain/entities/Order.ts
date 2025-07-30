@@ -1,6 +1,8 @@
-import { UUID } from "crypto";
+import { WaiterPublicInfo } from "../interfaces/waiterPublicInfo.js";
+import { OrderLine } from "./OrderLine.js";
+import { Table } from "./Table.js";
 
-export type OrderStatus = 'Solicitado' | 'En Preparación' | 'Completado' | 'Pendiente De Pago' | 'Pagado';
+export type OrderStatus = 'Solicitado' | 'En_Preparacion' | 'Completado' | 'Pendiente_De_Pago' | 'Pendiente_De_Cobro' | 'Pagado';
 
 export class Order {
     constructor(
@@ -9,8 +11,9 @@ export class Order {
         private _estado: OrderStatus,
         private _cantCubiertos: number,
         private _observaciones: string,
-        private _nroMesa: number,
-        private _idMozo: UUID
+        private _orderLines: OrderLine[],
+        private _table?: Table,
+        private _waiter?: WaiterPublicInfo
     ) {} 
 
     get idPedido(): number {
@@ -33,12 +36,16 @@ export class Order {
         return this._observaciones;
     }
 
-    get nroMesa(): number {
-        return this._nroMesa;
+    get table(): Table | undefined {
+        return this._table;
     }
 
-    get idMozo(): UUID {
-        return this._idMozo;
+    get waiter(): WaiterPublicInfo | undefined {
+        return this._waiter;
+    }
+
+    get orderLines(): OrderLine[] {
+        return this._orderLines;
     }
 
     set horaInicio(horaInicio: string) {
@@ -56,5 +63,4 @@ export class Order {
     set observaciones(observaciones: string) {
         this._observaciones = observaciones;
     }
-
 }

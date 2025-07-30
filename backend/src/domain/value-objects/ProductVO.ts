@@ -1,28 +1,21 @@
-import { Decimal } from "@prisma/client/runtime/library";
 import { FoodType } from "../entities/Product.js";
-
 
 export class ProductoVO {
     constructor(
         private _nombreProducto: string,
-        private _monto: Decimal,
-        private _tipoComida: FoodType
+        private _monto: number,
+        private _tipoComida: FoodType | null
     ) {}
 
     get nombreProducto(): string {
         return this._nombreProducto;
     }
 
-    get monto(): Decimal {
+    get monto(): number {
         return this._monto;
     }
 
-    get tipoComida(): FoodType {
+    get tipoComida(): FoodType | null {
         return this._tipoComida;
-    }
-
-    set nombreProducto(nombreProducto: string) { this._nombreProducto = nombreProducto; }
-    set monto(monto: Decimal) { this._monto = monto; }
-    set tipoComida(tipoComida: FoodType) { this._tipoComida = tipoComida; }
-    
+    }    
 }
