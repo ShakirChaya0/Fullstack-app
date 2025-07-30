@@ -188,14 +188,15 @@ enum EstadoCliente {
 
 enum estadoLP {
   Pendiente
-  En_Preparaci_n @map("En Preparación")
+  En_Preparacion @map("En Preparacion")
   Terminada
 }
 
 enum estadoPedido {
   Solicitado
-  En_Preparaci_n    @map("En Preparación")
+  En_Preparacion     @map("En Preparacion")
   Completado
-  Pendiente_De_Pago @map("Pendiente De Pago")
+  Pendiente_De_Pago  @map("Pendiente De Pago")
   Pagado
+  Pendiente_De_Cobro @map("Pendiente De Cobro")
 }

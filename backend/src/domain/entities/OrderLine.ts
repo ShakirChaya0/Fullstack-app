@@ -1,33 +1,27 @@
 import { ProductoVO } from "../value-objects/ProductVO.js";
-
-export type OrderLineStatus = 'Pendiente' | 'En Preparación' | 'Terminada';
+export type OrderLineStatus = 'Pendiente' | 'En_Preparacion' | 'Terminada';
 
 export class OrderLine {
     constructor (
-        private readonly _idPedido: number,
-        private readonly _nroLinea: number,
-        private _estado: OrderLineStatus,
-        private _cantidad: number,
-        private _productoVO: ProductoVO
+        private readonly _lineNumber: number,
+        private _state: OrderLineStatus,
+        private _amount: number,
+        private _productVO: ProductoVO
     ){}
-
-    get idPedido(): number {
-        return this._idPedido;
-    }
-
+    
     get nroLinea(): number {
-        return this._nroLinea;
+        return this._lineNumber;
     }
 
     get estado(): OrderLineStatus {
-        return this._estado;
+        return this._state;
     }
 
     get cantidad(): number {
-        return this._cantidad;
+        return this._amount;
     }
 
-    get productoVO(): any { // Cambiar
-        return this._productoVO;
+    get productoVO(): ProductoVO { 
+        return this._productVO;
     }
 }

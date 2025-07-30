@@ -2,6 +2,7 @@ import { UUID } from "crypto";
 import { ValidateWaiter, ValidateWaiterPartial } from "../../shared/validators/waiterZod.js";
 import { User } from "./User.js";
 import { TipoUsuario_Type } from "@prisma/client";
+import { WaiterPublicInfo } from "../interfaces/waiterPublicInfo.js";
 
 export class Waiter extends User {
     constructor(
@@ -62,4 +63,7 @@ export class Waiter extends User {
         this._email = email;
     }
 
+    public toPublicInfo(): WaiterPublicInfo {
+        return { nombre: this._name, apellido: this._lastName, username: this._userName };
+    }
 }
