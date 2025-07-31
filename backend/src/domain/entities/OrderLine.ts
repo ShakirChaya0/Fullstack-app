@@ -4,17 +4,17 @@ export type OrderLineStatus = 'Pendiente' | 'En_Preparacion' | 'Terminada';
 export class OrderLine {
     constructor (
         private readonly _lineNumber: number,
-        private _state: OrderLineStatus,
+        private _status: OrderLineStatus,
         private _amount: number,
         private _productVO: ProductoVO
     ){}
     
-    get nroLinea(): number {
+    get lineNumber(): number {
         return this._lineNumber;
     }
 
-    get estado(): OrderLineStatus {
-        return this._state;
+    get status(): OrderLineStatus {
+        return this._status;
     }
 
     get cantidad(): number {

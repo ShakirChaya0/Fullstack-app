@@ -2,20 +2,20 @@ import { FoodType } from "../entities/Product.js";
 
 export class ProductoVO {
     constructor(
-        private _nombreProducto: string,
-        private _monto: number,
-        private _tipoComida: FoodType | null
+        private _productName: string,
+        private _amount: number,
+        private _foodType: FoodType | null
     ) {}
 
-    get nombreProducto(): string {
-        return this._nombreProducto;
+    get productName(): string {
+        return this._productName;
     }
 
-    get monto(): number {
-        return this._monto;
+    get amount(): number {
+        return this._amount;
     }
 
-    get tipoComida(): FoodType | null {
-        return this._tipoComida;
+    get foodType(): FoodType | null {
+        return this._foodType;
     }    
 }

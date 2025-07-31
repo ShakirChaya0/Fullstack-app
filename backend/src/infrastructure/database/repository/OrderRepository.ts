@@ -7,6 +7,8 @@ import { UUID } from "crypto";
 import { OrderLine } from "../../../domain/entities/OrderLine.js";
 import { ProductoVO } from "../../../domain/value-objects/ProductVO.js";
 import { FoodType } from "../../../domain/entities/Product.js";
+import { OrderSchema } from "../../../shared/validators/orderZod.js";
+import { NotFoundError } from "../../../shared/exceptions/NotFoundError.js";
 
 const prisma = new PrismaClient();
 
@@ -15,6 +17,51 @@ type OrderWithAll = Prisma.PedidoGetPayload<{
 }>;
 
 export class OrderRepository implements IOrderRepository {
+
+    public async create(order: OrderSchema, waiterId: string, tableNumber: number): Promise<Order | null>{
+        const waiter = await prisma.mozos.findUnique({
+            where: { idMozo: waiterId },
+            include: { Usuarios: true }
+        });
+        if (!waiter) {
+            throw new NotFoundError("Mozo no encontrado");
+        }
+        const table = await prisma.mesa.findUnique({
+            where: {nroMesa: tableNumber}
+        }); 
+
+        if(!table) {
+            throw new NotFoundError(`No se encontro un la mesa con el numero de mesa: ${tableNumber}`);
+        }
+        const createdOrder = await prisma.pedido.create({
+        data: {
+            horaInicio:  new Date().toTimeString().split(' ')[0],
+            estado: 'Solicitado',
+            cantCubiertos: order.cantidadCubiertos,
+            observaciones: order.observacion,
+            nroMesa: tableNumber,
+            idMozo: waiterId,
+            Linea_De_Pedido: {
+            create: order.items.map(linea => ({
+                nombreProducto: linea.nombre,
+                monto: linea.monto,
+                estado: 'Pendiente',
+                cantidad: linea.cantidad,
+                tipoComida: linea.tipo
+            }))
+            }
+        },
+        include: {
+            Mesa: true,
+            Linea_De_Pedido: true,
+            Mozos: { 
+                include: { Usuarios: true } 
+            }
+        }
+        });
+    return this.toDomainEntity(createdOrder)
+    }
+    
     
     public async getOne(id: number): Promise<Order | null> {
         const order = await prisma.pedido.findUnique({
@@ -35,7 +82,7 @@ export class OrderRepository implements IOrderRepository {
 
     public async changeState(order: Order, state: OrderStatus): Promise<void> {
         await prisma.pedido.update({
-            where: { idPedido: order.idPedido },
+            where: { idPedido: order.orderId },
             data: { estado: state }
         });
     }

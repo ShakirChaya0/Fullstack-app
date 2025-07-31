@@ -6,34 +6,34 @@ export type OrderStatus = 'Solicitado' | 'En_Preparacion' | 'Completado' | 'Pend
 
 export class Order {
     constructor(
-        private readonly _idPedido: number,
-        private _horaInicio: string,
-        private _estado: OrderStatus,
-        private _cantCubiertos: number,
-        private _observaciones: string,
+        private readonly _orderId: number,
+        private _startHour: string,
+        private _status: OrderStatus,
+        private _cutleryAmount: number,
+        private _observation: string,
         private _orderLines: OrderLine[],
         private _table?: Table,
         private _waiter?: WaiterPublicInfo
     ) {} 
 
-    get idPedido(): number {
-        return this._idPedido;
+    get orderId(): number {
+        return this._orderId;
     }
 
-    get horaInicio(): string {
-        return this._horaInicio;
+    get startHour(): string {
+        return this._startHour;
     }
 
-    get estado(): OrderStatus {
-        return this._estado;
+    get status(): OrderStatus {
+        return this._status;
     }
 
-    get cantCubiertos(): number {
-        return this._cantCubiertos;
+    get cutleryAmount(): number {
+        return this._cutleryAmount;
     }
 
-    get observaciones(): string {
-        return this._observaciones;
+    get observation(): string {
+        return this._observation;
     }
 
     get table(): Table | undefined {
@@ -48,19 +48,19 @@ export class Order {
         return this._orderLines;
     }
 
-    set horaInicio(horaInicio: string) {
-        this._horaInicio = horaInicio;
+    set startHour(startHour: string) {
+        this._startHour = startHour;
     }
 
-    set estado(estado: OrderStatus) {
-        this._estado = estado;
+    set status(status: OrderStatus) {
+        this._status = status;
     }
 
-    set cantCubiertos(cantCubiertos: number) {
-        this._cantCubiertos = cantCubiertos;
+    set cutleryAmount(cutleryAmount: number) {
+        this._cutleryAmount = cutleryAmount;
     }
 
-    set observaciones(observaciones: string) {
-        this._observaciones = observaciones;
+    set observation(observation: string) {
+        this._observation = observation;
     }
 }

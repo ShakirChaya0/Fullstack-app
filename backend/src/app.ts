@@ -18,6 +18,7 @@ import cookieParser from 'cookie-parser'
 import { AuthRouter } from './presentation/routes/authRoute.js'
 import { AuthMiddleware } from './presentation/middlewares/AuthMiddleware.js'
 import { PaymentRouter } from './presentation/routes/PaymentRoute.js'
+import { OrderRouter } from './presentation/routes/orderRoute.js'
 
 const app = express()
 
@@ -56,6 +57,8 @@ app.use('/administradores', adminRouter())
 app.use("/cocina", KitchenRouter())
 
 app.use("/pagos", PaymentRouter())
+
+app.use("/pedidos", OrderRouter())
 
 app.use((req, res, next) => {
     const error =  new NotFoundError("Endpoint not found");
