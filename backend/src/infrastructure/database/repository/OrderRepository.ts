@@ -35,7 +35,7 @@ export class OrderRepository implements IOrderRepository {
 
     public async changeState(order: Order, state: OrderStatus): Promise<void> {
         await prisma.pedido.update({
-            where: { idPedido: order.idPedido },
+            where: { idPedido: order.orderId },
             data: { estado: state }
         });
     }

@@ -5,29 +5,23 @@ import { Check, CheckLine, PedidoCheck } from "../../domain/value-objects/Check.
 
 export class CheckService {
     public generate(order: Order, information: Information, policy: Policy) {
-        const totalCubiertos = policy.montoCubiertosPorPersona * order.cantCubiertos;
+        const totalCubiertos = order.calculateCutleryTotal(policy.montoCubiertosPorPersona);
         
         const lines = order.orderLines.map((ol) => {
-            const importe = ol.cantidad * ol.productoVO.monto;
+            const importe = ol.calculateSubtotal();
             const checkLine: CheckLine = {
-                nombreProducto: ol.productoVO.nombreProducto,
-                cantidad: ol.cantidad,
-                montoUnitario: ol.productoVO.monto,
+                nombreProducto: ol.productoVO.productName,
+                cantidad: ol.amount,
+                montoUnitario: ol.productoVO.amount,
                 importe
             }
             return checkLine;
         })
         
-        let subtotal = 0;
-        lines.forEach(l => {
-            subtotal += l.importe;
-        });
-
-        const importeImpuestos = subtotal * (policy.porcentajeIVA / 100);
-        const total = subtotal + importeImpuestos;
+        const { subtotal, importeImpuestos, total } = order.calculateTotal(policy.porcentajeIVA);
 
         const pedido: PedidoCheck = {
-            idPedido: order.idPedido,
+            idPedido: order.orderId,
             lines,
             subtotal,
             importeImpuestos,

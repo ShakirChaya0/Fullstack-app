@@ -152,8 +152,18 @@ model Pedido {
   nroMesa         Int?
   idMozo          String?           @db.Uuid
   Linea_De_Pedido Linea_De_Pedido[]
+  Pagos           Pagos[]
   Mozos           Mozos?            @relation(fields: [idMozo], references: [idMozo], onDelete: NoAction, onUpdate: NoAction, map: "idMozo")
   Mesa            Mesa?             @relation(fields: [nroMesa], references: [nroMesa], onDelete: NoAction, onUpdate: NoAction, map: "nroMesa")
+}
+
+model Pagos {
+  idPago          Int         @id @default(autoincrement())
+  idPedido        Int
+  metodoPago      metodosPago
+  fechaPago       DateTime    @db.Date
+  idTransaccionMP String?     @db.VarChar
+  Pedido          Pedido      @relation(fields: [idPedido], references: [idPedido], onDelete: Cascade, map: "pedidos_fk")
 }
 
 enum estado {
@@ -199,4 +209,11 @@ enum estadoPedido {
   Pendiente_De_Pago  @map("Pendiente De Pago")
   Pagado
   Pendiente_De_Cobro @map("Pendiente De Cobro")
+}
+
+enum metodosPago {
+  MercadoPago
+  Efectivo
+  Debito
+  Credito
 }
