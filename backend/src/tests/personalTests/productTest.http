@@ -8,7 +8,7 @@ GET http://localhost:3000/productos/id/3
 GET http://localhost:3000/productos/nombre/Empanada
 
 ###
-GET http://localhost:3000/productos/tipoProducto/Bebida
+GET http://localhost:3000/productos/tipoProducto/Comida
 ###
 POST http://localhost:3000/productos/
 Content-Type: application/json
