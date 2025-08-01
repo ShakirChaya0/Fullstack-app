@@ -8,6 +8,9 @@ import { GetByOrderUseCase } from "../../application/use_cases/PaymentUseCases/G
 import { GetByDateRange } from "../../application/use_cases/PaymentUseCases/GetByDateRangeUseCase.js";
 import { GetByPaymentMethod } from "../../application/use_cases/PaymentUseCases/GetByPaymentMethodUseCase.js";
 import { NotFoundError } from "../../shared/exceptions/NotFoundError.js";
+import { PayWithMercadoPagoUseCase } from "../../application/use_cases/OrderUseCases/PayWithMercadoPagoUseCase.js";
+import { mercadoPagoClient } from "../../infrastructure/config/mercadoPago.js";
+import { Payment } from "mercadopago";
 
 export class PaymentController {
     constructor(
@@ -18,6 +21,7 @@ export class PaymentController {
         private readonly generateCheckUseCase = new GenerateCheckUseCase(),
         private readonly registerPaymentUseCase = new RegisterPaymentUseCase(),
         private readonly setToWaitingForChargeUseCase = new SetToWaitingForChargeUseCase(),
+        private readonly payWithMPUseCase = new PayWithMercadoPagoUseCase()
     ) {}
 
     public async getAll(req: Request, res: Response, next: NextFunction) {
@@ -92,6 +96,11 @@ export class PaymentController {
 
     public async payWithMercadoPago(req: Request, res: Response, next: NextFunction) {
         try {
+            const orderId = req.params.id
+            if (!orderId || isNaN(+orderId)) throw new ValidationError("El ID enviado debe ser un número");
+
+            const preference = await this.payWithMPUseCase.execute(+orderId)
+            res.status(200).json(preference.init_point)
             // {
             //     backurls: {
             //         success: `pagos/pagado?idPedido=${order.idPedido}&metodoPago=MercadoPago&idTransaccion=?????`
@@ -117,14 +126,27 @@ export class PaymentController {
     }
 
     public async registerPayment(req: Request, res: Response, next: NextFunction) {
+        // validar que el pedido no este pago
         try {
-            const { idPedido, metodoPago, idTransaccion } = req.query;
-            if (!idPedido || isNaN(+idPedido)) throw new ValidationError("El ID enviado debe ser un número");
-            if (metodoPago !== "MercadoPago" && metodoPago !== "Efectivo" && metodoPago !== "Debito" && metodoPago !== "Credito") 
-                throw new ValidationError("Método de pago inválido");
+            const {id, topic} = req.query
+            if (topic && topic == "payment") {
+                const payment = await new Payment(mercadoPagoClient).get({ id: Number(id) });
 
-            await this.registerPaymentUseCase.execute(+idPedido, metodoPago, metodoPago === "MercadoPago" ? idTransaccion as string : null);
-            res.status(204).send();
+                const {orderId, metodoPago} = JSON.parse(payment.external_reference!); 
+
+                await this.registerPaymentUseCase.execute(orderId, metodoPago, `${payment.id}`)
+
+                res.status(204).send();
+            }
+            else{
+                const { idPedido, metodoPago } = req.query;
+                if (!idPedido || isNaN(+idPedido)) throw new ValidationError("El ID enviado debe ser un número");
+                if (metodoPago !== "MercadoPago" && metodoPago !== "Efectivo" && metodoPago !== "Debito" && metodoPago !== "Credito") 
+                    throw new ValidationError("Método de pago inválido");
+    
+                await this.registerPaymentUseCase.execute(+idPedido, metodoPago, null);
+                res.status(204).send();
+            }
         }
         catch (err) {
             next(err);
