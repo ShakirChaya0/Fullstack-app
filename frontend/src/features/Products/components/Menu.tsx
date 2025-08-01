@@ -3,11 +3,9 @@ import FoodsLink from "./foodsLink";
 
 export function Menu(){
     return(
-        <div className="h-auto">
-            <div className="flex flex-col justify-center items-center gap-5 mt-45">
-                <FoodsLink/>
-                <DrinksLink/>
-            </div>
+        <div className="h-full flex-1 flex flex-col justify-center items-center gap-5">
+            <FoodsLink/>
+            <DrinksLink/>
         </div>
     )
 }

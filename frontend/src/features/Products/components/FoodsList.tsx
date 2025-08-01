@@ -2,10 +2,11 @@ import { useMemo, useState } from "react";
 import { useFoods } from "../hooks/useFoods";
 import FilterProducts from "./filterFoods";
 import ProductsCard from "./ProductsCard";
+import { SkeletonBody } from "./skeletonBody";
+import { OrderList } from "./orderList";
 
 function FoodsList () {
-    const foods = useFoods();
-    const pedidos = false
+    const {isLoading, isError, foods} = useFoods();
     const filtros = ["Entrada", "Plato_Principal", "Postre"]
     const [query, setQuery] = useState<string>("")
 
@@ -15,14 +16,17 @@ function FoodsList () {
     }
 
     const filteredFoods = useMemo(() => {
-        return foods.filter((food) => food._name.includes(query))
+        return foods?.filter((food) => food._name.includes(query)) ?? [];
     }, [foods, query])
 
     return(
         <>
-            <section className="grid grid-cols-1 md:grid-cols-[3fr_1fr] gap-6 p-4 w-full">
-                <div className="border border-gray-300 rounded-2xl p-4">
-                    <FilterProducts handleChange={handleChange}/>
+        {
+            !isLoading ? (
+                <section className="flex-1 grid md:grid-cols-[minmax(280px,_3fr)_1fr] gap-6 p-4 w-full">
+                <div className="border border-gray-300 rounded-2xl p-4 w-full min-w-2">
+                    { !isError && <FilterProducts handleChange={handleChange}/>}
+                    { isError && <h1 className="flex w-full h-full justify-center items-center text-2xl text-red-600">Error al cargar los datos del menu</h1>}
                     {
                         filtros.map((filtro) => {
                             const foodsFiltered = filteredFoods.map((food) => food._type == filtro)
@@ -43,11 +47,12 @@ function FoodsList () {
                         })
                     }
                 </div>
-                <aside className="grid col-start-2 border p-4 border-gray-300 h-100 rounded-2xl">
-                    <h1 className="text-center text-2xl">Mi Pedido</h1>
-                    {!pedidos && <img src="../assets/empty-order.svg" alt="asjdbaksd"/>}
-                </aside>
+                <OrderList/>
             </section>
+            ) : 
+            (<SkeletonBody/>)
+        }
+
         </>
     )
 }

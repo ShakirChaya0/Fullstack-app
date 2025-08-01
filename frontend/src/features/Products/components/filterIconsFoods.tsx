@@ -16,17 +16,17 @@ export default function FilterIconsFoods() {
     >
       <Stack direction="column" alignItems="center" spacing={1}>
         <a href="#Entrada">
-          <Avatar sx={{ bgcolor: orange[500], cursor: "pointer" }}>
-            <KebabDiningIcon />
+          <Avatar sx={{ bgcolor: orange[500], cursor: "pointer", width: { xs: 40, sm: 56 }, height: { xs: 40, sm: 56 } }} >
+            <KebabDiningIcon fontSize="small" />
           </Avatar>
         </a>
-        <Typography variant="body2">Entradas</Typography>
+        <Typography variant="body2" >Entradas</Typography>
       </Stack>
 
       <Stack direction="column" alignItems="center" spacing={1}>
         <a href="#Plato_Principal">
-          <Avatar sx={{ bgcolor: orange[500], cursor: "pointer" }}>
-            <LocalDiningIcon />
+          <Avatar sx={{ bgcolor: orange[500], cursor: "pointer", width: { xs: 40, sm: 56 }, height: { xs: 40, sm: 56 } }}>
+            <LocalDiningIcon fontSize="small"/>
           </Avatar>
         </a>
         <Typography variant="body2">Principal</Typography>
@@ -34,8 +34,8 @@ export default function FilterIconsFoods() {
 
       <Stack direction="column" alignItems="center" spacing={1}>
         <a href="#Postre">
-          <Avatar sx={{ bgcolor: orange[500], cursor: "pointer" }}>
-            <CakeIcon />
+          <Avatar sx={{ bgcolor: orange[500], cursor: "pointer", width: { xs: 40, sm: 56 }, height: { xs: 40, sm: 56 } }}>
+            <CakeIcon fontSize="small"/>
           </Avatar>
         </a>
         <Typography variant="body2">Postres</Typography>

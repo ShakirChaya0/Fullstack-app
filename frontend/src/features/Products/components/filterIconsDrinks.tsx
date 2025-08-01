@@ -15,8 +15,8 @@ export default function FilterIconsDrinks() {
     >
       <Stack direction="column" alignItems="center" spacing={1}>
         <a href="#Alcoholicas">
-          <Avatar sx={{ bgcolor: orange[500], cursor: "pointer" }}>
-            <KebabDiningIcon />
+          <Avatar sx={{ bgcolor: orange[500], cursor: "pointer", width: { xs: 40, sm: 56 }, height: { xs: 40, sm: 56 } }}>
+            <KebabDiningIcon fontSize='small'/>
           </Avatar>
         </a>
         <Typography variant="body2">Alcoholicas</Typography>
@@ -24,8 +24,8 @@ export default function FilterIconsDrinks() {
 
       <Stack direction="column" alignItems="center" spacing={1}>
         <a href="#No_Alcoholicas">
-          <Avatar sx={{ bgcolor: orange[500], cursor: "pointer" }}>
-            <LocalDiningIcon />
+          <Avatar sx={{ bgcolor: orange[500], cursor: "pointer", width: { xs: 40, sm: 56 }, height: { xs: 40, sm: 56 } }}>
+            <LocalDiningIcon fontSize='small'/>
           </Avatar>
         </a>
         <Typography variant="body2">No Alcoholicas</Typography>

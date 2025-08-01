@@ -1,18 +1,15 @@
-import { useEffect, useState } from "react";
 import type { Comida } from "../interfaces/products";
+import { useQuery } from "@tanstack/react-query";
+import { fetchFoods } from "../services/fetchFoods";
 
 export function useFoods () {
-    const [foods, setFoods] = useState<Comida[]>([]);
-    useEffect(() => {
-        (async () => {
-        try{
-            const response = await fetch("http://localhost:3000/productos/tipoProducto/Comida")
-            const data = await response.json();
-            setFoods(data)
-        }catch(error){
-            console.log(error)
-        }
-    })()
-    }, [])
-    return foods
+    const {isLoading, isError, data} = useQuery<{Foods: Comida[]}>({
+        queryKey: ["Foods"],
+        queryFn: fetchFoods,
+        staleTime: 1000 * 60 * 60,
+        refetchOnWindowFocus: false,
+        refetchOnMount: false,
+    })
+    
+    return {isLoading, isError, foods: data?.Foods}
 }

@@ -2,27 +2,34 @@ import { useMemo, useState } from "react";
 import { useDrinks } from "../hooks/useDrinks";
 import FilterDrinks from "./filterDrinks";
 import ProductsCard from "./ProductsCard";
+import { SkeletonBody } from "./skeletonBody";
+import EmptyOrder from "../assets/empty-order.svg"
+import { OrderList } from "./orderList";
 
 function DrinksList () {
-    const drinks = useDrinks();
+    const {isLoading, isError, drinks} = useDrinks();
     const pedidos = false
     const filtros = ["Alcoholicas", "No_Alcoholicas"]
     const [query, setQuery] = useState("")
+    console.log(isError, drinks)
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-            const query = event.currentTarget.value
-            setQuery(query)
-        }
+        const query = event.currentTarget.value
+        setQuery(query)
+    }
     
     const filteredDrinks = useMemo(() => {
-        return drinks.filter((food) => food._name.includes(query))
+        return drinks?.filter((dat) => dat._name.includes(query)) ?? [] ;
     }, [drinks, query])
 
     return(
         <>
-            <section className="grid grid-cols-1 md:grid-cols-[3fr_1fr] gap-6 p-4 w-full">
-                <div className="border border-gray-300 rounded-2xl p-4">
-                    <FilterDrinks handleChange={handleChange}/>
+        {
+            !isLoading ? (
+            <section className="flex-1 grid grid-cols-1 md:grid-cols-[3fr_1fr] gap-6 p-4 w-full">
+                <div className="border border-gray-300 rounded-2xl p-4 shadow-xl">
+                    { !isError && <FilterDrinks handleChange={handleChange}/>}
+                    { isError && <h1 className="flex w-full h-full justify-center items-center text-2xl text-red-600">Error al cargar los datos del menu</h1>}
                     {
                         filtros.map((filtro) => {
                             const drinksFiltered = filteredDrinks.map((drink) => (drink._isAlcoholic ? "Alcoholica" : "No_Alcoholica" == filtro))
@@ -43,11 +50,10 @@ function DrinksList () {
                         })
                     }
                 </div>
-                <aside className="grid col-start-2 border p-4 border-gray-300 h-100 rounded-2xl">
-                    <h1 className="text-center text-2xl">Mi Pedido</h1>
-                    {!pedidos && <img src="../assets/empty-order.svg" alt="asjdbaksd"/>}
-                </aside>
+                <OrderList/>
             </section>
+            ): (<SkeletonBody/>)
+        }
         </>
     )
 }

@@ -5,7 +5,7 @@ import { Footer } from "./shared/components/footer"
 
 function App() {
   return (
-    <main className="flex-1">
+    <main className="min-h-screen w-full flex flex-col">
       <BrowserRouter>
         <Header/>
         <Routes>
