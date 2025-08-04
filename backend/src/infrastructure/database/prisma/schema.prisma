@@ -118,6 +118,7 @@ model Usuarios {
   Administrador Administrador?
   Clientes      Clientes?
   Mozos         Mozos?
+  RefreshTokens RefreshTokens[]
 }
 
 model EstadosCliente {
@@ -154,6 +155,16 @@ model Pedido {
   Linea_De_Pedido Linea_De_Pedido[]
   Mozos           Mozos?            @relation(fields: [idMozo], references: [idMozo], onDelete: NoAction, onUpdate: NoAction, map: "idMozo")
   Mesa            Mesa?             @relation(fields: [nroMesa], references: [nroMesa], onDelete: NoAction, onUpdate: NoAction, map: "nroMesa")
+}
+
+model RefreshTokens {
+  idToken         String   @id @db.Uuid
+  idUsuario       String   @db.Uuid
+  token           String   @unique(map: "uniqueToken") @db.VarChar
+  fechaCreacion   DateTime @db.Timestamptz(6)
+  fechaExpiracion DateTime @db.Timestamptz(6)
+  revocado        Boolean  @default(false)
+  Usuarios        Usuarios @relation(fields: [idUsuario], references: [idUsuario], onDelete: NoAction, onUpdate: NoAction, map: "userFK")
 }
 
 enum estado {

@@ -7,7 +7,7 @@ export function OrderRouter(){
 
     const orderController = new OrderController()
 
-    orderRouter.post("/idCliente/:id", (req, res, next) => {orderController.create(req, res, next)})
+    orderRouter.post("/idCliente/:idCliente", (req, res, next) => {orderController.create(req, res, next)})
     
     return orderRouter
 }

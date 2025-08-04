@@ -1,6 +1,7 @@
 import { Order } from "../../../domain/entities/Order.js";
 import { ClientRepository } from "../../../infrastructure/database/repository/ClientRepository.js";
 import { OrderRepository } from "../../../infrastructure/database/repository/OrderRepository.js";
+import { TableRepository } from "../../../infrastructure/database/repository/TableRepository.js";
 import { BusinessError } from "../../../shared/exceptions/BusinessError.js";
 import { NotFoundError } from "../../../shared/exceptions/NotFoundError.js";
 import { OrderLineSchema, OrderSchema } from "../../../shared/validators/orderZod.js";
@@ -26,13 +27,20 @@ function getAge(birthday: Date): number {
 export class CUU02RegisterOrder {
     constructor(
         private orderRepository = new OrderRepository(),
-        private clientRepository = new ClientRepository()
+        private clientRepository = new ClientRepository(),
+        private tableRepository = new TableRepository()
     ){}
 
     public async execute(order: OrderSchema, clientId: string, waiterId: string, tableNumber: number): Promise<Order | null>{
         const client = await this.clientRepository.getClientByidUser(clientId);
+
         if(!client) {
             throw new NotFoundError('Cliente no encontrado');
+        }
+
+        const table = await this.tableRepository.getByNumTable(tableNumber);
+        if(!table) {
+            throw new NotFoundError('Mesa no encontrada');
         }
 
         const age = getAge(client.birthDate)
@@ -40,8 +48,9 @@ export class CUU02RegisterOrder {
             throw new BusinessError('El cliente debe ser mayor de 18 años para pedir una bebida alcohólica')
         }
 
-        const createdOrder = await this.orderRepository.create(order, waiterId, tableNumber)
+        //Ver si en un futuro se agrega la validación de que el producto existe (se evito por cuestiones de prueba)
 
+        const createdOrder = await this.orderRepository.create(order, waiterId, tableNumber)
         return createdOrder
     }
 }

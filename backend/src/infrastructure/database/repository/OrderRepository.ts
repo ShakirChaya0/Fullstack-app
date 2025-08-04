@@ -33,9 +33,10 @@ export class OrderRepository implements IOrderRepository {
         if(!table) {
             throw new NotFoundError(`No se encontro un la mesa con el numero de mesa: ${tableNumber}`);
         }
+        
         const createdOrder = await prisma.pedido.create({
         data: {
-            horaInicio:  new Date().toTimeString().split(' ')[0],
+            horaInicio:  new Date(),
             estado: 'Solicitado',
             cantCubiertos: order.cantidadCubiertos,
             observaciones: order.observacion,
@@ -47,7 +48,7 @@ export class OrderRepository implements IOrderRepository {
                 monto: linea.monto,
                 estado: 'Pendiente',
                 cantidad: linea.cantidad,
-                tipoComida: linea.tipo
+                tipoComida: linea.tipo || null
             }))
             }
         },

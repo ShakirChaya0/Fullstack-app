@@ -1,5 +1,5 @@
 import z from "zod"
-import { Order } from "../../domain/entities/Order.js";
+
 
 const SchemaOrderLine =
         z.object({
@@ -34,10 +34,10 @@ export type PartialOrderSchema = z.infer<typeof PartialSchemaOrder>
 
 export type OrderLineSchema = z.infer<typeof SchemaOrderLine>
 
-export function ValidateOrder(data: Order){ 
+export function ValidateOrder(data: OrderSchema){ 
     return SchemaOrder.safeParse(data)
 }
 
-export function ValidateOrderPartial(data: Partial<Order>){
+export function ValidateOrderPartial(data: Partial<OrderSchema>){
     return PartialSchemaOrder.safeParse(data)
 }

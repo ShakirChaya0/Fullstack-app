@@ -1,0 +1,33 @@
+###
+POST http://localhost:3000/pedidos/idCliente/3a200425-3a56-4faa-a07c-ece0b7d2aced
+Content-Type: application/json
+
+{
+    "waiterId": "3a200425-3a56-4faa-a07c-ece0b7d2aced",
+    "tableNumber": 1,
+    "order": {
+        "cantidadCubiertos": 4,
+        "observacion": "Mesa junto a la ventana",
+        "items": [
+            {
+            "nombre": "Empanadas",
+            "tipo": "Entrada",
+            "monto": 150.25,
+            "cantidad": 4
+            },
+            {
+            "nombre": "Bife de chorizo",
+            "tipo": "Plato_Principal",
+            "monto": 2000,
+            "cantidad": 2
+            },
+            {
+            "nombre": "Vino Malbec",
+            "monto": 1800.00,
+            "cantidad": 1,
+            "esAlcoholica": true
+            }
+        ]
+        
+    }
+}
