@@ -1,7 +1,7 @@
-export type estadoMesa = "Libre" | "Ocupado" | "Reservado";
+export type stateTable = "Libre" | "Ocupado" | "Reservado";
 
 export interface tableInterface {
     readonly nroMesa: number, 
     capacidad : number, 
-    estado: estadoMesa
+    estado: stateTable
 }

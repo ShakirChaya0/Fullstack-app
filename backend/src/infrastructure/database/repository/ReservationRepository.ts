@@ -27,6 +27,7 @@ type ReservationWithClient = Prisma.ReservaGetPayload<{
 
 
 export class ReservationRepository  {
+  
   public async getExistingReservation(clientId: string, reservation: SchemaReservation): Promise<Reservation | null> {
     const existingReservation = await prisma.reserva.findFirst({
         where: {
@@ -84,7 +85,7 @@ export class ReservationRepository  {
         await prisma.mesas_Reservas.createMany({
           data: tables.map(table => ({
             idReserva : createdReservation.idReserva, 
-            nroMesa: table.nroMesa
+            nroMesa: table.tableNum
           }))
         })
         const updatedReservation = await prisma.reserva.findUnique({
@@ -225,7 +226,19 @@ export class ReservationRepository  {
     return reservations.map((reservation) => this.toDomainEntity(reservation));
   }
 
+  // public async banClientByNonAttendance(id: number) : number {
+  //   const reservation = await prisma.reserva.findUnique({
+  //     where: {
+  //       idReserva: id 
+  //     }, 
+  //     include: {
+  //       Clientes: true
+  //     }
+  //   })
 
+    
+
+  // } 
 
 
 

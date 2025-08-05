@@ -9,17 +9,17 @@ export class Table  {
         private _state: TableState
     ){validateTable(this)}
 
-    public get nroMesa() : number {return this._tableNum} 
-    public get capacidad () : number {return this._capacity}
-    public get estado () : TableState {return this._state}
+    public get tableNum() : number {return this._tableNum} 
+    public get capacity () : number {return this._capacity}
+    public get state () : TableState {return this._state}
 
-    public set capacity(capacidad :number) {
-        validatePartialTable({capacidad}); 
-        this._capacity = capacidad;
+    public set capacity(capacity :number) {
+        validatePartialTable({capacity}); 
+        this._capacity = capacity;
     }
 
-    public set state(estado: TableState) {
-        validatePartialTable({estado}); 
-        this._state = estado;
+    public set state(state: TableState) {
+        validatePartialTable({state}); 
+        this._state = state;
     }
 }

@@ -14,14 +14,14 @@ export class RegisterReservation {
     private readonly tableRepository = new TableRepository()
   ) {}
 
-  private assignTables(mesasDisponibles: Table[], cantidadComensales: number): Table[] | null {
+  private assignTables(availableTables: Table[], amountDiner: number): Table[] | null {
     const mesasAsignadas: Table[] = [];
     let capacidadAcumulada = 0;
 
-    for (const mesa of mesasDisponibles) {
+    for (const mesa of availableTables) {
       mesasAsignadas.push(mesa);
-      capacidadAcumulada += mesa.capacidad;
-      if (capacidadAcumulada >= cantidadComensales) {
+      capacidadAcumulada += mesa.capacity;
+      if (capacidadAcumulada >= amountDiner) {
         return mesasAsignadas;
       }
     }
@@ -33,6 +33,12 @@ export class RegisterReservation {
     if (!client) {
       throw new NotFoundError('Cliente no encontrado');
     }
+
+    const currentState = client.states.some(s => s.state == 'Habilitado'); 
+    if(!currentState){
+      throw new BusinessError('Usted no esta habilitaod para hacer una Reserva'); 
+    }
+
 
     const mesasDisponibles = await this.tableRepository.getAvailableTables(data.fechaReserva, data.horarioReserva);
     if (mesasDisponibles.length === 0) {

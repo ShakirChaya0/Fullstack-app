@@ -7,7 +7,7 @@ import { ServiceError } from "../../../shared/exceptions/ServiceError.js";
 import { ClientState } from "../../../domain/entities/ClientState.js";
 import { Reservation } from "../../../domain/entities/Reservation.js";
 import { Table } from "../../../domain/entities/Table.js";
-
+import { ClientPublicInfo } from "../../../domain/repositories/IClientPublicInfo.js";
 
 
 type ClientWithUsuario = Prisma.ClientesGetPayload<{
@@ -53,20 +53,23 @@ export class ClientRepository {
     public async getClientByidUser (id: string): Promise <Client | null> {
         const client = await prisma.clientes.findUnique({
             where: {
-                idCliente : id
+                idCliente: id
             },
             include: {
                 Usuarios: true,
-                EstadosCliente: true,
+                EstadosCliente: {
+                    orderBy: {
+                        fechaActualizacion: 'desc' 
+                    },
+                    take: 1 
+                },
                 Reserva: {
                     include: {
-                        Mesas_Reservas: 
-                            {
-                                include:
-                                    {
-                                        Mesa:true
-                                    }
+                        Mesas_Reservas: {
+                            include: {
+                                Mesa: true
                             }
+                        }
                     }
                 }
             }
@@ -183,7 +186,14 @@ export class ClientRepository {
         return this.toDomainEntity(updatedClient);
     }
 
+
     private toDomainEntity(client: ClientWithUsuario): Client {
+
+        const clientPublicInfo: ClientPublicInfo = {
+            nombre: client.nombre, 
+            apellido: client.apellido, 
+            telefono: client.telefono
+        }
 
         const reservations = client.Reserva.map(reservation => {
             return new Reservation(
@@ -193,7 +203,7 @@ export class ClientRepository {
                 reservation.fechaCancelacion, 
                 reservation.cantidadComensales, 
                 reservation.estado, 
-                reservation.idCliente as UUID, 
+                clientPublicInfo, 
                 reservation.Mesas_Reservas.map(table => new Table (
                     table.Mesa.nroMesa, 
                     table.Mesa.capacidad, 

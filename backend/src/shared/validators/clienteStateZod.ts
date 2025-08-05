@@ -1,4 +1,4 @@
-import { EstadoCliente } from '@prisma/client';
+import { ClientState } from '../../domain/entities/ClientState.js';
 import { ValidationError } from '../exceptions/ValidationError.js';
 import z from 'zod'
 
@@ -10,7 +10,7 @@ export const ClientStateScheme = z.object({
 
 export type SchemaClientState = z.infer<typeof ClientStateScheme>;
 
-export function ValidateClientState(data: EstadoCliente){
+export function ValidateClientState(data: ClientState){
     const result = ClientStateScheme.safeParse(data)
     if (!result.success) {
         throw new ValidationError(result.error.errors.map(e => e.message).join(", "))

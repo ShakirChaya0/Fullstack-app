@@ -1,7 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import { Table } from "../../../domain/entities/Table.js";
 import { schemaTable } from "../../../shared/validators/tableZod.js";
-import { estadoMesa } from "../../../domain/interfaces/tableInterface.js";
 
 
 const prisma = new PrismaClient;
@@ -67,18 +66,45 @@ export class TableRepository {
         return new Table(newTable.nroMesa,newTable.capacidad,newTable.estado);
     } 
 
-    public async updateTable(numTable:number, stateTable: estadoMesa ) : Promise<Table> {
-        const updatedTable = await prisma.mesa.update({
-            where: { nroMesa: numTable },
-            data: {
-                estado : stateTable
-            }
-        });
-        return new Table (
-            updatedTable.nroMesa,
-            updatedTable.capacidad,
-            updatedTable.estado
-        )
+    public async updateTableBusy(tables: Table[]): Promise<Table[]> {
+        const updatedTables: Table[] = [];
+
+        for (const table of tables) {
+            const updated = await prisma.mesa.update({
+                where: { nroMesa: table.tableNum },
+                data: {
+                    estado: 'Ocupado'
+                }
+            });
+
+            updatedTables.push(new Table(
+                updated.nroMesa,
+                updated.capacidad,
+                updated.estado
+            ));
+        }
+
+        return updatedTables;
+    }
+    
+    public async updateTableFree(tables:Table[]) : Promise<Table[]> {
+        const updatedTables: Table[] = [];
+
+        for (const table of tables) {
+            const updated = await prisma.mesa.update({
+                where: { nroMesa: table.tableNum },
+                data: {
+                    estado: 'Libre'
+                }
+            });
+
+            updatedTables.push(new Table(
+                updated.nroMesa,
+                updated.capacidad,
+                updated.estado
+            ));
+        }
+        return updatedTables;
     }
 
     public async deleteTable(numTable: number): Promise<void> {
