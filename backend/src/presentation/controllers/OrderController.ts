@@ -12,19 +12,27 @@ export class OrderController {
 
     public create = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
         try {
-            const {order, waiterId, tableNumber}: {order: OrderSchema, waiterId: UUID, tableNumber: number} = req.body 
-            const clientId = req.user?.idUsuario 
+            const {waiterId, tableNumber, order}: {waiterId: UUID | undefined, tableNumber: number, order: OrderSchema} = req.body 
+            const userId = req.user?.idUsuario 
+            const userType = req.user?.tipoUsuario 
+
+            if(userType == "Mozo" && waiterId != undefined) throw new ValidationError("Datos mal enviados");
 
             if(!tableNumber || isNaN(+tableNumber)){
                 throw new ValidationError("El numero de la mesa debe ser entero");
             }
+            
+            const isUUID = (value: string): boolean => {
+                return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value);
+            };
 
-            if (!waiterId) {
+            if (waiterId != undefined && (typeof waiterId != "string" || !isUUID(waiterId))) {
                 throw new ValidationError("Se ingresó un ID de mozo inválido");
             }
+
             const validatedOrder = ValidateOrder(order)
             if(!validatedOrder.success) throw new ValidationError(`Validation failed: ${validatedOrder.error.message}`);
-            const createdOrder = await this.cUU02RegisterOrder.execute(validatedOrder.data, clientId, waiterId, tableNumber);
+            const createdOrder = await this.cUU02RegisterOrder.execute(validatedOrder.data, userId, waiterId, tableNumber);
             res.status(201).json(createdOrder);
         } 
         catch(error) {

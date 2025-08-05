@@ -10,11 +10,11 @@ GET http://localhost:3000/mozos/nombre/franconicolas
 ###
 POST http://localhost:3000/mozos
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzdWFyaW8iOiJmYTBjM2Y0Mi03NmFkLTQ4NjEtOWVkNS1iZWQ4NGU1N2IyOTIiLCJlbWFpbCI6Imp1YW5jaXRvUGVyYXpAZ21haWwuY29tIiwidGlwb1VzdWFyaW8iOiJBZG1pbmlzdHJhZG9yIiwiaWF0IjoxNzUyNjE0NDE0LCJleHAiOjE3NTI2MTQ1OTR9.PQzREquQaTEnzFlBSschLlIVhpmUv1qsI9WeP8hWLKw
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzdWFyaW8iOiIzNzE2YmMxMy1jY2JkLTQ1MDctYWYzZS04OTQ0YmEzYzE3MDQiLCJlbWFpbCI6Im5pY29sYXNtYXp6YWdsaWFAZ21haWwuY29tIiwidGlwb1VzdWFyaW8iOiJBZG1pbmlzdHJhZG9yIiwiaWF0IjoxNzU0NDE4NTExLCJleHAiOjE3NTQ0MTkxMTF9.DuGxRplTZkchFrlPiiKRt4ft3fWTxdjmuSVSqmfn2H0
 
 {
     "nombreUsuario": "JoseB_2004",
-    "contrasenia": "(a+b)2=a2+b2+2ab",
+    "contrasenia": "123456",
     "nombre": "Jose Sebastian Alberto",
     "apellido": "Barragan Landriel",
     "dni": "46495171",

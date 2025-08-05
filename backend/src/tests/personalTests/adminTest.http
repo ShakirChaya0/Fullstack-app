@@ -6,5 +6,5 @@ PATCH http://localhost:3000/administradores/update/e534b521-b710-4a64-8e28-b16d1
 Content-Type: application/json
 
 {
-    "email": "pepe@gmail.com"
+    "email": "shakirchaya@gmail.com"
 }

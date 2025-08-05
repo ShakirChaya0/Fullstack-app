@@ -26,9 +26,9 @@ export class CUU02RegisterOrder {
         private tableRepository = new TableRepository()
     ){}
 
-    public async execute(order: OrderSchema, clientId: string | undefined, waiterId: string, tableNumber: number): Promise<Order | null>{
-        if (clientId != undefined) {
-            const client = await this.clientRepository.getClientByidUser(clientId);
+    public async execute(order: OrderSchema, userId: string | undefined, waiterId: string | undefined, tableNumber: number): Promise<Order | null>{
+        if (userId != undefined && waiterId != undefined) {
+            const client = await this.clientRepository.getClientByidUser(userId);
             const age = getAge(client!.birthDate)
             if(age < 18 && isAlcoholicDrink(order.items)){
                 throw new BusinessError('El cliente debe ser mayor de 18 años para pedir una bebida alcohólica')
@@ -42,7 +42,13 @@ export class CUU02RegisterOrder {
 
         //Ver si en un futuro se agrega la validación de que el producto existe (se evito por cuestiones de prueba)
 
-        const createdOrder = await this.orderRepository.create(order, waiterId, tableNumber)
-        return createdOrder
+        if(waiterId != undefined){
+            const createdOrder = await this.orderRepository.create(order, waiterId, tableNumber)
+            return createdOrder
+        } else {
+            const createdOrder = await this.orderRepository.create(order, userId, tableNumber)
+            return createdOrder
+        }
     }
+
 }
