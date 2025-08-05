@@ -10,6 +10,7 @@ export interface AuthenticatedRequest extends Request {
   user?: JwtPayloadInterface;
 }
 
+//Ver si corrsponde sacr authMiddleware como asincronico cuando verifyAccesToken es sincronico por defecto
 export async function AuthMiddleware(req: AuthenticatedRequest, res: Response, next: NextFunction) {
     const token = req.headers.authorization?.split(' ')[1];
 

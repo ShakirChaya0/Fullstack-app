@@ -9,7 +9,7 @@ export class JWTService {
         private readonly refreshTokenSecret: string = process.env.REFRESH_TOKEN_SECRET || ""
     ) {}
     async generateAccessToken(payload: JwtPayloadInterface): Promise<string> {
-        return jwt.sign(payload, this.accessTokenSecret, { expiresIn: "3m" });
+        return jwt.sign(payload, this.accessTokenSecret, { expiresIn: "10m" });
     }
 
     async verifyAccessToken(token: string): Promise<JwtPayloadInterface> {

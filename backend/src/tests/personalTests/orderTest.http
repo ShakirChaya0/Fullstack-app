@@ -1,16 +1,16 @@
 ###
-POST http://localhost:3000/pedidos/idCliente/3a200425-3a56-4faa-a07c-ece0b7d2aced
+POST http://localhost:3000/pedidos/
 Content-Type: application/json
 
 {
-    "waiterId": "3a200425-3a56-4faa-a07c-ece0b7d2aced",
+    "waiterId": "22ef0b5c-546e-4fbd-9d13-e7738328eceb",
     "tableNumber": 1,
     "order": {
         "cantidadCubiertos": 4,
         "observacion": "Mesa junto a la ventana",
         "items": [
             {
-            "nombre": "Empanadas",
+            "nombre": "Empanadas sin Usuario Registrado",
             "tipo": "Entrada",
             "monto": 150.25,
             "cantidad": 4
@@ -25,7 +25,7 @@ Content-Type: application/json
             "nombre": "Vino Malbec",
             "monto": 1800.00,
             "cantidad": 1,
-            "esAlcoholica": true
+            "esAlcoholica": false
             }
         ]
         

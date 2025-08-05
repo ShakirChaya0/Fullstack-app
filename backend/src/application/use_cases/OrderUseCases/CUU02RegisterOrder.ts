@@ -8,12 +8,7 @@ import { OrderLineSchema, OrderSchema } from "../../../shared/validators/orderZo
 
 
 function isAlcoholicDrink(orderLines: OrderLineSchema[]): boolean {
-    orderLines.forEach(order => {
-        if(order.esAlcoholica) {
-            return true
-        }
-    })
-    return false
+    return orderLines.some(order => order.esAlcoholica === true);
 }
     
 
@@ -31,21 +26,18 @@ export class CUU02RegisterOrder {
         private tableRepository = new TableRepository()
     ){}
 
-    public async execute(order: OrderSchema, clientId: string, waiterId: string, tableNumber: number): Promise<Order | null>{
-        const client = await this.clientRepository.getClientByidUser(clientId);
-
-        if(!client) {
-            throw new NotFoundError('Cliente no encontrado');
+    public async execute(order: OrderSchema, clientId: string | undefined, waiterId: string, tableNumber: number): Promise<Order | null>{
+        if (clientId != undefined) {
+            const client = await this.clientRepository.getClientByidUser(clientId);
+            const age = getAge(client!.birthDate)
+            if(age < 18 && isAlcoholicDrink(order.items)){
+                throw new BusinessError('El cliente debe ser mayor de 18 años para pedir una bebida alcohólica')
+            }
         }
 
         const table = await this.tableRepository.getByNumTable(tableNumber);
         if(!table) {
             throw new NotFoundError('Mesa no encontrada');
-        }
-
-        const age = getAge(client.birthDate)
-        if(age < 18 && isAlcoholicDrink(order.items)){
-            throw new BusinessError('El cliente debe ser mayor de 18 años para pedir una bebida alcohólica')
         }
 
         //Ver si en un futuro se agrega la validación de que el producto existe (se evito por cuestiones de prueba)
