@@ -26,7 +26,7 @@ export class RegisterClientUseCase {
 
             const newClient = await this.clientRepository.createClient(newClientData);
 
-            await this.clientStateRepository.create(newClient.userId); 
+            await this.clientStateRepository.create(newClient.userId, 'Habilitado'); 
 
             return newClient;
 

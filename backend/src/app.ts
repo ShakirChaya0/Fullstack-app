@@ -18,6 +18,7 @@ import cookieParser from 'cookie-parser'
 import { AuthRouter } from './presentation/routes/authRoute.js'
 import { AuthMiddleware } from './presentation/middlewares/AuthMiddleware.js'
 import { ReservationRouter } from './presentation/routes/reservationRoute.js'
+import { runReservationCheckJob } from './infrastructure/jobs/CheckReservationsJob.js'
 
 const app = express()
 
@@ -66,4 +67,6 @@ app.use(ErrorHandler)
 
 app.listen(PORT, () => {
     console.log(`Server running on port http://localhost:${PORT}`)
+
+    runReservationCheckJob();
 })

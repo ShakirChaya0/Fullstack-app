@@ -8,6 +8,7 @@ import { ClientState } from "../../../domain/entities/ClientState.js";
 import { Reservation } from "../../../domain/entities/Reservation.js";
 import { Table } from "../../../domain/entities/Table.js";
 import { ClientPublicInfo } from "../../../domain/repositories/IClientPublicInfo.js";
+import { IClienteRepository } from "../../../domain/repositories/IClientRepository.js";
 
 
 type ClientWithUsuario = Prisma.ClientesGetPayload<{
@@ -28,7 +29,7 @@ type ClientWithUsuario = Prisma.ClientesGetPayload<{
 
 const prisma = new PrismaClient();
 
-export class ClientRepository {
+export class ClientRepository implements IClienteRepository {
     public async getAllClient() : Promise<Client[]> {
         const clients = await prisma.clientes.findMany({
             include: {
@@ -186,6 +187,36 @@ export class ClientRepository {
         return this.toDomainEntity(updatedClient);
     }
 
+
+    public async getClientByOtherDatas(clientPublicInfo: ClientPublicInfo) : Promise<Client | null> {
+        const client = await prisma.clientes.findFirst({
+            where: {
+                nombre:  clientPublicInfo.nombre, 
+                apellido: clientPublicInfo.apellido, 
+                telefono: clientPublicInfo.telefono
+            }, 
+            include: {
+                    Usuarios: true , 
+                    EstadosCliente: true,
+                        Reserva: {
+                            include : {
+                                Mesas_Reservas: {
+                                    include: {
+                                        Mesa:true
+                                    }
+                                }
+                            }
+                        }
+            }
+        }); 
+
+        if(!client) {
+            return null
+        }
+
+        return this.toDomainEntity(client);
+
+    }
 
     private toDomainEntity(client: ClientWithUsuario): Client {
 

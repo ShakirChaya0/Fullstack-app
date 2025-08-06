@@ -7,9 +7,9 @@ export class DeleteTable {
         private readonly tableRepository = new TableRepository
     ) {}
 
-    public async execute (nroMesa : number): Promise<void> {
+    public async execute (numTable : number): Promise<void> {
         try {
-            await this.tableRepository.deleteTable(nroMesa);
+            await this.tableRepository.deleteTable(numTable);
         } catch (error){
             if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2025')
                 throw new NotFoundError("Mesa no encontrada");

@@ -7,7 +7,7 @@ export const ReservationRouter = () => {
 
   router.post("/:idCliente", controller.createReservation);
 
-  router.patch("/:idReserva", controller.updateReservationStatus);
+  router.patch("/estado/:idReserva", controller.updateReservationStatus);
 
   router.get("/:idReserva", controller.getById);
 

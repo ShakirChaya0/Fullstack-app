@@ -1,11 +1,12 @@
 import { PrismaClient } from "@prisma/client";
 import { Table } from "../../../domain/entities/Table.js";
 import { schemaTable } from "../../../shared/validators/tableZod.js";
+import { ITableRepository } from "../../../domain/repositories/ITableRepository.js";
 
 
 const prisma = new PrismaClient;
 
-export class TableRepository {
+export class TableRepository implements ITableRepository {
     
     public async getAll () :Promise<Table[]> {
         const tables = await prisma.mesa.findMany();
@@ -73,7 +74,7 @@ export class TableRepository {
             const updated = await prisma.mesa.update({
                 where: { nroMesa: table.tableNum },
                 data: {
-                    estado: 'Ocupado'
+                    estado: 'Ocupada'
                 }
             });
 
@@ -114,24 +115,27 @@ export class TableRepository {
     }
 
     public async getAvailableTables(reservationDate: Date, reservationTime: string): Promise<Table[]> {
-    const tables = await prisma.mesa.findMany({
-        where: {
-        Mesas_Reservas: {
-            none: {
-            Reserva: {
-                AND: [
-                { fechaReserva: reservationDate },
-                { horarioReserva: new Date(`2000-01-01T${reservationTime}:00Z`) },
-                { estado: { notIn: ["Cancelada", "No_Asistida", "Asistida"] } },
-                ]
-            }
-            }
-        }
-        },
-        orderBy: { capacidad: "desc" },
-    });
 
-    return tables.map(table => new Table (
+        const [hours, minutes] = reservationTime.split(':').map(Number);
+        const timeAsDate = new Date(0, 0, 0, hours, minutes);
+
+        const tables = await prisma.mesa.findMany({
+            where: {
+            Mesas_Reservas: {
+                none: {
+                Reserva: {
+                    fechaReserva: reservationDate ,
+                    horarioReserva: timeAsDate ,
+                    estado: { in: ["Realizada"] }
+
+                }
+                }
+            }
+            },
+            orderBy: { capacidad: "desc" },
+        });
+
+        return tables.map(table => new Table (
                 table.nroMesa,
                 table.capacidad,
                 table.estado 

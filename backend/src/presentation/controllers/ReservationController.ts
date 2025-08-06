@@ -4,7 +4,7 @@ import { UpdateStatus } from "../../application/use_cases/ReservationUseCases/Up
 import { GetById } from "../../application/use_cases/ReservationUseCases/GetById.js";
 import { GetByDate } from "../../application/use_cases/ReservationUseCases/GetByDate.js";
 import { GetByClientId } from "../../application/use_cases/ReservationUseCases/GetByClienteId.js";
-import { validateReservation, validatePartialReservation } from "../../shared/validators/reservationZod.js";
+import { validateReservation} from "../../shared/validators/reservationZod.js";
 import { CUU01RegisterAttendance } from "../../application/use_cases/ReservationUseCases/CUU01RegisterAttendance.js";
 import { ValidationError } from "../../shared/exceptions/ValidationError.js";
 import { StateReservation } from "../../domain/entities/Reservation.js";
@@ -35,19 +35,19 @@ export class ReservationController {
 
   public updateReservationStatus = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { idReserva } = req.params;
+      const { idReserva} = req.params;
+      const {estado} = req.query;
       if (isNaN(+idReserva)) {
         throw new ValidationError("El ID ingresado debe ser un número");
       }
 
-      const { estado } = validatePartialReservation({ estado: req.body.status });
-
-      if (!estado) {
+      if (estado !== 'Realizada' && estado !== 'Asistida' && estado !== 'No_Asistida' &&estado !== 'Cancelada' ) {
         throw new ValidationError("Debe proporcionar un estado válido");
       }
 
-      const updatedReservation = await this.updateStatus.execute(+idReserva, estado as StateReservation);
-      res.status(200).json(updatedReservation);
+      await this.updateStatus.execute(+idReserva, estado as StateReservation);
+      res.status(204).send();
+      
     } catch (error) {
       next(error);
     }

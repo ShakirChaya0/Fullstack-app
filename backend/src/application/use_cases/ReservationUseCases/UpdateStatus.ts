@@ -1,18 +1,28 @@
 import { ReservationRepository } from '../../../infrastructure/database/repository/ReservationRepository.js';
 import { TableRepository } from '../../../infrastructure/database/repository/TableRepository.js';
-// import { ClientRepository } from '../../../infrastructure/database/repository/ClientRepository.js';
-import { Reservation } from '../../../domain/entities/Reservation.js';
+import { ClientRepository } from '../../../infrastructure/database/repository/ClientRepository.js';
 import { BusinessError } from '../../../shared/exceptions/BusinessError.js';
 import { StateReservation } from '../../../domain/entities/Reservation.js';
-
+import { NotFoundError } from '../../../shared/exceptions/NotFoundError.js';
+import { ClientStateRepository } from '../../../infrastructure/database/repository/ClientStateRepository.js';
+import { PolicyRepository } from '../../../infrastructure/database/repository/PolicyRepository.js';
 
 export class UpdateStatus {
   constructor(
     private readonly reservationRepository = new ReservationRepository(),
-    private readonly tableRepository = new TableRepository()
+    private readonly tableRepository = new TableRepository(), 
+    private readonly clientRepository = new ClientRepository(), 
+    private readonly clientStateRepository = new ClientStateRepository(), 
+    private readonly policyRepository = new PolicyRepository()
   ) {}
 
-  public async execute(reservationId: number, status: StateReservation): Promise<Reservation> {
+    private combineDateTime(date: Date, time: string): Date {
+        const dateStr = date.toISOString().split("T")[0]; 
+        return new Date(`${dateStr}T${time}`);
+    }
+
+  public async execute(reservationId: number, status: StateReservation) {
+    const policy = await this.policyRepository.getPolicy();
     const reservation = await this.reservationRepository.getById(reservationId);
     if (!reservation) {
       throw new BusinessError('Reserva no encontrada');
@@ -28,20 +38,51 @@ export class UpdateStatus {
       throw new BusinessError('No se puede cambiar el estado de una reserva marcada como No Asistida.');
     }
 
+    if(status === 'Cancelada') {
+      const now = new Date(); 
+      const reservationDateTime = this.combineDateTime(reservation.reserveDate, reservation.reserveTime); 
+
+      const differenceMs = reservationDateTime.getTime() - now.getTime();
+      const differenceHours = differenceMs / (1000 * 60 * 60);
+
+      if (differenceHours < policy.horasDeAnticipacionParaCancelar) {
+        throw new BusinessError("No se puede cancelar con menos de 6 horas de anticipación.");
+      }
+      
+      await this.reservationRepository.updateStatus(reservation.reserveId, status);
+      await this.tableRepository.updateTableFree(reservation.table);
+      return;
+    }
+
+
+
     const updatedReservation = await this.reservationRepository.updateStatus(reservation.reserveId, status);
 
-    if(updatedReservation.status == 'Asistida') {
+    if(updatedReservation.status === 'Asistida') {
       await this.tableRepository.updateTableBusy(updatedReservation.table)
     }
     
-    // if(updatedReservation.status == 'No_Asistida'){
-    //   await this.tableRepository.updateTableFree(updatedReservation.table)
-    //   const amountNonAttendance = await this.reservationRepository.banClientByNonAttendance(updatedReservation.reserveId);
+    if(updatedReservation.status === 'No_Asistida'){
+      await this.tableRepository.updateTableFree(updatedReservation.table)
+      const client = await this.clientRepository.getClientByOtherDatas(reservation.toPublicInfo); 
 
-    //   if(amountNonAttendance) {
+        if(!client) {
+          throw new NotFoundError("Cliente no encontrado");
+        }
 
-    //   }
-      
-    return updatedReservation;
+      const nonAttendance = client.reservation.filter(r => {
+        r.status === 'No_Asistida'
+      }).length; 
+
+      const disabled = client.states.filter(s => {
+        s.state === 'Deshabilitado'
+      }).length
+
+      const disabledWaiting = Math.floor(nonAttendance / policy.limiteDeNoAsistencias);
+
+      if(disabled < disabledWaiting) {
+        await this.clientStateRepository.create(client.userId, 'Deshabilitado'); 
+      }
     }
-  }    
+  }   
+} 

@@ -1,6 +1,6 @@
 import { validatePartialTable, validateTable } from "../../shared/validators/tableZod.js";
 
-export type TableState = "Libre" | "Ocupado" | "Reservado"; 
+export type TableState = "Libre" | "Ocupada"; 
 
 export class Table  {
     constructor(

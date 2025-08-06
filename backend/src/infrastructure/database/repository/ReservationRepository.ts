@@ -1,10 +1,11 @@
 import { PrismaClient,Prisma } from "@prisma/client";
 import { Reservation } from "../../../domain/entities/Reservation.js";
 import { SchemaReservation } from "../../../shared/validators/reservationZod.js";
-// import { IReservationRepository } from "../../../domain/repositories/IReservationRepository.js";
 import { StateReservation } from "../../../domain/entities/Reservation.js";
 import { Table } from "../../../domain/entities/Table.js";
 import { ClientPublicInfo } from "../../../domain/repositories/IClientPublicInfo.js";
+import { IReservationRepository } from "../../../domain/repositories/IReservationRepository.js";
+
 
 const prisma = new PrismaClient();
 
@@ -26,14 +27,18 @@ type ReservationWithClient = Prisma.ReservaGetPayload<{
 }>;
 
 
-export class ReservationRepository  {
+export class ReservationRepository implements IReservationRepository  {
   
   public async getExistingReservation(clientId: string, reservation: SchemaReservation): Promise<Reservation | null> {
+    
+      const [hours, minutes] = reservation.horarioReserva.split(':').map(Number);
+      const timeAsDate = new Date(0, 0, 0, hours, minutes);
+
     const existingReservation = await prisma.reserva.findFirst({
         where: {
           idCliente: clientId, 
           fechaReserva : reservation.fechaReserva, 
-          horarioReserva: new Date(`2000-01-01T${reservation.horarioReserva}:00Z`)
+          horarioReserva: timeAsDate
         }, 
         include: {
           Clientes: {
@@ -58,10 +63,14 @@ export class ReservationRepository  {
   }
 
   public async create(reservation: SchemaReservation, clientId: string, tables: Table[]): Promise<Reservation | null> {
+
+      const [hours, minutes] = reservation.horarioReserva.split(':').map(Number);
+      const timeAsDate = new Date(0, 0, 0, hours, minutes);
+
     const createdReservation = await prisma.reserva.create({
       data: {
             fechaReserva: reservation.fechaReserva,
-            horarioReserva: new Date(`2000-01-01T${reservation.horarioReserva}:00Z`),
+            horarioReserva: timeAsDate,
             fechaCancelacion: reservation.fechaCancelacion,
             cantidadComensales: reservation.cantidadComensales, 
             estado: "Realizada", 
@@ -225,22 +234,6 @@ export class ReservationRepository  {
         });
     return reservations.map((reservation) => this.toDomainEntity(reservation));
   }
-
-  // public async banClientByNonAttendance(id: number) : number {
-  //   const reservation = await prisma.reserva.findUnique({
-  //     where: {
-  //       idReserva: id 
-  //     }, 
-  //     include: {
-  //       Clientes: true
-  //     }
-  //   })
-
-    
-
-  // } 
-
-
 
   private toDomainEntity(reservation: ReservationWithClient): Reservation {
     const tables: Table[] = reservation.Mesas_Reservas.map((mr) => {
