@@ -3,8 +3,17 @@ import { mercadoPagoClient } from '../../infrastructure/config/mercadoPago.js';
 import { Preference } from 'mercadopago';
 import { PreferenceResponse } from 'mercadopago/dist/clients/preference/commonTypes.js';
 
+type PaymentMethod = {
+    excluded_payment_methods?: { id: string }[];
+    excluded_payment_types?: { id: string }[];
+    installments?: number;
+    default_payment_method_id?: string;
+    default_installments?: number;
+};
+
 type preferenceType = {
     items: Items[],
+    payment_methods: PaymentMethod,
     back_urls: {
         success: string,
         failure: string,

@@ -22,17 +22,21 @@ export class PayWithMercadoPagoUseCase {
                     id: `${order.orderId}`,
                     title: `Pagar Pedido: ${order.orderId}`,
                     quantity: 1,
-                    unit_price: order.calculateTotal(iva).total
+                    unit_price: (order.calculateTotal(iva).total)/2
                 }
             ],
+            payment_methods: {
+                excluded_payment_methods: [],
+                excluded_payment_types: []
+            },
             back_urls: {
-                success: ``,
-                failure: "",
-                pending: ""
+                success: "https://www.youtube.com",
+                failure: "https://www.youtube.com",
+                pending: "https://www.youtube.com"
             },
             auto_return: "approved",
             external_reference: JSON.stringify({orderId: order.orderId, metodoPago: "MercadoPago"}),
-            notification_url: `http://localhost:3000/pagos/pagado`,
+            notification_url: "https://localhost:3000/pagos/pagado",
         }
 
         const preference = await this.mpService.createPreference(draft)

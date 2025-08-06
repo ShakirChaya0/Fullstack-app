@@ -70,7 +70,7 @@ export class OrderRepository implements IOrderRepository {
 
         return new Order(
             order.idPedido,
-            order.horaInicio.toISOString(),
+            order.horaInicio.toISOString().slice(11,16),
             order.estado as OrderStatus,
             order.cantCubiertos,
             order.observaciones,

@@ -37,5 +37,5 @@ export const ErrorHandler: ErrorRequestHandler = (error: Error, req: Request, re
     }
 
     // Si el error no es ninguno de los anteriores, se considera un error interno del servidor
-    else res.status(500).json({ name: "ServerError", message: 'Internal Server Error' });
+    else res.status(500).json(error);
 }

@@ -69,8 +69,8 @@ export class PaymentRepository implements IPaymentRepository {
         const payments = await prisma.pagos.findMany({
             where: {
                 fechaPago: { 
-                    lte: dateFrom,
-                    gte: dateTo
+                    lte: dateTo,
+                    gte: dateFrom
                 }
             },
             include: {
@@ -147,7 +147,7 @@ export class PaymentRepository implements IPaymentRepository {
         
         const order = new Order(
             payment.Pedido.idPedido,
-            payment.Pedido.horaInicio.toISOString(),
+            payment.Pedido.horaInicio.toISOString().slice(11,16),
             payment.Pedido.estado as OrderStatus,
             payment.Pedido.cantCubiertos,
             payment.Pedido.observaciones,

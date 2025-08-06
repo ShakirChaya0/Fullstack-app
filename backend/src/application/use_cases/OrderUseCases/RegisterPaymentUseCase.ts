@@ -17,6 +17,7 @@ export class RegisterPaymentUseCase {
         if (order.status === "Pendiente_De_Pago" || order.status === "Pendiente_De_Cobro") {
             await this.orderRepository.changeState(order, "Pagado");
             await this.paymentRepository.create(order, paymentMethod, transactionId);
+            return
         }
         throw new BusinessError("El pedido debe estar pendiente de pago o cobro para poder ser pagado");
     }
