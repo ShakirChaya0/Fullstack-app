@@ -52,6 +52,7 @@ model Mesa {
   capacidad Int
   estado    estadoMesa
   Pedido    Pedido[]
+  QRToken   QRToken[]
 }
 
 model Sugerencias {
@@ -100,13 +101,14 @@ model Clientes {
 }
 
 model Mozos {
-  nombre   String   @db.VarChar(255)
-  apellido String   @db.VarChar(255)
-  telefono String   @db.VarChar(20)
-  idMozo   String   @id(map: "Mozo_pkey") @db.Uuid
-  dni      String   @unique(map: "unique_dni_mozo") @db.VarChar(10)
-  Usuarios Usuarios @relation(fields: [idMozo], references: [idUsuario], onDelete: Cascade, onUpdate: NoAction, map: "Mozo_fkey")
+  nombre   String    @db.VarChar(255)
+  apellido String    @db.VarChar(255)
+  telefono String    @db.VarChar(20)
+  idMozo   String    @id(map: "Mozo_pkey") @db.Uuid
+  dni      String    @unique(map: "unique_dni_mozo") @db.VarChar(10)
+  Usuarios Usuarios  @relation(fields: [idMozo], references: [idUsuario], onDelete: Cascade, onUpdate: NoAction, map: "Mozo_fkey")
   Pedido   Pedido[]
+  QRToken  QRToken[]
 }
 
 model Usuarios {
@@ -165,6 +167,16 @@ model RefreshTokens {
   fechaExpiracion DateTime @db.Timestamptz(6)
   revocado        Boolean  @default(false)
   Usuarios        Usuarios @relation(fields: [idUsuario], references: [idUsuario], onDelete: NoAction, onUpdate: NoAction, map: "userFK")
+}
+
+model QRToken {
+  nroMesa   Int      @id
+  idMozo    String   @db.Uuid
+  tokenQR   String   @unique(map: "uniqueTokenQR") @db.VarChar
+  createdAt DateTime @default(now())
+  revocado  Boolean  @default(false)
+  Mozos     Mozos    @relation(fields: [idMozo], references: [idMozo], onDelete: NoAction, onUpdate: NoAction, map: "idMozo")
+  Mesa      Mesa     @relation(fields: [nroMesa], references: [nroMesa], onDelete: NoAction, onUpdate: NoAction, map: "nroMesa")
 }
 
 enum estado {
