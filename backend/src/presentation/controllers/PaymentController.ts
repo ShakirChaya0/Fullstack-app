@@ -101,11 +101,6 @@ export class PaymentController {
 
             const preference = await this.payWithMPUseCase.execute(+orderId)
             res.status(200).json(preference.init_point)
-            // {
-            //     backurls: {
-            //         success: `pagos/pagado?idPedido=${order.idPedido}&metodoPago=MercadoPago&idTransaccion=?????`
-            //     }
-            // }
         }
         catch (err) {
             next(err);
@@ -126,7 +121,6 @@ export class PaymentController {
     }
 
     public async registerPayment(req: Request, res: Response, next: NextFunction) {
-        // validar que el pedido no este pago
         try {
             const {id, topic} = req.query
             if (topic && topic == "payment") {

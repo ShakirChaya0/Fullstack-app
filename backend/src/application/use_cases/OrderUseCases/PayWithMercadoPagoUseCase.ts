@@ -3,6 +3,7 @@ import { OrderRepository } from "../../../infrastructure/database/repository/Ord
 import { PolicyRepository } from "../../../infrastructure/database/repository/PolicyRepository.js";
 import { NotFoundError } from "../../../shared/exceptions/NotFoundError.js";
 import { MercadoPagoService } from "../../services/MercadoPagoService.js";
+import { BusinessError } from "../../../shared/exceptions/BusinessError.js";
 
 export class PayWithMercadoPagoUseCase {
     constructor(
@@ -14,7 +15,12 @@ export class PayWithMercadoPagoUseCase {
     async execute(orderId: number): Promise<PreferenceResponse> {
         const order = await this.orderRepository.getOne(orderId)
         if(!order) throw new NotFoundError("Pedido no encontrado")
-        const iva = (await this.policyRepository.getPolicy()).porcentajeIVA
+        
+        if(order.status !== 'Pendiente_De_Pago') {
+            throw new BusinessError('El pedido debe estar pendiente de pago para poder abonarse con Mercado Pago');
+        }
+
+        const iva = (await this.policyRepository.getPolicy()).porcentajeIVA;
 
         const draft = {
             items: [
@@ -22,7 +28,7 @@ export class PayWithMercadoPagoUseCase {
                     id: `${order.orderId}`,
                     title: `Pagar Pedido: ${order.orderId}`,
                     quantity: 1,
-                    unit_price: (order.calculateTotal(iva).total)/2
+                    unit_price: order.calculateTotal(iva).total
                 }
             ],
             payment_methods: {
@@ -30,13 +36,13 @@ export class PayWithMercadoPagoUseCase {
                 excluded_payment_types: []
             },
             back_urls: {
-                success: "https://www.youtube.com",
-                failure: "https://www.youtube.com",
-                pending: "https://www.youtube.com"
+                success: "/success",
+                failure: "/failure",
+                pending: "/pending"
             },
             auto_return: "approved",
             external_reference: JSON.stringify({orderId: order.orderId, metodoPago: "MercadoPago"}),
-            notification_url: "https://localhost:3000/pagos/pagado",
+            notification_url: "/pagos/pagado",
         }
 
         const preference = await this.mpService.createPreference(draft)
