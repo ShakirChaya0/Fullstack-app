@@ -1,5 +1,5 @@
 import { PolicyRepository } from '../../../infrastructure/database/repository/PolicyRepository.js'
-import { PoliticasRestaurante } from '@prisma/client';
+import { PoliticasRestaurante } from '@prisma/client'; // cambiar
 import { PartialSchemaPolicy } from '../../../shared/validators/policyZod.js';
 
 
@@ -9,14 +9,15 @@ export class CUU25ModifyPolicys {
   ){}
 
 
-  public async execute(idPolitica: number, data: PartialSchemaPolicy): Promise<PoliticasRestaurante> {
-        const existingPolitic = await this.policyRepository.getById(idPolitica);
+  public async execute(data: PartialSchemaPolicy): Promise<PoliticasRestaurante> {
+        const existingPolitic = await this.policyRepository.getPolicy();
 
         const updatedPolitic = {
             ...existingPolitic,
             ...data,
         }
 
+        // validar datos de entrada
         const draft = {
             minutosTolerancia: updatedPolitic.minutosTolerancia,
             horarioMaximoDeReserva: updatedPolitic.horarioMaximoDeReserva,
@@ -28,7 +29,7 @@ export class CUU25ModifyPolicys {
             montoCubiertosPorPersona: updatedPolitic.montoCubiertosPorPersona
         }   
 
-    const politicDatabase = await this.policyRepository.updatePolicy(idPolitica, draft);
+    const politicDatabase = await this.policyRepository.updatePolicy(existingPolitic.idPolitica, draft);
     return politicDatabase;
   }
 }

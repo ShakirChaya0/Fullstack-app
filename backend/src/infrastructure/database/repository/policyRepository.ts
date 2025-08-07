@@ -2,7 +2,6 @@ import { PrismaClient } from '@prisma/client';
 import { PartialSchemaPolicy  } from '../../../shared/validators/policyZod.js';
 import { Policy } from '../../../domain/entities/Policy.js';
 import { IPolicyRepository } from '../../../domain/repositories/IPolicyRepository.js';
-import { NotFoundError } from '../../../shared/exceptions/NotFoundError.js';
 
 const prisma = new PrismaClient();
 
@@ -28,25 +27,19 @@ export class PolicyRepository implements IPolicyRepository {
         )
     }
 
-    // Al ser una sola instancia no es necesario hacer un getById, se podría hacer un getAll y retornar el único registro
-    // del array. Si queda como un GetById estarías obligando al usuario un ID de la política que siempre va a ser 1.
-    public async getById(idPolitica: number): Promise<Policy> {
-        const policy = await prisma.politicasRestaurante.findUnique({
-            where: { idPolitica: idPolitica }
-        });
-        if (!policy) {
-            throw new NotFoundError("Política no encontrada");
-        }
+    public async getPolicy(): Promise<Policy> {
+        const policy = await prisma.politicasRestaurante.findMany();
+
         return new Policy(
-            policy.idPolitica,
-            policy.minutosTolerancia,
-            policy.horarioMaximoDeReserva,
-            policy.horasDeAnticipacionParaCancelar,
-            policy.horasDeAnticipacionParaReservar,
-            policy.limiteDeNoAsistencias,
-            policy.cantDiasDeshabilitacion,
-            policy.porcentajeIVA,
-            policy.montoCubiertosPorPersona
+            policy[0].idPolitica,
+            policy[0].minutosTolerancia,
+            policy[0].horarioMaximoDeReserva,
+            policy[0].horasDeAnticipacionParaCancelar,
+            policy[0].horasDeAnticipacionParaReservar,
+            policy[0].limiteDeNoAsistencias,
+            policy[0].cantDiasDeshabilitacion,
+            policy[0].porcentajeIVA,
+            policy[0].montoCubiertosPorPersona
         )
     }
 }

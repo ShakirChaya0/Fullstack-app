@@ -5,11 +5,11 @@ import { PartialSchemaInformation } from '../../../shared/validators/information
 
 export class CUU23ModifyInformation {
     constructor(
-        private readonly informationRepository: InformationRepository  = new InformationRepository()
+        private readonly informationRepository = new InformationRepository()
     ){}
 
-    public async execute(idInformacion: number, data: PartialSchemaInformation): Promise<Information> {
-        const existingInformation = await this.informationRepository.getById(idInformacion);
+    public async execute(data: PartialSchemaInformation): Promise<Information> {
+        const existingInformation = await this.informationRepository.getInformation();
 
         const updatedInformation = {
             ...existingInformation,
@@ -23,7 +23,7 @@ export class CUU23ModifyInformation {
             telefonoContacto: updatedInformation.telefonoContacto,
         }   
 
-        const informationDatabase = await this.informationRepository.updateInformation(idInformacion, draft);
+        const informationDatabase = await this.informationRepository.updateInformation(existingInformation.idInformacion, draft);
         return informationDatabase;
     }
 }
