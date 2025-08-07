@@ -1,7 +1,8 @@
+import { QRTokenInterface } from "../interfaces/qRToken.interface.js";
 
 
 export interface IQRTokenRepository {
     createOrUpdate(nroMesa: number, idMozo: string, tokenQR: string): Promise<void>;
     revoke(nroMesa: number): Promise<void>;
-    getWaiterByToken(tokenQR: string): Promise<string>
+    getQRDataByToken(tokenQR: string): Promise< QRTokenInterface | null>
 }

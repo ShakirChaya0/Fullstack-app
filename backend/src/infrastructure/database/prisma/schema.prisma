@@ -52,7 +52,7 @@ model Mesa {
   capacidad Int
   estado    estadoMesa
   Pedido    Pedido[]
-  QRToken   QRToken[]
+  QRToken   QRToken?
 }
 
 model Sugerencias {
@@ -170,13 +170,13 @@ model RefreshTokens {
 }
 
 model QRToken {
-  nroMesa   Int      @id
-  idMozo    String   @db.Uuid
-  tokenQR   String   @unique(map: "uniqueTokenQR") @db.VarChar
-  createdAt DateTime @default(now())
-  revocado  Boolean  @default(false)
-  Mozos     Mozos    @relation(fields: [idMozo], references: [idMozo], onDelete: NoAction, onUpdate: NoAction, map: "idMozo")
-  Mesa      Mesa     @relation(fields: [nroMesa], references: [nroMesa], onDelete: NoAction, onUpdate: NoAction, map: "nroMesa")
+  nroMesa       Int      @id
+  idMozo        String   @db.Uuid
+  tokenQR       String   @unique(map: "uniqueTokenQR") @db.VarChar
+  revocado      Boolean  @default(false)
+  fechaCreacion DateTime @default(now())
+  Mozos         Mozos    @relation(fields: [idMozo], references: [idMozo], onDelete: Cascade, onUpdate: NoAction, map: "idMozo")
+  Mesa          Mesa     @relation(fields: [nroMesa], references: [nroMesa], onDelete: Cascade, onUpdate: NoAction, map: "nroMesa")
 }
 
 enum estado {

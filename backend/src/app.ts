@@ -20,6 +20,7 @@ import { AuthMiddleware } from './presentation/middlewares/AuthMiddleware.js'
 import { PaymentRouter } from './presentation/routes/PaymentRoute.js'
 import { OrderRouter } from './presentation/routes/orderRoute.js'
 import { OptionalAuthMiddleware } from './presentation/middlewares/OptionalAuthMiddleware.js'
+import { QrRoute } from './presentation/routes/qrRoute.js'
 
 const app = express()
 
@@ -60,6 +61,8 @@ app.use("/cocina", KitchenRouter())
 app.use("/pagos", PaymentRouter())
 
 app.use("/pedidos", OptionalAuthMiddleware, OrderRouter())
+
+app.use("/qr", AuthMiddleware, QrRoute())
 
 app.use((req, res, next) => {
     const error =  new NotFoundError("Endpoint not found");

@@ -1,9 +1,11 @@
 import { Response, NextFunction } from "express"
-import { UUID } from "crypto"
 import { OrderSchema, ValidateOrder } from "../../shared/validators/orderZod.js"
 import { ValidationError } from "../../shared/exceptions/ValidationError.js";
-import { CUU02RegisterOrder } from "../../application/use_cases/OrderUseCases/CUU02RegisterOrder.js";
+import { CUU02RegisterOrder } from "../../application/use_cases/OrderUseCases/RegisterOrderUseCase.js";
+import { NotFoundError } from "../../shared/exceptions/NotFoundError.js";
 import { AuthenticatedRequest } from "../middlewares/AuthMiddleware.js";
+import { UnauthorizedError } from "../../shared/exceptions/UnauthorizedError.js";
+import { BusinessError } from "../../shared/exceptions/BusinessError.js";
 
 export class OrderController {
     constructor(
@@ -12,27 +14,28 @@ export class OrderController {
 
     public create = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
         try {
-            const {waiterId, tableNumber, order}: {waiterId: UUID | undefined, tableNumber: number, order: OrderSchema} = req.body 
-            const userId = req.user?.idUsuario 
-            const userType = req.user?.tipoUsuario 
+            const { tableNumber, order }: { tableNumber: string | undefined, order: OrderSchema } = req.body 
+            const user = req.user
+            const qrToken =  req.qrToken
 
-            if(userType == "Mozo" && waiterId != undefined) throw new ValidationError("Datos mal enviados");
+            // No hay Usuario JWT y No tiene token del QR 
+            if (!user && !qrToken) throw new UnauthorizedError('No se encontro el token del QR y el usuario no esta logeado')
 
-            if(!tableNumber || isNaN(+tableNumber)){
-                throw new ValidationError("El numero de la mesa debe ser entero");
-            }
+            // No tiene token del QR y No es un Mozo
+            if(!qrToken && user?.tipoUsuario !== 'Mozo') throw new UnauthorizedError('No se encontro el token del QR y el usuario no esta logeado')
             
-            const isUUID = (value: string): boolean => {
-                return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value);
-            };
+            // Tiene token del QR y es Mozo --> Error de Negocio
+            if(qrToken && user?.tipoUsuario === 'Mozo') throw new UnauthorizedError('Un Mozo no debe tener un token del QR')
 
-            if (waiterId != undefined && (typeof waiterId != "string" || !isUUID(waiterId))) {
-                throw new ValidationError("Se ingresó un ID de mozo inválido");
-            }
+            if(!tableNumber && user?.tipoUsuario === 'Mozo') throw new ValidationError('Número de mesa es requerido')
+
+            
+            console.log('Estoy en la mitad del controlador')
 
             const validatedOrder = ValidateOrder(order)
+            console.log('Pase zOD')
             if(!validatedOrder.success) throw new ValidationError(`Validation failed: ${validatedOrder.error.message}`);
-            const createdOrder = await this.cUU02RegisterOrder.execute(validatedOrder.data, userId, waiterId, tableNumber);
+            const createdOrder = await this.cUU02RegisterOrder.execute(validatedOrder.data, user?.idUsuario, user?.tipoUsuario, qrToken, tableNumber);
             res.status(201).json(createdOrder);
         } 
         catch(error) {

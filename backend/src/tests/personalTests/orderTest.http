@@ -1,11 +1,42 @@
 ### Por parte del Cliente
 POST http://localhost:3000/pedidos/
 Content-Type: application/json
-Authorization: 
+Authorization: Bearer 
+Cookie: bb17123d-5957-4d7f-b9c0-3837fde89266
 
 {
-    "waiterId": "22ef0b5c-546e-4fbd-9d13-e7738328eceb",
-    "tableNumber": 1,
+    "order": {
+        "cantidadCubiertos": 4,
+        "observacion": "Mesa junto a la ventana",
+        "items": [
+            {
+            "nombre": "Empanadas sin Usuario Registrado",
+            "tipo": "Entrada",
+            "monto": 150.25,
+            "cantidad": 4
+            },
+            {
+            "nombre": "Bife de chorizo",
+            "tipo": "Plato_Principal",
+            "monto": 2000,
+            "cantidad": 2
+            },
+            {
+            "nombre": "Vino Malbec",
+            "monto": 1800.00,
+            "cantidad": 1,
+            "esAlcoholica": false
+            }
+        ]
+        
+    }
+}
+### Por parte del Cliente NO registrado
+POST http://localhost:3000/pedidos/
+Content-Type: application/json
+Cookie: bb17123d-5957-4d7f-b9c0-3837fde89266
+
+{
     "order": {
         "cantidadCubiertos": 4,
         "observacion": "Mesa junto a la ventana",
@@ -36,7 +67,7 @@ Authorization:
 ### Por parte del Mozo
 POST http://localhost:3000/pedidos/
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzdWFyaW8iOiIxYzVjNjUyOC03MjZhLTRjNzQtYjlhYS02MjI1OTViMTEwZDciLCJlbWFpbCI6Impvc2VicHBAZ21haWwuY29tIiwidGlwb1VzdWFyaW8iOiJNb3pvIiwiaWF0IjoxNzU0NDIwODI2LCJleHAiOjE3NTQ0MjE0MjZ9.mgwi88omVoo_t8dw-bfscq_2OKxS-H2FPKXSZcUon4w
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzdWFyaW8iOiIzYTIwMDQyNS0zYTU2LTRmYWEtYTA3Yy1lY2UwYjdkMmFjZWQiLCJlbWFpbCI6Im1hcnRpbmdhbHZhbm9AZ21haWwuY29tIiwidGlwb1VzdWFyaW8iOiJNb3pvIiwiaWF0IjoxNzU0NTk5NTk5LCJleHAiOjE3NTQ2MDAxOTl9.oIRSVvZ2MGfIDfO6OblFVHuyHYI6vYOm2pV8slLmjbM
 
 {
     "tableNumber": 1,

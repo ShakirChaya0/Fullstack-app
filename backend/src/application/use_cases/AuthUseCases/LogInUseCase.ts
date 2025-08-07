@@ -28,8 +28,8 @@ export class LoginUseCase{
             tipoUsuario: user.userType as TipoUsuario_Type
         }
 
-        const accessToken = await this.jwtService.generateAccessToken(payload)
-        const refreshToken = await this.jwtService.generateRefreshToken(payload)
+        const accessToken = this.jwtService.generateAccessToken(payload)
+        const refreshToken = this.jwtService.generateRefreshToken(payload)
 
         const endDate = new Date(Date.now() + 15 * 60 * 1000);
 

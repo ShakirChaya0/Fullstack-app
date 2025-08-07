@@ -14,7 +14,7 @@ export class RefreshUseCase {
 
     async execute(refreshToken: string): Promise<{ accessToken: string, refreshToken: string }> {
         try{
-            const payload = await this.jwtService.verifyRefreshToken(refreshToken);
+            const payload = this.jwtService.verifyRefreshToken(refreshToken);
             
             if (typeof payload === 'string') {
                 throw new UnauthorizedError("Token inválido o expirado");
@@ -26,13 +26,13 @@ export class RefreshUseCase {
 
             await this.refreshTokenRepository.revokeToken(refreshToken);
 
-            const newAccessToken = await this.jwtService.generateAccessToken({
+            const newAccessToken = this.jwtService.generateAccessToken({
                 idUsuario: user.userId,
                 email: user.email,
                 tipoUsuario: user.userType as TipoUsuario_Type
             });
 
-            const newRefreshToken = await this.jwtService.generateRefreshToken({
+            const newRefreshToken = this.jwtService.generateRefreshToken({
                 idUsuario: user.userId,
                 email: user.email,
                 tipoUsuario: user.userType as TipoUsuario_Type

@@ -18,7 +18,7 @@ type OrderWithAll = Prisma.PedidoGetPayload<{
 
 export class OrderRepository implements IOrderRepository {
 
-    public async create(order: OrderSchema, waiterId: string | undefined, tableNumber: number): Promise<Order | null>{
+    public async create(order: OrderSchema, waiterId: string, tableNumber: number): Promise<Order | null>{
         const waiter = await prisma.mozos.findUnique({
             where: { idMozo: waiterId },
             include: { Usuarios: true }

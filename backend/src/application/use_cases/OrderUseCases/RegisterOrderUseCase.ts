@@ -1,7 +1,7 @@
 import { Order } from "../../../domain/entities/Order.js";
 import { ClientRepository } from "../../../infrastructure/database/repository/ClientRepository.js";
 import { OrderRepository } from "../../../infrastructure/database/repository/OrderRepository.js";
-import { TableRepository } from "../../../infrastructure/database/repository/TableRepository.js";
+import { QRTokenRepository } from "../../../infrastructure/database/repository/QRTokenRepository.js";
 import { BusinessError } from "../../../shared/exceptions/BusinessError.js";
 import { NotFoundError } from "../../../shared/exceptions/NotFoundError.js";
 import { OrderLineSchema, OrderSchema } from "../../../shared/validators/orderZod.js";
@@ -23,11 +23,11 @@ export class CUU02RegisterOrder {
     constructor(
         private orderRepository = new OrderRepository(),
         private clientRepository = new ClientRepository(),
-        private tableRepository = new TableRepository()
+        private qrTokenRepository = new QRTokenRepository()
     ){}
-
-    public async execute(order: OrderSchema, userId: string | undefined, waiterId: string | undefined, tableNumber: number): Promise<Order | null>{
-        if (userId != undefined && waiterId != undefined) {
+    // Cambiar tipado de userType al enum
+    public async execute(order: OrderSchema, userId: string | undefined, userType: string | undefined, qrtoken: string | undefined, tableNumberIsWaiter: string | undefined): Promise<Order | null>{
+        if (userId != undefined && userType == '') {
             const client = await this.clientRepository.getClientByidUser(userId);
             const age = getAge(client!.birthDate)
             if(age < 18 && isAlcoholicDrink(order.items)){
@@ -35,20 +35,20 @@ export class CUU02RegisterOrder {
             }
         }
 
-        const table = await this.tableRepository.getByNumTable(tableNumber);
-        if(!table) {
-            throw new NotFoundError('Mesa no encontrada');
-        }
+        if(qrtoken){
+            const qrTokenData = await this.qrTokenRepository.getQRDataByToken(qrtoken);
+            if(!qrTokenData) {
+                throw new NotFoundError('No se encontro registro para ese token');
+            }
 
+        }
+            
         //Ver si en un futuro se agrega la validación de que el producto existe (se evito por cuestiones de prueba)
+        
+        const createdOrder = await this.orderRepository.create(order, userId, tableNumberIsWaiter ? tableNumberIsWaiter : qrTokenData.nroMesa)
 
-        if(waiterId != undefined){
-            const createdOrder = await this.orderRepository.create(order, waiterId, tableNumber)
-            return createdOrder
-        } else {
-            const createdOrder = await this.orderRepository.create(order, userId, tableNumber)
-            return createdOrder
-        }
+        console.log(createdOrder)
+        return createdOrder
     }
 
 }

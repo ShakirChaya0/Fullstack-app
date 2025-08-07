@@ -1,6 +1,6 @@
 import { IQRTokenRepository } from "../../../domain/repositories/IQRTokenRepository.js";
 import { PrismaClient } from "@prisma/client";
-import { NotFoundError } from "../../../shared/exceptions/NotFoundError.js";
+import { QRTokenInterface } from "../../../domain/interfaces/qRToken.interface.js";
 
 const prisma = new PrismaClient()
 
@@ -25,7 +25,7 @@ export class QRTokenRepository implements IQRTokenRepository {
                 data: {
                     idMozo: idMozo,
                     tokenQR: tokenQR,
-                    createdAt: new Date(),
+                    fechaCreacion: new Date(),
                     revocado: false,
                 }
             })
@@ -41,15 +41,12 @@ export class QRTokenRepository implements IQRTokenRepository {
             })
     }
 
-    public async getWaiterByToken(tokenQR: string): Promise<string>{
-        const waiter = await prisma.qRToken.findUnique({
+    public async getQRDataByToken(tokenQR: string): Promise< QRTokenInterface | null>{
+        const registeredQRData = await prisma.qRToken.findUnique({
             where: { tokenQR: tokenQR }
         })
 
-        if (!waiter) {
-            throw new NotFoundError("Mozo no encontrado");
-        }
+        return registeredQRData 
 
-        return waiter.idMozo
     }
 }

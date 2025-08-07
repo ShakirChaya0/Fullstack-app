@@ -8,6 +8,7 @@ dotenv.config();
 
 export interface AuthenticatedRequest extends Request {
   user?: JwtPayloadInterface;
+  qrToken?: string
 }
 
 //Ver si corrsponde sacr authMiddleware como asincronico cuando verifyAccesToken es sincronico por defecto
@@ -19,7 +20,7 @@ export async function AuthMiddleware(req: AuthenticatedRequest, res: Response, n
     if(!token) throw new UnauthorizedError("Token no proporcionado");
 
     try {
-        const payload = await jwtService.verifyAccessToken(token);
+        const payload =  jwtService.verifyAccessToken(token);
         req.user = payload as JwtPayloadInterface;
         next();
     } catch (error) {
