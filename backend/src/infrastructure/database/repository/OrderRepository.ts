@@ -7,6 +7,7 @@ import { UUID } from "crypto";
 import { OrderLine } from "../../../domain/entities/OrderLine.js";
 import { ProductoVO } from "../../../domain/value-objects/ProductVO.js";
 import { FoodType } from "../../../domain/entities/Product.js";
+import { OrderSchema } from "../../../shared/validators/orderZod.js";
 
 const prisma = new PrismaClient();
 
@@ -15,6 +16,38 @@ type OrderWithAll = Prisma.PedidoGetPayload<{
 }>;
 
 export class OrderRepository implements IOrderRepository {
+
+    public async create(order: OrderSchema, waiterId: string, tableNumber: number): Promise<Order | null>{
+ 
+        const createdOrder = await prisma.pedido.create({
+        data: {
+            horaInicio:  new Date(),
+            estado: 'Solicitado',
+            cantCubiertos: order.cantidadCubiertos,
+            observaciones: order.observacion,
+            nroMesa: tableNumber,
+            idMozo: waiterId,
+            Linea_De_Pedido: {
+            create: order.items.map(linea => ({
+                nombreProducto: linea.nombre,
+                monto: linea.monto,
+                estado: 'Pendiente',
+                cantidad: linea.cantidad,
+                tipoComida: linea.tipo || null
+            }))
+            }
+        },
+        include: {
+            Mesa: true,
+            Linea_De_Pedido: true,
+            Mozos: { 
+                include: { Usuarios: true } 
+            }
+        }
+        });
+    return this.toDomainEntity(createdOrder)
+    }
+    
     
     public async getOne(id: number): Promise<Order | null> {
         const order = await prisma.pedido.findUnique({

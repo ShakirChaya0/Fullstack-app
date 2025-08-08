@@ -8,19 +8,19 @@ export class JWTService {
         private readonly accessTokenSecret: string = process.env.ACCESS_TOKEN_SECRET || "",
         private readonly refreshTokenSecret: string = process.env.REFRESH_TOKEN_SECRET || ""
     ) {}
-    async generateAccessToken(payload: JwtPayloadInterface): Promise<string> {
-        return jwt.sign(payload, this.accessTokenSecret, { expiresIn: "3m" });
+    public generateAccessToken(payload: JwtPayloadInterface): string {
+        return jwt.sign(payload, this.accessTokenSecret, { expiresIn: "10m" });
     }
 
-    async verifyAccessToken(token: string): Promise<JwtPayloadInterface> {
-        return jwt.verify(token, this.accessTokenSecret) as Promise<JwtPayloadInterface>;
+    public verifyAccessToken(token: string): JwtPayloadInterface {
+        return jwt.verify(token, this.accessTokenSecret) as JwtPayloadInterface;
     }
     
-    async generateRefreshToken(payload: JwtPayloadInterface): Promise<string> {
+    public generateRefreshToken(payload: JwtPayloadInterface): string {
         return jwt.sign(payload, this.refreshTokenSecret, { expiresIn: "15m" });
     }
 
-    async verifyRefreshToken(token: string): Promise<JwtPayloadInterface> {
-        return jwt.verify(token, this.refreshTokenSecret) as Promise<JwtPayloadInterface>;
+    public verifyRefreshToken(token: string): JwtPayloadInterface {
+        return jwt.verify(token, this.refreshTokenSecret) as JwtPayloadInterface;
     }
 }

@@ -1,0 +1,8 @@
+###
+POST http://localhost:3000/qr/
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzdWFyaW8iOiJjNTc2NmNmMC1mMzM1LTRmYWEtODRlNy1jODA1OWUyOGVjZWEiLCJlbWFpbCI6InNoYWtpcmJvY2FAZ21haWwuY29tIiwidGlwb1VzdWFyaW8iOiJDbGllbnRlIiwiaWF0IjoxNzU0NjU2OTMxLCJleHAiOjE3NTQ2NTc1MzF9.AnNmxhAkkDVICqTW-9ms1fhR5P6r0P55q8ksXjjSVKs
+
+{
+    "tableNumber": 1
+}

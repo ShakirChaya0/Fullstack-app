@@ -1,0 +1,76 @@
+import { Order } from "../../../domain/entities/Order.js";
+import { QRTokenInterface } from "../../../domain/interfaces/qRToken.interface.js";
+import { ClientRepository } from "../../../infrastructure/database/repository/ClientRepository.js";
+import { OrderRepository } from "../../../infrastructure/database/repository/OrderRepository.js";
+import { ProductRepository } from "../../../infrastructure/database/repository/ProductRepository.js";
+import { QRTokenRepository } from "../../../infrastructure/database/repository/QRTokenRepository.js";
+import { TableRepository } from "../../../infrastructure/database/repository/TableRepository.js";
+import { BusinessError } from "../../../shared/exceptions/BusinessError.js";
+import { NotFoundError } from "../../../shared/exceptions/NotFoundError.js";
+import { OrderLineSchema, OrderSchema } from "../../../shared/validators/orderZod.js";
+
+
+function isAlcoholicDrink(orderLines: OrderLineSchema[]): boolean {
+    return orderLines.some(order => order.esAlcoholica === true);
+}
+    
+
+function getAge(birthday: Date): number {
+  const today = new Date();
+  return today.getFullYear() - birthday.getFullYear() - 
+    (today < new Date(today.getFullYear(), birthday.getMonth(), birthday.getDate()) ? 1 : 0);
+}
+
+
+export class CUU02RegisterOrder {
+    constructor(
+        private readonly orderRepository = new OrderRepository(),
+        private readonly clientRepository = new ClientRepository(),
+        private readonly qrTokenRepository = new QRTokenRepository(),
+        private readonly tableRepository = new TableRepository(),
+        private readonly productRepository = new ProductRepository()
+    ){}
+    // Cambiar tipado de userType al enum
+    public async execute(order: OrderSchema, userId: string | undefined, userType: string | undefined, qrtoken: string | undefined, tableNumberIsWaiter: number | undefined): Promise<Order | null>{
+
+        if (userId != undefined && userType == 'Cliente') {
+            //Validando edad del Cliente
+            const client = await this.clientRepository.getClientByidUser(userId);
+            const age = getAge(client!.birthDate)
+            if(age < 18 && isAlcoholicDrink(order.items)){
+                throw new BusinessError('El cliente debe ser mayor de 18 años para pedir una bebida alcohólica')
+            }
+        }
+
+        let qrTokenData: QRTokenInterface | null
+        if(qrtoken){
+            qrTokenData = await this.qrTokenRepository.getQRDataByToken(qrtoken);
+            if(!qrTokenData) {
+                throw new NotFoundError('No se encontro registro para ese token');
+            }
+
+        }      
+
+        if(tableNumberIsWaiter){
+            const table = await this.tableRepository.getByNumTable(tableNumberIsWaiter)
+
+            if(!table) {
+                throw new NotFoundError(`No se encontro un la mesa con el numero de mesa: ${tableNumberIsWaiter}`);
+            }
+        }
+        
+        let aux = false
+        order.items.forEach(async (item) => {
+            const existItem = await this.productRepository.getByUniqueName(item.nombre)
+            if(!existItem) aux = true
+        })
+        if(!aux){
+            throw new NotFoundError(`No se encontro uno de los productos`);
+        }
+        
+        const createdOrder = await this.orderRepository.create(order, !qrtoken ? userId! : qrTokenData!.idMozo, !qrtoken ? tableNumberIsWaiter! : qrTokenData!.nroMesa)
+
+        return createdOrder
+    }
+
+}

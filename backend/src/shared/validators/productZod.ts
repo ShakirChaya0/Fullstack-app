@@ -14,7 +14,7 @@ const ProductosSchema = z.object({
 
 export type SchemaProductos = z.infer<typeof ProductosSchema>;
 
-const partialProductosSchema = ProductosSchema.partial();
+export const partialProductosSchema = ProductosSchema.partial();
 
 export type PartialSchemaProductos = z.infer<typeof partialProductosSchema>;
 

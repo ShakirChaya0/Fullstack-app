@@ -9,13 +9,13 @@ POST http://localhost:3000/clientes/
 Content-Type: application/json
 
 {
-    "nombreUsuario": "Juan",
+    "nombreUsuario": "ShakaYateMenor",
     "contrasenia": "123456",
-    "nombre": "Tomas ",
-    "apellido": "Sussi",
-    "fechaNacimiento": "27/07/2004",
-    "telefono": "123456789",
-    "email": "juan@gmail.com"
+    "nombre": "ShakirMenor",
+    "apellido": "Chaya",
+    "fechaNacimiento": "01/04/2010",
+    "telefono": "3415324728",
+    "email": "soyMenor@gmail.com"
 }
 
 ###

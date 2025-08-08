@@ -100,6 +100,37 @@ export class ProductRepository implements IProductoRepository{
         });
     }
 
+    public async getByUniqueName(nombreProducto: string): Promise<Product | null> {
+        const product = await prisma.producto.findUnique({
+            where: { nombre: nombreProducto }
+        });
+
+        if (!product) {
+            return null;
+        }
+
+        if (product.tipo !== null && product.tipo !== "EMPTY_ENUM_VALUE") {
+            return new Food(
+                product.idProducto,
+                product.nombre,
+                product.descripcion,
+                product.estado,
+                product.esVegetariana || false,
+                product.esVegana || false,
+                product.esSinGluten || false,
+                product.tipo
+            );
+        } else {
+            return new Drink(
+                product.idProducto,
+                product.nombre,
+                product.descripcion,
+                product.estado,
+                product.esAlcoholica || false
+            );
+        }
+    }
+
     public async getByType(tipoProducto: string): Promise<Product[]> {
         if (tipoProducto === "Bebida") {
             const drinks = await prisma.producto.findMany({

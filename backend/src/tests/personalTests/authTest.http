@@ -3,10 +3,12 @@ POST http://localhost:3000/auth/login
 Content-Type: application/json
 
 {
-    "email": "juancitoPeraz@gmail.com",
+    "email": "martingalvano@gmail.com",
     "password": "123456"
 }
 
+//shakirboca@gmail.com --> Cliente
+//martingalvano@gmail.com --> Mozo
 ###
 GET http://localhost:3000/auth/logout
 Cookie: refreshToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzdWFyaW8iOiJmYTBjM2Y0Mi03NmFkLTQ4NjEtOWVkNS1iZWQ4NGU1N2IyOTIiLCJlbWFpbCI6Imp1YW5jaXRvUGVyYXpAZ21haWwuY29tIiwidGlwb1VzdWFyaW8iOiJBZG1pbmlzdHJhZG9yIiwiaWF0IjoxNzUyNjEzNTE0LCJleHAiOjE3NTI2MTQ0MTR9.DfTdF63CL9YpPLnOOAp4zAQX3D01bDdF3XkEB82OwG4

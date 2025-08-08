@@ -1,0 +1,99 @@
+### Por parte del Cliente
+POST http://localhost:3000/pedidos/
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzdWFyaW8iOiJjNTc2NmNmMC1mMzM1LTRmYWEtODRlNy1jODA1OWUyOGVjZWEiLCJlbWFpbCI6InNoYWtpcmJvY2FAZ21haWwuY29tIiwidGlwb1VzdWFyaW8iOiJDbGllbnRlIiwiaWF0IjoxNzU0NjU2OTMxLCJleHAiOjE3NTQ2NTc1MzF9.AnNmxhAkkDVICqTW-9ms1fhR5P6r0P55q8ksXjjSVKs
+Cookie: f28f48c4-6ff5-413e-beaa-63ee7ca9174f
+
+{
+    "order": {
+        "cantidadCubiertos": 4,
+        "observacion": "Mesa junto a la ventana",
+        "items": [
+            {
+            "nombre": "Empanadas sin Usuario Registrado",
+            "tipo": "Entrada",
+            "monto": 150.25,
+            "cantidad": 4
+            },
+            {
+            "nombre": "Bife de chorizo",
+            "tipo": "Plato_Principal",
+            "monto": 2000,
+            "cantidad": 2
+            },
+            {
+            "nombre": "Vino Malbec",
+            "monto": 1800.00,
+            "cantidad": 1,
+            "esAlcoholica": false
+            }
+        ]
+        
+    }
+}
+### Por parte del Cliente NO registrado
+POST http://localhost:3000/pedidos/
+Content-Type: application/json 
+Cookie: f28f48c4-6ff5-413e-beaa-63ee7ca9174f
+
+{
+    "order": {
+        "cantidadCubiertos": 4,
+        "observacion": "Mesa junto a la ventana",
+        "items": [
+            {
+            "nombre": "Empanadas sin Usuario Registrado",
+            "tipo": "Entrada",
+            "monto": 150.25,
+            "cantidad": 4
+            },
+            {
+            "nombre": "Bife de chorizo",
+            "tipo": "Plato_Principal",
+            "monto": 2000,
+            "cantidad": 2
+            },
+            {
+            "nombre": "Vino Malbec",
+            "monto": 1800.00,
+            "cantidad": 1,
+            "esAlcoholica": false
+            }
+        ]
+        
+    }
+}
+
+### Por parte del Mozo
+POST http://localhost:3000/pedidos/
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzdWFyaW8iOiIzYTIwMDQyNS0zYTU2LTRmYWEtYTA3Yy1lY2UwYjdkMmFjZWQiLCJlbWFpbCI6Im1hcnRpbmdhbHZhbm9AZ21haWwuY29tIiwidGlwb1VzdWFyaW8iOiJNb3pvIiwiaWF0IjoxNzU0NjYwMTcxLCJleHAiOjE3NTQ2NjA3NzF9.krmccGp7ifP6VjwNV6TSB4z_DifFqov15FeTU_6OyFo
+
+{
+    "tableNumber": 2,
+    "order": {
+        "cantidadCubiertos": 4,
+        "observacion": "Mesa junto a la ventana",
+        "items": [
+            {
+            "nombre": "Empanadas sin Usuario Registrado",
+            "tipo": "Entrada",
+            "monto": 150.25,
+            "cantidad": 4
+            },
+            {
+            "nombre": "Bife de chorizo",
+            "tipo": "Plato_Principal",
+            "monto": 2000,
+            "cantidad": 2
+            },
+            {
+            "nombre": "Vino Malbec",
+            "monto": 1800.00,
+            "cantidad": 1,
+            "esAlcoholica": false
+            }
+        ]
+        
+    }
+}
