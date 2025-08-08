@@ -1,4 +1,5 @@
 import { Response, NextFunction } from "express"
+import { ioConnection } from "./../../app.js"
 import { OrderSchema, ValidateOrder } from "../../shared/validators/orderZod.js"
 import { ValidationError } from "../../shared/exceptions/ValidationError.js";
 import { CUU02RegisterOrder } from "../../application/use_cases/OrderUseCases/RegisterOrderUseCase.js";
@@ -37,6 +38,18 @@ export class OrderController {
 
             if(!validatedOrder.success) throw new ValidationError(`Validation failed: ${validatedOrder.error.message}`);
             const createdOrder = await this.cUU02RegisterOrder.execute(validatedOrder.data, user?.idUsuario, user?.tipoUsuario, qrToken, tableNumber ? +tableNumber : undefined);
+
+            if (qrToken) {
+                ioConnection.to("cocina")
+                    .to(`mozo:${createdOrder.waiter?.username}`)
+                    .to(`comensal:${qrToken}`)
+                    .emit("newOrder", createdOrder);
+            } else {
+                ioConnection.to("cocina")
+                    .to(`mozo:${createdOrder.waiter?.username}`)
+                    .emit("newOrder", createdOrder);
+            }
+
             res.status(201).json(createdOrder);
         } 
         catch(error) {

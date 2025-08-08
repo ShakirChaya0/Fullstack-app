@@ -1,5 +1,6 @@
 import express from 'express'
 import cors from "cors"
+import { createServer, Server as Http2Server } from 'node:http'
 import { ErrorHandler } from './presentation/middlewares/ErrorHandler.js'
 import { productosRouter } from './presentation/routes/productsRoute.js'
 import { NewsRouter } from './presentation/routes/newsRoute.js'
@@ -21,8 +22,12 @@ import { PaymentRouter } from './presentation/routes/PaymentRoute.js'
 import { OrderRouter } from './presentation/routes/orderRoute.js'
 import { OptionalAuthMiddleware } from './presentation/middlewares/OptionalAuthMiddleware.js'
 import { QrRoute } from './presentation/routes/qrRoute.js'
+import { InitSocketConnection } from './presentation/sockets/InitSocketConnection.js'
 
 const app = express()
+const server: Http2Server = createServer(app)
+
+export const ioConnection = InitSocketConnection(server)
 
 const PORT = process.env.PORT ?? 3000
 
@@ -30,6 +35,7 @@ app.use(cors({
     origin: "http://localhost:5173",
     credentials: true
 }))
+
 
 app.use(express.json())
 
@@ -74,6 +80,6 @@ app.use((req, res, next) => {
 
 app.use(ErrorHandler)
 
-app.listen(PORT, () => {
+server.listen(PORT, () => {
     console.log(`Server running on port http://localhost:${PORT}`)
 })

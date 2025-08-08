@@ -25,7 +25,8 @@ export class LoginUseCase{
         const payload = {
             idUsuario: user.userId as UUID,
             email: user.email,
-            tipoUsuario: user.userType as TipoUsuario_Type
+            tipoUsuario: user.userType as TipoUsuario_Type,
+            username: user.userName
         }
 
         const accessToken = this.jwtService.generateAccessToken(payload)

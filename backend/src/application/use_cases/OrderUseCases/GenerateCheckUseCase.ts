@@ -1,3 +1,4 @@
+import { Order } from "../../../domain/entities/Order.js";
 import { Check } from "../../../domain/value-objects/Check.js";
 import { InformationRepository } from "../../../infrastructure/database/repository/InformationRepository.js";
 import { OrderRepository } from "../../../infrastructure/database/repository/OrderRepository.js";
@@ -15,20 +16,20 @@ export class GenerateCheckUseCase {
         private checkService = new CheckService()
     ){}
     
-    async execute(orderId: number): Promise<Check> {
-        const order = await this.orderRepository.getOne(orderId);
+    async execute(orderId: number): Promise<{ order: Order, check: Check}> {
+        const orderFound = await this.orderRepository.getOne(orderId);
 
-        if (!order) throw new NotFoundError("Pedido no encontrado");
-        if (order.status === "Pendiente_De_Pago" || order.status === "Completado") {
-            if (!order.waiter || !order.table) throw new ServerError("El Mozo o la Mesa del pedido no existe");
+        if (!orderFound) throw new NotFoundError("Pedido no encontrado");
+        if (orderFound.status === "Pendiente_De_Pago" || orderFound.status === "Completado") {
+            if (!orderFound.waiter || !orderFound.table) throw new ServerError("El Mozo o la Mesa del pedido no existe");
 
             const information = await this.informationRepository.getInformation();
             const policy = await this.policyRepository.getPolicy();
             
-            const check = this.checkService.generate(order, information, policy);
-            await this.orderRepository.changeState(order, "Pendiente_De_Pago");
+            const check = this.checkService.generate(orderFound, information, policy);
+            const order = await this.orderRepository.changeState(orderFound, "Pendiente_De_Pago");
             
-            return check;
+            return { order, check };
         }
         throw new BusinessError("El pedido debe estar completado para ser pagado");
     }

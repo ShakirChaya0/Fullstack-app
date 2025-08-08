@@ -17,7 +17,7 @@ type OrderWithAll = Prisma.PedidoGetPayload<{
 
 export class OrderRepository implements IOrderRepository {
 
-    public async create(order: OrderSchema, waiterId: string, tableNumber: number): Promise<Order | null>{
+    public async create(order: OrderSchema, waiterId: string, tableNumber: number): Promise<Order>{
  
         const createdOrder = await prisma.pedido.create({
         data: {
@@ -66,11 +66,20 @@ export class OrderRepository implements IOrderRepository {
         return this.toDomainEntity(order);
     }
 
-    public async changeState(order: Order, state: OrderStatus): Promise<void> {
-        await prisma.pedido.update({
+    public async changeState(order: Order, state: OrderStatus): Promise<Order> {
+        const updatedOrder = await prisma.pedido.update({
             where: { idPedido: order.orderId },
-            data: { estado: state }
+            data: { estado: state },
+            include: {
+                Mesa: true,
+                Linea_De_Pedido: true,
+                Mozos: {
+                    include: { Usuarios: true }
+                }
+            }
         });
+
+        return this.toDomainEntity(updatedOrder)
     }
 
     private toDomainEntity(order: OrderWithAll): Order {

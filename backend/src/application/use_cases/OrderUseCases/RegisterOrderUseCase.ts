@@ -31,7 +31,7 @@ export class CUU02RegisterOrder {
         private readonly productRepository = new ProductRepository()
     ){}
     // Cambiar tipado de userType al enum
-    public async execute(order: OrderSchema, userId: string | undefined, userType: string | undefined, qrtoken: string | undefined, tableNumberIsWaiter: number | undefined): Promise<Order | null>{
+    public async execute(order: OrderSchema, userId: string | undefined, userType: string | undefined, qrtoken: string | undefined, tableNumberIsWaiter: number | undefined): Promise<Order>{
 
         if (userId != undefined && userType == 'Cliente') {
             //Validando edad del Cliente
