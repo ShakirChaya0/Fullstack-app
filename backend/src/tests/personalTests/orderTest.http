@@ -1,8 +1,8 @@
 ### Por parte del Cliente
 POST http://localhost:3000/pedidos/
 Content-Type: application/json
-Authorization: Bearer 
-Cookie: bb17123d-5957-4d7f-b9c0-3837fde89266
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzdWFyaW8iOiJjNTc2NmNmMC1mMzM1LTRmYWEtODRlNy1jODA1OWUyOGVjZWEiLCJlbWFpbCI6InNoYWtpcmJvY2FAZ21haWwuY29tIiwidGlwb1VzdWFyaW8iOiJDbGllbnRlIiwiaWF0IjoxNzU0NjU2OTMxLCJleHAiOjE3NTQ2NTc1MzF9.AnNmxhAkkDVICqTW-9ms1fhR5P6r0P55q8ksXjjSVKs
+Cookie: f28f48c4-6ff5-413e-beaa-63ee7ca9174f
 
 {
     "order": {
@@ -33,8 +33,8 @@ Cookie: bb17123d-5957-4d7f-b9c0-3837fde89266
 }
 ### Por parte del Cliente NO registrado
 POST http://localhost:3000/pedidos/
-Content-Type: application/json
-Cookie: bb17123d-5957-4d7f-b9c0-3837fde89266
+Content-Type: application/json 
+Cookie: f28f48c4-6ff5-413e-beaa-63ee7ca9174f
 
 {
     "order": {
@@ -67,10 +67,10 @@ Cookie: bb17123d-5957-4d7f-b9c0-3837fde89266
 ### Por parte del Mozo
 POST http://localhost:3000/pedidos/
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzdWFyaW8iOiIzYTIwMDQyNS0zYTU2LTRmYWEtYTA3Yy1lY2UwYjdkMmFjZWQiLCJlbWFpbCI6Im1hcnRpbmdhbHZhbm9AZ21haWwuY29tIiwidGlwb1VzdWFyaW8iOiJNb3pvIiwiaWF0IjoxNzU0NTk5NTk5LCJleHAiOjE3NTQ2MDAxOTl9.oIRSVvZ2MGfIDfO6OblFVHuyHYI6vYOm2pV8slLmjbM
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzdWFyaW8iOiIzYTIwMDQyNS0zYTU2LTRmYWEtYTA3Yy1lY2UwYjdkMmFjZWQiLCJlbWFpbCI6Im1hcnRpbmdhbHZhbm9AZ21haWwuY29tIiwidGlwb1VzdWFyaW8iOiJNb3pvIiwiaWF0IjoxNzU0NjYwMTcxLCJleHAiOjE3NTQ2NjA3NzF9.krmccGp7ifP6VjwNV6TSB4z_DifFqov15FeTU_6OyFo
 
 {
-    "tableNumber": 1,
+    "tableNumber": 2,
     "order": {
         "cantidadCubiertos": 4,
         "observacion": "Mesa junto a la ventana",

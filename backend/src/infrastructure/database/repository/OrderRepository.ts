@@ -8,7 +8,6 @@ import { OrderLine } from "../../../domain/entities/OrderLine.js";
 import { ProductoVO } from "../../../domain/value-objects/ProductVO.js";
 import { FoodType } from "../../../domain/entities/Product.js";
 import { OrderSchema } from "../../../shared/validators/orderZod.js";
-import { NotFoundError } from "../../../shared/exceptions/NotFoundError.js";
 
 const prisma = new PrismaClient();
 
@@ -19,21 +18,7 @@ type OrderWithAll = Prisma.PedidoGetPayload<{
 export class OrderRepository implements IOrderRepository {
 
     public async create(order: OrderSchema, waiterId: string, tableNumber: number): Promise<Order | null>{
-        const waiter = await prisma.mozos.findUnique({
-            where: { idMozo: waiterId },
-            include: { Usuarios: true }
-        });
-        if (!waiter) {
-            throw new NotFoundError("Mozo no encontrado");
-        }
-        const table = await prisma.mesa.findUnique({
-            where: {nroMesa: tableNumber}
-        }); 
-
-        if(!table) {
-            throw new NotFoundError(`No se encontro un la mesa con el numero de mesa: ${tableNumber}`);
-        }
-        
+ 
         const createdOrder = await prisma.pedido.create({
         data: {
             horaInicio:  new Date(),
