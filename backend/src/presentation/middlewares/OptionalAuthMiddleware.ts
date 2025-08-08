@@ -23,6 +23,6 @@ export const OptionalAuthMiddleware = async (req: AuthenticatedRequest, res: Res
         req.user = payload as JwtPayloadInterface;
         next();
     } catch (error) {
-        throw new UnauthorizedError("Token inválido o expirado");
+        next(error)
     }
 };

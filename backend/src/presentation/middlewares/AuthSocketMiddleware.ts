@@ -14,17 +14,18 @@ export interface AuthenticatedSocket extends Socket {
 
 
 export async function AuthSocketMiddleware(socket: Socket, next: (err?: Error) => void) {
-    const jwt = socket.handshake.headers.authorization?.split(' ')[1];
-    const qrToken = socket.handshake.headers.cookie;
+    const jwt = socket.handshake.auth.jwt;
+    const qrToken = socket.handshake.auth.qrToken;
 
     try {
         if (jwt) {
             const payload =  jwtService.verifyAccessToken(jwt);
             (socket as AuthenticatedSocket).user = payload as JwtPayloadInterface;
+            (socket as AuthenticatedSocket).qrToken = qrToken;
             next();
         } 
-    } catch (error) {
-        throw new UnauthorizedError("Token inválido o expirado");
+    } catch (error: any) {
+        next(error)
     }
 
     (socket as AuthenticatedSocket).qrToken = qrToken;

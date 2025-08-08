@@ -11,14 +11,13 @@ export function InitSocketConnection(server: Http2Server) {
     });
       
     ioConnection.use(AuthSocketMiddleware);
+    
 
     ioConnection.on('connection', (socket: AuthenticatedSocket) => {
       if (socket.user?.tipoUsuario === "SectorCocina") socket.join("cocina");
       else if (socket.user?.tipoUsuario === "Mozo") socket.join(`mozo:${socket.user.username}`);
-      else if (socket.qrToken) socket.join(`comensal: ${socket.qrToken}`);
+      else if (socket.qrToken) socket.join(`comensal:${socket.qrToken}`);
 
-      console.log(socket.user)
-      console.log(socket.qrToken)
     });
 
     return ioConnection
