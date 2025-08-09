@@ -5,15 +5,18 @@ import { ValidationError } from "../../shared/exceptions/ValidationError.js";
 import { CUU02RegisterOrder } from "../../application/use_cases/OrderUseCases/RegisterOrderUseCase.js";
 import { AuthenticatedRequest } from "../middlewares/AuthMiddleware.js";
 import { UnauthorizedError } from "../../shared/exceptions/UnauthorizedError.js";
-import { Socket } from "socket.io";
-import { AuthenticatedSocket } from "../middlewares/AuthSocketMiddleware.js";
 import { OrderLineStatus } from "../../domain/entities/OrderLine.js";
 import { UpdateOrderLineUseCase } from "../../application/use_cases/OrderUseCases/UpdateOrderLineStatusUseCase.js";
+import { GetActiveOrdersUseCase } from "../../application/use_cases/OrderUseCases/GetActiveOrdersUseCase.js";
+import { GetOrdersByWaiterUseCase } from "../../application/use_cases/OrderUseCases/GetOrdersByWaiterUseCase.js";
+
 
 export class OrderController {
     constructor(
         private readonly cUU02RegisterOrder = new CUU02RegisterOrder(),
-        private readonly updateOrderLineStatusUseCase = new UpdateOrderLineUseCase()
+        private readonly updateOrderLineStatusUseCase = new UpdateOrderLineUseCase(),
+        private readonly getActiveOrdersUseCase = new GetActiveOrdersUseCase(),
+        private readonly getOrdersByWaiterUseCase = new GetOrdersByWaiterUseCase()
     ){}
 
     public create = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
@@ -46,13 +49,16 @@ export class OrderController {
 
             if (qrToken) {
                 ioConnection.to("cocina")
-                    .to(`mozo:${createdOrder.waiter?.username}`)
-                    .to(`comensal:${qrToken}`)
-                    .emit("newOrder", createdOrder);
+                    .emit("newOrder", createdOrder.toKitchenInfo());
+                ioConnection.to(`mozo:${createdOrder.waiter?.username}`).
+                    emit("newOrder", createdOrder.toWaiterInfo());
+                ioConnection.to(`comensal:${qrToken}`)
+                    .emit("newOrder", createdOrder.toClientInfo());
             } else {
                 ioConnection.to("cocina")
-                    .to(`mozo:${createdOrder.waiter?.username}`)
-                    .emit("newOrder", createdOrder);
+                    .emit("newOrder", createdOrder.toKitchenInfo());
+                ioConnection.to(`mozo:${createdOrder.waiter?.username}`)
+                    .emit("newOrder", createdOrder.toWaiterInfo());
             }
 
             res.status(201).json(createdOrder);
@@ -64,7 +70,6 @@ export class OrderController {
 
     public async updateOrderLineStatus(idPedido: number, nroLinea: number, estadoLP: OrderLineStatus){ 
         try {
-
             if(isNaN(nroLinea)){
                 throw new ValidationError("El número de Línea debe ser válido");
             }
@@ -75,6 +80,28 @@ export class OrderController {
             return await this.updateOrderLineStatusUseCase.execute(idPedido, nroLinea, estadoLP)
         }
         catch(error) {
+            console.log(error);
+            return
+        }
+    }
+
+    public async getActiveOrders() {
+        try {
+            const orders = await this.getActiveOrdersUseCase.execute();
+            return orders.map(o => { return o.toKitchenInfo() })
+        }
+        catch(error) {
+            console.log(error);
+            return
+        }
+    }
+
+    public async getOrdersByWaiter(waiterId: string) {
+        try {
+            const orders = await this.getOrdersByWaiterUseCase.execute(waiterId);
+            return orders.map(o => { return o.toWaiterInfo() })
+        } 
+        catch (error) {
             console.log(error);
             return
         }

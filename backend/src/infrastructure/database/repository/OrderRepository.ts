@@ -17,37 +17,74 @@ type OrderWithAll = Prisma.PedidoGetPayload<{
 
 export class OrderRepository implements IOrderRepository {
 
+    public async getActiveOrders(): Promise<Order[]> {
+        const orders = await prisma.pedido.findMany({
+            where: {
+                estado: {
+                    in: ["Solicitado", "En_Preparacion"]
+                }
+            },
+            include: {
+                Mesa: true,
+                Linea_De_Pedido: true,
+                Mozos: { 
+                    include: { Usuarios: true } 
+                }
+            }
+        });
+
+        return orders.map(or => { return this.toDomainEntity(or) })
+    }
+
+    public async getOrdersByWaiter(waiterId: string): Promise<Order[]> {
+        const orders = await prisma.pedido.findMany({
+            where: {
+                idMozo: waiterId
+            },
+            include: {
+                Mesa: true,
+                Linea_De_Pedido: true,
+                Mozos: { 
+                    include: { Usuarios: true } 
+                }
+            }
+        });
+
+        return orders.map(or => { return this.toDomainEntity(or) })
+    }
+
     public async create(order: OrderSchema, waiterId: string, tableNumber: number): Promise<Order>{
         
         const timeAsDate = new Date(Date.UTC(1970, 0, 1, (new Date).getHours(), (new Date).getMinutes() , 0));
 
         const createdOrder = await prisma.pedido.create({
-        data: {
-            horaInicio: timeAsDate,
-            estado: 'Solicitado',
-            cantCubiertos: order.cantidadCubiertos,
-            observaciones: order.observacion,
-            nroMesa: tableNumber,
-            idMozo: waiterId,
-            Linea_De_Pedido: {
-            create: order.items.map(linea => ({
-                nombreProducto: linea.nombre,
-                monto: linea.monto,
-                estado: 'Pendiente',
-                cantidad: linea.cantidad,
-                tipoComida: linea.tipo || null
-            }))
+            data: {
+                horaInicio: timeAsDate,
+                estado: 'Solicitado',
+                cantCubiertos: order.cantidadCubiertos,
+                observaciones: order.observacion,
+                nroMesa: tableNumber,
+                idMozo: waiterId,
+                Linea_De_Pedido: {
+                create: order.items.map(linea => ({
+                    nombreProducto: linea.nombre,
+                    monto: linea.monto,
+                    estado: 'Pendiente',
+                    cantidad: linea.cantidad,
+                    tipoComida: linea.tipo || null
+                }))
+                }
+            },
+            include: {
+                Mesa: true,
+                Linea_De_Pedido: true,
+                Mozos: { 
+                    include: { Usuarios: true } 
+                }
             }
-        },
-        include: {
-            Mesa: true,
-            Linea_De_Pedido: true,
-            Mozos: { 
-                include: { Usuarios: true } 
-            }
-        }
         });
-    return this.toDomainEntity(createdOrder)
+
+        return this.toDomainEntity(createdOrder)
     }
     
     

@@ -4,15 +4,16 @@ import { AuthenticatedSocket, AuthSocketMiddleware } from '../middlewares/AuthSo
 import { OrderController } from '../controllers/OrderController.js';
 import { OrderLineStatus } from '../../domain/entities/OrderLine.js';
 import { QRTokenRepository } from '../../infrastructure/database/repository/QRTokenRepository.js';
-import { Console } from 'node:console';
-
 
 export function InitSocketConnection(server: Http2Server) {
     const ioConnection = new Server(server, {
-        cors: {
-          origin: "*",
-          credentials: true
-        }
+      connectionStateRecovery: {
+        maxDisconnectionDuration: 60000
+      },
+      cors: {
+        origin: "*",
+        credentials: true
+      }
     });
       
     ioConnection.use(AuthSocketMiddleware);
@@ -20,9 +21,17 @@ export function InitSocketConnection(server: Http2Server) {
     const orderController = new OrderController();
     const qrRepository = new QRTokenRepository();
   
-    ioConnection.on('connection', (socket: AuthenticatedSocket) => {
-      if (socket.user?.tipoUsuario === "SectorCocina") socket.join("cocina");
-      else if (socket.user?.tipoUsuario === "Mozo") socket.join(`mozo:${socket.user.username}`);
+    ioConnection.on('connection', async (socket: AuthenticatedSocket) => {
+      if (socket.user?.tipoUsuario === "SectorCocina") {
+        socket.join("cocina");
+        const activeOrders = await orderController.getActiveOrders();
+        socket.emit('activeOrders', activeOrders);
+      }
+      else if (socket.user?.tipoUsuario === "Mozo") {
+        socket.join(`mozo:${socket.user.username}`);
+        const waiterOrders = await orderController.getOrdersByWaiter(socket.user.idUsuario);
+        socket.emit('waiterOrders', waiterOrders);
+      }
       else if (socket.qrToken) socket.join(`comensal:${socket.qrToken}`);
 
       socket.on('updateLineStatus', async ({idPedido, nroLinea, estadoLP}: {idPedido: number, nroLinea: number, estadoLP: OrderLineStatus}) => {
@@ -32,19 +41,22 @@ export function InitSocketConnection(server: Http2Server) {
         if (order){
           const tokenQRData = await qrRepository.getQRByTableNumber(order.table!.nroMesa)
           if(tokenQRData){
-            ioConnection
-              .to(`comensal:${tokenQRData.tokenQR}`)
-              .to('cocina')
-              .to(`mozo:${order.waiter?.username}`)
-              .emit('updatedLine', order)
+            ioConnection.to(`comensal:${tokenQRData.tokenQR}`)
+              .emit('updatedLine', order.toClientInfo());
+
+            ioConnection.to('cocina')
+              .emit('updatedLine', order.toKitchenInfo());
+
+            ioConnection.to(`mozo:${order.waiter?.username}`)
+              .emit('updatedLine', order.toWaiterInfo());
           } else {
-              ioConnection
-              .to('cocina')
-              .to(`mozo:${order?.waiter?.username}`)
-              .emit('updatedLine', order)
+            ioConnection.to('cocina')
+              .emit('updatedLine', order.toKitchenInfo());
+            
+            ioConnection.to(`mozo:${order?.waiter?.username}`)
+              .emit('updatedLine', order.toWaiterInfo());
           }
         } else {
-          
           ioConnection
             .to('cocina')
             .emit('updatedLineError', "No se pudo actualizar el pedido")
