@@ -53,6 +53,7 @@ model Mesa {
   estado    estadoMesa
   Pedido    Pedido[]
   QRToken   QRToken?
+  Mesas_Reservas Mesas_Reservas[]
 }
 
 model Sugerencias {
@@ -98,6 +99,7 @@ model Clientes {
   fechaNacimiento DateTime         @db.Date
   Usuarios        Usuarios         @relation(fields: [idCliente], references: [idUsuario], onDelete: NoAction, onUpdate: NoAction, map: "Cliente_fkey")
   EstadosCliente  EstadosCliente[]
+  Reserva         Reserva[]
 }
 
 model Mozos {
@@ -189,6 +191,27 @@ model QRToken {
   Mesa          Mesa     @relation(fields: [nroMesa], references: [nroMesa], onDelete: Cascade, onUpdate: NoAction, map: "nroMesa")
 }
 
+model Mesas_Reservas {
+  idReserva Int
+  nroMesa   Int
+  Mesa      Mesa    @relation(fields: [nroMesa], references: [nroMesa], onDelete: NoAction, onUpdate: NoAction, map: "Mesa_fKey")
+  Reserva   Reserva @relation(fields: [idReserva], references: [idReserva], onDelete: NoAction, onUpdate: NoAction, map: "Reserva_fKey")
+
+  @@id([idReserva, nroMesa])
+}
+
+model Reserva {
+  idReserva          Int              @id @default(autoincrement())
+  fechaReserva       DateTime         @db.Date
+  horarioReserva     DateTime         @db.Time(6)
+  fechaCancelacion   DateTime?        @db.Date
+  cantidadComensales Int
+  estado             EstadoReserva
+  idCliente          String           @db.Uuid
+  Mesas_Reservas     Mesas_Reservas[]
+  Clientes           Clientes         @relation(fields: [idCliente], references: [idCliente], onDelete: NoAction, onUpdate: NoAction, map: "idCliente_fKey")
+}
+
 enum estado {
   Disponible
   No_Disponible @map("No Disponible")
@@ -203,8 +226,7 @@ enum tipo {
 
 enum estadoMesa {
   Libre
-  Ocupado
-  Reservado
+  Ocupada
 }
 
 enum TipoUsuario_Type {
@@ -239,4 +261,10 @@ enum metodosPago {
   Efectivo
   Debito
   Credito
+}
+enum EstadoReserva {
+  Realizada
+  Asistida
+  No_Asistida @map("No Asistida")
+  Cancelada
 }

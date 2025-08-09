@@ -1,10 +1,13 @@
-import { Client } from "../entities/Client.js"
-import { SchemaCliente, PartialClientSchema } from "../../shared/validators/clientZod.js";
+import { PartialClientSchema, SchemaCliente } from "../../shared/validators/clientZod.js";
+import { Client } from "../entities/Client.js";
+import { ClientPublicInfo } from "./IClientPublicInfo.js";
 
-export interface IClientRepository {
+
+export interface IClienteRepository {
     getAllClient() : Promise<Client[]>; 
-    getClientByidUser(idClient: string) : Promise <Client | null>;
-    getClientByUserName(userName: string) : Promise <Client | null>;
-    createClient(data : SchemaCliente) :Promise <Client>; 
-    updateClient(idClient: string, data : PartialClientSchema ) : Promise <Client>
+    getClientByidUser (id: string): Promise <Client | null>;
+    getClientByNameAndLastname(name: string, lastname: string) : Promise<Client | null>;
+    createClient (data:SchemaCliente) :Promise <Client>;
+    updateClient(id: string, data: PartialClientSchema): Promise<Client>;
+    getClientByOtherDatas(clientPublicInfo: ClientPublicInfo) : Promise<Client | null>;
 }

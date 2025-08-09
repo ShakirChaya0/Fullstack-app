@@ -9,8 +9,6 @@ export function mesaRouter (){
 
     tableRouter.get('/capacidad/:capacity', (req, res, next)=> { tableController.getByCapacity(req, res, next) }); 
 
-    tableRouter.patch('/nromesa/:numTable', (req, res, next) => { tableController.update(req, res, next)});
-
     tableRouter.post('/', (req, res, next) => { tableController.create(req, res, next) }); 
     
     tableRouter.delete('/nromesa/:numTable', (req, res, next) => { tableController.delete(req, res, next) }); 

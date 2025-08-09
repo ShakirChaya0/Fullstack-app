@@ -1,0 +1,25 @@
+### Crear reserva
+POST http://localhost:3000/reservas/991bd649-5fea-48e9-8062-e3cd12d0bb4d
+Content-Type: application/json
+
+{
+    "fechaReserva" : "09/08/2025",
+    "horarioReserva": "20:00",  
+    "cantidadComensales": 4
+}
+
+### Obetner reserva por Id
+GET http://localhost:3000/reservas/7
+
+
+### Obtener reserva por fecha
+GET http://localhost:3000/reservas?date=2025-08-14
+
+### Obtener reserva por id de Cliente
+GET http://localhost:3000/reservas/cliente/991bd649-5fea-48e9-8062-e3cd12d0bb4d
+
+### Actualizar solo el estado de la reserva, dependiendo de la query que se mande
+PATCH http://localhost:3000/reservas/estado/26?estado=No_Asistida
+
+### Obtener reserva por nombre y apellido del Cliente
+GET http://localhost:3000/reservas/clienteReserva?nombre=Guillermo&apellido=Sussi

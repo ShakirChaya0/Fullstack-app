@@ -2,6 +2,7 @@ import { UUID } from "crypto";
 import { User } from "./User.js";
 import { TipoUsuario_Type } from "@prisma/client";
 import { ClientState } from "./ClientState.js";
+import { Reservation } from "./Reservation.js";
 
 
 export class Client extends User {
@@ -15,7 +16,8 @@ export class Client extends User {
         private _lastName: string,
         private _phone: string,
         private _birthDate: Date,
-        private _states: ClientState[]
+        private _states: ClientState[], 
+        private _reservation: Reservation[]
     ) { 
         super(_userId, _userName, _email , _password, _userType);
     }
@@ -23,7 +25,6 @@ export class Client extends User {
     get email(): string {
         return this._email;
     }
-
     get name(): string {
         return this._name;
     }
@@ -37,7 +38,7 @@ export class Client extends User {
         return this._birthDate;
     }
     get states(): ClientState[] { return this._states}
-
+    get reservation(): Reservation[] { return this._reservation}
 
     set nombreUsuario(nombreUsuario: string) {
         this._userName = nombreUsuario;
@@ -61,6 +62,9 @@ export class Client extends User {
         this._birthDate = fechaNacimiento;
     }
     set addState(nuevoEstado: ClientState){
-        this._states.push(nuevoEstado)
+        this._states.push(nuevoEstado);
+    }
+    set addReservation(newReservation: Reservation){
+        this._reservation.push(newReservation);
     }
 }

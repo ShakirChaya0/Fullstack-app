@@ -2,24 +2,24 @@
 GET http://localhost:3000/clientes/
 
 ###
-GET http://localhost:3000/clientes/id/4a8f3e67-827d-442d-8a04-7beb453133ea
+GET http://localhost:3000/clientes/id/991bd649-5fea-48e9-8062-e3cd12d0bb4d
 
 ###
 POST http://localhost:3000/clientes/
 Content-Type: application/json
 
 {
-    "nombreUsuario": "ShakaYateMenor",
+    "nombreUsuario": "Fran",
     "contrasenia": "123456",
-    "nombre": "ShakirMenor",
-    "apellido": "Chaya",
-    "fechaNacimiento": "01/04/2010",
-    "telefono": "3415324728",
-    "email": "soyMenor@gmail.com"
+    "nombre": "Franco",
+    "apellido": "Sussi",
+    "fechaNacimiento": "27/07/2004",
+    "telefono": "3413779903",
+    "email": "franc@gmail.com"
 }
 
 ###
-PATCH http://localhost:3000/clientes/id/4a8f3e67-827d-442d-8a04-7beb453133ea
+PATCH http://localhost:3000/clientes/id/672c3549-51d7-4f30-a8cd-83883e9c4204
 Content-Type: application/json
 
 {

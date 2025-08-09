@@ -1,12 +1,12 @@
 import { PrismaClient } from "@prisma/client";
 import { Table } from "../../../domain/entities/Table.js";
-import { schemaTable, SchemaPartialTable } from "../../../presentation/validators/tableZod.js";
-import { NotFoundError } from "../../../shared/exceptions/NotFoundError.js";
+import { schemaTable } from "../../../shared/validators/tableZod.js";
+import { ITableRepository } from "../../../domain/repositories/ITableRepository.js";
 
 
 const prisma = new PrismaClient;
 
-export class TableRepository {
+export class TableRepository implements ITableRepository {
     
     public async getAll () :Promise<Table[]> {
         const tables = await prisma.mesa.findMany();
@@ -18,13 +18,13 @@ export class TableRepository {
         )
     }
 
-    public async getByNumTable (numTable: number) : Promise<Table> {
+    public async getByNumTable (numTable: number) : Promise<Table | null> {
         const table = await prisma.mesa.findUnique({
             where: {nroMesa: numTable}
         }); 
 
         if(!table) {
-            throw new NotFoundError(`No se encontro un la mesa con el numero de mesa: ${numTable}`);
+            return null;
         }
 
         return new Table (
@@ -61,34 +61,85 @@ export class TableRepository {
         const newTable = await prisma.mesa.create({
             data: {
                 capacidad: table.capacidad,
-                estado: table.estado
+                estado: 'Libre'
             }
         });
         return new Table(newTable.nroMesa,newTable.capacidad,newTable.estado);
     } 
 
-    public async updateTable(numTable:number, table: SchemaPartialTable ) : Promise<Table> {
-        const updatedTable = await prisma.mesa.update({
-            where: { nroMesa: numTable },
-            data: {
-                ...table
-            }
-        });
-        return new Table (
-            updatedTable.nroMesa,
-            updatedTable.capacidad,
-            updatedTable.estado
-        )
+    public async updateTableBusy(tables: Table[]): Promise<Table[]> {
+        const updatedTables: Table[] = [];
+
+        for (const table of tables) {
+            const updated = await prisma.mesa.update({
+                where: { nroMesa: table.tableNum },
+                data: {
+                    estado: 'Ocupada'
+                }
+            });
+
+            updatedTables.push(new Table(
+                updated.nroMesa,
+                updated.capacidad,
+                updated.estado
+            ));
+        }
+
+        return updatedTables;
+    }
+    
+    public async updateTableFree(tables:Table[]) : Promise<Table[]> {
+        const updatedTables: Table[] = [];
+
+        for (const table of tables) {
+            const updated = await prisma.mesa.update({
+                where: { nroMesa: table.tableNum },
+                data: {
+                    estado: 'Libre'
+                }
+            });
+
+            updatedTables.push(new Table(
+                updated.nroMesa,
+                updated.capacidad,
+                updated.estado
+            ));
+        }
+        return updatedTables;
     }
 
-    public async deleteTable(numTable: number): Promise<{ message: string }> {
-        const deleteTable = await prisma.mesa.delete({
+    public async deleteTable(numTable: number): Promise<void> {
+        await prisma.mesa.delete({
             where: {nroMesa: numTable}
         }); 
-        if (!deleteTable) {
-            throw new NotFoundError("Mesa no encontrada");
-        }
-        return { message: `Mesa con el numero ${numTable} eliminado correctamente` };
+    }
+
+    public async getAvailableTables(reservationDate: Date, reservationTime: string): Promise<Table[]> {
+
+        const [hours, minutes] = reservationTime.split(':').map(Number);
+        const timeAsDate = new Date(0, 0, 0, hours, minutes);
+
+        const tables = await prisma.mesa.findMany({
+            where: {
+            Mesas_Reservas: {
+                none: {
+                Reserva: {
+                    fechaReserva: reservationDate ,
+                    horarioReserva: timeAsDate ,
+                    estado: { in: ["Realizada"] }
+
+                }
+                }
+            }
+            },
+            orderBy: { capacidad: "desc" },
+        });
+
+        return tables.map(table => new Table (
+                table.nroMesa,
+                table.capacidad,
+                table.estado 
+            ))
     }
 
 }

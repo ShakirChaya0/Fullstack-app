@@ -21,6 +21,8 @@ import { PaymentRouter } from './presentation/routes/PaymentRoute.js'
 import { OrderRouter } from './presentation/routes/orderRoute.js'
 import { OptionalAuthMiddleware } from './presentation/middlewares/OptionalAuthMiddleware.js'
 import { QrRoute } from './presentation/routes/qrRoute.js'
+import { ReservationRouter } from './presentation/routes/reservationRoute.js'
+import { runReservationCheckJob } from './infrastructure/jobs/CheckReservationsJob.js'
 
 const app = express()
 
@@ -66,6 +68,7 @@ app.use("/pagos", PaymentRouter())
 app.use("/pedidos", OptionalAuthMiddleware, OrderRouter())
 
 app.use("/qr", AuthMiddleware, QrRoute())
+app.use("/reservas", ReservationRouter());
 
 app.use((req, res, next) => {
     const error =  new NotFoundError("Endpoint not found");
@@ -76,4 +79,6 @@ app.use(ErrorHandler)
 
 app.listen(PORT, () => {
     console.log(`Server running on port http://localhost:${PORT}`)
+
+    runReservationCheckJob();
 })

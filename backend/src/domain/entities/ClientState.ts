@@ -1,18 +1,19 @@
-import { EstadoCliente } from "@prisma/client";
+
+export type stateClient = 'Habilitado' | 'Deshabilitado';
 
 export class ClientState {
     constructor(
         private _modifyDate: Date,
-        private _state: EstadoCliente
+        private _state: stateClient
     ) {}
 
     get modifyDate() { return this._modifyDate}
     get state() { return this._state}
 
-    set modifyDate(fecha: Date){
-        this._modifyDate = fecha
+    set modifyDate(date: Date){
+        this._modifyDate = date
     }
-    set state( estado: EstadoCliente) {
-        this._state = estado
+    set state( state: stateClient) {
+        this._state = state
     }
 }
