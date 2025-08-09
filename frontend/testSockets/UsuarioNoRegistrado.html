@@ -10,10 +10,14 @@
 
     const ws = new io('ws://localhost:3000',{
         auth: {
-            // qrToken: "17134ce5-d71b-494d-ba32-999bf44a0906",
-            // jwt: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzdWFyaW8iOiI1MGExOTdlYi1lYzA5LTRmYzEtYWZiNy04Y2M3NTUyZDdkNWYiLCJlbWFpbCI6ImpvcGVAZ21haWwuY29tIiwidGlwb1VzdWFyaW8iOiJDbGllbnRlIiwidXNlcm5hbWUiOiJKb3BlIiwiaWF0IjoxNzU0NjkyOTc5LCJleHAiOjE3NTQ2OTM1Nzl9.hbbIXXU5IY4K2QvIZOnNO3DnaKUF5qRHRVQQGf-1G5c"
+            qrToken: "17134ce5-d71b-494d-ba32-999bf44a0906",
         }
     });
+
+    
+    ws.on('updatedLine', (data) => {
+        console.log(data)
+    })
 
     ws.on('open', () => {
         console.log('WebSocket connection opened');

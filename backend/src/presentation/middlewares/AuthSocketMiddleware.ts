@@ -22,7 +22,6 @@ export async function AuthSocketMiddleware(socket: Socket, next: (err?: Error) =
             const payload =  jwtService.verifyAccessToken(jwt);
             (socket as AuthenticatedSocket).user = payload as JwtPayloadInterface;
             (socket as AuthenticatedSocket).qrToken = qrToken;
-            next();
         } 
     } catch (error: any) {
         next(error)

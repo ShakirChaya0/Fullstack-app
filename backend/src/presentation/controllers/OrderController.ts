@@ -5,10 +5,15 @@ import { ValidationError } from "../../shared/exceptions/ValidationError.js";
 import { CUU02RegisterOrder } from "../../application/use_cases/OrderUseCases/RegisterOrderUseCase.js";
 import { AuthenticatedRequest } from "../middlewares/AuthMiddleware.js";
 import { UnauthorizedError } from "../../shared/exceptions/UnauthorizedError.js";
+import { Socket } from "socket.io";
+import { AuthenticatedSocket } from "../middlewares/AuthSocketMiddleware.js";
+import { OrderLineStatus } from "../../domain/entities/OrderLine.js";
+import { UpdateOrderLineUseCase } from "../../application/use_cases/OrderUseCases/UpdateOrderLineStatusUseCase.js";
 
 export class OrderController {
     constructor(
-        private readonly cUU02RegisterOrder = new CUU02RegisterOrder()
+        private readonly cUU02RegisterOrder = new CUU02RegisterOrder(),
+        private readonly updateOrderLineStatusUseCase = new UpdateOrderLineUseCase()
     ){}
 
     public create = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
@@ -54,6 +59,24 @@ export class OrderController {
         } 
         catch(error) {
             next(error);
+        }
+    }
+
+    public async updateOrderLineStatus(idPedido: number, nroLinea: number, estadoLP: OrderLineStatus){ 
+        try {
+
+            if(isNaN(nroLinea)){
+                throw new ValidationError("El número de Línea debe ser válido");
+            }
+            if(isNaN(idPedido)){
+                throw new ValidationError("El número de Pedido debe ser válido");
+            }
+
+            return await this.updateOrderLineStatusUseCase.execute(idPedido, nroLinea, estadoLP)
+        }
+        catch(error) {
+            console.log(error);
+            return
         }
     }
 }

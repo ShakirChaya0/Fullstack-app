@@ -4,7 +4,7 @@ import { Order, OrderStatus } from "../../../domain/entities/Order.js";
 import { Table } from "../../../domain/entities/Table.js";
 import { Waiter } from "../../../domain/entities/Waiter.js";
 import { UUID } from "crypto";
-import { OrderLine } from "../../../domain/entities/OrderLine.js";
+import { OrderLine, OrderLineStatus } from "../../../domain/entities/OrderLine.js";
 import { ProductoVO } from "../../../domain/value-objects/ProductVO.js";
 import { FoodType } from "../../../domain/entities/Product.js";
 import { OrderSchema } from "../../../shared/validators/orderZod.js";
@@ -81,6 +81,34 @@ export class OrderRepository implements IOrderRepository {
             }
         });
 
+        return this.toDomainEntity(updatedOrder)
+    }
+
+    public async changeOrderLineStatus(orderId: number, lineNumber: number, status: OrderLineStatus): Promise<Order> {
+        const updatedOrder = await prisma.pedido.update({
+            where: { idPedido: orderId },
+            data: {
+                Linea_De_Pedido: {
+                    update: {
+                        where: {
+                            idPedido_nroLinea: {
+                                idPedido: orderId,
+                                nroLinea: lineNumber
+                            }
+                        },
+                        data: { estado: status}
+                    }
+                }
+            },
+            include: {
+                Mesa: true,
+                Linea_De_Pedido: true,
+                Mozos: { 
+                    include: { Usuarios: true } 
+                }
+            }
+        })
+        
         return this.toDomainEntity(updatedOrder)
     }
 
