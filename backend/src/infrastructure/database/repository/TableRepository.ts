@@ -61,7 +61,7 @@ export class TableRepository implements ITableRepository {
         const newTable = await prisma.mesa.create({
             data: {
                 capacidad: table.capacidad,
-                estado: table.estado
+                estado: 'Libre'
             }
         });
         return new Table(newTable.nroMesa,newTable.capacidad,newTable.estado);

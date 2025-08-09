@@ -58,6 +58,8 @@ export class UpdateStatus {
 
     const updatedReservation = await this.reservationRepository.updateStatus(reservation.reserveId, status);
 
+
+
     if(updatedReservation.status === 'Asistida') {
       await this.tableRepository.updateTableBusy(updatedReservation.table)
     }
@@ -66,21 +68,26 @@ export class UpdateStatus {
       await this.tableRepository.updateTableFree(updatedReservation.table)
       const client = await this.clientRepository.getClientByOtherDatas(reservation.toPublicInfo); 
 
+      console.log(client)
+
         if(!client) {
           throw new NotFoundError("Cliente no encontrado");
         }
 
-      const nonAttendance = client.reservation.filter(r => {
-        r.status === 'No_Asistida'
-      }).length; 
+      const nonAttendance = client.reservation.filter(r => r.status === 'No_Asistida').length; 
 
-      const disabled = client.states.filter(s => {
-        s.state === 'Deshabilitado'
-      }).length
+      console.log(nonAttendance);
+
+      const disabled = client.states.filter(s => s.state === 'Deshabilitado').length
+
+      console.log(disabled);
 
       const disabledWaiting = Math.floor(nonAttendance / policy.limiteDeNoAsistencias);
 
+      console.log(disabledWaiting)
+
       if(disabled < disabledWaiting) {
+        console.log()
         await this.clientStateRepository.create(client.userId, 'Deshabilitado'); 
       }
     }

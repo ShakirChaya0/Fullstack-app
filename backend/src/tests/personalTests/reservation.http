@@ -1,26 +1,25 @@
-###
-POST http://localhost:3000/reservas/597984e6-a1fc-46de-aa5d-2cf78c101542
+### Crear reserva
+POST http://localhost:3000/reservas/991bd649-5fea-48e9-8062-e3cd12d0bb4d
 Content-Type: application/json
 
 {
-    "fechaReserva" : "30/07/2025",
-    "horarioReserva": "21:00",  
-    "cantidadComensales": 13
+    "fechaReserva" : "09/08/2025",
+    "horarioReserva": "20:00",  
+    "cantidadComensales": 4
 }
 
-### 
-GET http://localhost:3000/reservas/11
+### Obetner reserva por Id
+GET http://localhost:3000/reservas/7
 
-###
-GET http://localhost:3000/reservas?date=2025-07-19
 
-###
-GET http://localhost:3000/reservas/cliente/597984e6-a1fc-46de-aa5d-2cf78c101542
+### Obtener reserva por fecha
+GET http://localhost:3000/reservas?date=2025-08-14
 
-### Actualizar solo el estado de la reserva
-PATCH http://localhost:3000/reservas/11
-Content-Type: application/json
+### Obtener reserva por id de Cliente
+GET http://localhost:3000/reservas/cliente/991bd649-5fea-48e9-8062-e3cd12d0bb4d
 
-{
-  "status": ""
-}
+### Actualizar solo el estado de la reserva, dependiendo de la query que se mande
+PATCH http://localhost:3000/reservas/estado/26?estado=No_Asistida
+
+### Obtener reserva por nombre y apellido del Cliente
+GET http://localhost:3000/reservas/clienteReserva?nombre=Guillermo&apellido=Sussi

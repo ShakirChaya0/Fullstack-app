@@ -112,6 +112,7 @@ export class ClientRepository implements IClienteRepository {
         if(!clientFound) {
             return null; 
         }
+        
         return this.toDomainEntity(clientFound);
     } 
     

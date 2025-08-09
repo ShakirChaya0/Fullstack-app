@@ -31,8 +31,9 @@ export class ReservationRepository implements IReservationRepository  {
   
   public async getExistingReservation(clientId: string, reservation: SchemaReservation): Promise<Reservation | null> {
     
-      const [hours, minutes] = reservation.horarioReserva.split(':').map(Number);
-      const timeAsDate = new Date(0, 0, 0, hours, minutes);
+    const [hours, minutes] = reservation.horarioReserva.split(':').map(Number);
+
+    const timeAsDate = new Date(Date.UTC(1970, 0, 1, hours, minutes, 0));
 
     const existingReservation = await prisma.reserva.findFirst({
         where: {
@@ -64,8 +65,8 @@ export class ReservationRepository implements IReservationRepository  {
 
   public async create(reservation: SchemaReservation, clientId: string, tables: Table[]): Promise<Reservation | null> {
 
-      const [hours, minutes] = reservation.horarioReserva.split(':').map(Number);
-      const timeAsDate = new Date(0, 0, 0, hours, minutes);
+  const [hours, minutes] = reservation.horarioReserva.split(':').map(Number);
+  const timeAsDate = new Date(Date.UTC(1970, 0, 1, hours, minutes, 0));
 
     const createdReservation = await prisma.reserva.create({
       data: {
@@ -209,7 +210,7 @@ export class ReservationRepository implements IReservationRepository  {
   }
 
   public async getReservationByNameAndLastnameClient(name: string, lastname:string): Promise<Reservation[]> {
-    const reservations: ReservationWithClient[] = await prisma.reserva.findMany({
+    const reservations = await prisma.reserva.findMany({
             where: {
               fechaReserva: new Date(),
               Clientes: {

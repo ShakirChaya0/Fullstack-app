@@ -2,20 +2,20 @@
 GET http://localhost:3000/clientes/
 
 ###
-GET http://localhost:3000/clientes/id/672c3549-51d7-4f30-a8cd-83883e9c4204
+GET http://localhost:3000/clientes/id/991bd649-5fea-48e9-8062-e3cd12d0bb4d
 
 ###
 POST http://localhost:3000/clientes/
 Content-Type: application/json
 
 {
-    "nombreUsuario": "Guillote",
+    "nombreUsuario": "Fran",
     "contrasenia": "123456",
-    "nombre": "Guillermo",
+    "nombre": "Franco",
     "apellido": "Sussi",
-    "fechaNacimiento": "13/08/1974",
-    "telefono": "123456789",
-    "email": "guille@gmail.com"
+    "fechaNacimiento": "27/07/2004",
+    "telefono": "3413779903",
+    "email": "franc@gmail.com"
 }
 
 ###

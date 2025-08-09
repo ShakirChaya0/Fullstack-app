@@ -4,6 +4,8 @@ import { ReservationController } from "../controllers/ReservationController.js";
 export const ReservationRouter = () => {
   const router = Router();
   const controller = new ReservationController();
+  
+  router.get("/clienteReserva", controller.getReservationByNameClient);
 
   router.post("/:idCliente", controller.createReservation);
 
@@ -15,7 +17,6 @@ export const ReservationRouter = () => {
 
   router.get("/cliente/:clientId", controller.getByClientId);
   
-  router.get("/",controller.getReservationByNameClient)
 
   return router;
 };

@@ -21,10 +21,11 @@ export class ReservationController {
 
   public createReservation = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { clientId } = req.params;
+      const clientId  = req.params.idCliente;
       if(!clientId) {
         throw new ValidationError("Se ingreso un ID válido")
       }
+
       const data = validateReservation(req.body);
       const newReservation = await this.registerReservation.execute(data, clientId);
       res.status(201).json(newReservation);
@@ -95,13 +96,13 @@ export class ReservationController {
 
   public getReservationByNameClient = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { name, lastname} = req.query; 
-    
-      if(typeof name !== 'string' || typeof lastname !== 'string' ) {
+      const { nombre, apellido } = req.query; 
+
+      if(typeof nombre !== 'string' || typeof apellido !== 'string' ) {
         throw new ValidationError('Debe enviar un nombre y apellido valido'); 
       }
 
-      const reservation = await this.cuu01RegisterAttendance.execute(name , lastname); 
+      const reservation = await this.cuu01RegisterAttendance.execute(nombre , apellido); 
       res.status(200).json(reservation);
     } 
     catch (error) {

@@ -2,24 +2,14 @@
 GET http://localhost:3000/mesas/
 
 ###
-GET http://localhost:3000/mesas/capacidad/9
-
+GET http://localhost:3000/mesas/capacidad/4
 
 ###
 POST http://localhost:3000/mesas/
 Content-Type: application/json
 
 {
-    "capacidad" : 10,
-    "estado" :"Libre"
-}
-
-###
-PATCH http://localhost:3000/mesas/nromesa/3
-Content-Type: application/json
-
-{
-    "estado" :"Reservado"
+    "capacidad" : 4
 }
 
 ###
