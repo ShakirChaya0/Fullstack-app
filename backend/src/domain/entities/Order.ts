@@ -1,4 +1,7 @@
-import { WaiterPublicInfo } from "../interfaces/Fix_waiterPublicInfo.js";
+import { OrderClientInfo } from "../interfaces/orderClientInfo.js";
+import { OrderKitchenInfo } from "../interfaces/orderKitchenInfo.js";
+import { OrderWaiterInfo } from "../interfaces/orderWaiterInfo.js";
+import { WaiterPublicInfo } from "../interfaces/waiterPublicInfo.js";
 import { OrderLine } from "./OrderLine.js";
 import { Table } from "./Table.js";
 
@@ -77,5 +80,55 @@ export class Order {
         const importeImpuestos = subtotal * (iva / 100);
         const total = subtotal + importeImpuestos;
         return { subtotal, importeImpuestos, total }
+    }
+
+    public toKitchenInfo(): OrderKitchenInfo {
+        return { 
+            idPedido: this._orderId, 
+            horaInicio: this._startHour,
+            lineasPedido: this._orderLines.map(ol => {
+                return {
+                    nombreProducto: ol.productoVO.productName,
+                    tipoComida: ol.productoVO.foodType,
+                    cantidad: ol.amount,
+                    estado: ol.status
+                }
+            }),
+            estado: this._status,
+            observaciones: this._observation
+        }
+    }
+
+    public toWaiterInfo(): OrderWaiterInfo {
+        return { 
+            idPedido: this._orderId, 
+            horaInicio: this._startHour,
+            nroMesa: this._table!.nroMesa,
+            cantidadCubiertos: this._cutleryAmount,
+            lineasPedido: this._orderLines.map(ol => {
+                return {
+                    nombreProducto: ol.productoVO.productName,
+                    cantidad: ol.amount,
+                    estado: ol.status
+                }
+            }),
+            estado: this._status,
+            observaciones: this._observation
+        }
+    }
+
+    public toClientInfo(): OrderClientInfo {
+        return { 
+            lineasPedido: this._orderLines.map(ol => {
+                return {
+                    nombreProducto: ol.productoVO.productName,
+                    tipoComida: ol.productoVO.foodType,
+                    cantidad: ol.amount,
+                    estado: ol.status
+                }
+            }),
+            estado: this._status,
+            observaciones: this._observation
+        }
     }
 }

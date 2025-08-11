@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<script type="module">
+    import { io } from 'https://cdn.socket.io/4.3.2/socket.io.esm.min.js';
+
+    const ws = new io('ws://localhost:3000',{
+        auth: {
+            jwt: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzdWFyaW8iOiIzNzVjNmVjNC0yMjE5LTQxODMtOWY1MC02NWMyYTYxZTUyNGMiLCJlbWFpbCI6InNhbnRpQGdtYWlsLmNvbSIsInRpcG9Vc3VhcmlvIjoiU2VjdG9yQ29jaW5hIiwidXNlcm5hbWUiOiJTYW50aUtlbGxlbSIsImlhdCI6MTc1NDc2ODk2OSwiZXhwIjoxNzU1MzczNzY5fQ.Ix9df-4Tvw_G2jnWf4ilTbvFqE5mJUpAiEOxmC0_-Lw"
+        }
+    });
+    
+    ws.emit('updateLineStatus', {idPedido: 1, nroLinea: 1, estadoLP: 'Terminada'})
+    
+    ws.on('updatedLine', (data) => {
+        console.log(data)
+    })
+
+    ws.on('open', () => {
+        console.log('WebSocket connection opened');
+        ws.send('Hello, server!');
+    });
+
+    ws.on('message', (data) => {
+        console.log('Received message:', data);
+    });
+
+    ws.on("newOrder", (order) => {
+        console.log(order);
+    })
+
+    ws.on('close', () => {
+        console.log('WebSocket connection closed');
+    });
+
+    ws.on('error', (error) => {
+        console.error('WebSocket error:', error);
+    });
+</script>
+<body>
+    <h1>Test WebSockets </h1>
+</body>
+</html>

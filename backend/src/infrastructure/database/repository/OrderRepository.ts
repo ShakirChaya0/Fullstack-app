@@ -4,7 +4,7 @@ import { Order, OrderStatus } from "../../../domain/entities/Order.js";
 import { Table } from "../../../domain/entities/Table.js";
 import { Waiter } from "../../../domain/entities/Waiter.js";
 import { UUID } from "crypto";
-import { OrderLine } from "../../../domain/entities/OrderLine.js";
+import { OrderLine, OrderLineStatus } from "../../../domain/entities/OrderLine.js";
 import { ProductoVO } from "../../../domain/value-objects/ProductVO.js";
 import { FoodType } from "../../../domain/entities/Product.js";
 import { OrderSchema } from "../../../shared/validators/Fix_orderZod.js";
@@ -17,35 +17,74 @@ type OrderWithAll = Prisma.PedidoGetPayload<{
 
 export class OrderRepository implements IOrderRepository {
 
-    public async create(order: OrderSchema, waiterId: string, tableNumber: number): Promise<Order | null>{
- 
-        const createdOrder = await prisma.pedido.create({
-        data: {
-            horaInicio:  new Date(),
-            estado: 'Solicitado',
-            cantCubiertos: order.cantidadCubiertos,
-            observaciones: order.observacion,
-            nroMesa: tableNumber,
-            idMozo: waiterId,
-            Linea_De_Pedido: {
-            create: order.items.map(linea => ({
-                nombreProducto: linea.nombre,
-                monto: linea.monto,
-                estado: 'Pendiente',
-                cantidad: linea.cantidad,
-                tipoComida: linea.tipo || null
-            }))
+    public async getActiveOrders(): Promise<Order[]> {
+        const orders = await prisma.pedido.findMany({
+            where: {
+                estado: {
+                    in: ["Solicitado", "En_Preparacion"]
+                }
+            },
+            include: {
+                Mesa: true,
+                Linea_De_Pedido: true,
+                Mozos: { 
+                    include: { Usuarios: true } 
+                }
             }
-        },
-        include: {
-            Mesa: true,
-            Linea_De_Pedido: true,
-            Mozos: { 
-                include: { Usuarios: true } 
-            }
-        }
         });
-    return this.toDomainEntity(createdOrder)
+
+        return orders.map(or => { return this.toDomainEntity(or) })
+    }
+
+    public async getOrdersByWaiter(waiterId: string): Promise<Order[]> {
+        const orders = await prisma.pedido.findMany({
+            where: {
+                idMozo: waiterId
+            },
+            include: {
+                Mesa: true,
+                Linea_De_Pedido: true,
+                Mozos: { 
+                    include: { Usuarios: true } 
+                }
+            }
+        });
+
+        return orders.map(or => { return this.toDomainEntity(or) })
+    }
+
+    public async create(order: OrderSchema, waiterId: string, tableNumber: number): Promise<Order>{
+        
+        const timeAsDate = new Date(Date.UTC(1970, 0, 1, (new Date).getHours(), (new Date).getMinutes() , 0));
+
+        const createdOrder = await prisma.pedido.create({
+            data: {
+                horaInicio: timeAsDate,
+                estado: 'Solicitado',
+                cantCubiertos: order.cantidadCubiertos,
+                observaciones: order.observacion,
+                nroMesa: tableNumber,
+                idMozo: waiterId,
+                Linea_De_Pedido: {
+                create: order.items.map(linea => ({
+                    nombreProducto: linea.nombre,
+                    monto: linea.monto,
+                    estado: 'Pendiente',
+                    cantidad: linea.cantidad,
+                    tipoComida: linea.tipo || null
+                }))
+                }
+            },
+            include: {
+                Mesa: true,
+                Linea_De_Pedido: true,
+                Mozos: { 
+                    include: { Usuarios: true } 
+                }
+            }
+        });
+
+        return this.toDomainEntity(createdOrder)
     }
     
     
@@ -66,11 +105,48 @@ export class OrderRepository implements IOrderRepository {
         return this.toDomainEntity(order);
     }
 
-    public async changeState(order: Order, state: OrderStatus): Promise<void> {
-        await prisma.pedido.update({
+    public async changeState(order: Order, state: OrderStatus): Promise<Order> {
+        const updatedOrder = await prisma.pedido.update({
             where: { idPedido: order.orderId },
-            data: { estado: state }
+            data: { estado: state },
+            include: {
+                Mesa: true,
+                Linea_De_Pedido: true,
+                Mozos: {
+                    include: { Usuarios: true }
+                }
+            }
         });
+
+        return this.toDomainEntity(updatedOrder)
+    }
+
+    public async changeOrderLineStatus(orderId: number, lineNumber: number, status: OrderLineStatus): Promise<Order> {
+        const updatedOrder = await prisma.pedido.update({
+            where: { idPedido: orderId },
+            data: {
+                Linea_De_Pedido: {
+                    update: {
+                        where: {
+                            idPedido_nroLinea: {
+                                idPedido: orderId,
+                                nroLinea: lineNumber
+                            }
+                        },
+                        data: { estado: status}
+                    }
+                }
+            },
+            include: {
+                Mesa: true,
+                Linea_De_Pedido: true,
+                Mozos: { 
+                    include: { Usuarios: true } 
+                }
+            }
+        })
+        
+        return this.toDomainEntity(updatedOrder)
     }
 
     private toDomainEntity(order: OrderWithAll): Order {

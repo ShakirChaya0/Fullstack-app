@@ -29,13 +29,15 @@ export class RefreshUseCase {
             const newAccessToken = this.jwtService.generateAccessToken({
                 idUsuario: user.userId,
                 email: user.email,
-                tipoUsuario: user.userType as TipoUsuario_Type
+                tipoUsuario: user.userType as TipoUsuario_Type,
+                username: user.userName
             });
 
             const newRefreshToken = this.jwtService.generateRefreshToken({
                 idUsuario: user.userId,
                 email: user.email,
-                tipoUsuario: user.userType as TipoUsuario_Type
+                tipoUsuario: user.userType as TipoUsuario_Type,
+                username: user.userName
             });
 
             const endDate = new Date(Date.now() + 15 * 60 * 1000); 

@@ -11,6 +11,7 @@ import { NotFoundError } from "../../shared/exceptions/NotFoundError.js";
 import { PayWithMercadoPagoUseCase } from "../../application/use_cases/OrderUseCases/PayWithMercadoPagoUseCase.js";
 import { mercadoPagoClient } from "../../infrastructure/config/Fix_mercadoPago.js";
 import { Payment } from "mercadopago";
+import { ioConnection } from "../../app.js";
 
 export class PaymentController {
     constructor(
@@ -86,7 +87,12 @@ export class PaymentController {
             const orderId = req.params.id;
             if (!orderId || isNaN(+orderId)) throw new ValidationError("El ID enviado debe ser un número");
             
-            const check = await this.generateCheckUseCase.execute(+orderId);
+            const { order, check } = await this.generateCheckUseCase.execute(+orderId);
+
+            ioConnection.to("cocina")
+                .to(`mozo:${order.waiter?.username}`)
+                .emit("newOrder", order);
+
             res.status(200).json(check);
         }
         catch (err) {
@@ -112,7 +118,12 @@ export class PaymentController {
             const orderId = req.params.id;
             if (!orderId || isNaN(+orderId)) throw new ValidationError("El ID enviado debe ser un número");
 
-            await this.setToWaitingForChargeUseCase.execute(+orderId);
+            const order = await this.setToWaitingForChargeUseCase.execute(+orderId);
+
+            ioConnection.to("cocina")
+                .to(`mozo:${order.waiter?.username}`)
+                .emit("newOrder", order);
+
             res.status(204).send();
         }
         catch (err) {
@@ -123,14 +134,13 @@ export class PaymentController {
     public async registerPayment(req: Request, res: Response, next: NextFunction) {
         try {
             const {id, topic} = req.query
+            let order;
             if (topic && topic == "payment") {
                 const payment = await new Payment(mercadoPagoClient).get({ id: Number(id) });
 
                 const {orderId, metodoPago} = JSON.parse(payment.external_reference!); 
 
-                await this.registerPaymentUseCase.execute(orderId, metodoPago, `${payment.id}`)
-
-                res.status(204).send();
+                order = await this.registerPaymentUseCase.execute(orderId, metodoPago, `${payment.id}`)
             }
             else{
                 const { idPedido, metodoPago } = req.query;
@@ -138,9 +148,14 @@ export class PaymentController {
                 if (metodoPago !== "MercadoPago" && metodoPago !== "Efectivo" && metodoPago !== "Debito" && metodoPago !== "Credito") 
                     throw new ValidationError("Método de pago inválido");
     
-                await this.registerPaymentUseCase.execute(+idPedido, metodoPago, null);
-                res.status(204).send();
+                order = await this.registerPaymentUseCase.execute(+idPedido, metodoPago, null);
             }
+            
+            ioConnection.to("cocina")
+                .to(`mozo:${order.waiter?.username}`)
+                .emit("newOrder", order);
+
+            res.status(204).send();
         }
         catch (err) {
             next(err);

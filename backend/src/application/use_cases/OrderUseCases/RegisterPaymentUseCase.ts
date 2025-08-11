@@ -1,3 +1,4 @@
+import { Order } from "../../../domain/entities/Order.js";
 import { PaymentMethod } from "../../../domain/entities/Payment.js";
 import { OrderRepository } from "../../../infrastructure/database/repository/OrderRepository.js";
 import { PaymentRepository } from "../../../infrastructure/database/repository/PaymentRepository.js";
@@ -10,14 +11,14 @@ export class RegisterPaymentUseCase {
         private paymentRepository = new PaymentRepository()
     ){}
     
-    async execute(orderId: number, paymentMethod: PaymentMethod, transactionId: string | null): Promise<void> {
-        const order = await this.orderRepository.getOne(orderId);
-        if (!order) throw new NotFoundError("Pedido no encontrado");
+    async execute(orderId: number, paymentMethod: PaymentMethod, transactionId: string | null): Promise<Order> {
+        const orderFound = await this.orderRepository.getOne(orderId);
+        if (!orderFound) throw new NotFoundError("Pedido no encontrado");
         
-        if (order.status === "Pendiente_De_Pago" || order.status === "Pendiente_De_Cobro") {
-            await this.orderRepository.changeState(order, "Pagado");
+        if (orderFound.status === "Pendiente_De_Pago" || orderFound.status === "Pendiente_De_Cobro") {
+            const order = await this.orderRepository.changeState(orderFound, "Pagado");
             await this.paymentRepository.create(order, paymentMethod, transactionId);
-            return
+            return order;
         }
         throw new BusinessError("El pedido debe estar pendiente de pago o cobro para poder ser pagado");
     }

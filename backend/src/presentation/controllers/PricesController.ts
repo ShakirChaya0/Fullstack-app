@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { GetPricesUseCase } from '../../application/use_cases/PricesUseCases/GetPricesUseCase.js';
-import { GetOnePriceUseCase } from '../../application/use_cases/PricesUseCases/getOnePriceUseCase.js';
+import { GetOnePriceUseCase } from '../../application/use_cases/PricesUseCases/GetOnePriceUseCase.js';
 import { GetPricesByProdUseCase } from '../../application/use_cases/PricesUseCases/GetPricesByProdUseCase.js';
 import { DeletePriceUseCase } from '../../application/use_cases/PricesUseCases/DeletePriceUseCase.js';
 import { RegisterPriceUseCase } from '../../application/use_cases/PricesUseCases/RegisterPriceUseCase.js';

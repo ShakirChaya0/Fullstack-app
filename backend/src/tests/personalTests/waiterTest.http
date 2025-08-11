@@ -13,13 +13,13 @@ Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzdWFyaW8iOiIzNzE2YmMxMy1jY2JkLTQ1MDctYWYzZS04OTQ0YmEzYzE3MDQiLCJlbWFpbCI6Im5pY29sYXNtYXp6YWdsaWFAZ21haWwuY29tIiwidGlwb1VzdWFyaW8iOiJBZG1pbmlzdHJhZG9yIiwiaWF0IjoxNzU0NDE4NTExLCJleHAiOjE3NTQ0MTkxMTF9.DuGxRplTZkchFrlPiiKRt4ft3fWTxdjmuSVSqmfn2H0
 
 {
-    "nombreUsuario": "JoseB_2004",
-    "contrasenia": "123456",
-    "nombre": "Jose Sebastian Alberto",
+    "nombreUsuario": "shakirboca05",
+    "contrasenia": "holamundo",
+    "nombre": "Shakir",
     "apellido": "Barragan Landriel",
-    "dni": "46495171",
-    "telefono": "3415052791",
-    "email": "josebpp@gmail.com"
+    "dni": "46132659",
+    "telefono": "3413151500",
+    "email": "shakirboca05@gmail.com"
 }   
 
 ###
