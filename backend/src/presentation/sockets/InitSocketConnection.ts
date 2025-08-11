@@ -62,7 +62,12 @@ export function InitSocketConnection(server: Http2Server) {
             .emit('updatedLineError', "No se pudo actualizar el pedido")
         }
       })
+
+      socket.on('addOrderLine', )
+    
     });
+
+    
 
     return ioConnection
 }

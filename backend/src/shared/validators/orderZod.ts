@@ -34,10 +34,15 @@ export type PartialOrderSchema = z.infer<typeof PartialSchemaOrder>
 
 export type OrderLineSchema = z.infer<typeof SchemaOrderLine>
 
+
 export function ValidateOrder(data: OrderSchema){ 
     return SchemaOrder.safeParse(data)
 }
 
 export function ValidateOrderPartial(data: Partial<OrderSchema>){
     return PartialSchemaOrder.safeParse(data)
+}
+
+export function ValidateOrderLine(data: OrderLineSchema[]) {
+    return z.array(SchemaOrderLine).safeParse(data);
 }
