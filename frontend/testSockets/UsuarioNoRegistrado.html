@@ -14,11 +14,81 @@
         }
     });
 
-    
+    const orderLinesToAdd = {
+        orderId: 1,
+        items: [
+            {
+            "nombre": "Empanadas sin Usuario Registrado",
+            "tipo": "Entrada",
+            "monto": 150.25,
+            "cantidad": 4
+            },
+            {
+            "nombre": "Bife de chorizo",
+            "tipo": "Plato_Principal",
+            "monto": 2000,
+            "cantidad": 2
+            },
+            {
+            "nombre": "Vino Malbec",
+            "monto": 1800.00,
+            "cantidad": 1,
+            "esAlcoholica": false
+            }
+        ]
+    }
+
+    const orderToModify = {
+        cantidadCubiertos: 2,
+        observacion: "Mesa junto a la puerta",
+        items: [
+            {
+            "nombre": "Empanadas sin Usuario Por web socket",
+            "tipo": "Entrada",
+            "monto": 150.25,
+            "cantidad": 4
+            },
+            {
+            "nombre": "Bife de chorizo",
+            "tipo": "Plato_Principal",
+            "monto": 2000,
+            "cantidad": 2
+            },
+            {
+            "nombre": "Vino Malbec",
+            "monto": 1800.00,
+            "cantidad": 1,
+            "esAlcoholica": false
+            }
+        ]
+    }
+
+    const orderLineToDelete = {
+        orderId: 1,
+        lineNumber: 1
+    }
+
     ws.on('updatedLine', (data) => {
         console.log(data)
     })
 
+    ws.emit('addOrderLine', orderLinesToAdd)
+
+    ws.on('addedOrderLine', (data) => {
+        console.log(data)
+    })
+
+    ws.emit('modifyOrder', orderToModify)
+
+    ws.on('modifiedOrderLine', (data) => {
+        console.log(data)
+    })
+    
+    ws.emit('deleteOrderLine', orderToModify)
+
+    ws.on('deletedOrderLine', (data) => {
+        console.log(data)
+    })
     ws.on('open', () => {
         console.log('WebSocket connection opened');
         ws.send('Hello, server!');

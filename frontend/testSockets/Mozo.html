@@ -10,13 +10,95 @@
 
     const ws = new io('ws://localhost:3000',{
         auth: {
-            jwt: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzdWFyaW8iOiIxYzVjNjUyOC03MjZhLTRjNzQtYjlhYS02MjI1OTViMTEwZDciLCJlbWFpbCI6Impvc2VicHBAZ21haWwuY29tIiwidGlwb1VzdWFyaW8iOiJNb3pvIiwidXNlcm5hbWUiOiJKb3NlQl8yMDA0IiwiaWF0IjoxNzU0NzY5MTA1LCJleHAiOjE3NTUzNzM5MDV9.aogFmoRgsjFcB7jd_oJSjt17_SC_L_bbW6OL7mxCDyc"
+            jwt: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzdWFyaW8iOiIzYTIwMDQyNS0zYTU2LTRmYWEtYTA3Yy1lY2UwYjdkMmFjZWQiLCJlbWFpbCI6Im1hcnRpbmdhbHZhbm9AZ21haWwuY29tIiwidGlwb1VzdWFyaW8iOiJNb3pvIiwidXNlcm5hbWUiOiJIZXJsYXVtYXJzYW4iLCJpYXQiOjE3NTQ5NDk2ODYsImV4cCI6MTc1NTU1NDQ4Nn0.v07iAGmEx4ehUkcMWOaNbw4sneLimowfxU07kaPbLw4"
         }
     });
+
+    const orderLinesToAdd = {
+        orderId: 1,
+        items: [
+            {
+            "nombre": "Producto 1 de Web Scoket",
+            "tipo": "Entrada",
+            "monto": 150.25,
+            "cantidad": 4
+            },
+            {
+            "nombre": "Producto alternativo Web Socket",
+            "monto": 1800.00,
+            "cantidad": 1,
+            "esAlcoholica": false
+            }
+        ]
+    }
+
+    // const orderToModify = {
+    //     cantidadCubiertos: 2,
+    //     observacion: "Mesa junto a la puerta",
+    //     items: [
+    //         {
+    //         "nombre": "Empanadas sin Usuario Por web socket",
+    //         "tipo": "Entrada",
+    //         "monto": 150.25,
+    //         "cantidad": 4
+    //         },
+    //         {
+    //         "nombre": "Bife de chorizo",
+    //         "tipo": "Plato_Principal",
+    //         "monto": 2000,
+    //         "cantidad": 2
+    //         },
+    //         {
+    //         "nombre": "Vino Malbec",
+    //         "monto": 1800.00,
+    //         "cantidad": 1,
+    //         "esAlcoholica": false
+    //         }
+    //     ]   
+    // }
+
+    // const orderLineToDelete = {
+    //     orderId: 1,
+    //     lineNumber: 1
+    // }
     
-    ws.on('updatedLine', (data) => {
+    // ws.on('updatedLine', (data) => {
+    //     console.log(data)
+    // })
+
+    ws.emit('addOrderLine', {
+        orderId: 1,
+        items: [
+            {
+            "nombre": "Producto 1 de Web Scoket",
+            "tipo": "Entrada",
+            "monto": 150.25,
+            "cantidad": 4
+            },
+            {
+            "nombre": "Producto alternativo Web Socket",
+            "monto": 1800.00,
+            "cantidad": 1,
+            "esAlcoholica": false
+            }
+        ]
+    })
+
+    ws.on('addedOrderLine', (data) => {
         console.log(data)
     })
+
+    // ws.emit('modifyOrder', orderToModify)
+
+    // ws.on('modifiedOrderLine', (data) => {
+    //     console.log(data)
+    // })
+
+    // ws.emit('deleteOrderLine', orderToModify)
+
+    // ws.on('deletedOrderLine', (data) => {
+    //     console.log(data)
+    // })
 
     ws.on('open', () => {
         console.log('WebSocket connection opened');
