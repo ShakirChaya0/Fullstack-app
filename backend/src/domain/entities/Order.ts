@@ -103,7 +103,7 @@ export class Order {
         return { 
             idPedido: this._orderId, 
             horaInicio: this._startHour,
-            nroMesa: this._table!.nroMesa,
+            nroMesa: this._table!.tableNum,
             cantidadCubiertos: this._cutleryAmount,
             lineasPedido: this._orderLines.map(ol => {
                 return {

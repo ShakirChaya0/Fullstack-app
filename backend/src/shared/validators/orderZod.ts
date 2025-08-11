@@ -2,7 +2,7 @@ import z from "zod"
 
 
 const SchemaOrderLine =
-        z.object({
+    z.object({
         nombre: z.string().nonempty({message: "El nombre es requerido"}).min(3).max(255),
         tipo: z.enum(["Entrada", "Plato_Principal", "Postre"]).optional(),
         monto: z.number({ required_error: "monto es obligatorio" }).positive({ message: "El monto debe ser un número positivo" })

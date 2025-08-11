@@ -1,4 +1,4 @@
-import { OrderSchema } from "../../shared/validators/orderZod.js";
+import { OrderLineSchema, OrderSchema, PartialOrderSchema } from "../../shared/validators/orderZod.js";
 import { Order, OrderStatus } from "../entities/Order.js";
 import { OrderLineStatus } from "../entities/OrderLine.js";
 
@@ -9,4 +9,7 @@ export interface IOrderRepository {
     getOne(id: number): Promise<Order | null>;
     changeState(order: Order, state: OrderStatus): Promise<Order>;
     changeOrderLineStatus(orderId: number, lineNumber: number,status: OrderLineStatus): Promise<Order>; 
+    addOrderLines(orderId: number, orderLines: OrderLineSchema[]): Promise<Order>
+    modifyOrder(orderId: number, lineNumber: number[], data: PartialOrderSchema): Promise<Order>
+    deleteOrderLine(orderId: number, lineNumber: number): Promise<Order>
 }

@@ -61,7 +61,7 @@ export class OrderController {
                     .emit("newOrder", createdOrder.toWaiterInfo());
             }
 
-            res.status(201).json(createdOrder);
+            res.status(201).send("Orden creada correctamente");
         } 
         catch(error) {
             next(error);

@@ -7,7 +7,7 @@ import { UUID } from "crypto";
 import { OrderLine, OrderLineStatus } from "../../../domain/entities/OrderLine.js";
 import { ProductoVO } from "../../../domain/value-objects/ProductVO.js";
 import { FoodType } from "../../../domain/entities/Product.js";
-import { OrderSchema } from "../../../shared/validators/orderZod.js";
+import { OrderLineSchema, OrderSchema, PartialOrderSchema } from "../../../shared/validators/orderZod.js";
 
 const prisma = new PrismaClient();
 
@@ -147,6 +147,110 @@ export class OrderRepository implements IOrderRepository {
         })
         
         return this.toDomainEntity(updatedOrder)
+    }
+
+    public async addOrderLines(orderId: number, orderLines: OrderLineSchema[]): Promise<Order> {
+        const updatedOrder = await prisma.pedido.update({
+            where: { idPedido: orderId },
+            data: {
+                Linea_De_Pedido: {
+                    create: orderLines.map( linea => ({
+                        nombreProducto: linea.nombre,
+                        monto: linea.monto,
+                        estado: 'Pendiente',
+                        cantidad: linea.cantidad,
+                        tipoComida: linea.tipo || null
+                    }))
+                }
+            },
+            include: {
+                Mesa: true,
+                Linea_De_Pedido: true,
+                Mozos: { 
+                    include: { Usuarios: true } 
+                }
+            }
+        })
+        return this.toDomainEntity(updatedOrder)
+    }
+
+    public async modifyOrder(orderId: number, lineNumber: number[], data: PartialOrderSchema): Promise<Order> {
+        
+        const itemsToProcess = data.items ?? []
+
+        if (itemsToProcess.length === 0) {
+            const updatedOrder = await prisma.pedido.update({
+            where: { idPedido: orderId},
+            data: {
+                cantCubiertos: data.cantidadCubiertos,
+                observaciones: data.observacion,
+            },
+            include: {
+                Mesa: true,
+                Linea_De_Pedido: true,
+                Mozos: { 
+                    include: { Usuarios: true } 
+                }
+            }
+            })
+
+            return this.toDomainEntity(updatedOrder);
+        }else {
+            const updatedOrder = await prisma.pedido.update({
+            where: { idPedido: orderId},
+            data: {
+                cantCubiertos: data.cantidadCubiertos,
+                observaciones: data.observacion,
+                Linea_De_Pedido: {
+                    update: lineNumber.map((line, index) => ({
+                        where: {
+                            idPedido_nroLinea: {
+                                idPedido: orderId,
+                                nroLinea: line
+                            }
+                        },
+                        data: { 
+                            cantidad: data.items![index].cantidad
+                        }
+                    }))
+                }
+            },
+            include: {
+                Mesa: true,
+                Linea_De_Pedido: true,
+                Mozos: { 
+                    include: { Usuarios: true } 
+                }
+            }
+            })
+
+            return this.toDomainEntity(updatedOrder)
+        }
+    }
+
+    public async deleteOrderLine(orderId: number, lineNumber: number): Promise<Order> {
+        const partialDeletedOrder = await prisma.pedido.update({
+            where: { idPedido: orderId },
+            data: {
+                Linea_De_Pedido: {
+                    delete: {
+                        idPedido_nroLinea: {
+                            idPedido: orderId,
+                            nroLinea: lineNumber
+                        }
+                    }
+                }
+            },
+            include: {
+                Mesa: true,
+                Linea_De_Pedido: true,
+                Mozos: { 
+                    include: { Usuarios: true } 
+                }
+            }
+        })
+
+        return this.toDomainEntity(partialDeletedOrder)
     }
 
     private toDomainEntity(order: OrderWithAll): Order {
