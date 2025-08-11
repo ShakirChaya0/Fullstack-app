@@ -5,4 +5,5 @@ export interface JwtPayloadInterface {
     idUsuario: UUID
     email: string
     tipoUsuario: TipoUsuario_Type
+    username: string
 }

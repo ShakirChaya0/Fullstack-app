@@ -49,4 +49,12 @@ export class QRTokenRepository implements IQRTokenRepository {
         return registeredQRData 
 
     }
+
+    public async getQRByTableNumber(nroMesa: number): Promise<QRTokenInterface | null> {
+        const qrToken = await prisma.qRToken.findUnique({
+            where: { nroMesa: nroMesa}
+        })
+
+        return qrToken
+    }
 }

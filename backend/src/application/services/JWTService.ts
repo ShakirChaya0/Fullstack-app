@@ -9,7 +9,7 @@ export class JWTService {
         private readonly refreshTokenSecret: string = process.env.REFRESH_TOKEN_SECRET || ""
     ) {}
     public generateAccessToken(payload: JwtPayloadInterface): string {
-        return jwt.sign(payload, this.accessTokenSecret, { expiresIn: "10m" });
+        return jwt.sign(payload, this.accessTokenSecret, { expiresIn: "7d" });
     }
 
     public verifyAccessToken(token: string): JwtPayloadInterface {
@@ -17,7 +17,7 @@ export class JWTService {
     }
     
     public generateRefreshToken(payload: JwtPayloadInterface): string {
-        return jwt.sign(payload, this.refreshTokenSecret, { expiresIn: "15m" });
+        return jwt.sign(payload, this.refreshTokenSecret, { expiresIn: "8d" });
     }
 
     public verifyRefreshToken(token: string): JwtPayloadInterface {
