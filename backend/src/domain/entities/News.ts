@@ -1,5 +1,5 @@
 import { BusinessError } from "../../shared/exceptions/BusinessError.js"
-import { ValidateNews } from "../../shared/validators/newsZod.js"
+import { ValidateNews } from "../../shared/validators/Fix_newsZod.js"
 
 export class NewsClass {
     constructor (

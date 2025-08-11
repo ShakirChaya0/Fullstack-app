@@ -1,7 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import { IAdminRepository } from "../../../domain/repositories/IAdminRepository.js";
 import { Admin } from "../../../domain/entities/Admin.js";
-import { PartialSchemaAdmin } from "../../../shared/validators/adminZod.js";
+import { PartialSchemaAdmin } from "../../../shared/validators/Fix_adminZod.js";
 import { UUID } from "crypto";
 import { ConflictError } from "../../../shared/exceptions/ConflictError.js";
 import { ServiceError } from "../../../shared/exceptions/ServiceError.js";

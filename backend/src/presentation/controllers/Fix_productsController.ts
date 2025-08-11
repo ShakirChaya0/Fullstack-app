@@ -1,11 +1,11 @@
 import { Request, Response, NextFunction } from "express"
 import { CUU18RegisterProduct } from "../../application/use_cases/ProductsUseCases/CUU18RegisterProduct.js";
 import { CUU19ModifyProduct } from "../../application/use_cases/ProductsUseCases/CUU19ModifyProduct.js";
-import { GetProductsUseCase } from "../../application/use_cases/ProductsUseCases/GetProductsUseCase.js";
-import { GetProductByIdUseCase } from "../../application/use_cases/ProductsUseCases/GetProductByIdUseCase.js";
-import { PartialSchemaProductos, ValidateProduct, ValidateProductPartial } from "../../shared/validators/productZod.js";
-import { GetProductByNameUseCase } from "../../application/use_cases/ProductsUseCases/GetProductByNameUseCase.js";
-import { GetProductByTypeUseCase } from "../../application/use_cases/ProductsUseCases/GetProductByTypeUseCase.js";
+import { GetProductsUseCase } from "../../application/use_cases/ProductsUseCases/Fix_getProductsUseCase.js";
+import { GetProductByIdUseCase } from "../../application/use_cases/ProductsUseCases/Fix_getProductByIdUseCase.js";
+import { PartialSchemaProductos, ValidateProduct, ValidateProductPartial } from "../../shared/validators/Fix_productZod.js";
+import { GetProductByNameUseCase } from "../../application/use_cases/ProductsUseCases/Fix_getProductByNameUseCase.js";
+import { GetProductByTypeUseCase } from "../../application/use_cases/ProductsUseCases/Fix_getProductByTypeUseCase.js";
 import { ValidationError } from "../../shared/exceptions/ValidationError.js";
 import { NotFoundError } from "../../shared/exceptions/NotFoundError.js";
 

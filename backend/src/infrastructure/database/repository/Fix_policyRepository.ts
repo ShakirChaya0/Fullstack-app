@@ -1,5 +1,5 @@
 import { PrismaClient } from '@prisma/client';
-import { PartialSchemaPolicy  } from '../../../shared/validators/policyZod.js';
+import { PartialSchemaPolicy  } from '../../../shared/validators/Fix_policyZod.js';
 import { Policy } from '../../../domain/entities/Policy.js';
 import { IPolicyRepository } from '../../../domain/repositories/IPolicyRepository.js';
 

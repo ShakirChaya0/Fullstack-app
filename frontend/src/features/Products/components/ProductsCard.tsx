@@ -7,20 +7,23 @@ import type { Bebida, Comida } from "../interfaces/products";
 
 type Props = {
     key: number,
-    food: Comida | Bebida
+    product: Comida | Bebida
 }
 
-const ProductsCard: React.FC<Props> = ({food}) => {
+const ProductsCard: React.FC<Props> = ({product}) => {
   return (
     <Box sx={{ minWidth: 200, maxWidth: 680, marginTop: 2, marginBottom: 2 }}>
       <Card variant="outlined">
         <React.Fragment>
             <CardContent>
                 <Typography variant="h5" component="div">
-                    {food._name}
+                    {product._name}
                 </Typography>
                 <Typography variant="body2">
-                    {food._description}
+                    {product._description}
+                </Typography>
+                <Typography variant="body2">
+                    ${product._price}
                 </Typography>
             </CardContent>
         </React.Fragment>

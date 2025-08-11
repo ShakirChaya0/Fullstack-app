@@ -1,7 +1,7 @@
 import { Information } from '../../../domain/entities/Information.js';
 import { IRestaurantInformation } from '../../../domain/repositories/IRestaurantInformation.js';
 import { PrismaClient } from '@prisma/client';
-import { PartialSchemaInformation } from '../../../shared/validators/informationZod.js';
+import { PartialSchemaInformation } from '../../../shared/validators/Fix_informationZod.js';
 
 const prisma = new PrismaClient();
 

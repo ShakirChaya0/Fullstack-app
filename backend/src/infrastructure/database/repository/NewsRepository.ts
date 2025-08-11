@@ -1,7 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import { INewsRepository } from "../../../domain/repositories/INewsRepository.js";
 import { NewsClass } from "../../../domain/entities/News.js";
-import { PartialNews } from "../../../domain/interfaces/newsInterface.js";
+import { PartialNews } from "../../../domain/interfaces/Fix_newsInterface.js";
 import { ConflictError } from "../../../shared/exceptions/ConflictError.js";
 import { ServiceError } from "../../../shared/exceptions/ServiceError.js";
 

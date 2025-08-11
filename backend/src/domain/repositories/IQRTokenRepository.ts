@@ -1,4 +1,4 @@
-import { QRTokenInterface } from "../interfaces/qRToken.interface.js";
+import { QRTokenInterface } from "../interfaces/Fix_qRToken.interface.js";
 
 
 export interface IQRTokenRepository {

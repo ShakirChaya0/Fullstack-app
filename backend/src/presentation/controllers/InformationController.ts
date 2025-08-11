@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { CUU23ModifyInformation } from "../../application/use_cases/InformationUseCases/CUU23-modifyInformation.js";
 import { GetInformationUseCase } from "../../application/use_cases/InformationUseCases/GetInformationUseCase.js";
-import { ValidatePartialInformation } from "../../shared/validators/informationZod.js";
+import { ValidatePartialInformation } from "../../shared/validators/Fix_informationZod.js";
 
 export class InformationController {
     constructor(

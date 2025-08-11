@@ -1,5 +1,5 @@
-import DrinksLink from "./drinksLink";
-import FoodsLink from "./foodsLink";
+import DrinksLink from "./drinks/drinksLink";
+import FoodsLink from "./foods/foodsLink";
 
 export function Menu(){
     return(

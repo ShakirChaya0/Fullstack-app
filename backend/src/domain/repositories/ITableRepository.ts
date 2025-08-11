@@ -1,5 +1,5 @@
 import { Table } from "../entities/Table.js";
-import { schemaTable } from "../../shared/validators/tableZod.js";
+import { schemaTable } from "../../shared/validators/Fix_tableZod.js";
 
 
 export interface ITableRepository {

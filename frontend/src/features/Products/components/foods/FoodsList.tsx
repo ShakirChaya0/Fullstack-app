@@ -1,0 +1,44 @@
+import { useMemo, useState } from "react";
+import { useFoods } from "../../hooks/useFoods";
+import FilterProducts from "./filterFoods";
+import { SkeletonBody } from "../skeletonBody";
+import { OrderList } from "../orderList";
+import FoodsTypesFilter from "./FoodsTypesFilter";
+import FoodsSpecialFilter from "./FoodsSpecialFilter";
+
+function FoodsList () {
+    const {isLoading, isError, foods} = useFoods();
+    const [query, setQuery] = useState<string>("")
+
+    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const query = event.currentTarget.value
+        setQuery(query)
+    }
+
+    const filteredFoods = useMemo(() => {
+        return foods?.filter((food) => food._name.toLowerCase().includes(query.toLowerCase())) ?? [];
+    }, [foods, query])
+
+    return(
+        <>
+        {
+            !isLoading ? (
+                <section className="flex-1 grid md:grid-cols-[minmax(280px,_7fr)_4fr] lg:grid-cols-[3fr_1fr] gap-6 md:p-4 pb-6 w-full">
+                    <div className="border border-gray-300 rounded-2xl p-4 w-full min-w-2 shadow-2xl">
+                        { !isError && <FilterProducts handleChange={handleChange}/>}
+                        { isError && <h1 className="flex w-full h-full justify-center items-center text-2xl text-red-600">Error al cargar los datos del menu</h1>}
+                        { filteredFoods.length === 0 && query.length !== 0 && !isError && <h1 className="flex justify-center items-center text-2xl text-red-600">No se ha encontrado dicho plato</h1> }
+                        <FoodsTypesFilter filteredFoods={filteredFoods}/>
+                        <FoodsSpecialFilter filteredFoods={filteredFoods}/>
+                    </div>
+                    <OrderList/>
+                </section>
+            ) : 
+            (<SkeletonBody/>)
+        }
+
+        </>
+    )
+}
+
+export default FoodsList

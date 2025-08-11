@@ -5,7 +5,7 @@ import { GetWaiterByUserName } from "../../application/use_cases/WaiterUseCases/
 import { GetWaiterById } from "../../application/use_cases/WaiterUseCases/GetWaiterByIdUseCase.js";
 import { GetWaiter } from "../../application/use_cases/WaiterUseCases/GetWaitersUseCase.js";
 import { Request, Response, NextFunction } from "express";
-import { ValidateWaiter, ValidateWaiterPartial } from "../../shared/validators/waiterZod.js";
+import { ValidateWaiter, ValidateWaiterPartial } from "../../shared/validators/Fix_waiterZod.js";
 import { ValidationError } from "../../shared/exceptions/ValidationError.js";
 
 export class WaiterController {

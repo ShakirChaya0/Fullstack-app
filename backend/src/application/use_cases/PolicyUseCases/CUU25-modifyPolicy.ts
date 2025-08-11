@@ -1,6 +1,6 @@
-import { PolicyRepository } from '../../../infrastructure/database/repository/PolicyRepository.js'
+import { PolicyRepository } from '../../../infrastructure/database/repository/Fix_policyRepository.js'
 import { PoliticasRestaurante } from '@prisma/client'; // cambiar
-import { PartialSchemaPolicy } from '../../../shared/validators/policyZod.js';
+import { PartialSchemaPolicy } from '../../../shared/validators/Fix_policyZod.js';
 
 
 export class CUU25ModifyPolicys {

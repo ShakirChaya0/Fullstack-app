@@ -1,6 +1,6 @@
 import { PreferenceResponse } from "mercadopago/dist/clients/preference/commonTypes.js";
 import { OrderRepository } from "../../../infrastructure/database/repository/OrderRepository.js";
-import { PolicyRepository } from "../../../infrastructure/database/repository/PolicyRepository.js";
+import { PolicyRepository } from "../../../infrastructure/database/repository/Fix_policyRepository.js";
 import { NotFoundError } from "../../../shared/exceptions/NotFoundError.js";
 import { MercadoPagoService } from "../../services/MercadoPagoService.js";
 import { BusinessError } from "../../../shared/exceptions/BusinessError.js";

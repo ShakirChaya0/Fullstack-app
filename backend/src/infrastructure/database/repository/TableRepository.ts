@@ -1,6 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 import { Table } from "../../../domain/entities/Table.js";
-import { schemaTable } from "../../../shared/validators/tableZod.js";
+import { schemaTable } from "../../../shared/validators/Fix_tableZod.js";
 import { ITableRepository } from "../../../domain/repositories/ITableRepository.js";
 
 

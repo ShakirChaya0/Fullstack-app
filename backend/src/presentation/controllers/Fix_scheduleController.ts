@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
-import { GetSchedules } from "../../application/use_cases/ScheduleUseCases/getSchedules.js";
-import { GetScheduleById } from "../../application/use_cases/ScheduleUseCases/getScheduleById.js";
+import { GetSchedules } from "../../application/use_cases/ScheduleUseCases/Fix_getSchedules.js";
+import { GetScheduleById } from "../../application/use_cases/ScheduleUseCases/GetScheduleById.js";
 import { CUU13RegisterSchedule } from "../../application/use_cases/ScheduleUseCases/CUU13RegisterSchedule.js";
 import { CUU14ModifySchedule } from "../../application/use_cases/ScheduleUseCases/CUU14ModifySchedule.js";
-import { ValidatePartialSchedule , PartialSchemaSchedule, ValidateSchedule} from "../../shared/validators/scheduleZod.js";
+import { ValidatePartialSchedule , PartialSchemaSchedule, ValidateSchedule} from "../../shared/validators/Fix_scheduleZod.js";
 
 
 export class HorarioController {

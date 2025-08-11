@@ -1,7 +1,7 @@
 import { Prisma, PrismaClient } from "@prisma/client";
 import { Waiter } from "../../../domain/entities/Waiter.js";
 import { IWaiterRepository } from "../../../domain/repositories/IWaiterRepository.js";
-import { SchemaWaiter ,PartialSchemaWaiter } from "../../../shared/validators/waiterZod.js";
+import { SchemaWaiter ,PartialSchemaWaiter } from "../../../shared/validators/Fix_waiterZod.js";
 import { ConflictError } from "../../../shared/exceptions/ConflictError.js";
 import { ServiceError } from "../../../shared/exceptions/ServiceError.js";
 import { NotFoundError } from "../../../shared/exceptions/NotFoundError.js";

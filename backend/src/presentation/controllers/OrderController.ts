@@ -1,5 +1,5 @@
 import { Response, NextFunction } from "express"
-import { OrderSchema, ValidateOrder } from "../../shared/validators/orderZod.js"
+import { OrderSchema, ValidateOrder } from "../../shared/validators/Fix_orderZod.js"
 import { ValidationError } from "../../shared/exceptions/ValidationError.js";
 import { CUU02RegisterOrder } from "../../application/use_cases/OrderUseCases/RegisterOrderUseCase.js";
 import { AuthenticatedRequest } from "../middlewares/AuthMiddleware.js";

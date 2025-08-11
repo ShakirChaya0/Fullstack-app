@@ -4,7 +4,7 @@ import { UpdateStatus } from "../../application/use_cases/ReservationUseCases/Up
 import { GetById } from "../../application/use_cases/ReservationUseCases/GetById.js";
 import { GetByDate } from "../../application/use_cases/ReservationUseCases/GetByDate.js";
 import { GetByClientId } from "../../application/use_cases/ReservationUseCases/GetByClienteId.js";
-import { validateReservation} from "../../shared/validators/reservationZod.js";
+import { validateReservation} from "../../shared/validators/Fix_reservationZod.js";
 import { CUU01RegisterAttendance } from "../../application/use_cases/ReservationUseCases/CUU01RegisterAttendance.js";
 import { ValidationError } from "../../shared/exceptions/ValidationError.js";
 import { StateReservation } from "../../domain/entities/Reservation.js";

@@ -1,4 +1,3 @@
-import * as React from 'react';
 import { Stack, Avatar, Typography } from "@mui/material";
 import { orange } from "@mui/material/colors";
 import LocalDiningIcon from '@mui/icons-material/LocalDining';

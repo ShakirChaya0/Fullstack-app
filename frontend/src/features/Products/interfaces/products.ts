@@ -2,10 +2,11 @@ export interface ProductsInterface {
     readonly _productId: number,
     _name: string,
     _description: string,
-    _state: EstadoComida
+    _state: EstadoComida,
+    _price: number
 }
 
-export type TipoComida = "Entrada" | "Plato Principal" | "Postre"
+export type TipoComida = "Entrada" | "Plato_Principal" | "Postre"
 type EstadoComida = "Disponible" | "No Disponible"
 
 

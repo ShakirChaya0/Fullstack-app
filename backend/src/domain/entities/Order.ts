@@ -1,4 +1,4 @@
-import { WaiterPublicInfo } from "../interfaces/waiterPublicInfo.js";
+import { WaiterPublicInfo } from "../interfaces/Fix_waiterPublicInfo.js";
 import { OrderLine } from "./OrderLine.js";
 import { Table } from "./Table.js";
 

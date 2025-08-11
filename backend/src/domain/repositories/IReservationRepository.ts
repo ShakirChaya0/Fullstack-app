@@ -1,5 +1,5 @@
 import { Reservation, StateReservation } from '../entities/Reservation.js';
-import { SchemaReservation } from '../../shared/validators/reservationZod.js';
+import { SchemaReservation } from '../../shared/validators/Fix_reservationZod.js';
 import { Table } from '../entities/Table.js';
 
 export interface IReservationRepository {

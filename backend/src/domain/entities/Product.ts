@@ -7,13 +7,15 @@ export abstract class Product {
         protected readonly _productId: number,
         protected _name: string,
         protected _description: string,
-        protected _state: ProductState
+        protected _state: ProductState,
+        protected _price: number
     ) {}
 
     public get productId() { return this._productId }
     public get name() { return this._name }
     public get description() { return this._description }
     public get state() { return this._state }
+    public get price() { return this._price }
 
     public set name(name: string) { 
         if (name.length < 3) {
@@ -35,6 +37,8 @@ export abstract class Product {
         }
         this._state = state;
     }
+
+    public set price(price: number) { this._price = price}
 }
 
 export class Food extends Product {
@@ -43,12 +47,13 @@ export class Food extends Product {
         name: string,
         description: string,
         state: ProductState,
+        price: number,
         private _isVegetarian: boolean,
         private _isVegan: boolean,
         private _isGlutenFree: boolean,
         private _type: FoodType
     ) {
-        super(productId, name, description, state);
+        super(productId, name, description, state, price);
     }
 
     public get type() { return this._type }
@@ -91,9 +96,10 @@ export class Drink extends Product {
         name: string,
         description: string,
         state: ProductState,
+        price: number,
         private _isAlcoholic: boolean
     ) {
-        super(productId, name, description, state);
+        super(productId, name, description, state, price);
     }
 
     public get isAlcoholic() { return this._isAlcoholic }

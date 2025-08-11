@@ -2,7 +2,7 @@ import { Prisma, PrismaClient, TipoUsuario_Type } from "@prisma/client";
 import { ServiceError } from "../../../shared/exceptions/ServiceError.js";
 import { Kitchen } from "../../../domain/entities/Kitchen.js";
 import { UUID } from 'crypto';
-import { PartialSchemaKitchen } from "../../../shared/validators/kitchenZod.js";
+import { PartialSchemaKitchen } from "../../../shared/validators/Fix_kitchenZod.js";
 import { ConflictError } from "../../../shared/exceptions/ConflictError.js";
 import { IKitchenRepository } from "../../../domain/repositories/IKitchenRepository.js";
 const prisma = new PrismaClient()

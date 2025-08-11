@@ -1,5 +1,5 @@
 import { Order } from "../../../domain/entities/Order.js";
-import { QRTokenInterface } from "../../../domain/interfaces/qRToken.interface.js";
+import { QRTokenInterface } from "../../../domain/interfaces/Fix_qRToken.interface.js";
 import { ClientRepository } from "../../../infrastructure/database/repository/ClientRepository.js";
 import { OrderRepository } from "../../../infrastructure/database/repository/OrderRepository.js";
 import { ProductRepository } from "../../../infrastructure/database/repository/ProductRepository.js";
@@ -7,7 +7,7 @@ import { QRTokenRepository } from "../../../infrastructure/database/repository/Q
 import { TableRepository } from "../../../infrastructure/database/repository/TableRepository.js";
 import { BusinessError } from "../../../shared/exceptions/BusinessError.js";
 import { NotFoundError } from "../../../shared/exceptions/NotFoundError.js";
-import { OrderLineSchema, OrderSchema } from "../../../shared/validators/orderZod.js";
+import { OrderLineSchema, OrderSchema } from "../../../shared/validators/Fix_orderZod.js";
 
 
 function isAlcoholicDrink(orderLines: OrderLineSchema[]): boolean {

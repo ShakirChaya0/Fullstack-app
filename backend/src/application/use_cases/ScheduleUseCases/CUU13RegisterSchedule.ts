@@ -1,6 +1,6 @@
 import { Schedule } from "../../../domain/entities/Schedule.js";
-import { ScheduleRepositoy } from "../../../infrastructure/database/repository/scheduleRepositoy.js";
-import { diaDentroSemana, SchemaSchedule } from "../../../shared/validators/scheduleZod.js";
+import { ScheduleRepositoy } from "../../../infrastructure/database/repository/Fix_scheduleRepositoy.js";
+import { diaDentroSemana, SchemaSchedule } from "../../../shared/validators/Fix_scheduleZod.js";
 
 
 export class CUU13RegisterSchedule {

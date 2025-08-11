@@ -7,7 +7,7 @@ import { UUID } from "crypto";
 import { OrderLine } from "../../../domain/entities/OrderLine.js";
 import { ProductoVO } from "../../../domain/value-objects/ProductVO.js";
 import { FoodType } from "../../../domain/entities/Product.js";
-import { OrderSchema } from "../../../shared/validators/orderZod.js";
+import { OrderSchema } from "../../../shared/validators/Fix_orderZod.js";
 
 const prisma = new PrismaClient();
 

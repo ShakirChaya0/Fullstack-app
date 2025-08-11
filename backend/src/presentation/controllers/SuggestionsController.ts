@@ -4,8 +4,8 @@ import { CUU21ModifySuggestion } from '../../application/use_cases/SuggestionsUs
 import { GetActiveSuggestionsUseCase } from '../../application/use_cases/SuggestionsUseCases/GetActiveSuggestionsUseCase.js';
 import { GetSuggestionsUseCase } from '../../application/use_cases/SuggestionsUseCases/GetSuggestionsUseCase.js';
 import { GetOneSuggestionUseCase } from '../../application/use_cases/SuggestionsUseCases/GetOneSuggestion.js';
-import { GetProductByIdUseCase } from '../../application/use_cases/ProductsUseCases/GetProductByIdUseCase.js';
-import { ValidateSuggestion, ValidateSuggestionPartial } from '../../shared/validators/suggestionZod.js';
+import { GetProductByIdUseCase } from '../../application/use_cases/ProductsUseCases/Fix_getProductByIdUseCase.js';
+import { ValidateSuggestion, ValidateSuggestionPartial } from '../../shared/validators/Fix_suggestionZod.js';
 import { ValidationError } from '../../shared/exceptions/ValidationError.js';
 import { NotFoundError } from '../../shared/exceptions/NotFoundError.js';
 

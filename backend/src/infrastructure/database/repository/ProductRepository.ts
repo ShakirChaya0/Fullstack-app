@@ -1,69 +1,37 @@
-import { PrismaClient } from '@prisma/client';
-import { PartialSchemaProductos, SchemaProductos } from '../../../shared/validators/productZod.js';
+import { Prisma, PrismaClient } from '@prisma/client';
+import { PartialSchemaProductos, SchemaProductos } from '../../../shared/validators/Fix_productZod.js';
 import { IProductoRepository } from '../../../domain/repositories/IProductRepository.js';
-import { Product, Food, Drink, FoodType } from '../../../domain/entities/Product.js';
-import { Producto as PrismaProducto } from '@prisma/client';
+import { Product, Food, Drink } from '../../../domain/entities/Product.js';
 
 const prisma = new PrismaClient();
+
+type ProductWithPrice = Prisma.ProductoGetPayload<{
+    include: { Precios: true };
+}>;
 
 export class ProductRepository implements IProductoRepository{
 
     public async getAll(): Promise<Product[]> {
-        const products = await prisma.producto.findMany();
+        const products = await prisma.producto.findMany({
+            include: { Precios: true }
+        });
         
-        return products.map((product: PrismaProducto) => {
-            if (product.tipo !== null && product.tipo !== "EMPTY_ENUM_VALUE") {
-                return new Food(
-                    product.idProducto,
-                    product.nombre,
-                    product.descripcion,
-                    product.estado,
-                    product.esVegetariana || false,
-                    product.esVegana || false,
-                    product.esSinGluten || false,
-                    product.tipo
-                );
-            } else {
-                return new Drink(
-                    product.idProducto,
-                    product.nombre,
-                    product.descripcion,
-                    product.estado,
-                    product.esAlcoholica || false
-                );
-            }
+        return products.map((product) => {
+            return this.toDomainEntity(product)
         })
     }
 
     public async getById(idProducto: number): Promise<Product | null> {
         const product = await prisma.producto.findUnique({
-            where: { idProducto: idProducto }
+            where: { idProducto: idProducto },
+            include: { Precios: true } 
         });
 
         if (!product) {
             return null;
         }
 
-        if (product.tipo !== null && product.tipo !== "EMPTY_ENUM_VALUE") {
-            return new Food(
-                product.idProducto,
-                product.nombre,
-                product.descripcion,
-                product.estado,
-                product.esVegetariana || false,
-                product.esVegana || false,
-                product.esSinGluten || false,
-                product.tipo
-            );
-        } else {
-            return new Drink(
-                product.idProducto,
-                product.nombre,
-                product.descripcion,
-                product.estado,
-                product.esAlcoholica || false
-            );
-        }
+        return this.toDomainEntity(product)
     }
 
     public async getByName(nombreProducto: string): Promise<Product[]> {
@@ -73,98 +41,48 @@ export class ProductRepository implements IProductoRepository{
                     contains: nombreProducto,
                     mode: 'insensitive'
                 }
-            }
+            },
+            include: { Precios: true }
         });
 
-        return product.map((prod: PrismaProducto) => {
-            if (prod.tipo !== null && prod.tipo !== "EMPTY_ENUM_VALUE") {
-                return new Food(
-                    prod.idProducto,
-                    prod.nombre,
-                    prod.descripcion,
-                    prod.estado,
-                    prod.esVegetariana || false,
-                    prod.esVegana || false,
-                    prod.esSinGluten || false,
-                    prod.tipo
-                );
-            } else {
-                return new Drink(
-                    prod.idProducto,
-                    prod.nombre,
-                    prod.descripcion,
-                    prod.estado,
-                    prod.esAlcoholica || false
-                );
-            }
-        });
+        return product.map((prod) => {
+            return this.toDomainEntity(prod)
+        })
     }
 
     public async getByUniqueName(nombreProducto: string): Promise<Product | null> {
         const product = await prisma.producto.findUnique({
-            where: { nombre: nombreProducto }
+            where: { nombre: nombreProducto },
+            include: { Precios: true }
         });
 
         if (!product) {
             return null;
         }
 
-        if (product.tipo !== null && product.tipo !== "EMPTY_ENUM_VALUE") {
-            return new Food(
-                product.idProducto,
-                product.nombre,
-                product.descripcion,
-                product.estado,
-                product.esVegetariana || false,
-                product.esVegana || false,
-                product.esSinGluten || false,
-                product.tipo
-            );
-        } else {
-            return new Drink(
-                product.idProducto,
-                product.nombre,
-                product.descripcion,
-                product.estado,
-                product.esAlcoholica || false
-            );
-        }
+        return this.toDomainEntity(product)
     }
 
     public async getByType(tipoProducto: string): Promise<Product[]> {
         if (tipoProducto === "Bebida") {
             const drinks = await prisma.producto.findMany({
-                where: { tipo: null }
+                where: { tipo: null },
+                include: { Precios: true }
             });
 
-            return drinks.map((drink: PrismaProducto) => {
-                return new Drink(
-                    drink.idProducto,
-                    drink.nombre,
-                    drink.descripcion,
-                    drink.estado,
-                    drink.esAlcoholica || false
-                );
+            return drinks.map((drink) => {
+                return this.toDomainEntity(drink)
             });
 
         } else {
             const foods = await prisma.producto.findMany({
                 where: { 
                     tipo: { not: null } 
-                }
+                },
+                include: { Precios: true }
             });
-
-            return foods.map((food: PrismaProducto) => {                
-                return new Food(
-                    food.idProducto,
-                    food.nombre,
-                    food.descripcion,
-                    food.estado,
-                    food.esVegetariana || false,
-                    food.esVegana || false,
-                    food.esSinGluten || false,
-                    food.tipo as FoodType
-                );
+            return foods.map((food) => {                
+                return this.toDomainEntity(food)
             });
         }
     }
@@ -173,29 +91,11 @@ export class ProductRepository implements IProductoRepository{
         const newProduct = await prisma.producto.create({
             data: {
                 ...product
-            }
+            },
+            include: { Precios: true }
         });
         
-        if (newProduct.tipo !== null && newProduct.tipo !== "EMPTY_ENUM_VALUE") {
-            return new Food(
-                newProduct.idProducto,
-                newProduct.nombre,
-                newProduct.descripcion,
-                newProduct.estado,
-                newProduct.esVegetariana || false,
-                newProduct.esVegana || false,
-                newProduct.esSinGluten || false,
-                newProduct.tipo
-            );
-        } else {
-            return new Drink(
-                newProduct.idProducto,
-                newProduct.nombre,
-                newProduct.descripcion,
-                newProduct.estado,
-                newProduct.esAlcoholica || false
-            );
-        }
+        return this.toDomainEntity(newProduct)
     }
 
     public async update(product: PartialSchemaProductos, productId: number): Promise<Product> {
@@ -203,28 +103,34 @@ export class ProductRepository implements IProductoRepository{
             where: { idProducto: productId },
             data: {
                 ...product
-            }
+            },
+            include: { Precios: true}
         });
 
-        if (updatedProduct.tipo !== null && updatedProduct.tipo !== "EMPTY_ENUM_VALUE") {
-            return new Food(
-                updatedProduct.idProducto,
-                updatedProduct.nombre,
-                updatedProduct.descripcion,
-                updatedProduct.estado,
-                updatedProduct.esVegetariana || false,
-                updatedProduct.esVegana || false,
-                updatedProduct.esSinGluten || false,
-                updatedProduct.tipo
-            );
-        } else {
-            return new Drink(
-                updatedProduct.idProducto,
-                updatedProduct.nombre,
-                updatedProduct.descripcion,
-                updatedProduct.estado,
-                updatedProduct.esAlcoholica || false
-            );
-        }
+        return this.toDomainEntity(updatedProduct)
     }
+    private toDomainEntity(Product: ProductWithPrice): Product {
+            if (Product.tipo !== null && Product.tipo !== "EMPTY_ENUM_VALUE") {
+                return new Food(
+                        Product.idProducto,
+                        Product.nombre,
+                        Product.descripcion,
+                        Product.estado,
+                        Product.Precios?.[Product.Precios.length - 1]?.monto ? +Product.Precios[0].monto : 0,
+                        Product.esVegetariana ?? false,
+                        Product.esVegana ?? false,
+                        Product.esSinGluten ?? false,
+                        Product.tipo
+                    );
+            } else {
+                return new Drink(
+                    Product.idProducto,
+                    Product.nombre,
+                    Product.descripcion,
+                    Product.estado,
+                    Product.Precios?.[Product.Precios.length - 1]?.monto ? +Product.Precios[0].monto : 0,
+                    Product.esAlcoholica ?? false
+                );
+            }
+        }
 }

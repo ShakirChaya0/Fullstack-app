@@ -5,7 +5,7 @@ import { BusinessError } from '../../../shared/exceptions/BusinessError.js';
 import { StateReservation } from '../../../domain/entities/Reservation.js';
 import { NotFoundError } from '../../../shared/exceptions/NotFoundError.js';
 import { ClientStateRepository } from '../../../infrastructure/database/repository/ClientStateRepository.js';
-import { PolicyRepository } from '../../../infrastructure/database/repository/PolicyRepository.js';
+import { PolicyRepository } from '../../../infrastructure/database/repository/Fix_policyRepository.js';
 
 export class UpdateStatus {
   constructor(

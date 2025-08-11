@@ -1,6 +1,6 @@
 import { InformationRepository } from '../../../infrastructure/database/repository/InformationRepository.js';
 import { Information } from '../../../domain/entities/Information.js';
-import { PartialSchemaInformation } from '../../../shared/validators/informationZod.js';
+import { PartialSchemaInformation } from '../../../shared/validators/Fix_informationZod.js';
 
 
 export class CUU23ModifyInformation {

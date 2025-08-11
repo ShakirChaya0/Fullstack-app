@@ -1,4 +1,4 @@
-import { SchemaPrice } from "../../shared/validators/priceZod.js";
+import { SchemaPrice } from "../../shared/validators/Fix_priceZod.js";
 import { Price } from "../entities/Price.js";
 import { Product } from "../entities/Product.js";
 

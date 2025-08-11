@@ -1,7 +1,7 @@
 import { NewsClass } from "../../../domain/entities/News.js"
 import { NewsRepository } from "../../../infrastructure/database/repository/NewsRepository.js"
 import { NotFoundError } from "../../../shared/exceptions/NotFoundError.js"
-import { PartialSchemaNews } from "../../../shared/validators/newsZod.js"
+import { PartialSchemaNews } from "../../../shared/validators/Fix_newsZod.js"
 
 export class ModifyNewsUseCases {
     constructor(

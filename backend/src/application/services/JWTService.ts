@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
-import { JwtPayloadInterface } from '../../domain/interfaces/jwtPayloadInterface.js';
+import { JwtPayloadInterface } from '../../domain/interfaces/Fix_jwtPayloadInterface.js';
 dotenv.config();
 
 export class JWTService {

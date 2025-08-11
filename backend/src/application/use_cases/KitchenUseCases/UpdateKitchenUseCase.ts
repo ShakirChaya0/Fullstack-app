@@ -1,7 +1,7 @@
 import { Kitchen } from "../../../domain/entities/Kitchen.js";
 import { KitchenRepository } from "../../../infrastructure/database/repository/KitchenRepository.js";
 import { NotFoundError } from "../../../shared/exceptions/NotFoundError.js";
-import { PartialSchemaKitchen } from "../../../shared/validators/kitchenZod.js";
+import { PartialSchemaKitchen } from "../../../shared/validators/Fix_kitchenZod.js";
 import { PasswordHashingService } from "../../services/PasswordHashing.js";
 
 export class UpdateKitchenUseCase {

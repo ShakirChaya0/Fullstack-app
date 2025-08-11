@@ -1,6 +1,6 @@
 import { AdminRepository } from "../../../infrastructure/database/repository/AdminRepository.js";
 import { Admin } from "../../../domain/entities/Admin.js";
-import { PartialSchemaAdmin } from "../../../shared/validators/adminZod.js";
+import { PartialSchemaAdmin } from "../../../shared/validators/Fix_adminZod.js";
 import { PasswordHashingService } from "../../services/PasswordHashing.js";
 
 

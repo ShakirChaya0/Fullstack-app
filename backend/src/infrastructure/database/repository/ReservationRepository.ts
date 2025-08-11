@@ -1,6 +1,6 @@
 import { PrismaClient,Prisma } from "@prisma/client";
 import { Reservation } from "../../../domain/entities/Reservation.js";
-import { SchemaReservation } from "../../../shared/validators/reservationZod.js";
+import { SchemaReservation } from "../../../shared/validators/Fix_reservationZod.js";
 import { StateReservation } from "../../../domain/entities/Reservation.js";
 import { Table } from "../../../domain/entities/Table.js";
 import { ClientPublicInfo } from "../../../domain/repositories/IClientPublicInfo.js";

@@ -1,5 +1,5 @@
 import { Schedule } from "../entities/Schedule.js";
-import { SchemaSchedule } from "../../shared/validators/scheduleZod.js";
+import { SchemaSchedule } from "../../shared/validators/Fix_scheduleZod.js";
 
 export interface IScheduleRepository {
     getAll(): Promise<Schedule[]>

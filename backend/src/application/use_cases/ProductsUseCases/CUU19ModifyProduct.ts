@@ -1,6 +1,6 @@
 import { Drink, Food, Product } from "../../../domain/entities/Product.js";
 import { ProductRepository } from "../../../infrastructure/database/repository/ProductRepository.js";
-import { PartialSchemaProductos } from '../../../shared/validators/productZod.js';
+import { PartialSchemaProductos } from '../../../shared/validators/Fix_productZod.js';
 import { NotFoundError } from "../../../shared/exceptions/NotFoundError.js";
 import { ConflictError } from "../../../shared/exceptions/ConflictError.js";
 

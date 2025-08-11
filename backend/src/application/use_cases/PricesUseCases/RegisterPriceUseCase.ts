@@ -2,7 +2,7 @@ import { Price } from "../../../domain/entities/Price.js";
 import { PriceRepository } from "../../../infrastructure/database/repository/PriceRepository.js";
 import { ProductRepository } from "../../../infrastructure/database/repository/ProductRepository.js";
 import { NotFoundError } from "../../../shared/exceptions/NotFoundError.js";
-import { SchemaPrice } from "../../../shared/validators/priceZod.js";
+import { SchemaPrice } from "../../../shared/validators/Fix_priceZod.js";
 
 export class RegisterPriceUseCase {
     constructor(
