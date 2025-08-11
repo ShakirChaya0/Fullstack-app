@@ -4,6 +4,7 @@ import { AuthenticatedSocket, AuthSocketMiddleware } from '../middlewares/AuthSo
 import { OrderController } from '../controllers/OrderController.js';
 import { OrderLineStatus } from '../../domain/entities/OrderLine.js';
 import { QRTokenRepository } from '../../infrastructure/database/repository/QRTokenRepository.js';
+import { OrderLineSchema, OrderSchema } from '../../shared/validators/orderZod.js';
 
 export function InitSocketConnection(server: Http2Server) {
     const ioConnection = new Server(server, {
@@ -39,7 +40,7 @@ export function InitSocketConnection(server: Http2Server) {
         const order = await orderController.updateOrderLineStatus(idPedido, nroLinea, estadoLP)
 
         if (order){
-          const tokenQRData = await qrRepository.getQRByTableNumber(order.table!.nroMesa)
+          const tokenQRData = await qrRepository.getQRByTableNumber(order.table!.tableNum)
           if(tokenQRData){
             ioConnection.to(`comensal:${tokenQRData.tokenQR}`)
               .emit('updatedLine', order.toClientInfo());
@@ -63,7 +64,93 @@ export function InitSocketConnection(server: Http2Server) {
         }
       })
 
-      socket.on('addOrderLine', )
+      socket.on('addOrderLine', async ({orderId, orderLines}: {orderId: number, orderLines: OrderLineSchema[]}) => {
+        console.log('LLegue al init Socket')
+        const order = await orderController.addOrderLine(orderId, orderLines)
+        console.log('Pase el controllador')
+        if (order){
+          const tokenQRData = await qrRepository.getQRByTableNumber(order.table!.tableNum)
+          if(tokenQRData){
+            ioConnection.to(`comensal:${tokenQRData.tokenQR}`)
+              .emit('addedOrderLine', order.toClientInfo());
+
+            ioConnection.to('cocina')
+              .emit('addedOrderLine', order.toKitchenInfo());
+
+            ioConnection.to(`mozo:${order.waiter?.username}`)
+              .emit('addedOrderLine', order.toWaiterInfo());
+          } else {
+            ioConnection.to('cocina')
+              .emit('addedOrderLine', order.toKitchenInfo());
+            
+            ioConnection.to(`mozo:${order?.waiter?.username}`)
+              .emit('addedOrderLine', order.toWaiterInfo());
+          }
+        } else {
+          ioConnection
+            .to('cocina')
+            .emit('addedOrderLine', "No se pudo agregar la linea")
+        }
+      })
+
+      socket.on('modifyOrder', async (orderId: number, lineNumbers: number[], data: Partial<OrderSchema>) => {
+        
+        const order = await orderController.updateOrder(orderId, lineNumbers, data)
+
+        if (order){
+          const tokenQRData = await qrRepository.getQRByTableNumber(order.table!.tableNum)
+          if(tokenQRData){
+            ioConnection.to(`comensal:${tokenQRData.tokenQR}`)
+              .emit('modifiedOrderLine', order.toClientInfo());
+
+            ioConnection.to('cocina')
+              .emit('modifiedOrderLine', order.toKitchenInfo());
+
+            ioConnection.to(`mozo:${order.waiter?.username}`)
+              .emit('modifiedOrderLine', order.toWaiterInfo());
+          } else {
+            ioConnection.to('cocina')
+              .emit('modifiedOrderLine', order.toKitchenInfo());
+            
+            ioConnection.to(`mozo:${order?.waiter?.username}`)
+              .emit('modifiedOrderLine', order.toWaiterInfo());
+          }
+        } else {
+          ioConnection
+            .to('cocina')
+            .emit('modifiedOrderLine', "No se pudo modificar la linea")
+        }
+      })
+
+
+      socket.on('deleteOrderLine', async (orderId: number, lineNumber: number) => {
+        
+        const order = await orderController.deleteOrderLine(orderId, lineNumber)
+
+        if (order){
+          const tokenQRData = await qrRepository.getQRByTableNumber(order.table!.tableNum)
+          if(tokenQRData){
+            ioConnection.to(`comensal:${tokenQRData.tokenQR}`)
+              .emit('deletedOrderLine', order.toClientInfo());
+
+            ioConnection.to('cocina')
+              .emit('deletedOrderLine', order.toKitchenInfo());
+
+            ioConnection.to(`mozo:${order.waiter?.username}`)
+              .emit('deletedOrderLine', order.toWaiterInfo());
+          } else {
+            ioConnection.to('cocina')
+              .emit('deletedOrderLine', order.toKitchenInfo());
+            
+            ioConnection.to(`mozo:${order?.waiter?.username}`)
+              .emit('deletedOrderLine', order.toWaiterInfo());
+          }
+        } else {
+          ioConnection
+            .to('cocina')
+            .emit('deletedOrderLine', "No se pudo eliminar la linea")
+        }
+      })
     
     });
 
