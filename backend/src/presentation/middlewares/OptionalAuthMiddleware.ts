@@ -1,7 +1,7 @@
 import { Response, NextFunction } from "express";
 import { AuthenticatedRequest } from "./AuthMiddleware.js";
 import { JWTService } from "../../application/services/JWTService.js";
-import { JwtPayloadInterface } from "../../domain/interfaces/Fix_jwtPayloadInterface.js";
+import { JwtPayloadInterface } from "../../domain/interfaces/JwtPayloadInterface.js";
 import { UnauthorizedError } from "../../shared/exceptions/UnauthorizedError.js";
 
 

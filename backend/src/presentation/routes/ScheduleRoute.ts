@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { HorarioController } from "../controllers/Fix_scheduleController.js";
+import { HorarioController } from "../controllers/scheduleController.js";
 
 
 export function horariosRouter() {

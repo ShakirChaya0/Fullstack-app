@@ -2,11 +2,11 @@ import { Table } from '../../../domain/entities/Table.js';
 import { ReservationRepository } from '../../../infrastructure/database/repository/ReservationRepository.js';
 import { ClientRepository } from '../../../infrastructure/database/repository/ClientRepository.js';
 import { TableRepository } from '../../../infrastructure/database/repository/TableRepository.js';
-import { SchemaReservation } from '../../../shared/validators/Fix_reservationZod.js';
+import { SchemaReservation } from '../../../shared/validators/ReservationZod.js';
 import { Reservation } from '../../../domain/entities/Reservation.js';
 import { BusinessError } from '../../../shared/exceptions/BusinessError.js';
 import { NotFoundError } from '../../../shared/exceptions/NotFoundError.js';
-import { PolicyRepository } from '../../../infrastructure/database/repository/Fix_policyRepository.js';
+import { PolicyRepository } from '../../../infrastructure/database/repository/PolicyRepository.js';
 
 export class RegisterReservation {
   constructor(

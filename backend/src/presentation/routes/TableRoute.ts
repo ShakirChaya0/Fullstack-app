@@ -1,5 +1,5 @@
 import {Router} from 'express'; 
-import { TableController } from '../controllers/tableController.js';
+import { TableController } from '../controllers/TableController.js';
 
 export function mesaRouter (){
     const tableRouter = Router(); 

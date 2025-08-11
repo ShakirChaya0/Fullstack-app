@@ -1,7 +1,7 @@
 import { Prisma, PrismaClient } from "@prisma/client";
 import { Client } from "../../../domain/entities/Client.js";
 import {UUID} from 'crypto'
-import { SchemaCliente, PartialClientSchema } from "../../../shared/validators/Fix_clientZod.js";
+import { SchemaCliente, PartialClientSchema } from "../../../shared/validators/ClientZod.js";
 import { ConflictError } from "../../../shared/exceptions/ConflictError.js";
 import { ServiceError } from "../../../shared/exceptions/ServiceError.js";
 import { ClientState } from "../../../domain/entities/ClientState.js";

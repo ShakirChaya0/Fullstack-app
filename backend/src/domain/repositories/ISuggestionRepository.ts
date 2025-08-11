@@ -1,5 +1,5 @@
 import { Suggestion } from "../entities/Suggestion.js";
-import { PartialSchemaSuggestion } from "../../shared/validators/Fix_suggestionZod.js";
+import { PartialSchemaSuggestion } from "../../shared/validators/SuggestionZod.js";
 
 export interface ISuggestionRepository {
     getAll(): Promise<Suggestion[]>;

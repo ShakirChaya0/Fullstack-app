@@ -1,6 +1,6 @@
 import { NewsClass } from "../../../domain/entities/News.js";
 import { NewsRepository } from "../../../infrastructure/database/repository/NewsRepository.js";
-import { SchemaNews } from "../../../shared/validators/Fix_newsZod.js";
+import { SchemaNews } from "../../../shared/validators/NewsZod.js";
 
 export class CreateNewsUseCases {
     constructor(

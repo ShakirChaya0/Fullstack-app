@@ -2,31 +2,32 @@ import express from 'express'
 import cors from "cors"
 import { createServer, Server as Http2Server } from 'node:http'
 import { ErrorHandler } from './presentation/middlewares/ErrorHandler.js'
-import { productosRouter } from './presentation/routes/productsRoute.js'
-import { NewsRouter } from './presentation/routes/newsRoute.js'
-import { PolicyRouter } from './presentation/routes/policyRoute.js'
-import { InformationRouter } from './presentation/routes/informationRoute.js'
-import { horariosRouter } from './presentation/routes/scheduleRoute.js'
-import { SuggestionsRouter } from './presentation/routes/suggestionsRoute.js'
-import { WaiterRouter } from './presentation/routes/waiterRoute.js'
-import { mesaRouter } from './presentation/routes/tableRoute.js'
+import { ProductosRouter } from './presentation/routes/ProductsRoute.js'
+import { NewsRouter } from './presentation/routes/NewsRoute.js'
+import { PolicyRouter } from './presentation/routes/PolicyRoute.js'
+import { InformationRouter } from './presentation/routes/InformationRoute.js'
+import { horariosRouter } from './presentation/routes/ScheduleRoute.js'
+import { SuggestionsRouter } from './presentation/routes/SuggestionsRoute.js'
+import { WaiterRouter } from './presentation/routes/WaiterRoute.js'
+import { mesaRouter } from './presentation/routes/TableRoute.js'
 import { NotFoundError } from './shared/exceptions/NotFoundError.js'
-import { PricesRouter } from './presentation/routes/pricesRoute.js'
+import { PricesRouter } from './presentation/routes/PricesRoute.js'
 import { ClientRouter } from './presentation/routes/ClientRouter.js'
-import { adminRouter } from './presentation/routes/adminRoute.js'
-import { KitchenRouter } from './presentation/routes/kitchenRoute.js'
+import { adminRouter } from './presentation/routes/AdminRoute.js'
+import { KitchenRouter } from './presentation/routes/KitchenRoute.js'
 import cookieParser from 'cookie-parser'
-import { AuthRouter } from './presentation/routes/authRoute.js'
+import { AuthRouter } from './presentation/routes/AuthRoute.js'
 import { AuthMiddleware } from './presentation/middlewares/AuthMiddleware.js'
 import { PaymentRouter } from './presentation/routes/PaymentRoute.js'
-import { OrderRouter } from './presentation/routes/orderRoute.js'
+import { OrderRouter } from './presentation/routes/OrderRoute.js'
 import { OptionalAuthMiddleware } from './presentation/middlewares/OptionalAuthMiddleware.js'
-import { QrRoute } from './presentation/routes/qrRoute.js'
-import { ReservationRouter } from './presentation/routes/reservationRoute.js'
+import { QrRoute } from './presentation/routes/QrRoute.js'
+import { ReservationRouter } from './presentation/routes/ReservationRoute.js'
 import { runReservationCheckJob } from './infrastructure/jobs/CheckReservationsJob.js'
 import { InitSocketConnection } from './presentation/sockets/InitSocketConnection.js'
 
 const app = express()
+
 const server: Http2Server = createServer(app)
 
 export const ioConnection = InitSocketConnection(server)
@@ -38,14 +39,13 @@ app.use(cors({
     credentials: true
 }))
 
-
 app.use(express.json())
 
 app.use(cookieParser())
 
 app.use("/auth", AuthRouter())
 
-app.use('/productos', productosRouter())
+app.use('/productos', ProductosRouter())
 
 app.use("/novedades", NewsRouter())
 

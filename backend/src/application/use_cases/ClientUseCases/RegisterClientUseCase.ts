@@ -2,7 +2,7 @@ import { ClientRepository } from "../../../infrastructure/database/repository/Cl
 import { Client } from "../../../domain/entities/Client.js";
 import { ClientStateRepository } from "../../../infrastructure/database/repository/ClientStateRepository.js";
 import { PasswordHashingService } from '../../services/PasswordHashing.js';
-import { SchemaCliente } from "../../../shared/validators/Fix_clientZod.js";
+import { SchemaCliente } from "../../../shared/validators/ClientZod.js";
 import { ServiceError } from "../../../shared/exceptions/ServiceError.js";
 import { ConflictError } from "../../../shared/exceptions/ConflictError.js";
 import { Prisma } from "@prisma/client";

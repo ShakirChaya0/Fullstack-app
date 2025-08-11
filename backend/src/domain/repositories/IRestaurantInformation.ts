@@ -1,4 +1,4 @@
-import { PartialSchemaInformation } from '../../shared/validators/Fix_informationZod.js';
+import { PartialSchemaInformation } from '../../shared/validators/InformationZod.js';
 import { Information } from '../entities/Information.js';
 
 export interface IRestaurantInformation {

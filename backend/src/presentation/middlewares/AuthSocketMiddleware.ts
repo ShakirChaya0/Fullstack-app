@@ -1,6 +1,5 @@
 import dotenv from 'dotenv';
-import { UnauthorizedError } from "../../shared/exceptions/UnauthorizedError.js";
-import { JwtPayloadInterface } from "../../domain/interfaces/jwtPayloadInterface.js";
+import { JwtPayloadInterface } from "../../domain/interfaces/JwtPayloadInterface.js";
 import { JWTService } from "../../application/services/JWTService.js";
 import { Socket } from "socket.io";
 

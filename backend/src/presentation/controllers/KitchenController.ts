@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import { GetKitchenUseCase } from "../../application/use_cases/KitchenUseCases/GetKitchenUseCase.js";
 import { UpdateKitchenUseCase } from "../../application/use_cases/KitchenUseCases/UpdateKitchenUseCase.js";
-import { ValidateKitchenPartial } from "../../shared/validators/Fix_kitchenZod.js";
+import { ValidateKitchenPartial } from "../../shared/validators/KitchenZod.js";
 
 export class KitchenController {
     constructor(

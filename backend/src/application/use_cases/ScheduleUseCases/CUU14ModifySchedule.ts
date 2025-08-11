@@ -1,5 +1,5 @@
-import { ScheduleRepositoy } from "../../../infrastructure/database/repository/Fix_scheduleRepositoy.js";
-import { PartialSchemaSchedule } from "../../../shared/validators/Fix_scheduleZod.js";
+import { ScheduleRepositoy } from "../../../infrastructure/database/repository/ScheduleRepositoy.js";
+import { PartialSchemaSchedule } from "../../../shared/validators/ScheduleZod.js";
 import { Schedule } from "../../../domain/entities/Schedule.js";
 
 export class CUU14ModifySchedule {

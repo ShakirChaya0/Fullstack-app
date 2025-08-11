@@ -1,5 +1,5 @@
 import { WaiterRepository } from '../../../infrastructure/database/repository/WaiterRepository.js'; 
-import { SchemaWaiter } from '../../../shared/validators/Fix_waiterZod.js';
+import { SchemaWaiter } from '../../../shared/validators/WaiterZod.js';
 import { PasswordHashingService } from '../../services/PasswordHashing.js';
 import { Waiter } from '../../../domain/entities/Waiter.js';
 

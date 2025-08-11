@@ -1,8 +1,8 @@
 import { PrismaClient } from "@prisma/client";
 import { IScheduleRepository } from "../../../domain/repositories/IScheduleRepository.js";
 import { Schedule } from "../../../domain/entities/Schedule.js";
-import { SchemaSchedule } from "../../../shared/validators/Fix_scheduleZod.js";
-import { IUpdateSchedule } from "../../../domain/interfaces/Fix_schedule.interface.js";
+import { SchemaSchedule } from "../../../shared/validators/ScheduleZod.js";
+import { IUpdateSchedule } from "../../../domain/interfaces/Schedule.interface.js";
 
 
 const prisma = new PrismaClient();

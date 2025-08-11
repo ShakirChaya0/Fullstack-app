@@ -1,7 +1,7 @@
 import z from 'zod'
 import { Novedad } from '@prisma/client';
 import { NewsClass } from '../../domain/entities/News.js';
-import { News } from '../../domain/interfaces/Fix_newsInterface.js';
+import { News } from '../../domain/interfaces/NewsInterface.js';
 import { ValidationError } from '../exceptions/ValidationError.js';
 
 const newsSchema = z.object({

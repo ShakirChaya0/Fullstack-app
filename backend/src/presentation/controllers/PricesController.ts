@@ -7,7 +7,7 @@ import { RegisterPriceUseCase } from '../../application/use_cases/PricesUseCases
 import { GetActualPriceUseCase } from '../../application/use_cases/PricesUseCases/GetActualPriceUseCase.js';
 import { ValidationError } from '../../shared/exceptions/ValidationError.js';
 import { NotFoundError } from '../../shared/exceptions/NotFoundError.js';
-import { ValidatePrice } from '../../shared/validators/Fix_priceZod.js';
+import { ValidatePrice } from '../../shared/validators/PriceZod.js';
 
 export class PricesController {
     constructor(

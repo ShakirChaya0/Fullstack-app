@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { AdminInterface } from '../../domain/interfaces/adminInterface.js';
+import { AdminInterface } from '../../domain/interfaces/AdminInterface.js';
 import { ValidationError } from '../exceptions/ValidationError.js';
 
 const AdminSchema = z.object({

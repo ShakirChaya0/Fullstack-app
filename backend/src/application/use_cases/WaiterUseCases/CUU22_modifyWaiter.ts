@@ -1,4 +1,4 @@
-import { PartialSchemaWaiter } from '../../../shared/validators/Fix_waiterZod.js';
+import { PartialSchemaWaiter } from '../../../shared/validators/WaiterZod.js';
 import { WaiterRepository } from '../../../infrastructure/database/repository/WaiterRepository.js';
 import { PasswordHashingService } from '../../services/PasswordHashing.js';
 import { Waiter } from '../../../domain/entities/Waiter.js';

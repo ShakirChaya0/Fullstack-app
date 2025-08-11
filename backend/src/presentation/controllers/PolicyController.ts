@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { CUU25ModifyPolicys } from '../../application/use_cases/PolicyUseCases/CUU25-modifyPolicy.js';
 import { GetPolicyUseCase } from '../../application/use_cases/PolicyUseCases/GetPolicyUseCase.js';
-import { ValidatePolicyPartial } from '../../shared/validators/Fix_policyZod.js';
+import { ValidatePolicyPartial } from '../../shared/validators/PolicyZod.js';
 
 export class PolicyController {
     constructor(

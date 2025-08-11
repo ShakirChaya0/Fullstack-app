@@ -1,6 +1,6 @@
 import { Response, NextFunction } from "express"
-import { ioConnection } from "./../../app.js"
-import { OrderSchema, ValidateOrder } from "../../shared/validators/orderZod.js"
+import { ioConnection } from "./../../App.js"
+import { OrderSchema, ValidateOrder } from "../../shared/validators/OrderZod.js"
 import { ValidationError } from "../../shared/exceptions/ValidationError.js";
 import { CUU02RegisterOrder } from "../../application/use_cases/OrderUseCases/RegisterOrderUseCase.js";
 import { AuthenticatedRequest } from "../middlewares/AuthMiddleware.js";

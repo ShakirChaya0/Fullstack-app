@@ -1,9 +1,9 @@
 import { Request, Response, NextFunction } from "express";
 import { CUU17RegisterTable } from "../../application/use_cases/TableUseCase/CUU17RegisterTable.js";
-import { validateTable } from "../../shared/validators/Fix_tableZod.js";
-import { GetAllTable} from "../../application/use_cases/TableUseCase/Fix_getTablesUseCase.js";
-import { GetTableByCapacity } from "../../application/use_cases/TableUseCase/Fix_getTablesByCapacity.js";
-import { DeleteTable } from "../../application/use_cases/TableUseCase/Fix_deleteTable.js";
+import { validateTable } from "../../shared/validators/TableZod.js";
+import { GetAllTable} from "../../application/use_cases/TableUseCase/GetTablesUseCase.js";
+import { GetTableByCapacity } from "../../application/use_cases/TableUseCase/GetTablesByCapacity.js";
+import { DeleteTable } from "../../application/use_cases/TableUseCase/DeleteTable.js";
 import { ValidationError } from "../../shared/exceptions/ValidationError.js";
 
 export class TableController {

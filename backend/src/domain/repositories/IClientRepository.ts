@@ -1,4 +1,4 @@
-import { PartialClientSchema, SchemaCliente } from "../../shared/validators/Fix_clientZod.js";
+import { PartialClientSchema, SchemaCliente } from "../../shared/validators/ClientZod.js";
 import { Client } from "../entities/Client.js";
 import { ClientPublicInfo } from "./IClientPublicInfo.js";
 

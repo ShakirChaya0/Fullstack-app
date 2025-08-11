@@ -1,4 +1,4 @@
-import { ValidatePolicy, ValidatePolicyPartial } from "../../shared/validators/Fix_policyZod.js";
+import { ValidatePolicy, ValidatePolicyPartial } from "../../shared/validators/PolicyZod.js";
 
 export class Policy {
     constructor(

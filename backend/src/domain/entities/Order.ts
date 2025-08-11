@@ -1,7 +1,7 @@
-import { OrderClientInfo } from "../interfaces/orderClientInfo.js";
-import { OrderKitchenInfo } from "../interfaces/orderKitchenInfo.js";
-import { OrderWaiterInfo } from "../interfaces/orderWaiterInfo.js";
-import { WaiterPublicInfo } from "../interfaces/waiterPublicInfo.js";
+import { OrderClientInfo } from "../interfaces/OrderClientInfo.js";
+import { OrderKitchenInfo } from "../interfaces/OrderKitchenInfo.js";
+import { OrderWaiterInfo } from "../interfaces/OrderWaiterInfo.js";
+import { WaiterPublicInfo } from "../interfaces/WaiterPublicInfo.js";
 import { OrderLine } from "./OrderLine.js";
 import { Table } from "./Table.js";
 
@@ -103,7 +103,7 @@ export class Order {
         return { 
             idPedido: this._orderId, 
             horaInicio: this._startHour,
-            nroMesa: this._table!.nroMesa,
+            nroMesa: this._table!.tableNum,
             cantidadCubiertos: this._cutleryAmount,
             lineasPedido: this._orderLines.map(ol => {
                 return {

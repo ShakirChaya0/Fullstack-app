@@ -1,5 +1,5 @@
 import { Items } from 'mercadopago/dist/clients/commonTypes.js';
-import { mercadoPagoClient } from '../../infrastructure/config/Fix_mercadoPago.js';
+import { mercadoPagoClient } from '../../infrastructure/config/MercadoPago.js';
 import { Preference } from 'mercadopago';
 import { PreferenceResponse } from 'mercadopago/dist/clients/preference/commonTypes.js';
 

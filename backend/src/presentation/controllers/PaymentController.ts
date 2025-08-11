@@ -9,9 +9,9 @@ import { GetByDateRange } from "../../application/use_cases/PaymentUseCases/GetB
 import { GetByPaymentMethod } from "../../application/use_cases/PaymentUseCases/GetByPaymentMethodUseCase.js";
 import { NotFoundError } from "../../shared/exceptions/NotFoundError.js";
 import { PayWithMercadoPagoUseCase } from "../../application/use_cases/OrderUseCases/PayWithMercadoPagoUseCase.js";
-import { mercadoPagoClient } from "../../infrastructure/config/Fix_mercadoPago.js";
+import { mercadoPagoClient } from "../../infrastructure/config/MercadoPago.js";
 import { Payment } from "mercadopago";
-import { ioConnection } from "../../app.js";
+import { ioConnection } from "../../App.js";
 
 export class PaymentController {
     constructor(

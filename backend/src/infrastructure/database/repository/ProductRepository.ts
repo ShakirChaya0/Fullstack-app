@@ -1,5 +1,5 @@
 import { Prisma, PrismaClient } from '@prisma/client';
-import { PartialSchemaProductos, SchemaProductos } from '../../../shared/validators/Fix_productZod.js';
+import { PartialSchemaProductos, SchemaProductos } from '../../../shared/validators/ProductZod.js';
 import { IProductoRepository } from '../../../domain/repositories/IProductRepository.js';
 import { Product, Food, Drink } from '../../../domain/entities/Product.js';
 

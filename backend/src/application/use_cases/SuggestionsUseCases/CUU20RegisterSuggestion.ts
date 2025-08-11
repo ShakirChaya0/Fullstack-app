@@ -2,7 +2,7 @@ import { Suggestion } from "../../../domain/entities/Suggestion.js";
 import { ProductRepository } from "../../../infrastructure/database/repository/ProductRepository.js";
 import { SuggestionRepository } from "../../../infrastructure/database/repository/SuggestionRepository.js";
 import { NotFoundError } from "../../../shared/exceptions/NotFoundError.js";
-import { SchemaSuggestion } from "../../../shared/validators/Fix_suggestionZod.js";
+import { SchemaSuggestion } from "../../../shared/validators/SuggestionZod.js";
 
 export class CUU20RegisterSuggestion {
     constructor(

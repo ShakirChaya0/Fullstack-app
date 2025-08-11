@@ -2,8 +2,8 @@ import { Request, Response, NextFunction } from "express";
 import { GetAdminUseCase } from "../../application/use_cases/AdminUseCases/GetAdminUseCase.js";
 import { UpdateAdminProfileUseCase } from "../../application/use_cases/AdminUseCases/UpdateAdminProfileUseCase.js";
 import { ValidationError } from "../../shared/exceptions/ValidationError.js";
-import { ValidatePartialAdmin } from "../../shared/validators/Fix_adminZod.js";
-import { PartialSchemaAdmin } from "../../shared/validators/Fix_adminZod.js";
+import { ValidatePartialAdmin } from "../../shared/validators/AdminZod.js";
+import { PartialSchemaAdmin } from "../../shared/validators/AdminZod.js";
 import { NotFoundError } from "../../shared/exceptions/NotFoundError.js";
 
 

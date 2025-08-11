@@ -1,4 +1,4 @@
-import { ValidateInformation, ValidatePartialInformation } from "../../shared/validators/Fix_informationZod.js";
+import { ValidateInformation, ValidatePartialInformation } from "../../shared/validators/InformationZod.js";
 
 
 export class Information {

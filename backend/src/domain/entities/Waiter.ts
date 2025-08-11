@@ -1,8 +1,8 @@
 import { UUID } from "crypto";
-import { ValidateWaiter, ValidateWaiterPartial } from "../../shared/validators/Fix_waiterZod.js";
+import { ValidateWaiter, ValidateWaiterPartial } from "../../shared/validators/WaiterZod.js";
 import { User } from "./User.js";
 import { TipoUsuario_Type } from "@prisma/client";
-import { WaiterPublicInfo } from "../interfaces/Fix_waiterPublicInfo.js";
+import { WaiterPublicInfo } from "../interfaces/WaiterPublicInfo.js";
 
 export class Waiter extends User {
     constructor(

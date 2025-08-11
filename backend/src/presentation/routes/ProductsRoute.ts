@@ -1,7 +1,7 @@
 import { Router } from "express";
-import { ProductController } from "../controllers/Fix_productsController.js";
+import { ProductController } from "../controllers/ProductsController.js";
 
-export function productosRouter () {
+export function ProductosRouter () {
     const productRouter = Router();
     const productController = new ProductController();
     

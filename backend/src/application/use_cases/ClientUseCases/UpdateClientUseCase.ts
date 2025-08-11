@@ -1,7 +1,7 @@
 import { ClientRepository } from "../../../infrastructure/database/repository/ClientRepository.js";
 import { Client } from "../../../domain/entities/Client.js";
 import { PasswordHashingService } from '../../services/PasswordHashing.js';
-import { PartialClientSchema } from "../../../shared/validators/Fix_clientZod.js";
+import { PartialClientSchema } from "../../../shared/validators/ClientZod.js";
 import { NotFoundError } from '../../../shared/exceptions/NotFoundError.js';
 
 

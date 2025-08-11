@@ -2,7 +2,7 @@ import { Order } from "../../../domain/entities/Order.js";
 import { Check } from "../../../domain/value-objects/Check.js";
 import { InformationRepository } from "../../../infrastructure/database/repository/InformationRepository.js";
 import { OrderRepository } from "../../../infrastructure/database/repository/OrderRepository.js";
-import { PolicyRepository } from "../../../infrastructure/database/repository/Fix_policyRepository.js";
+import { PolicyRepository } from "../../../infrastructure/database/repository/PolicyRepository.js";
 import { BusinessError } from "../../../shared/exceptions/BusinessError.js";
 import { NotFoundError } from "../../../shared/exceptions/NotFoundError.js";
 import { ServerError } from "../../../shared/exceptions/ServerError.js";

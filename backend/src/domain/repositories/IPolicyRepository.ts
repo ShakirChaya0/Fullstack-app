@@ -1,4 +1,4 @@
-import { PartialSchemaPolicy  } from '../../shared/validators/Fix_policyZod.js';
+import { PartialSchemaPolicy  } from '../../shared/validators/PolicyZod.js';
 import { Policy } from '../entities/Policy.js';
 
 export interface IPolicyRepository { 

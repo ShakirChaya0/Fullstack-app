@@ -1,5 +1,5 @@
 import { Schedule } from "../../../domain/entities/Schedule.js";
-import { ScheduleRepositoy } from "../../../infrastructure/database/repository/Fix_scheduleRepositoy.js";
+import { ScheduleRepositoy } from "../../../infrastructure/database/repository/ScheduleRepositoy.js";
 
 
 export class GetSchedules {

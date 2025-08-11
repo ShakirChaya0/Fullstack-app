@@ -1,4 +1,4 @@
-import { OrderSchema } from "../../shared/validators/Fix_orderZod.js";
+import { OrderSchema } from "../../shared/validators/OrderZod.js";
 import { Order, OrderStatus } from "../entities/Order.js";
 import { OrderLineStatus } from "../entities/OrderLine.js";
 

@@ -1,4 +1,4 @@
-import { PolicyRepository } from "../../../infrastructure/database/repository/Fix_policyRepository.js";
+import { PolicyRepository } from "../../../infrastructure/database/repository/PolicyRepository.js";
 import { ReservationRepository } from "../../../infrastructure/database/repository/ReservationRepository.js";
 import { TableRepository } from "../../../infrastructure/database/repository/TableRepository.js";
 import { NotFoundError } from "../../../shared/exceptions/NotFoundError.js";

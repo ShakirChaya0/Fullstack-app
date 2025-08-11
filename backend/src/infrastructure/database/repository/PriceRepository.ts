@@ -1,5 +1,5 @@
 import { Prisma, PrismaClient } from "@prisma/client";
-import { SchemaPrice } from "../../../shared/validators/Fix_priceZod.js";
+import { SchemaPrice } from "../../../shared/validators/PriceZod.js";
 import { IPriceRepository } from "../../../domain/repositories/IPriceRepository.js";
 import { Price } from "../../../domain/entities/Price.js";
 import { Drink, Food, Product } from "../../../domain/entities/Product.js";

@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import dotenv from 'dotenv';
 import { UnauthorizedError } from "../../shared/exceptions/UnauthorizedError.js";
-import { JwtPayloadInterface } from "../../domain/interfaces/Fix_jwtPayloadInterface.js";
+import { JwtPayloadInterface } from "../../domain/interfaces/JwtPayloadInterface.js";
 import { JWTService } from "../../application/services/JWTService.js";
 
 dotenv.config();

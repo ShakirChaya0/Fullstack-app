@@ -1,5 +1,5 @@
 import { Router} from 'express';
-import { PolicyController } from '../controllers/Fix_policyController.js';
+import { PolicyController } from '../controllers/PolicyController.js';
 
 export function PolicyRouter() {
     const policyRouter = Router();

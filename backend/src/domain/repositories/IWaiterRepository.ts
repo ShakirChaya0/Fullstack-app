@@ -1,4 +1,4 @@
-import { SchemaWaiter } from '../../shared/validators/Fix_waiterZod.js';
+import { SchemaWaiter } from '../../shared/validators/WaiterZod.js';
 import { Waiter } from '../entities/Waiter.js';
 
 

@@ -2,7 +2,7 @@ import { ISuggestionRepository } from "../../../domain/repositories/ISuggestionR
 import { Suggestion } from "../../../domain/entities/Suggestion.js";
 import { Drink, Food, Product } from "../../../domain/entities/Product.js";
 import { Prisma, PrismaClient } from "@prisma/client";
-import { PartialSchemaSuggestion } from "../../../shared/validators/Fix_suggestionZod.js";
+import { PartialSchemaSuggestion } from "../../../shared/validators/SuggestionZod.js";
 
 const prisma = new PrismaClient();
 
