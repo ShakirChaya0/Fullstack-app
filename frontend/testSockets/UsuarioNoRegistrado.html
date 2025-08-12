@@ -27,8 +27,8 @@
 
     ws.on('modifiedOrderLine', (data) => {
         console.log(data)
-        const element = document.getElementById('deletedOrderLine');
-        if (element) element.innerHTML = `<strong>Deleted Order Line:</strong> ${JSON.stringify(data, null, 2)}`;
+        const modifiedOrderLineElement = document.getElementById('modifiedOrderLine');
+        modifiedOrderLineElement.innerHTML = `<strong>Modified Order Line:</strong> ${JSON.stringify(data, null, 2)}`;
     })
 
     ws.on('deletedOrderLine', (data) => {
@@ -53,10 +53,21 @@
         // })
 
     
-        // ws.emit('modifyOrder', orderToModify)
+        ws.emit('modifyOrder', {
+            orderId: 24,
+            // lineNumbers: [176, 177],
+            data: {
+                cantidadCubiertos: 15,
+                observacion: "Observación a pedido",
+                // items: [
+                //     { cantidad: 8 },
+                //     { cantidad: 9 }
+                // ]
+            }
+        })
 
         
-        // ws.emit('deleteOrderLine', {orderId: 24, lineNumber: 178});
+        // ws.emit('deleteOrderLine', {orderId: 24, lineNumber: 182});
 
     });
 

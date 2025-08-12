@@ -4,7 +4,7 @@ import { AuthenticatedSocket, AuthSocketMiddleware } from '../middlewares/AuthSo
 import { OrderController } from '../controllers/OrderController.js';
 import { OrderLineStatus } from '../../domain/entities/OrderLine.js';
 import { QRTokenRepository } from '../../infrastructure/database/repository/QRTokenRepository.js';
-import { OrderLineSchema, OrderSchema } from '../../shared/validators/orderZod.js';
+import { OrderLineSchema, PartialOrderMinimal } from '../../shared/validators/orderZod.js';
 
 export function InitSocketConnection(server: Http2Server) {
     const ioConnection = new Server(server, {
@@ -93,13 +93,9 @@ export function InitSocketConnection(server: Http2Server) {
         }
       })
 
-      socket.on('modifyOrder', async ({orderId, lineNumbers, data}: {orderId: number, lineNumbers: number[], data: Partial<OrderSchema>}) => {
-
-        console.log("Entre al init Socket")
+      socket.on('modifyOrder', async ({orderId, lineNumbers, data}: {orderId: number, lineNumbers: number[] | undefined, data: Partial<PartialOrderMinimal>}) => {
 
         const order = await orderController.updateOrder(orderId, lineNumbers, data)
-
-        console.log("Sali del controlador en el init Socket")
 
         if (order){
           const tokenQRData = await qrRepository.getQRByTableNumber(order.table!.tableNum)

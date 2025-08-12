@@ -7,7 +7,7 @@ import { UUID } from "crypto";
 import { OrderLine, OrderLineStatus } from "../../../domain/entities/OrderLine.js";
 import { ProductoVO } from "../../../domain/value-objects/ProductVO.js";
 import { FoodType } from "../../../domain/entities/Product.js";
-import { OrderLineSchema, OrderSchema, PartialOrderSchema } from "../../../shared/validators/orderZod.js";
+import { OrderLineSchema, OrderSchema, PartialOrderMinimal } from "../../../shared/validators/orderZod.js";
 
 const prisma = new PrismaClient();
 
@@ -174,63 +174,44 @@ export class OrderRepository implements IOrderRepository {
         return this.toDomainEntity(updatedOrder)
     }
 
-    public async modifyOrder(orderId: number, lineNumber: number[], data: PartialOrderSchema): Promise<Order> {
-        
-        const itemsToProcess = data.items ?? []
+    public async modifyOrder(orderId: number, lineNumber: number[] | undefined, data: Partial<PartialOrderMinimal>): Promise<Order> {
 
-        if (itemsToProcess.length === 0) {
-            const updatedOrder = await prisma.pedido.update({
-            where: { idPedido: orderId},
-            data: {
-                cantCubiertos: data.cantidadCubiertos,
-                observaciones: data.observacion,
-            },
-            include: {
-                Mesa: true,
-                Linea_De_Pedido: true,
-                Mozos: { 
-                    include: { Usuarios: true } 
-                }
+        const itemsToProcess = data.items ?? [];
+        if (data.items && lineNumber) {
+            if (lineNumber.length !== itemsToProcess.length) {
+                throw new Error("El arreglo de lineNumbers y de items deben tener la misma longitud");
             }
-            })
-
-            return this.toDomainEntity(updatedOrder);
-        }else {
-            const updatedOrder = await prisma.pedido.update({
-            where: { idPedido: orderId},
-            data: {
-                cantCubiertos: data.cantidadCubiertos,
-                observaciones: data.observacion,
-                Linea_De_Pedido: {
-                    update: lineNumber.map((line, index) => {
-                        const item = data.items![index];
-                        console.log(`OrderRepository.modifyOrder - Actualizando lÃnea ${line} con:`, item);
-                        return {
-                            where: {
-                                idPedido_nroLinea: {
-                                    idPedido: orderId,
-                                    nroLinea: line
-                                }
-                            },
-                            data: { 
-                                cantidad: item.cantidad
-                            }
-                        }
-                    })
-                }
-            },
-            include: {
-                Mesa: true,
-                Linea_De_Pedido: true,
-                Mozos: { 
-                    include: { Usuarios: true } 
-                }
-            }
-            })
-
-            return this.toDomainEntity(updatedOrder)
         }
-    }
+
+        const updatedOrder = await prisma.pedido.update({
+            where: { idPedido: orderId },
+            data: {
+            cantCubiertos: data.cantidadCubiertos,
+            observaciones: data.observacion,
+            Linea_De_Pedido: {
+                update: lineNumber?.map((line, index) => ({
+                where: {
+                    idPedido_nroLinea: {
+                    idPedido: orderId,
+                    nroLinea: line,
+                    }
+                },
+                data: {
+                    cantidad: itemsToProcess ? itemsToProcess[index]!.cantidad : undefined,
+                }
+                }))
+            }
+            },
+            include: {
+            Mesa: true,
+            Linea_De_Pedido: true,
+            Mozos: { include: { Usuarios: true } },
+            },
+        });
+
+        return this.toDomainEntity(updatedOrder);
+        }
+
 
     public async deleteOrderLine(orderId: number, lineNumber: number): Promise<Order> {
         const partialDeletedOrder = await prisma.pedido.update({

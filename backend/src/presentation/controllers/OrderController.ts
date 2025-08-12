@@ -1,6 +1,6 @@
 import { Response, NextFunction } from "express"
 import { ioConnection } from "./../../app.js"
-import { OrderLineSchema, OrderSchema, ValidateOrder, ValidateOrderLine, ValidateOrderPartial } from "../../shared/validators/orderZod.js"
+import { OrderLineSchema, OrderSchema, PartialOrderMinimal, ValidateOrder, ValidateOrderLine, ValidateOrderPartialMinimal } from "../../shared/validators/orderZod.js"
 import { ValidationError } from "../../shared/exceptions/ValidationError.js";
 import { CUU02RegisterOrder } from "../../application/use_cases/OrderUseCases/RegisterOrderUseCase.js";
 import { AuthenticatedRequest } from "../middlewares/AuthMiddleware.js";
@@ -152,18 +152,14 @@ export class OrderController {
         }
     }
 
-    public async updateOrder(orderId: number, lineNumbers: number[], data: Partial<OrderSchema>) {
+    public async updateOrder(orderId: number, lineNumbers: number[] | undefined, data: Partial<PartialOrderMinimal>) {
         try {
-
-            console.log("Entre al controlador de updateOrder")
 
             if(isNaN(orderId)){
                 throw new ValidationError("El número de Pedido debe ser válido");
             }
 
-            const validatedOrder = ValidateOrderPartial(data)
-
-            console.log("Pase Validación de Order Partial")
+            const validatedOrder = ValidateOrderPartialMinimal(data)
 
             if(!validatedOrder.success) throw new ValidationError(`Validation failed: ${validatedOrder.error.message}`);
             return await this.updateOrderUseCase.execute(orderId, lineNumbers, validatedOrder.data)
