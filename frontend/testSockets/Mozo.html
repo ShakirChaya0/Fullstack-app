@@ -27,6 +27,8 @@
 
     ws.on('modifiedOrderLine', (data) => {
         console.log(data)
+        const modifiedOrderLineElement = document.getElementById('modifiedOrderLine');
+        modifiedOrderLineElement.innerHTML = `<strong>Modified Order Line:</strong> ${JSON.stringify(data, null, 2)}`;
     })
 
     ws.on('deletedOrderLine', (data) => {
@@ -51,10 +53,21 @@
         // })
 
     
-        // ws.emit('modifyOrder', orderToModify)
+        ws.emit('modifyOrder', {
+            orderId: 24,
+            lineNumbers: [176, 177],
+            data: {
+                cantidadCubiertos: 4,
+                observacion: "Observación del pedido",
+                items: [
+                    { nombre: 'Flan', tipo: 'Postre', monto: 200.5, cantidad: 5 },
+                    { nombre: 'Pan Sin TAC', tipo: 'Postre', monto: 200.5, cantidad: 5 }
+                ]
+            }
+        })
 
         
-        ws.emit('deleteOrderLine', {orderId: 24, lineNumber: 182});
+        // ws.emit('deleteOrderLine', {orderId: 24, lineNumber: 182});
 
     });
 
@@ -83,6 +96,10 @@
     <div style="margin-bottom: 20px;">
             <h3>Deleted Order Line:</h3>
             <p id="deletedOrderLine" style="background: #ffebee; padding: 10px; white-space: pre-wrap;">Waiting for deletedOrderLine event...</p>
+    </div>
+    <div style="margin-bottom: 20px;">
+            <h3>Modified Order Line:</h3>
+            <p id="modifiedOrderLine" style="background: blue; padding: 10px; white-space: pre-wrap;">Waiting for modifiedOrderLine event...</p>
     </div>
 </body>
 </html>

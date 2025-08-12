@@ -13,6 +13,9 @@ export class UpdateOrderUseCase {
     ){}
 
     public async execute(orderId: number, lineNumbers: number[], data: PartialOrderSchema): Promise<Order>{
+
+        console.log("Entre al use case de UpdateOrderUseCase")
+
         const order = await this.orderRepository.getOne(orderId)
         
         if (!order) {
@@ -36,19 +39,30 @@ export class UpdateOrderUseCase {
             throw new BusinessError(`No se puede modificar la cantidad de comensales. El pedido se encuentra pagado o por pagar`)
         }
 
+        console.log(data.items)
+
         if(data.items){ 
-            let aux = false
-            data.items.forEach(async (item) => {
+            let aux = false;
+
+            for (const item of data.items) {
                 const existItem = await this.productRepository.getByUniqueName(item.nombre)
-                if(!existItem) aux = true
-            })
-            if(!aux){
+                if (!existItem) {
+                    aux = true;
+                    break; 
+                }
+            }
+            if(aux){
                 throw new NotFoundError(`No se encontro uno de los productos`);
             }
         }
-                
+        
+        console.log("Termine validaciones del use case de UpdateOrderUseCase")
 
         const newOrder = await this.orderRepository.modifyOrder(orderId, lineNumbers, data)
+
+        
+
+
 
         return newOrder
     }

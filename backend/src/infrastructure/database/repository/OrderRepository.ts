@@ -202,17 +202,21 @@ export class OrderRepository implements IOrderRepository {
                 cantCubiertos: data.cantidadCubiertos,
                 observaciones: data.observacion,
                 Linea_De_Pedido: {
-                    update: lineNumber.map((line, index) => ({
-                        where: {
-                            idPedido_nroLinea: {
-                                idPedido: orderId,
-                                nroLinea: line
+                    update: lineNumber.map((line, index) => {
+                        const item = data.items![index];
+                        console.log(`OrderRepository.modifyOrder - Actualizando lÃnea ${line} con:`, item);
+                        return {
+                            where: {
+                                idPedido_nroLinea: {
+                                    idPedido: orderId,
+                                    nroLinea: line
+                                }
+                            },
+                            data: { 
+                                cantidad: item.cantidad
                             }
-                        },
-                        data: { 
-                            cantidad: data.items![index].cantidad
                         }
-                    }))
+                    })
                 }
             },
             include: {

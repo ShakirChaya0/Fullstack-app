@@ -93,9 +93,13 @@ export function InitSocketConnection(server: Http2Server) {
         }
       })
 
-      socket.on('modifyOrder', async (orderId: number, lineNumbers: number[], data: Partial<OrderSchema>) => {
-        
+      socket.on('modifyOrder', async ({orderId, lineNumbers, data}: {orderId: number, lineNumbers: number[], data: Partial<OrderSchema>}) => {
+
+        console.log("Entre al init Socket")
+
         const order = await orderController.updateOrder(orderId, lineNumbers, data)
+
+        console.log("Sali del controlador en el init Socket")
 
         if (order){
           const tokenQRData = await qrRepository.getQRByTableNumber(order.table!.tableNum)
@@ -124,11 +128,8 @@ export function InitSocketConnection(server: Http2Server) {
 
 
       socket.on('deleteOrderLine', async ({orderId, lineNumber}: {orderId: number, lineNumber: number}) => {
-        console.log('Eliminando línea del pedido:', orderId, lineNumber);
         
         const order = await orderController.deleteOrderLine(orderId, lineNumber)
-
-        console.log(order);
 
         if (order){
           const tokenQRData = await qrRepository.getQRByTableNumber(order.table!.tableNum)
@@ -158,7 +159,6 @@ export function InitSocketConnection(server: Http2Server) {
     });
 
     
-
     return ioConnection
 }
 

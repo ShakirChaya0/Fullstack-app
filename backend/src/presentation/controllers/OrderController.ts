@@ -12,7 +12,6 @@ import { GetOrdersByWaiterUseCase } from "../../application/use_cases/OrderUseCa
 import { AddOrderLineUseCase } from "../../application/use_cases/OrderUseCases/AddOrderLineUseCase.js";
 import { DeleteOrderLineUseCase } from "../../application/use_cases/OrderUseCases/DeleteOrderLineUseCase.js";
 import { UpdateOrderUseCase } from "../../application/use_cases/OrderUseCases/UpdateOrderUseCase.js";
-import { console } from "node:inspector";
 
 
 export class OrderController {
@@ -135,18 +134,17 @@ export class OrderController {
     }
 
     public async deleteOrderLine(orderId: number, lineNumber: number) {
-        console.log('Eliminando línea del pedido:', orderId, lineNumber);
         try {
-            console.log('Eliminando línea del pedido:', orderId, lineNumber);
             if(isNaN(orderId)){
                 throw new ValidationError("El número de Pedido debe ser válido");
             }
             if(isNaN(lineNumber)){
                 throw new ValidationError("El número de Línea debe ser válido");
             }
-            console.log('Eliminando línea del pedido:', orderId, lineNumber);
 
-            return await this.deleteOrderLineUseCase.execute(orderId, lineNumber)
+            const deletedOrderLine =  await this.deleteOrderLineUseCase.execute(orderId, lineNumber)
+
+            return deletedOrderLine
         }
         catch(error) {
             console.log(error);
@@ -156,11 +154,17 @@ export class OrderController {
 
     public async updateOrder(orderId: number, lineNumbers: number[], data: Partial<OrderSchema>) {
         try {
+
+            console.log("Entre al controlador de updateOrder")
+
             if(isNaN(orderId)){
                 throw new ValidationError("El número de Pedido debe ser válido");
             }
+
             const validatedOrder = ValidateOrderPartial(data)
-            
+
+            console.log("Pase Validación de Order Partial")
+
             if(!validatedOrder.success) throw new ValidationError(`Validation failed: ${validatedOrder.error.message}`);
             return await this.updateOrderUseCase.execute(orderId, lineNumbers, validatedOrder.data)
         }

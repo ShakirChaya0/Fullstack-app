@@ -1,4 +1,3 @@
-import { console } from "node:inspector";
 import { Order } from "../../../domain/entities/Order.js";
 import { OrderRepository } from "../../../infrastructure/database/repository/OrderRepository.js";
 import { ProductRepository } from "../../../infrastructure/database/repository/ProductRepository.js";

@@ -14,10 +14,9 @@ export class DeleteOrderLineUseCase {
         if (!order) {
             throw new NotFoundError("Pedido no encontrado");
         }
+        
+        const existThisLine = order.orderLines.some(line => line.lineNumber === lineNumber);
 
-        const existThisLine = order.orderLines.some(line => {
-            line.lineNumber == lineNumber
-        })
 
         if(!existThisLine) {
             throw new NotFoundError("No existe la linea de pedido en el pedido")
