@@ -1,6 +1,6 @@
 import { Response, NextFunction } from "express"
 import { ioConnection } from "./../../App.js"
-import { OrderSchema, ValidateOrder } from "../../shared/validators/OrderZod.js"
+import { OrderLineSchema, OrderSchema, PartialOrderMinimal, ValidateOrder, ValidateOrderLine, ValidateOrderPartialMinimal } from "../../shared/validators/OrderZod.js"
 import { ValidationError } from "../../shared/exceptions/ValidationError.js";
 import { CUU02RegisterOrder } from "../../application/use_cases/OrderUseCases/RegisterOrderUseCase.js";
 import { AuthenticatedRequest } from "../middlewares/AuthMiddleware.js";
@@ -9,6 +9,9 @@ import { OrderLineStatus } from "../../domain/entities/OrderLine.js";
 import { UpdateOrderLineUseCase } from "../../application/use_cases/OrderUseCases/UpdateOrderLineStatusUseCase.js";
 import { GetActiveOrdersUseCase } from "../../application/use_cases/OrderUseCases/GetActiveOrdersUseCase.js";
 import { GetOrdersByWaiterUseCase } from "../../application/use_cases/OrderUseCases/GetOrdersByWaiterUseCase.js";
+import { AddOrderLineUseCase } from "../../application/use_cases/OrderUseCases/AddOrderLineUseCase.js";
+import { DeleteOrderLineUseCase } from "../../application/use_cases/OrderUseCases/DeleteOrderLineUseCase.js";
+import { UpdateOrderUseCase } from "../../application/use_cases/OrderUseCases/UpdateOrderUseCase.js";
 
 
 export class OrderController {
@@ -16,7 +19,10 @@ export class OrderController {
         private readonly cUU02RegisterOrder = new CUU02RegisterOrder(),
         private readonly updateOrderLineStatusUseCase = new UpdateOrderLineUseCase(),
         private readonly getActiveOrdersUseCase = new GetActiveOrdersUseCase(),
-        private readonly getOrdersByWaiterUseCase = new GetOrdersByWaiterUseCase()
+        private readonly getOrdersByWaiterUseCase = new GetOrdersByWaiterUseCase(),
+        private readonly addOrderLineUseCase = new AddOrderLineUseCase(),
+        private readonly deleteOrderLineUseCase = new DeleteOrderLineUseCase(),
+        private readonly updateOrderUseCase = new UpdateOrderUseCase(),
     ){}
 
     public create = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
@@ -61,7 +67,7 @@ export class OrderController {
                     .emit("newOrder", createdOrder.toWaiterInfo());
             }
 
-            res.status(201).json(createdOrder);
+            res.status(201).send("Orden creada correctamente");
         } 
         catch(error) {
             next(error);
@@ -102,6 +108,63 @@ export class OrderController {
             return orders.map(o => { return o.toWaiterInfo() })
         } 
         catch (error) {
+            console.log(error);
+            return
+        }
+    }
+
+    public async addOrderLine(orderId: number, orderLines: OrderLineSchema[]) {
+        try {
+            if(isNaN(orderId)){
+                throw new ValidationError("El número de Pedido debe ser válido");
+            }
+
+            const validatedOrderLines = ValidateOrderLine(orderLines)
+
+            if(!validatedOrderLines.success) throw new ValidationError(`Validation failed: ${validatedOrderLines.error.message}`);
+
+            const order = await this.addOrderLineUseCase.execute(orderId, validatedOrderLines.data)
+
+            return order
+        }
+        catch(error) {
+            console.log(error);
+            return
+        }
+    }
+
+    public async deleteOrderLine(orderId: number, lineNumber: number) {
+        try {
+            if(isNaN(orderId)){
+                throw new ValidationError("El número de Pedido debe ser válido");
+            }
+            if(isNaN(lineNumber)){
+                throw new ValidationError("El número de Línea debe ser válido");
+            }
+
+            const deletedOrderLine =  await this.deleteOrderLineUseCase.execute(orderId, lineNumber)
+
+            return deletedOrderLine
+        }
+        catch(error) {
+            console.log(error);
+            return
+        }
+    }
+
+    public async updateOrder(orderId: number, lineNumbers: number[] | undefined, data: Partial<PartialOrderMinimal>) {
+        try {
+
+            if(isNaN(orderId)){
+                throw new ValidationError("El número de Pedido debe ser válido");
+            }
+
+            const validatedOrder = ValidateOrderPartialMinimal(data)
+
+            if(!validatedOrder.success) throw new ValidationError(`Validation failed: ${validatedOrder.error.message}`);
+            return await this.updateOrderUseCase.execute(orderId, lineNumbers, validatedOrder.data)
+        }
+        catch(error) {
             console.log(error);
             return
         }

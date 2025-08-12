@@ -14,13 +14,13 @@ POST http://localhost:3000/productos/
 Content-Type: application/json
 
 {
-    "nombre": "Flan Casero",
-    "descripcion": "Flan casero con dulce de leche y caramelo.",
+    "nombre": "Pan Sin TAC",
+    "descripcion": "Pan hecho a base de harina de trigo",
     "estado": "Disponible",
     "tipo": "Postre",
     "esVegetariana": true,
     "esVegana": false,
-    "esSinGluten": false
+    "esSinGluten": true
 }   
 
 ###

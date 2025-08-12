@@ -1,8 +1,7 @@
 import z from "zod"
 
-
 const SchemaOrderLine =
-        z.object({
+    z.object({
         nombre: z.string().nonempty({message: "El nombre es requerido"}).min(3).max(255),
         tipo: z.enum(["Entrada", "Plato_Principal", "Postre"]).optional(),
         monto: z.number({ required_error: "monto es obligatorio" }).positive({ message: "El monto debe ser un número positivo" })
@@ -26,6 +25,16 @@ export const SchemaOrder = z.object({
     items:  z.array(SchemaOrderLine),
 });
 
+const PartialOrderLineCantidadSchema = SchemaOrderLine.pick({ cantidad: true });
+
+const PartialOrderMinimalSchema = z.object({
+  cantidadCubiertos: SchemaOrder.shape.cantidadCubiertos,
+  observacion: SchemaOrder.shape.observacion,
+  items: z.array(PartialOrderLineCantidadSchema).optional(),
+});
+
+export type PartialOrderMinimal = z.infer<typeof PartialOrderMinimalSchema>;
+
 export type OrderSchema = z.infer<typeof SchemaOrder>
 
 const PartialSchemaOrder = SchemaOrder.partial()
@@ -34,10 +43,15 @@ export type PartialOrderSchema = z.infer<typeof PartialSchemaOrder>
 
 export type OrderLineSchema = z.infer<typeof SchemaOrderLine>
 
+
 export function ValidateOrder(data: OrderSchema){ 
     return SchemaOrder.safeParse(data)
 }
 
-export function ValidateOrderPartial(data: Partial<OrderSchema>){
-    return PartialSchemaOrder.safeParse(data)
+export function ValidateOrderPartialMinimal(data: Partial<PartialOrderMinimal>) {
+  return PartialOrderMinimalSchema.safeParse(data);
+}
+
+export function ValidateOrderLine(data: OrderLineSchema[]) {
+    return z.array(SchemaOrderLine).safeParse(data);
 }
