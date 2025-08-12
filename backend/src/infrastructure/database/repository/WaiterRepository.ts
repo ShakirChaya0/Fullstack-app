@@ -1,4 +1,5 @@
-import { Prisma, PrismaClient } from "@prisma/client";
+import prisma from "../prisma/PrismaClientConnection.js"
+import { Prisma } from "@prisma/client";
 import { Waiter } from "../../../domain/entities/Waiter.js";
 import { IWaiterRepository } from "../../../domain/repositories/IWaiterRepository.js";
 import { SchemaWaiter ,PartialSchemaWaiter } from "../../../shared/validators/WaiterZod.js";
@@ -7,7 +8,6 @@ import { ServiceError } from "../../../shared/exceptions/ServiceError.js";
 import { NotFoundError } from "../../../shared/exceptions/NotFoundError.js";
 import { UUID } from "crypto";
 
-const prisma = new PrismaClient();
 
 type MozoWithUsuario = Prisma.MozosGetPayload<{
     include: { Usuarios: true };

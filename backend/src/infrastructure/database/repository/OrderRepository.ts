@@ -1,4 +1,5 @@
-import { Prisma, PrismaClient } from "@prisma/client";
+import prisma from "../prisma/PrismaClientConnection.js"
+import { Prisma } from "@prisma/client";
 import { IOrderRepository } from "../../../domain/repositories/IOrderRepository.js";
 import { Order, OrderStatus } from "../../../domain/entities/Order.js";
 import { Table } from "../../../domain/entities/Table.js";
@@ -8,8 +9,6 @@ import { OrderLine, OrderLineStatus } from "../../../domain/entities/OrderLine.j
 import { ProductoVO } from "../../../domain/value-objects/ProductVO.js";
 import { FoodType } from "../../../domain/entities/Product.js";
 import { OrderLineSchema, OrderSchema, PartialOrderMinimal } from "../../../shared/validators/OrderZod.js";
-
-const prisma = new PrismaClient();
 
 type OrderWithAll = Prisma.PedidoGetPayload<{
     include: { Mesa: true, Linea_De_Pedido: true, Mozos: { include: { Usuarios: true }} }

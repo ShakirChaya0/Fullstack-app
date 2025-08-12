@@ -1,12 +1,10 @@
-import { PrismaClient } from "@prisma/client";
+import prisma from "../prisma/PrismaClientConnection.js"
 import { IAdminRepository } from "../../../domain/repositories/IAdminRepository.js";
 import { Admin } from "../../../domain/entities/Admin.js";
 import { PartialSchemaAdmin } from "../../../shared/validators/AdminZod.js";
 import { UUID } from "crypto";
 import { ConflictError } from "../../../shared/exceptions/ConflictError.js";
 import { ServiceError } from "../../../shared/exceptions/ServiceError.js";
-
-const prisma = new PrismaClient();
 
 export class AdminRepository implements IAdminRepository {
 

@@ -1,9 +1,6 @@
-import { PrismaClient } from "@prisma/client";
+import prisma from "../prisma/PrismaClientConnection.js"
 import { stateClient } from "../../../domain/entities/ClientState.js";
 import { IClientStateRepository } from "../../../domain/repositories/IClientStateRepository.js";
-
-
-const prisma = new PrismaClient();
 
 export class ClientStateRepository implements IClientStateRepository {
 

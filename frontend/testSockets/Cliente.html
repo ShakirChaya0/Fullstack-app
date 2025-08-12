@@ -15,6 +15,10 @@
         }
     });
 
+    ws.on('errorEvent', (data) => {
+        console.log(data)
+    })
+
     ws.on('updatedLine', (data) => {
         console.log(data)
     })

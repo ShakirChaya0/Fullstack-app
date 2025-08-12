@@ -1,10 +1,7 @@
-import { PrismaClient } from '@prisma/client';
+import prisma from "../prisma/PrismaClientConnection.js"
 import { PartialSchemaPolicy  } from '../../../shared/validators/PolicyZod.js';
 import { Policy } from '../../../domain/entities/Policy.js';
 import { IPolicyRepository } from '../../../domain/repositories/IPolicyRepository.js';
-
-const prisma = new PrismaClient();
-
 
 export class PolicyRepository implements IPolicyRepository {
     public async updatePolicy(idPolitica: number,data: PartialSchemaPolicy): Promise<Policy> {

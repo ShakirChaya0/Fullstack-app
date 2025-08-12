@@ -1,11 +1,8 @@
-import { PrismaClient } from "@prisma/client";
+import prisma from "../prisma/PrismaClientConnection.js"
 import { IScheduleRepository } from "../../../domain/repositories/IScheduleRepository.js";
 import { Schedule } from "../../../domain/entities/Schedule.js";
 import { SchemaSchedule } from "../../../shared/validators/ScheduleZod.js";
 import { IUpdateSchedule } from "../../../domain/interfaces/Schedule.interface.js";
-
-
-const prisma = new PrismaClient();
 
 export class ScheduleRepositoy implements IScheduleRepository{
 

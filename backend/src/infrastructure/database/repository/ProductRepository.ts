@@ -1,9 +1,8 @@
-import { Prisma, PrismaClient } from '@prisma/client';
+import prisma from "../prisma/PrismaClientConnection.js"
+import { Prisma } from '@prisma/client';
 import { PartialSchemaProductos, SchemaProductos } from '../../../shared/validators/ProductZod.js';
 import { IProductoRepository } from '../../../domain/repositories/IProductRepository.js';
 import { Product, Food, Drink } from '../../../domain/entities/Product.js';
-
-const prisma = new PrismaClient();
 
 type ProductWithPrice = Prisma.ProductoGetPayload<{
     include: { Precios: true };

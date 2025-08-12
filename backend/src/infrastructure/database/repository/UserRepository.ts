@@ -1,9 +1,8 @@
-import { PrismaClient, Usuarios } from "@prisma/client";
+import prisma from "../prisma/PrismaClientConnection.js"
+import { Usuarios } from "@prisma/client";
 import { User } from "../../../domain/entities/User.js";
 import { UUID } from "crypto";
 import { IUserRepository } from "../../../domain/repositories/IUserRepository.js";
-
-const prisma = new PrismaClient();
 
 export class UserRepository implements IUserRepository{
     async findByEmail(email: string): Promise<User | null> {

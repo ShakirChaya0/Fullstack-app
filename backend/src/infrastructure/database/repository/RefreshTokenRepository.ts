@@ -1,11 +1,8 @@
 import { IRefreshTokenRepository } from "../../../domain/repositories/IRefreshTokenRepository.js";
-import { PrismaClient } from "@prisma/client";
+import prisma from "../prisma/PrismaClientConnection.js"
 import { UUID } from "crypto";
 import { ConflictError } from "../../../shared/exceptions/ConflictError.js";
 import { ServiceError } from "../../../shared/exceptions/ServiceError.js";
-
-const prisma = new PrismaClient();
-
 
 export class RefreshTokenRepository implements IRefreshTokenRepository {
     async saveRefreshedToken(userId: string, refreshToken: string, endDate: Date): Promise<void> {

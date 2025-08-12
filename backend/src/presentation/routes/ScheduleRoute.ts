@@ -1,8 +1,8 @@
 import { Router } from "express";
-import { HorarioController } from "../controllers/scheduleController.js";
+import { HorarioController } from "../controllers/ScheduleController.js";
 
 
-export function horariosRouter() {
+export function HorariosRouter() {
     const horarioRouter = Router();
     const horarioController = new HorarioController();
 

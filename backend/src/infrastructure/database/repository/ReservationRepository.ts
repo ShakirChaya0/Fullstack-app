@@ -1,4 +1,5 @@
-import { PrismaClient,Prisma } from "@prisma/client";
+import prisma from "../prisma/PrismaClientConnection.js"
+import { Prisma } from "@prisma/client";
 import { Reservation } from "../../../domain/entities/Reservation.js";
 import { SchemaReservation } from "../../../shared/validators/ReservationZod.js";
 import { StateReservation } from "../../../domain/entities/Reservation.js";
@@ -6,8 +7,6 @@ import { Table } from "../../../domain/entities/Table.js";
 import { ClientPublicInfo } from "../../../domain/repositories/IClientPublicInfo.js";
 import { IReservationRepository } from "../../../domain/repositories/IReservationRepository.js";
 
-
-const prisma = new PrismaClient();
 
 type ReservationWithClient = Prisma.ReservaGetPayload<{
   include: {

@@ -2,7 +2,7 @@ import { Order } from "../../../domain/entities/Order.js";
 import { OrderRepository } from "../../../infrastructure/database/repository/OrderRepository.js";
 import { BusinessError } from "../../../shared/exceptions/BusinessError.js";
 import { NotFoundError } from "../../../shared/exceptions/NotFoundError.js";
-import { PartialOrderMinimal } from "../../../shared/validators/orderZod.js";
+import { PartialOrderMinimal } from "../../../shared/validators/OrderZod.js";
 
 
 export class UpdateOrderUseCase {

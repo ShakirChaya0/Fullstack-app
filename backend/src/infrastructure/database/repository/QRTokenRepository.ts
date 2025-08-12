@@ -1,8 +1,7 @@
 import { IQRTokenRepository } from "../../../domain/repositories/IQRTokenRepository.js";
-import { PrismaClient } from "@prisma/client";
+import prisma from "../prisma/PrismaClientConnection.js"
 import { QRTokenInterface } from "../../../domain/interfaces/QRToken.interface.js";
 
-const prisma = new PrismaClient()
 
 export class QRTokenRepository implements IQRTokenRepository {
 

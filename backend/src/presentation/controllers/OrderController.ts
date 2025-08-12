@@ -1,5 +1,5 @@
 import { Response, NextFunction } from "express"
-import { ioConnection } from "./../../App.js"
+import { ioConnection } from "./../sockets/SocketServerConnection.js"
 import { OrderLineSchema, OrderSchema, PartialOrderMinimal, ValidateOrder, ValidateOrderLine, ValidateOrderPartialMinimal } from "../../shared/validators/OrderZod.js"
 import { ValidationError } from "../../shared/exceptions/ValidationError.js";
 import { CUU02RegisterOrder } from "../../application/use_cases/OrderUseCases/RegisterOrderUseCase.js";
@@ -86,8 +86,7 @@ export class OrderController {
             return await this.updateOrderLineStatusUseCase.execute(idPedido, nroLinea, estadoLP)
         }
         catch(error) {
-            console.log(error);
-            return
+            throw error
         }
     }
 
@@ -107,9 +106,8 @@ export class OrderController {
             const orders = await this.getOrdersByWaiterUseCase.execute(waiterId);
             return orders.map(o => { return o.toWaiterInfo() })
         } 
-        catch (error) {
-            console.log(error);
-            return
+        catch(error) {
+            throw error
         }
     }
 
@@ -128,8 +126,7 @@ export class OrderController {
             return order
         }
         catch(error) {
-            console.log(error);
-            return
+            throw error
         }
     }
 
@@ -147,14 +144,12 @@ export class OrderController {
             return deletedOrderLine
         }
         catch(error) {
-            console.log(error);
-            return
+            throw error
         }
     }
 
     public async updateOrder(orderId: number, lineNumbers: number[] | undefined, data: Partial<PartialOrderMinimal>) {
         try {
-
             if(isNaN(orderId)){
                 throw new ValidationError("El número de Pedido debe ser válido");
             }
@@ -165,8 +160,7 @@ export class OrderController {
             return await this.updateOrderUseCase.execute(orderId, lineNumbers, validatedOrder.data)
         }
         catch(error) {
-            console.log(error);
-            return
+            throw error
         }
     }
 }

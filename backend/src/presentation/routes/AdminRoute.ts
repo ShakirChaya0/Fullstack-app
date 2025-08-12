@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { AdminController } from "../controllers/AdminController.js";
 
-export function adminRouter() {
+export function AdminRouter() {
     const adminRouter = Router();
     const adminController = new AdminController();
 

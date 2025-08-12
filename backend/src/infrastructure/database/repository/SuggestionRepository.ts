@@ -1,13 +1,12 @@
+import prisma from "../prisma/PrismaClientConnection.js"
 import { ISuggestionRepository } from "../../../domain/repositories/ISuggestionRepository.js";
 import { Suggestion } from "../../../domain/entities/Suggestion.js";
 import { Drink, Food, Product } from "../../../domain/entities/Product.js";
-import { Prisma, PrismaClient } from "@prisma/client";
+import { Prisma } from "@prisma/client";
 import { PartialSchemaSuggestion } from "../../../shared/validators/SuggestionZod.js";
 
-const prisma = new PrismaClient();
-
 type SuggestionWithProduct = Prisma.SugerenciasGetPayload<{
-    include: { Producto: true }
+    include: { Producto: { include: { Precios: true }} }
 }>;
 
 export class SuggestionRepository implements ISuggestionRepository {
@@ -15,7 +14,7 @@ export class SuggestionRepository implements ISuggestionRepository {
     public async getAll(): Promise<Suggestion[]> {
         const suggestions = await prisma.sugerencias.findMany({
             include: {
-                Producto: true
+                Producto: { include: { Precios: true }}
             }
         });
 
@@ -32,7 +31,7 @@ export class SuggestionRepository implements ISuggestionRepository {
                 fechaHasta: { gte: now }
             },
             include: {
-                Producto: true
+                Producto: { include: { Precios: true }}
             }
         });
 
@@ -48,7 +47,7 @@ export class SuggestionRepository implements ISuggestionRepository {
                 }
             },
             include: {
-                Producto: true
+                Producto: { include: { Precios: true }}
             }
         });
 
@@ -65,7 +64,7 @@ export class SuggestionRepository implements ISuggestionRepository {
                 idProducto: sugg.product.productId
             },
             include: {
-                Producto: true
+                Producto: { include: { Precios: true }}
             }
         });
 
@@ -82,7 +81,7 @@ export class SuggestionRepository implements ISuggestionRepository {
             },
             data: { ...data },
             include: {
-                Producto: true
+                Producto: { include: { Precios: true }}
             }
         });
 
@@ -97,6 +96,7 @@ export class SuggestionRepository implements ISuggestionRepository {
                 sugg.Producto.nombre,
                 sugg.Producto.descripcion,
                 sugg.Producto.estado,
+                sugg.Producto.Precios[sugg.Producto.Precios.length - 1].monto.toNumber(),
                 sugg.Producto.esVegetariana ?? false,
                 sugg.Producto.esVegana ?? false,
                 sugg.Producto.esSinGluten ?? false,
@@ -108,6 +108,7 @@ export class SuggestionRepository implements ISuggestionRepository {
                 sugg.Producto.nombre,
                 sugg.Producto.descripcion,
                 sugg.Producto.estado,
+                sugg.Producto.Precios[sugg.Producto.Precios.length - 1].monto.toNumber(),
                 sugg.Producto.esAlcoholica ?? false
             );
         }

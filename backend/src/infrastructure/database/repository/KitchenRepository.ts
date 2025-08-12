@@ -1,11 +1,11 @@
-import { Prisma, PrismaClient, TipoUsuario_Type } from "@prisma/client";
+import { Prisma, TipoUsuario_Type } from "@prisma/client";
+import prisma from "../prisma/PrismaClientConnection.js"
 import { ServiceError } from "../../../shared/exceptions/ServiceError.js";
 import { Kitchen } from "../../../domain/entities/Kitchen.js";
 import { UUID } from 'crypto';
 import { PartialSchemaKitchen } from "../../../shared/validators/KitchenZod.js";
 import { ConflictError } from "../../../shared/exceptions/ConflictError.js";
 import { IKitchenRepository } from "../../../domain/repositories/IKitchenRepository.js";
-const prisma = new PrismaClient()
 
 type UsuariosKitchen = Prisma.UsuariosGetPayload<{}>;
 

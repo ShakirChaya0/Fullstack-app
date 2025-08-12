@@ -1,11 +1,9 @@
-import { PrismaClient } from "@prisma/client";
+import prisma from "../prisma/PrismaClientConnection.js"
 import { INewsRepository } from "../../../domain/repositories/INewsRepository.js";
 import { NewsClass } from "../../../domain/entities/News.js";
 import { PartialNews } from "../../../domain/interfaces/NewsInterface.js";
 import { ConflictError } from "../../../shared/exceptions/ConflictError.js";
 import { ServiceError } from "../../../shared/exceptions/ServiceError.js";
-
-const prisma = new PrismaClient();
 
 export class NewsRepository implements INewsRepository{
     async register (data: NewsClass): Promise<NewsClass>{

@@ -1,6 +1,7 @@
-import { Prisma, PrismaClient } from "@prisma/client";
+import { Prisma } from "@prisma/client";
+import prisma from "../prisma/PrismaClientConnection.js"
 import { Client } from "../../../domain/entities/Client.js";
-import {UUID} from 'crypto'
+import { UUID } from 'crypto'
 import { SchemaCliente, PartialClientSchema } from "../../../shared/validators/ClientZod.js";
 import { ConflictError } from "../../../shared/exceptions/ConflictError.js";
 import { ServiceError } from "../../../shared/exceptions/ServiceError.js";
@@ -26,8 +27,6 @@ type ClientWithUsuario = Prisma.ClientesGetPayload<{
         }
     };
 }>;
-
-const prisma = new PrismaClient();
 
 export class ClientRepository implements IClienteRepository {
     public async getAllClient() : Promise<Client[]> {

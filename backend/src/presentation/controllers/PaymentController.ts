@@ -11,7 +11,7 @@ import { NotFoundError } from "../../shared/exceptions/NotFoundError.js";
 import { PayWithMercadoPagoUseCase } from "../../application/use_cases/OrderUseCases/PayWithMercadoPagoUseCase.js";
 import { mercadoPagoClient } from "../../infrastructure/config/MercadoPago.js";
 import { Payment } from "mercadopago";
-import { ioConnection } from "../../App.js";
+import { ioConnection } from "./../sockets/SocketServerConnection.js"
 
 export class PaymentController {
     constructor(

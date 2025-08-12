@@ -1,10 +1,7 @@
-import { PrismaClient } from "@prisma/client";
+import prisma from "../prisma/PrismaClientConnection.js"
 import { Table } from "../../../domain/entities/Table.js";
 import { schemaTable } from "../../../shared/validators/TableZod.js";
 import { ITableRepository } from "../../../domain/repositories/ITableRepository.js";
-
-
-const prisma = new PrismaClient;
 
 export class TableRepository implements ITableRepository {
     

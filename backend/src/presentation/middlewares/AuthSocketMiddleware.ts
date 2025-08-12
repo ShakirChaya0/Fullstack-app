@@ -2,6 +2,7 @@ import dotenv from 'dotenv';
 import { JwtPayloadInterface } from "../../domain/interfaces/JwtPayloadInterface.js";
 import { JWTService } from "../../application/services/JWTService.js";
 import { Socket } from "socket.io";
+import { HandleSocketError } from '../sockets/handlers/HandleSocketError.js';
 
 dotenv.config();
 const jwtService = new JWTService();
@@ -23,7 +24,7 @@ export async function AuthSocketMiddleware(socket: Socket, next: (err?: Error) =
             (socket as AuthenticatedSocket).qrToken = qrToken;
         } 
     } catch (error: any) {
-        next(error)
+        HandleSocketError(socket, error)
     }
 
     (socket as AuthenticatedSocket).qrToken = qrToken;

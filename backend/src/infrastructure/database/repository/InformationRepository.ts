@@ -1,9 +1,7 @@
 import { Information } from '../../../domain/entities/Information.js';
 import { IRestaurantInformation } from '../../../domain/repositories/IRestaurantInformation.js';
-import { PrismaClient } from '@prisma/client';
+import prisma from "../prisma/PrismaClientConnection.js"
 import { PartialSchemaInformation } from '../../../shared/validators/InformationZod.js';
-
-const prisma = new PrismaClient();
 
 export class InformationRepository implements IRestaurantInformation {
     public async getInformation(): Promise<Information> {

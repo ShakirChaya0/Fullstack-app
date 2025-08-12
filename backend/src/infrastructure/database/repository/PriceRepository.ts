@@ -1,10 +1,9 @@
-import { Prisma, PrismaClient } from "@prisma/client";
+import prisma from "../prisma/PrismaClientConnection.js"
+import { Prisma } from "@prisma/client";
 import { SchemaPrice } from "../../../shared/validators/PriceZod.js";
 import { IPriceRepository } from "../../../domain/repositories/IPriceRepository.js";
 import { Price } from "../../../domain/entities/Price.js";
 import { Drink, Food, Product } from "../../../domain/entities/Product.js";
-
-const prisma = new PrismaClient();
 
 type PriceWithProduct = Prisma.PreciosGetPayload<{
     include: { Producto: true };
@@ -90,6 +89,7 @@ export class PriceRepository implements IPriceRepository {
                 price.Producto.nombre,
                 price.Producto.descripcion,
                 price.Producto.estado,
+                price.monto.toNumber(),
                 price.Producto.esVegetariana ?? false,
                 price.Producto.esVegana ?? false,
                 price.Producto.esSinGluten ?? false,
@@ -101,9 +101,10 @@ export class PriceRepository implements IPriceRepository {
                 price.Producto.nombre,
                 price.Producto.descripcion,
                 price.Producto.estado,
+                price.monto.toNumber(),
                 price.Producto.esAlcoholica ?? false
             );
         }
-        return new Price(product, price.fechaActual, price.monto);
+        return new Price(product, price.fechaActual, price.monto.toNumber());
     }
 }
