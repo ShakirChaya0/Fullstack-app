@@ -1,36 +1,30 @@
 ### Por parte del Cliente
 POST http://localhost:3000/pedidos/
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzdWFyaW8iOiI1MGExOTdlYi1lYzA5LTRmYzEtYWZiNy04Y2M3NTUyZDdkNWYiLCJlbWFpbCI6ImpvcGVAZ21haWwuY29tIiwidGlwb1VzdWFyaW8iOiJDbGllbnRlIiwidXNlcm5hbWUiOiJKb3BlIiwiaWF0IjoxNzU0NjkyOTc5LCJleHAiOjE3NTQ2OTM1Nzl9.hbbIXXU5IY4K2QvIZOnNO3DnaKUF5qRHRVQQGf-1G5c
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzdWFyaW8iOiI1MGExOTdlYi1lYzA5LTRmYzEtYWZiNy04Y2M3NTUyZDdkNWYiLCJlbWFpbCI6ImpvcGVAZ21haWwuY29tIiwidGlwb1VzdWFyaW8iOiJDbGllbnRlIiwidXNlcm5hbWUiOiJKb3BlIiwiaWF0IjoxNzU0NzY5MDE0LCJleHAiOjE3NTUzNzM4MTR9.WZc5aDNvmyk1cN9pxQLAbFgibUMt8DZLNdeDOIeE8R4
 Cookie: 17134ce5-d71b-494d-ba32-999bf44a0906
 
 {
     "order": {
-        "cantidadCubiertos": 4,
-        "observacion": "Mesa junto a la ventana",
+        "cantidadCubiertos": 2,
+        "observacion": "Pan sin gluten",
         "items": [
             {
-            "nombre": "Empanadas sin Usuario Registrado",
-            "tipo": "Entrada",
+            "nombre": "Pan Sin TAC",
+            "tipo": "Postre",
             "monto": 150.25,
             "cantidad": 4
             },
             {
-            "nombre": "Bife de chorizo",
-            "tipo": "Plato_Principal",
+            "nombre": "Flan",
+            "tipo": "Postre",
             "monto": 2000,
             "cantidad": 2
-            },
-            {
-            "nombre": "Vino Malbec",
-            "monto": 1800.00,
-            "cantidad": 1,
-            "esAlcoholica": false
             }
         ]
-        
     }
 }
+
 ### Por parte del Cliente NO registrado
 POST http://localhost:3000/pedidos/
 Content-Type: application/json 
@@ -38,26 +32,20 @@ Cookie: 17134ce5-d71b-494d-ba32-999bf44a0906
 
 {
     "order": {
-        "cantidadCubiertos": 4,
-        "observacion": "Mesa junto a la ventana",
+        "cantidadCubiertos": 3,
+        "observacion": "Flan con dulce de leche",
         "items": [
             {
-            "nombre": "Empanadas sin Usuario Registrado",
-            "tipo": "Entrada",
+            "nombre": "Pan Sin TAC",
+            "tipo": "Postre",
             "monto": 150.25,
             "cantidad": 4
             },
             {
-            "nombre": "Bife de chorizo",
-            "tipo": "Plato_Principal",
+            "nombre": "Flan",
+            "tipo": "Postre",
             "monto": 2000,
             "cantidad": 2
-            },
-            {
-            "nombre": "Vino Malbec",
-            "monto": 1800.00,
-            "cantidad": 1,
-            "esAlcoholica": false
             }
         ]
         
@@ -67,33 +55,26 @@ Cookie: 17134ce5-d71b-494d-ba32-999bf44a0906
 ### Por parte del Mozo
 POST http://localhost:3000/pedidos/
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzdWFyaW8iOiIxYzVjNjUyOC03MjZhLTRjNzQtYjlhYS02MjI1OTViMTEwZDciLCJlbWFpbCI6Impvc2VicHBAZ21haWwuY29tIiwidGlwb1VzdWFyaW8iOiJNb3pvIiwidXNlcm5hbWUiOiJKb3NlQl8yMDA0IiwiaWF0IjoxNzU0NjkxMDE3LCJleHAiOjE3NTQ2OTE2MTd9.f_iw_kLEa46Idg9d8HTG8sx8KAg8kyKuAbU6LuU4ZOI
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzdWFyaW8iOiIxYzVjNjUyOC03MjZhLTRjNzQtYjlhYS02MjI1OTViMTEwZDciLCJlbWFpbCI6Impvc2VicHBAZ21haWwuY29tIiwidGlwb1VzdWFyaW8iOiJNb3pvIiwidXNlcm5hbWUiOiJKb3NlQl8yMDA0IiwiaWF0IjoxNzU0NzY5MTA1LCJleHAiOjE3NTUzNzM5MDV9.aogFmoRgsjFcB7jd_oJSjt17_SC_L_bbW6OL7mxCDyc
 
 {
-    "tableNumber": 2,
+    "tableNumber": 1,
     "order": {
         "cantidadCubiertos": 4,
-        "observacion": "Mesa junto a la ventana",
+        "observacion": "Flan y Pan caseros",
         "items": [
             {
-            "nombre": "Empanadas sin Usuario Registrado",
-            "tipo": "Entrada",
+            "nombre": "Pan Sin TAC",
+            "tipo": "Postre",
             "monto": 150.25,
             "cantidad": 4
             },
             {
-            "nombre": "Bife de chorizo",
-            "tipo": "Plato_Principal",
+            "nombre": "Flan",
+            "tipo": "Postre",
             "monto": 2000,
             "cantidad": 2
-            },
-            {
-            "nombre": "Vino Malbec",
-            "monto": 1800.00,
-            "cantidad": 1,
-            "esAlcoholica": false
             }
         ]
-        
     }
 }

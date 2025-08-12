@@ -12,6 +12,7 @@ import { GetOrdersByWaiterUseCase } from "../../application/use_cases/OrderUseCa
 import { AddOrderLineUseCase } from "../../application/use_cases/OrderUseCases/AddOrderLineUseCase.js";
 import { DeleteOrderLineUseCase } from "../../application/use_cases/OrderUseCases/DeleteOrderLineUseCase.js";
 import { UpdateOrderUseCase } from "../../application/use_cases/OrderUseCases/UpdateOrderUseCase.js";
+import { console } from "node:inspector";
 
 
 export class OrderController {
@@ -122,8 +123,10 @@ export class OrderController {
             const validatedOrderLines = ValidateOrderLine(orderLines)
 
             if(!validatedOrderLines.success) throw new ValidationError(`Validation failed: ${validatedOrderLines.error.message}`);
-            
-            return await this.addOrderLineUseCase.execute(orderId, validatedOrderLines.data)
+
+            const order = await this.addOrderLineUseCase.execute(orderId, validatedOrderLines.data)
+
+            return order
         }
         catch(error) {
             console.log(error);
@@ -132,13 +135,16 @@ export class OrderController {
     }
 
     public async deleteOrderLine(orderId: number, lineNumber: number) {
+        console.log('Eliminando línea del pedido:', orderId, lineNumber);
         try {
+            console.log('Eliminando línea del pedido:', orderId, lineNumber);
             if(isNaN(orderId)){
                 throw new ValidationError("El número de Pedido debe ser válido");
             }
             if(isNaN(lineNumber)){
                 throw new ValidationError("El número de Línea debe ser válido");
             }
+            console.log('Eliminando línea del pedido:', orderId, lineNumber);
 
             return await this.deleteOrderLineUseCase.execute(orderId, lineNumber)
         }

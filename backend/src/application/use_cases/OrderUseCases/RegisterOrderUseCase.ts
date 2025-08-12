@@ -59,13 +59,18 @@ export class CUU02RegisterOrder {
             }
         }
         
-        let aux = false
-        order.items.forEach(async (item) => {
+        let aux = false;
+
+        for (const item of order.items) {
             const existItem = await this.productRepository.getByUniqueName(item.nombre)
-            if(!existItem) aux = true
-        })
-        if(!aux){
-            throw new NotFoundError(`No se encontro uno de los productos`);
+            if (!existItem) {
+                aux = true;
+                break; 
+            }
+        }
+
+        if (aux) {
+            throw new NotFoundError(`No se encontró uno de los productos`);
         }
         
         const createdOrder = await this.orderRepository.create(order, !qrtoken ? userId! : qrTokenData!.idMozo, !qrtoken ? tableNumberIsWaiter! : qrTokenData!.nroMesa)

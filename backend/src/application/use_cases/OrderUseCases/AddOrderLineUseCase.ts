@@ -1,3 +1,4 @@
+import { console } from "node:inspector";
 import { Order } from "../../../domain/entities/Order.js";
 import { OrderRepository } from "../../../infrastructure/database/repository/OrderRepository.js";
 import { ProductRepository } from "../../../infrastructure/database/repository/ProductRepository.js";
@@ -13,7 +14,7 @@ export class AddOrderLineUseCase {
 
     public async execute(orderId: number, orderLines: OrderLineSchema[]): Promise<Order>{
         const order = await this.orderRepository.getOne(orderId)
-        
+
         if (!order) {
             throw new NotFoundError("Pedido no encontrado");
         }
@@ -22,16 +23,19 @@ export class AddOrderLineUseCase {
             await this.orderRepository.changeState(order, "En_Preparacion")
         }
 
-                
-        let aux = false
-        orderLines.forEach(async (item) => {
+        let aux = false;
+
+        for (const item of orderLines) {
             const existItem = await this.productRepository.getByUniqueName(item.nombre)
-            if(!existItem) aux = true
-        })
-        if(!aux){
-            throw new NotFoundError(`No se encontro uno de los productos`);
+            if (!existItem) {
+                aux = true;
+                break; 
+            }
         }
-    
+
+        if (aux) {
+            throw new NotFoundError(`No se encontró uno de los productos`);
+        }
 
         const newOrder = await this.orderRepository.addOrderLines(orderId, orderLines)
 
