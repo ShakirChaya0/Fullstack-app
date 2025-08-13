@@ -2,7 +2,7 @@ import { Order } from "../../../domain/entities/Order.js";
 import { OrderRepository } from "../../../infrastructure/database/repository/OrderRepository.js";
 import { ProductRepository } from "../../../infrastructure/database/repository/ProductRepository.js";
 import { NotFoundError } from "../../../shared/exceptions/NotFoundError.js";
-import { OrderLineSchema} from "../../../shared/validators/orderZod.js";
+import { OrderLineSchema } from "../../../shared/validators/OrderZod.js";
 
 
 export class AddOrderLineUseCase {

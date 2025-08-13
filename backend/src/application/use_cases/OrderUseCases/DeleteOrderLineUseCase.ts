@@ -17,7 +17,6 @@ export class DeleteOrderLineUseCase {
         
         const existThisLine = order.orderLines.some(line => line.lineNumber === lineNumber);
 
-
         if(!existThisLine) {
             throw new NotFoundError("No existe la linea de pedido en el pedido")
         }
@@ -26,8 +25,8 @@ export class DeleteOrderLineUseCase {
              throw new BusinessError("No se puede eliminar la línea si no se encuentra en estado solicitado")
         }
 
-        const newOrder = await this.orderRepository.deleteOrderLine(orderId, lineNumber)
+        const deletedOrder = await this.orderRepository.deleteOrderLine(orderId, lineNumber)
 
-        return newOrder
+        return deletedOrder
     }
 }

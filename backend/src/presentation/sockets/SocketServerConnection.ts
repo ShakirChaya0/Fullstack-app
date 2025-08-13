@@ -24,11 +24,13 @@ export function SocketServerConnection(server: Http2Server) {
     ioConnection.on('connection', async (socket: AuthenticatedSocket) => {
       if (socket.user?.tipoUsuario === "SectorCocina") {
         socket.join("cocina");
+        // REVISAR: debería hacerse en otro lado
         const activeOrders = await orderController.getActiveOrders();
         socket.emit('activeOrders', activeOrders);
       }
       else if (socket.user?.tipoUsuario === "Mozo") {
         socket.join(`mozo:${socket.user.username}`);
+        // REVISAR: debería hacerse en otro lado
         const waiterOrders = await orderController.getOrdersByWaiter(socket.user.idUsuario);
         socket.emit('waiterOrders', waiterOrders);
       }

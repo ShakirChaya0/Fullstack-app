@@ -12,17 +12,19 @@ import { GetOrdersByWaiterUseCase } from "../../application/use_cases/OrderUseCa
 import { AddOrderLineUseCase } from "../../application/use_cases/OrderUseCases/AddOrderLineUseCase.js";
 import { DeleteOrderLineUseCase } from "../../application/use_cases/OrderUseCases/DeleteOrderLineUseCase.js";
 import { UpdateOrderUseCase } from "../../application/use_cases/OrderUseCases/UpdateOrderUseCase.js";
+import { OrderSocketService } from "../../application/services/OrderSocketService.js";
 
 
 export class OrderController {
     constructor(
-        private readonly cUU02RegisterOrder = new CUU02RegisterOrder(),
+        private readonly registerOrderUseCase = new CUU02RegisterOrder(),
         private readonly updateOrderLineStatusUseCase = new UpdateOrderLineUseCase(),
         private readonly getActiveOrdersUseCase = new GetActiveOrdersUseCase(),
         private readonly getOrdersByWaiterUseCase = new GetOrdersByWaiterUseCase(),
         private readonly addOrderLineUseCase = new AddOrderLineUseCase(),
         private readonly deleteOrderLineUseCase = new DeleteOrderLineUseCase(),
         private readonly updateOrderUseCase = new UpdateOrderUseCase(),
+        private readonly orderSocketService = new OrderSocketService()
     ){}
 
     public create = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
@@ -51,21 +53,23 @@ export class OrderController {
             const validatedOrder = ValidateOrder(order)
 
             if(!validatedOrder.success) throw new ValidationError(`Validation failed: ${validatedOrder.error.message}`);
-            const createdOrder = await this.cUU02RegisterOrder.execute(validatedOrder.data, user?.idUsuario, user?.tipoUsuario, qrToken, tableNumber ? +tableNumber : undefined);
+            const createdOrder = await this.registerOrderUseCase.execute(validatedOrder.data, user?.idUsuario, user?.tipoUsuario, qrToken, tableNumber ? +tableNumber : undefined);
 
-            if (qrToken) {
-                ioConnection.to("cocina")
-                    .emit("newOrder", createdOrder.toKitchenInfo());
-                ioConnection.to(`mozo:${createdOrder.waiter?.username}`).
-                    emit("newOrder", createdOrder.toWaiterInfo());
-                ioConnection.to(`comensal:${qrToken}`)
-                    .emit("newOrder", createdOrder.toClientInfo());
-            } else {
-                ioConnection.to("cocina")
-                    .emit("newOrder", createdOrder.toKitchenInfo());
-                ioConnection.to(`mozo:${createdOrder.waiter?.username}`)
-                    .emit("newOrder", createdOrder.toWaiterInfo());
-            }
+            await this.orderSocketService.emitOrderEvent("newOrder", createdOrder);
+
+            // if (qrToken) {
+            //     ioConnection.to("cocina")
+            //         .emit("newOrder", createdOrder.toKitchenInfo());
+            //     ioConnection.to(`mozo:${createdOrder.waiter?.username}`).
+            //         emit("newOrder", createdOrder.toWaiterInfo());
+            //     ioConnection.to(`comensal:${qrToken}`)
+            //         .emit("newOrder", createdOrder.toClientInfo());
+            // } else {
+            //     ioConnection.to("cocina")
+            //         .emit("newOrder", createdOrder.toKitchenInfo());
+            //     ioConnection.to(`mozo:${createdOrder.waiter?.username}`)
+            //         .emit("newOrder", createdOrder.toWaiterInfo());
+            // }
 
             res.status(201).send("Orden creada correctamente");
         } 
@@ -74,93 +78,51 @@ export class OrderController {
         }
     }
 
-    public async updateOrderLineStatus(idPedido: number, nroLinea: number, estadoLP: OrderLineStatus){ 
-        try {
-            if(isNaN(nroLinea)){
-                throw new ValidationError("El número de Línea debe ser válido");
-            }
-            if(isNaN(idPedido)){
-                throw new ValidationError("El número de Pedido debe ser válido");
-            }
-
-            return await this.updateOrderLineStatusUseCase.execute(idPedido, nroLinea, estadoLP)
-        }
-        catch(error) {
-            throw error
-        }
-    }
-
+    // REVISAR: quizá se puede mover a otro lado
     public async getActiveOrders() {
-        try {
-            const orders = await this.getActiveOrdersUseCase.execute();
-            return orders.map(o => { return o.toKitchenInfo() })
-        }
-        catch(error) {
-            console.log(error);
-            return
-        }
+        const orders = await this.getActiveOrdersUseCase.execute();
+        return orders.map(o => { return o.toKitchenInfo() });
     }
 
+    // REVISAR: quizá se puede mover a otro lado
     public async getOrdersByWaiter(waiterId: string) {
-        try {
-            const orders = await this.getOrdersByWaiterUseCase.execute(waiterId);
-            return orders.map(o => { return o.toWaiterInfo() })
-        } 
-        catch(error) {
-            throw error
-        }
+        const orders = await this.getOrdersByWaiterUseCase.execute(waiterId);
+        return orders.map(o => { return o.toWaiterInfo() });
+    }
+
+    public async updateOrderLineStatus(idPedido: number, nroLinea: number, estadoLP: OrderLineStatus) { 
+        if(isNaN(nroLinea)) throw new ValidationError("El número de Línea debe ser válido");
+        if(isNaN(idPedido)) throw new ValidationError("El número de Pedido debe ser válido");
+
+        const order =  await this.updateOrderLineStatusUseCase.execute(idPedido, nroLinea, estadoLP);
+        await this.orderSocketService.emitOrderEvent("updatedOrderLineStatus", order);
     }
 
     public async addOrderLine(orderId: number, orderLines: OrderLineSchema[]) {
-        try {
-            if(isNaN(orderId)){
-                throw new ValidationError("El número de Pedido debe ser válido");
-            }
+        if(isNaN(orderId)) throw new ValidationError("El número de Pedido debe ser válido");
 
-            const validatedOrderLines = ValidateOrderLine(orderLines)
+        const validatedOrderLines = ValidateOrderLine(orderLines);
+        if(!validatedOrderLines.success) throw new ValidationError(`Validation failed: ${validatedOrderLines.error.message}`);
 
-            if(!validatedOrderLines.success) throw new ValidationError(`Validation failed: ${validatedOrderLines.error.message}`);
-
-            const order = await this.addOrderLineUseCase.execute(orderId, validatedOrderLines.data)
-
-            return order
-        }
-        catch(error) {
-            throw error
-        }
+        const order = await this.addOrderLineUseCase.execute(orderId, validatedOrderLines.data);
+        await this.orderSocketService.emitOrderEvent("addedOrderLine", order);
     }
 
     public async deleteOrderLine(orderId: number, lineNumber: number) {
-        try {
-            if(isNaN(orderId)){
-                throw new ValidationError("El número de Pedido debe ser válido");
-            }
-            if(isNaN(lineNumber)){
-                throw new ValidationError("El número de Línea debe ser válido");
-            }
-
-            const deletedOrderLine =  await this.deleteOrderLineUseCase.execute(orderId, lineNumber)
-
-            return deletedOrderLine
-        }
-        catch(error) {
-            throw error
-        }
+        if(isNaN(orderId)) throw new ValidationError("El número de Pedido debe ser válido");
+        if(isNaN(lineNumber)) throw new ValidationError("El número de Línea debe ser válido");
+        
+        const deletedOrder =  await this.deleteOrderLineUseCase.execute(orderId, lineNumber);
+        await this.orderSocketService.emitOrderEvent("deletedOrderLine", deletedOrder)
     }
 
     public async updateOrder(orderId: number, lineNumbers: number[] | undefined, data: Partial<PartialOrderMinimal>) {
-        try {
-            if(isNaN(orderId)){
-                throw new ValidationError("El número de Pedido debe ser válido");
-            }
+        if(isNaN(orderId)) throw new ValidationError("El número de Pedido debe ser válido");
+    
+        const validatedOrder = ValidateOrderPartialMinimal(data);
+        if(!validatedOrder.success) throw new ValidationError(`Validation failed: ${validatedOrder.error.message}`);
 
-            const validatedOrder = ValidateOrderPartialMinimal(data)
-
-            if(!validatedOrder.success) throw new ValidationError(`Validation failed: ${validatedOrder.error.message}`);
-            return await this.updateOrderUseCase.execute(orderId, lineNumbers, validatedOrder.data)
-        }
-        catch(error) {
-            throw error
-        }
+        const updatedOrder = await this.updateOrderUseCase.execute(orderId, lineNumbers, validatedOrder.data);
+        await this.orderSocketService.emitOrderEvent("modifiedOrderLine", updatedOrder);
     }
 }

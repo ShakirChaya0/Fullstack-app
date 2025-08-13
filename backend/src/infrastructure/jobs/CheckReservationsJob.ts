@@ -5,6 +5,11 @@ export function runReservationCheckJob() {
     //Esta programado para cada 5 minutos
     cron.schedule('*/5 * * * *', async () => {
         const checkExpiredReservations = new CheckExpiredReservations();
-        await checkExpiredReservations.execute();
+
+        try {
+            await checkExpiredReservations.execute();
+        } catch (error) {
+            console.log(error);
+        }
     });
 }

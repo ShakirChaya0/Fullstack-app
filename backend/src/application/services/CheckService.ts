@@ -33,7 +33,7 @@ export class CheckService {
             information.direccionRestaurante,
             information.razonSocial,
             information.telefonoContacto,
-            order.table!.nroMesa,
+            order.table!.tableNum,
             new Date(),
             order.waiter!.nombre,
             totalCubiertos,

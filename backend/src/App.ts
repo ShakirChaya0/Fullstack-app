@@ -86,6 +86,6 @@ app.use(ErrorHandler)
 
 server.listen(PORT, () => {
     console.log(`Server running on port http://localhost:${PORT}`)
-
+    
     runReservationCheckJob();
 })

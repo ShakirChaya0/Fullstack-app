@@ -29,15 +29,14 @@ export class UpdateOrderUseCase {
         if (order.status != "Solicitado" && data.observacion) {
             throw new BusinessError(`No se puede modificar la observación. El pedido ya se encuentra en preparación`)
         }
-        
 
         if (order.status != "En_Preparacion" && order.status != "Solicitado" && order.status == "Completado" && data.cantidadCubiertos) {
             throw new BusinessError(`No se puede modificar la cantidad de comensales. El pedido se encuentra pagado o por pagar`)
         }
 
-        const newOrder = await this.orderRepository.modifyOrder(orderId, lineNumbers, data)
+        const updatedOrder = await this.orderRepository.modifyOrder(orderId, lineNumbers, data)
 
-        return newOrder
+        return updatedOrder
     }
 
 }

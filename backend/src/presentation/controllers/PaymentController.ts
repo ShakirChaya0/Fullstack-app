@@ -12,6 +12,7 @@ import { PayWithMercadoPagoUseCase } from "../../application/use_cases/OrderUseC
 import { mercadoPagoClient } from "../../infrastructure/config/MercadoPago.js";
 import { Payment } from "mercadopago";
 import { ioConnection } from "./../sockets/SocketServerConnection.js"
+import { OrderSocketService } from "../../application/services/OrderSocketService.js";
 
 export class PaymentController {
     constructor(
@@ -22,7 +23,8 @@ export class PaymentController {
         private readonly generateCheckUseCase = new GenerateCheckUseCase(),
         private readonly registerPaymentUseCase = new RegisterPaymentUseCase(),
         private readonly setToWaitingForChargeUseCase = new SetToWaitingForChargeUseCase(),
-        private readonly payWithMPUseCase = new PayWithMercadoPagoUseCase()
+        private readonly payWithMPUseCase = new PayWithMercadoPagoUseCase(),
+        private readonly orderSocketService = new OrderSocketService()
     ) {}
 
     public async getAll(req: Request, res: Response, next: NextFunction) {
@@ -89,9 +91,11 @@ export class PaymentController {
             
             const { order, check } = await this.generateCheckUseCase.execute(+orderId);
 
-            ioConnection.to("cocina")
-                .to(`mozo:${order.waiter?.username}`)
-                .emit("newOrder", order);
+            await this.orderSocketService.emitOrderEvent("updatedOrderStatus", order);
+
+            // ioConnection.to("cocina")
+            //     .to(`mozo:${order.waiter?.username}`)
+            //     .emit("newOrder", order);
 
             res.status(200).json(check);
         }
@@ -120,9 +124,11 @@ export class PaymentController {
 
             const order = await this.setToWaitingForChargeUseCase.execute(+orderId);
 
-            ioConnection.to("cocina")
-                .to(`mozo:${order.waiter?.username}`)
-                .emit("newOrder", order);
+            await this.orderSocketService.emitOrderEvent("updatedOrderStatus", order);
+
+            // ioConnection.to("cocina")
+            //     .to(`mozo:${order.waiter?.username}`)
+            //     .emit("newOrder", order);
 
             res.status(204).send();
         }
@@ -150,10 +156,12 @@ export class PaymentController {
     
                 order = await this.registerPaymentUseCase.execute(+idPedido, metodoPago, null);
             }
+
+            await this.orderSocketService.emitOrderEvent("updatedOrderStatus", order);
             
-            ioConnection.to("cocina")
-                .to(`mozo:${order.waiter?.username}`)
-                .emit("newOrder", order);
+            // ioConnection.to("cocina")
+            //     .to(`mozo:${order.waiter?.username}`)
+            //     .emit("newOrder", order);
 
             res.status(204).send();
         }
