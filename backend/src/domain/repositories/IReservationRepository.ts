@@ -1,6 +1,7 @@
-import { Reservation, StateReservation } from '../entities/Reservation.js';
+import { Reservation } from '../entities/Reservation.js';
 import { SchemaReservation } from '../../shared/validators/ReservationZod.js';
 import { Table } from '../entities/Table.js';
+import { StateReservation } from '../../shared/types/SharedTypes.js';
 
 export interface IReservationRepository {
   getExistingReservation(clientId: string, reservation: SchemaReservation): Promise<Reservation | null>;

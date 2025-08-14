@@ -3,19 +3,19 @@ import { GetClientUseCase } from "../../application/use_cases/ClientUseCases/Get
 import { ValidationError } from "../../shared/exceptions/ValidationError.js";
 import { GetClientByIdUser } from "../../application/use_cases/ClientUseCases/GetClientByIdUser.js";
 import { validateClient, validateClientPartial } from "../../shared/validators/ClientZod.js";
-import { GetClientByIdUserName } from "../../application/use_cases/ClientUseCases/GetClientByNameAndLastname.js";
 import { RegisterClientUseCase } from "../../application/use_cases/ClientUseCases/RegisterClientUseCase.js";
 import { UpdateClientUseCase } from "../../application/use_cases/ClientUseCases/UpdateClientUseCase.js";
-
+import { GetClientByUserNameUseCase } from "../../application/use_cases/ClientUseCases/GetClientByUsernameUseCase.js";
 
 export class ClientController {
     constructor(
-        private readonly getClientUseCase = new GetClientUseCase, 
-        private readonly getClientByIdUser = new GetClientByIdUser,
-        private readonly getClientByUserName = new GetClientByIdUserName, 
-        private readonly registerClientUseCase = new RegisterClientUseCase, 
-        private readonly updateClientUseCase = new UpdateClientUseCase
+        private readonly getClientUseCase = new GetClientUseCase(), 
+        private readonly getClientByIdUser = new GetClientByIdUser(),
+        private readonly getClientByUserName = new GetClientByUserNameUseCase(), 
+        private readonly registerClientUseCase = new RegisterClientUseCase(), 
+        private readonly updateClientUseCase = new UpdateClientUseCase()
     ){}
+
     public async getAll(req:Request, res:Response, next: NextFunction){
         try {
             const clients = await this.getClientUseCase.execute();
@@ -61,7 +61,7 @@ export class ClientController {
         }
     }
 
-    public async getClientByUsername(req:Request, res:Response, next: NextFunction) {
+    public async getClientByUsername(req: Request, res: Response, next: NextFunction) {
         try {
             const userN = req.params.nombreUsuario;
             if(!userN) {
@@ -69,13 +69,13 @@ export class ClientController {
             }
 
             const clientByUserName = await this.getClientByUserName.execute(userN);
-                const filteredClient = {
-                    nombreUsuario:  clientByUserName.userName, 
-                    email: clientByUserName.email, 
-                    nombre: clientByUserName.name, 
-                    apellido: clientByUserName.lastname, 
-                    telefono: clientByUserName.phone
-                }
+            const filteredClient = {
+                nombreUsuario:  clientByUserName.userName, 
+                email: clientByUserName.email, 
+                nombre: clientByUserName.name, 
+                apellido: clientByUserName.lastname, 
+                telefono: clientByUserName.phone
+            }
             res.status(201).json(filteredClient);
         } catch(error) {
             next(error);
@@ -128,7 +128,6 @@ export class ClientController {
             }
             
             res.status(201).json(filteredClient);
-
         } 
         catch (error) {
             next(error); 

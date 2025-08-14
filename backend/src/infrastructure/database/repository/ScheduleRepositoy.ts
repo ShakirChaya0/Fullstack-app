@@ -20,9 +20,7 @@ export class ScheduleRepositoy implements IScheduleRepository{
             where: { diaSemana: idHorario}
         })
         
-        if (!horario) {
-            return null;
-        }
+        if (!horario) return null;
 
         return new Schedule(
             horario.diaSemana,

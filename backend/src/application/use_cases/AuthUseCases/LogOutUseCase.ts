@@ -1,6 +1,5 @@
 import { RefreshTokenRepository } from "../../../infrastructure/database/repository/RefreshTokenRepository.js";
 
-
 export class LogOutUseCase {
     constructor(
         private readonly refreshTokenRepository = new RefreshTokenRepository()

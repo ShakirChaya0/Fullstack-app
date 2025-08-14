@@ -10,5 +10,6 @@ export const ErrorHandler: ErrorRequestHandler = (error: PossibleError, req: Req
     }
     
     // Si el error no es ninguno de los anteriores, se considera un error interno del servidor
+    // CAMBIAR A SERVER ERROR
     else res.status(500).json(error);
 }

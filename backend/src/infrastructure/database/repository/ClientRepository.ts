@@ -8,9 +8,8 @@ import { ServiceError } from "../../../shared/exceptions/ServiceError.js";
 import { ClientState } from "../../../domain/entities/ClientState.js";
 import { Reservation } from "../../../domain/entities/Reservation.js";
 import { Table } from "../../../domain/entities/Table.js";
-import { ClientPublicInfo } from "../../../domain/repositories/IClientPublicInfo.js";
+import { ClientPublicInfo } from "../../../domain/interfaces/ClientPublicInfo.js";
 import { IClienteRepository } from "../../../domain/repositories/IClientRepository.js";
-
 
 type ClientWithUsuario = Prisma.ClientesGetPayload<{
     include: {
@@ -29,20 +28,18 @@ type ClientWithUsuario = Prisma.ClientesGetPayload<{
 }>;
 
 export class ClientRepository implements IClienteRepository {
-    public async getAllClient() : Promise<Client[]> {
+    public async getAllClient(): Promise<Client[]> {
         const clients = await prisma.clientes.findMany({
             include: {
                 Usuarios: true,
                 EstadosCliente: true,
                 Reserva: {
                     include: {
-                        Mesas_Reservas: 
-                            {
-                                include:
-                                    {
-                                        Mesa:true
-                                    }
+                        Mesas_Reservas: {
+                            include: {
+                                Mesa:true
                             }
+                        }
                     }
                 }
             }
@@ -50,7 +47,7 @@ export class ClientRepository implements IClienteRepository {
         return clients.map((client) => { return this.toDomainEntity(client) });
     }
 
-    async getClientByidUser (id: string): Promise <Client | null> {
+    async getClientByidUser(id: string): Promise<Client | null> {
         const client = await prisma.clientes.findUnique({
             where: {
                 idCliente: id
@@ -75,47 +72,42 @@ export class ClientRepository implements IClienteRepository {
             }
         });
 
-        if(!client) {
-            return null; 
-        }
+        if(!client) return null; 
 
         return this.toDomainEntity(client);
     }
 
-    public async getClientByNameAndLastname(name: string, lastname: string) : Promise<Client | null> {
+    public async getClientByUsername(username: string): Promise<Client | null> {
         const clientFound = await prisma.clientes.findFirst({
-                where: {
-                    nombre: name,
-                    apellido: lastname,
-                },
-                include: {
-                    Usuarios: true,
-                    EstadosCliente: true,
+            where: {
+                Usuarios: { nombreUsuario: username }
+            },
+            include: {
+                Usuarios: true,
+                EstadosCliente: true,
                 Reserva: {
-                        where: {
-                            fechaReserva: {
-                                gte: new Date()
-                            },
+                    where: {
+                        fechaReserva: {
+                            gte: new Date()
                         },
-                        include: {
-                            Mesas_Reservas: {
-                                include: {
-                                    Mesa: true,
-                                },
+                    },
+                    include: {
+                        Mesas_Reservas: {
+                            include: {
+                                Mesa: true,
                             },
                         },
                     },
                 },
-});
+            },
+        });
 
-        if(!clientFound) {
-            return null; 
-        }
+        if (!clientFound) return null; 
         
         return this.toDomainEntity(clientFound);
     } 
     
-    async createClient (data:SchemaCliente) :Promise <Client> {
+    async createClient(data: SchemaCliente): Promise<Client> {
         try {
             const newClient = await prisma.clientes.create({
                 data: {
@@ -133,20 +125,18 @@ export class ClientRepository implements IClienteRepository {
                     }
                 },
                 include: {
-                Usuarios: true,
-                EstadosCliente: true,
-                Reserva: {
-                    include: {
-                        Mesas_Reservas: 
-                            {
-                                include:
-                                    {
-                                        Mesa:true
-                                    }
+                    Usuarios: true,
+                    EstadosCliente: true,
+                    Reserva: {
+                        include: {
+                            Mesas_Reservas: {
+                                include: {
+                                    Mesa:true
+                                }
                             }
+                        }
                     }
                 }
-            }
             });
             return this.toDomainEntity(newClient);
         }
@@ -173,13 +163,11 @@ export class ClientRepository implements IClienteRepository {
                 EstadosCliente: true,
                 Reserva: {
                     include: {
-                        Mesas_Reservas: 
-                            {
-                                include:
-                                    {
-                                        Mesa:true
-                                    }
+                        Mesas_Reservas: {
+                            include: {
+                                Mesa:true
                             }
+                        }
                     }
                 }
             }
@@ -188,34 +176,31 @@ export class ClientRepository implements IClienteRepository {
     }
 
 
-    public async getClientByOtherDatas(clientPublicInfo: ClientPublicInfo) : Promise<Client | null> {
+    public async getClientByOtherDatas(clientPublicInfo: ClientPublicInfo): Promise<Client | null> {
         const client = await prisma.clientes.findFirst({
             where: {
-                nombre:  clientPublicInfo.nombre, 
+                nombre: clientPublicInfo.nombre, 
                 apellido: clientPublicInfo.apellido, 
                 telefono: clientPublicInfo.telefono
             }, 
             include: {
-                    Usuarios: true , 
-                    EstadosCliente: true,
-                        Reserva: {
-                            include : {
-                                Mesas_Reservas: {
-                                    include: {
-                                        Mesa:true
-                                    }
+                Usuarios: true , 
+                EstadosCliente: true,
+                    Reserva: {
+                        include : {
+                            Mesas_Reservas: {
+                                include: {
+                                    Mesa:true
                                 }
                             }
                         }
+                    }
             }
         }); 
 
-        if(!client) {
-            return null
-        }
+        if(!client) return null;
 
         return this.toDomainEntity(client);
-
     }
 
     private toDomainEntity(client: ClientWithUsuario): Client {

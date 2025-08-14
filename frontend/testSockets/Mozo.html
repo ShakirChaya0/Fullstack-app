@@ -14,7 +14,15 @@
         }
     });
 
-    ws.on('updatedLine', (data) => {
+    ws.on('errorEvent', (data) => {
+        console.log(data)
+    })
+
+    ws.on('updatedOrderStatus', (data) => {
+        console.log(data)
+    })
+
+    ws.on('updatedOrderLineStatus', (data) => {
         console.log(data)
     })
 

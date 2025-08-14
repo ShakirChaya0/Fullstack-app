@@ -1,14 +1,14 @@
 import prisma from "../prisma/PrismaClientConnection.js"
 import { Prisma } from "@prisma/client";
 import { IPaymentRepository } from "../../../domain/repositories/IPaymentRepository.js";
-import { Payment, PaymentMethod } from "../../../domain/entities/Payment.js";
+import { Payment } from "../../../domain/entities/Payment.js";
 import { OrderLine } from "../../../domain/entities/OrderLine.js";
 import { ProductoVO } from "../../../domain/value-objects/ProductVO.js";
-import { Order, OrderStatus } from "../../../domain/entities/Order.js";
-import { FoodType } from "../../../domain/entities/Product.js";
+import { Order } from "../../../domain/entities/Order.js";
 import { Waiter } from "../../../domain/entities/Waiter.js";
 import { Table } from "../../../domain/entities/Table.js";
 import { UUID } from "crypto";
+import { FoodType, OrderStatus, PaymentMethod } from "../../../shared/types/SharedTypes.js";
 
 type PaymentWithOrder = Prisma.PagosGetPayload<{
     include: { 

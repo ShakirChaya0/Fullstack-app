@@ -79,7 +79,6 @@ export class SuggestionsController {
             if (isNaN(date.getTime())) throw new ValidationError("Fecha inválida");
 
             const suggestion = await this.getOneSuggestionUseCase.execute(+idProducto, date);
-            if (!suggestion) throw new NotFoundError("Sugerencia no encontrada");
             res.json(suggestion);
         }
         catch (error) {

@@ -2,8 +2,6 @@ import { Response, NextFunction } from "express";
 import { AuthenticatedRequest } from "./AuthMiddleware.js";
 import { JWTService } from "../../application/services/JWTService.js";
 import { JwtPayloadInterface } from "../../domain/interfaces/JwtPayloadInterface.js";
-import { UnauthorizedError } from "../../shared/exceptions/UnauthorizedError.js";
-
 
 export const OptionalAuthMiddleware = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
     const userJWT = req.headers.authorization?.split(' ')[1];

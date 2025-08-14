@@ -5,7 +5,7 @@ export function MesaRouter (){
     const tableRouter = Router(); 
     const tableController = new TableController; 
 
-    tableRouter.get('/', (req, res, next)=> { tableController.getAll(req, res, next) }); 
+    tableRouter.get('/', (req, res, next) => { tableController.getAll(req, res, next) }); 
 
     tableRouter.get('/capacidad/:capacity', (req, res, next)=> { tableController.getByCapacity(req, res, next) }); 
 

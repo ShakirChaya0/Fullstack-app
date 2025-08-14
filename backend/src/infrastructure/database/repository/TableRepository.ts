@@ -5,7 +5,7 @@ import { ITableRepository } from "../../../domain/repositories/ITableRepository.
 
 export class TableRepository implements ITableRepository {
     
-    public async getAll () :Promise<Table[]> {
+    public async getAll(): Promise<Table[]> {
         const tables = await prisma.mesa.findMany();
             return tables.map(table => new Table (
                 table.nroMesa, 
@@ -15,14 +15,12 @@ export class TableRepository implements ITableRepository {
         )
     }
 
-    public async getByNumTable (numTable: number) : Promise<Table | null> {
+    public async getByNumTable(numTable: number): Promise<Table | null> {
         const table = await prisma.mesa.findUnique({
-            where: {nroMesa: numTable}
+            where: { nroMesa: numTable }
         }); 
 
-        if(!table) {
-            return null;
-        }
+        if(!table) return null;
 
         return new Table (
             table.nroMesa, 
@@ -31,7 +29,7 @@ export class TableRepository implements ITableRepository {
         );
     }
 
-    public async getTableByCapacity (capa:number) :Promise<Table[] | null> {
+    public async getTableByCapacity(capa:number): Promise<Table[] | null> {
         const tableCapacity = await prisma.mesa.findMany({
             where: {
                 capacidad: {
@@ -43,15 +41,14 @@ export class TableRepository implements ITableRepository {
                 capacidad: 'asc'
             }
         });
-        if(tableCapacity !== null) {
-            return tableCapacity.map(table => new Table (
-                table.nroMesa,
-                table.capacidad,
-                table.estado 
-            ))
-        } else {
-            return null;
-        }
+
+        if(tableCapacity.length === 0) return null;
+
+        return tableCapacity.map(table => new Table (
+            table.nroMesa,
+            table.capacidad,
+            table.estado 
+        ))
     }
 
     public async createTable(table: schemaTable): Promise<Table> {
@@ -61,6 +58,7 @@ export class TableRepository implements ITableRepository {
                 estado: 'Libre'
             }
         });
+
         return new Table(newTable.nroMesa,newTable.capacidad,newTable.estado);
     } 
 
@@ -85,7 +83,7 @@ export class TableRepository implements ITableRepository {
         return updatedTables;
     }
     
-    public async updateTableFree(tables:Table[]) : Promise<Table[]> {
+    public async updateTableFree(tables:Table[]): Promise<Table[]> {
         const updatedTables: Table[] = [];
 
         for (const table of tables) {
@@ -102,6 +100,7 @@ export class TableRepository implements ITableRepository {
                 updated.estado
             ));
         }
+
         return updatedTables;
     }
 
@@ -112,31 +111,28 @@ export class TableRepository implements ITableRepository {
     }
 
     public async getAvailableTables(reservationDate: Date, reservationTime: string): Promise<Table[]> {
-
         const [hours, minutes] = reservationTime.split(':').map(Number);
         const timeAsDate = new Date(0, 0, 0, hours, minutes);
 
         const tables = await prisma.mesa.findMany({
             where: {
-            Mesas_Reservas: {
-                none: {
-                Reserva: {
-                    fechaReserva: reservationDate ,
-                    horarioReserva: timeAsDate ,
-                    estado: { in: ["Realizada"] }
-
+                Mesas_Reservas: {
+                    none: {
+                        Reserva: {
+                            fechaReserva: reservationDate ,
+                            horarioReserva: timeAsDate ,
+                            estado: { in: ["Realizada"] }
+                        }
+                    }
                 }
-                }
-            }
             },
             orderBy: { capacidad: "desc" },
         });
 
         return tables.map(table => new Table (
-                table.nroMesa,
-                table.capacidad,
-                table.estado 
-            ))
+            table.nroMesa,
+            table.capacidad,
+            table.estado 
+        ));
     }
-
 }

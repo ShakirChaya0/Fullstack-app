@@ -1,5 +1,6 @@
-import { Payment, PaymentMethod } from "../../../domain/entities/Payment.js";
+import { Payment } from "../../../domain/entities/Payment.js";
 import { PaymentRepository } from "../../../infrastructure/database/repository/PaymentRepository.js";
+import { PaymentMethod } from "../../../shared/types/SharedTypes.js";
 
 export class GetByPaymentMethod {
     constructor(

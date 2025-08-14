@@ -6,7 +6,7 @@ import { ServiceError } from "../../../shared/exceptions/ServiceError.js";
 
 export class RefreshTokenRepository implements IRefreshTokenRepository {
     async saveRefreshedToken(userId: string, refreshToken: string, endDate: Date): Promise<void> {
-        try{
+        try {
             await prisma.refreshTokens.create({
                 data: {
                     idToken: crypto.randomUUID() as  UUID,
@@ -16,7 +16,7 @@ export class RefreshTokenRepository implements IRefreshTokenRepository {
                     fechaExpiracion: endDate
                 }
             });
-        }catch (error: any) { 
+        } catch (error: any) { 
             if (error.code === 'P2002' && error.meta?.target?.includes('token')) {
                 throw new ConflictError("El token de refresco ya existe para este usuario");
             }

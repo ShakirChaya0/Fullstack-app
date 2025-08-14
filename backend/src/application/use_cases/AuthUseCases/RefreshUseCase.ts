@@ -1,9 +1,9 @@
-import { TipoUsuario_Type } from "@prisma/client";
 import { UserRepository } from "../../../infrastructure/database/repository/UserRepository.js";
 import { JWTService } from "../../services/JWTService.js";
 import { NotFoundError } from "../../../shared/exceptions/NotFoundError.js";
 import { RefreshTokenRepository } from "../../../infrastructure/database/repository/RefreshTokenRepository.js";
 import { UnauthorizedError } from "../../../shared/exceptions/UnauthorizedError.js";
+import { UserType } from "../../../shared/types/SharedTypes.js";
 
 export class RefreshUseCase {
     constructor(
@@ -16,9 +16,7 @@ export class RefreshUseCase {
         try{
             const payload = this.jwtService.verifyRefreshToken(refreshToken);
             
-            if (typeof payload === 'string') {
-                throw new UnauthorizedError("Token inválido o expirado");
-            }
+            if (typeof payload === 'string') throw new UnauthorizedError("Token inválido o expirado");
 
             const user = await this.userRepository.findById(payload.idUsuario);
 
@@ -29,14 +27,14 @@ export class RefreshUseCase {
             const newAccessToken = this.jwtService.generateAccessToken({
                 idUsuario: user.userId,
                 email: user.email,
-                tipoUsuario: user.userType as TipoUsuario_Type,
+                tipoUsuario: user.userType as UserType,
                 username: user.userName
             });
 
             const newRefreshToken = this.jwtService.generateRefreshToken({
                 idUsuario: user.userId,
                 email: user.email,
-                tipoUsuario: user.userType as TipoUsuario_Type,
+                tipoUsuario: user.userType as UserType,
                 username: user.userName
             });
 

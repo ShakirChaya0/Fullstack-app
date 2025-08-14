@@ -1,5 +1,5 @@
+import { OrderLineStatus } from "../../shared/types/SharedTypes.js";
 import { ProductoVO } from "../value-objects/ProductVO.js";
-export type OrderLineStatus = 'Pendiente' | 'En_Preparacion' | 'Terminada';
 
 export class OrderLine {
     constructor (

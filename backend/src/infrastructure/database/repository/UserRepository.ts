@@ -4,11 +4,12 @@ import { User } from "../../../domain/entities/User.js";
 import { UUID } from "crypto";
 import { IUserRepository } from "../../../domain/repositories/IUserRepository.js";
 
-export class UserRepository implements IUserRepository{
+export class UserRepository implements IUserRepository {
     async findByEmail(email: string): Promise<User | null> {
         const user = await prisma.usuarios.findUnique({
             where: { email }
         });
+
         return user ? this.toDomainEntity(user) : null;
     }
 
@@ -16,6 +17,7 @@ export class UserRepository implements IUserRepository{
         const user = await prisma.usuarios.findUnique({
             where: { idUsuario: id }
         });
+
         return user ? this.toDomainEntity(user) : null;
     }
 

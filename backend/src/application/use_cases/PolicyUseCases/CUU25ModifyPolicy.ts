@@ -1,7 +1,6 @@
+import { Policy } from '../../../domain/entities/Policy.js';
 import { PolicyRepository } from '../../../infrastructure/database/repository/PolicyRepository.js'
-import { PoliticasRestaurante } from '@prisma/client'; // cambiar
 import { PartialSchemaPolicy } from '../../../shared/validators/PolicyZod.js';
-
 
 export class CUU25ModifyPolicys {
   constructor(
@@ -9,7 +8,7 @@ export class CUU25ModifyPolicys {
   ){}
 
 
-  public async execute(data: PartialSchemaPolicy): Promise<PoliticasRestaurante> {
+  public async execute(data: PartialSchemaPolicy): Promise<Policy> {
         const existingPolitic = await this.policyRepository.getPolicy();
 
         const updatedPolitic = {

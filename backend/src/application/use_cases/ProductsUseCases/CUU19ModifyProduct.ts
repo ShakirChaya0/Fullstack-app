@@ -1,8 +1,10 @@
-import { Drink, Food, Product } from "../../../domain/entities/Product.js";
+import { Product } from "../../../domain/entities/Product.js";
 import { ProductRepository } from "../../../infrastructure/database/repository/ProductRepository.js";
 import { PartialSchemaProductos } from '../../../shared/validators/ProductZod.js';
 import { NotFoundError } from "../../../shared/exceptions/NotFoundError.js";
 import { ConflictError } from "../../../shared/exceptions/ConflictError.js";
+import { Food } from "../../../domain/entities/Food.js";
+import { Drink } from "../../../domain/entities/Drink.js";
 
 export class CUU19ModifyProduct {
   constructor(
@@ -42,7 +44,6 @@ export class CUU19ModifyProduct {
       }
     }
 
-    
     const productoDatabase = await this.productRepository.update(updatedProduct, idProducto);
     return productoDatabase;
   }

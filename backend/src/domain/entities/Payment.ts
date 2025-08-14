@@ -1,6 +1,5 @@
+import { PaymentMethod } from "../../shared/types/SharedTypes.js";
 import { Order } from "./Order.js";
-
-export type PaymentMethod = "MercadoPago" | "Efectivo" | "Debito" | "Credito";
 
 export class Payment {
     constructor (
@@ -17,15 +16,7 @@ export class Payment {
     get paymentDate(): Date { return this._paymentDate };
     get transactionId(): string | undefined { return this._transactionId };
 
-    set paymentMethod(method: PaymentMethod) {
-        this._paymentMethod = method;
-    }
-    
-    set paymentDate(date: Date) {
-        this._paymentDate = date;
-    }
-
-    set transactionId(id: string) {
-        this._transactionId = id;
-    }
+    set paymentMethod(method: PaymentMethod) { this._paymentMethod = method }
+    set paymentDate(date: Date) { this._paymentDate = date }
+    set transactionId(id: string) { this._transactionId = id }
 }

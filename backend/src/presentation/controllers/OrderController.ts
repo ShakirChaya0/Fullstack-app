@@ -5,7 +5,6 @@ import { ValidationError } from "../../shared/exceptions/ValidationError.js";
 import { CUU02RegisterOrder } from "../../application/use_cases/OrderUseCases/RegisterOrderUseCase.js";
 import { AuthenticatedRequest } from "../middlewares/AuthMiddleware.js";
 import { UnauthorizedError } from "../../shared/exceptions/UnauthorizedError.js";
-import { OrderLineStatus } from "../../domain/entities/OrderLine.js";
 import { UpdateOrderLineUseCase } from "../../application/use_cases/OrderUseCases/UpdateOrderLineStatusUseCase.js";
 import { GetActiveOrdersUseCase } from "../../application/use_cases/OrderUseCases/GetActiveOrdersUseCase.js";
 import { GetOrdersByWaiterUseCase } from "../../application/use_cases/OrderUseCases/GetOrdersByWaiterUseCase.js";
@@ -13,6 +12,7 @@ import { AddOrderLineUseCase } from "../../application/use_cases/OrderUseCases/A
 import { DeleteOrderLineUseCase } from "../../application/use_cases/OrderUseCases/DeleteOrderLineUseCase.js";
 import { UpdateOrderUseCase } from "../../application/use_cases/OrderUseCases/UpdateOrderUseCase.js";
 import { OrderSocketService } from "../../application/services/OrderSocketService.js";
+import { OrderLineStatus } from "../../shared/types/SharedTypes.js";
 
 
 export class OrderController {

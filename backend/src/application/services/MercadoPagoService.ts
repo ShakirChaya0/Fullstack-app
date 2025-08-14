@@ -11,7 +11,7 @@ type PaymentMethod = {
     default_installments?: number;
 };
 
-type preferenceType = {
+type PreferenceType = {
     items: Items[],
     payment_methods: PaymentMethod,
     back_urls: {
@@ -24,9 +24,8 @@ type preferenceType = {
     notification_url: string
 }
 
-
 export class MercadoPagoService{
-    public async createPreference (data: preferenceType): Promise<PreferenceResponse> {
+    public async createPreference (data: PreferenceType): Promise<PreferenceResponse> {
         const draft = new Preference(mercadoPagoClient)
         const preference = await draft.create({ body: data});
         return preference;

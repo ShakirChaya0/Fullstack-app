@@ -6,7 +6,6 @@ import { ValidatePartialAdmin } from "../../shared/validators/AdminZod.js";
 import { PartialSchemaAdmin } from "../../shared/validators/AdminZod.js";
 import { NotFoundError } from "../../shared/exceptions/NotFoundError.js";
 
-
 export class AdminController {
     constructor(
         private readonly getAdminUseCase = new GetAdminUseCase(),
@@ -27,7 +26,7 @@ export class AdminController {
                 telefono: admin.phone
             }
             res.status(200).json(adminFiltrado);
-        }catch(error){
+        } catch(error) {
             next(error);
         }
     }

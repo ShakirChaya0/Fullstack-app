@@ -6,6 +6,7 @@ export class GetKitchenUseCase {
     constructor(
         private readonly kitchenRepository = new KitchenRepository()
     ){}
+    
     async execute (): Promise<Kitchen> {
         const kitchen = await this.kitchenRepository.getAll("SectorCocina")
         if(!kitchen) throw new NotFoundError("No se encontro al usuario del SectorCocina")

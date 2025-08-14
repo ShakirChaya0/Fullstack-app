@@ -1,6 +1,6 @@
 import { UUID } from "crypto";
 import { User } from "./User.js";
-import { TipoUsuario_Type } from "@prisma/client";
+import { UserType } from "../../shared/types/SharedTypes.js";
 
 export class Admin extends User {
     constructor(
@@ -8,7 +8,7 @@ export class Admin extends User {
         _userName: string,
         _email: string,
         _password: string,
-        _userType: TipoUsuario_Type,
+        _userType: UserType,
         private _name: string,
         private _lastname: string,
         private _dni: string,

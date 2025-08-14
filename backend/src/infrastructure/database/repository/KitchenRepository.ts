@@ -1,4 +1,4 @@
-import { Prisma, TipoUsuario_Type } from "@prisma/client";
+import { Prisma } from "@prisma/client";
 import prisma from "../prisma/PrismaClientConnection.js"
 import { ServiceError } from "../../../shared/exceptions/ServiceError.js";
 import { Kitchen } from "../../../domain/entities/Kitchen.js";
@@ -6,24 +6,26 @@ import { UUID } from 'crypto';
 import { PartialSchemaKitchen } from "../../../shared/validators/KitchenZod.js";
 import { ConflictError } from "../../../shared/exceptions/ConflictError.js";
 import { IKitchenRepository } from "../../../domain/repositories/IKitchenRepository.js";
+import { UserType } from "../../../shared/types/SharedTypes.js";
 
 type UsuariosKitchen = Prisma.UsuariosGetPayload<{}>;
 
 export class KitchenRepository implements IKitchenRepository{
-    async getAll (tipoUsuario: TipoUsuario_Type): Promise<Kitchen | null> {
-        try{
+    async getAll(tipoUsuario: UserType): Promise<Kitchen | null> {
+        try {
             const kitchen = await prisma.usuarios.findFirst({
                 where: {tipoUsuario: tipoUsuario}
             })
-            if(!kitchen) return null
+            if (!kitchen) return null
             return this.toDomainEntity(kitchen)
         }
-        catch(error){
+        catch (error) {
             throw new ServiceError("Error al registrar la novedad en la base de datos")
         }
     }
-    async update (id: string, data: PartialSchemaKitchen): Promise<Kitchen> {
-        try{
+
+    async update(id: string, data: PartialSchemaKitchen): Promise<Kitchen> {
+        try {
             const kitchen = await prisma.usuarios.update({
                 where: {
                     idUsuario: id
@@ -35,22 +37,23 @@ export class KitchenRepository implements IKitchenRepository{
             return this.toDomainEntity(kitchen)
             
         }
-        catch(error: any){
+        catch (error: any) {
             if (error?.code === 'P2002' && error?.meta?.target?.includes('nombreUsuario')) {
                 throw new ConflictError("Ya existe un usuario con ese nombre de Usuario")
             }
-            else if(error?.code === 'P2002' && error?.meta?.target?.includes('email')){
+            else if (error?.code === 'P2002' && error?.meta?.target?.includes('email')){
                 throw new ConflictError("Ya existe un usuario con ese email")
             }
-            else if(error?.code === 'P2002' && error?.meta?.target?.includes('dni')){
+            else if (error?.code === 'P2002' && error?.meta?.target?.includes('dni')){
                 throw new ConflictError("Ya existe un usuario con ese dni")
             }
-            else{
+            else {
                 throw new ServiceError("Error al registrar la novedad en la base de datos")
             }
         }
     }
-    private toDomainEntity(data: UsuariosKitchen){
+
+    private toDomainEntity(data: UsuariosKitchen) {
         return new Kitchen(data.idUsuario as UUID, data.nombreUsuario, data.email, data.contrasenia, data.tipoUsuario)
     }
 }

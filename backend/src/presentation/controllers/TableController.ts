@@ -30,9 +30,7 @@ export class TableController {
                 throw new ValidationError("La capacidad de la mesa debe ser un numero entero");
             }
             const tables = await this.getTableByCapacity.execute(+capacity);
-            if(tables !== null) {
-                res.status(200).json(tables);
-            } 
+            res.status(200).json(tables);
         } catch (error) {
             next(error);
         }

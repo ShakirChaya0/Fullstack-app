@@ -1,5 +1,6 @@
 import express from 'express'
 import cors from "cors"
+import dotenv from 'dotenv';
 import { createServer, Server as Http2Server } from 'node:http'
 import { ErrorHandler } from './presentation/middlewares/ErrorHandler.js'
 import { ProductosRouter } from './presentation/routes/ProductsRoute.js'
@@ -26,6 +27,7 @@ import { ReservationRouter } from './presentation/routes/ReservationRoute.js'
 import { runReservationCheckJob } from './infrastructure/jobs/CheckReservationsJob.js'
 import { SocketServerConnection } from './presentation/sockets/SocketServerConnection.js'
 
+dotenv.config()
 const app = express()
 
 export const server: Http2Server = createServer(app)

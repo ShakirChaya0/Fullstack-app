@@ -1,5 +1,4 @@
-
-export type TableState = "Libre" | "Ocupada"; 
+import { TableState } from "../../shared/types/SharedTypes.js";
 
 export class Table  {
     constructor(
@@ -8,11 +7,11 @@ export class Table  {
         private _state: TableState
     ){}
 
-    public get tableNum() : number {return this._tableNum} 
-    public get capacity () : number {return this._capacity}
-    public get state () : TableState {return this._state}
+    public get tableNum(): number { return this._tableNum } 
+    public get capacity (): number { return this._capacity }
+    public get state (): TableState { return this._state }
 
-    public set capacity(capacity :number) {
+    public set capacity(capacity: number) {
         this._capacity = capacity;
     }
 

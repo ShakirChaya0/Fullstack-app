@@ -7,7 +7,7 @@ import { GetByClientId } from "../../application/use_cases/ReservationUseCases/G
 import { validateReservation} from "../../shared/validators/ReservationZod.js";
 import { CUU01RegisterAttendance } from "../../application/use_cases/ReservationUseCases/CUU01RegisterAttendance.js";
 import { ValidationError } from "../../shared/exceptions/ValidationError.js";
-import { StateReservation } from "../../domain/entities/Reservation.js";
+import { StateReservation } from "../../shared/types/SharedTypes.js";
 
 export class ReservationController {
   constructor(
@@ -22,7 +22,7 @@ export class ReservationController {
   public createReservation = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const clientId  = req.params.idCliente;
-      if(!clientId) {
+      if (!clientId) {
         throw new ValidationError("Se ingreso un ID válido")
       }
 
@@ -36,19 +36,18 @@ export class ReservationController {
 
   public updateReservationStatus = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { idReserva} = req.params;
-      const {estado} = req.query;
+      const { idReserva } = req.params;
+      const { estado } = req.query;
       if (isNaN(+idReserva)) {
         throw new ValidationError("El ID ingresado debe ser un número");
       }
 
-      if (estado !== 'Realizada' && estado !== 'Asistida' && estado !== 'No_Asistida' &&estado !== 'Cancelada' ) {
+      if (estado !== 'Realizada' && estado !== 'Asistida' && estado !== 'No_Asistida' && estado !== 'Cancelada' ) {
         throw new ValidationError("Debe proporcionar un estado válido");
       }
 
       await this.updateStatus.execute(+idReserva, estado as StateReservation);
       res.status(204).send();
-      
     } catch (error) {
       next(error);
     }
@@ -83,7 +82,7 @@ export class ReservationController {
   public getByClientId = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { clientId } = req.params;
-      if(!clientId) {
+      if (!clientId) {
         throw new ValidationError("Se ingreso un ID válido")
       }
 
@@ -98,7 +97,7 @@ export class ReservationController {
     try {
       const { nombre, apellido } = req.query; 
 
-      if(typeof nombre !== 'string' || typeof apellido !== 'string' ) {
+      if (typeof nombre !== 'string' || typeof apellido !== 'string') {
         throw new ValidationError('Debe enviar un nombre y apellido valido'); 
       }
 
@@ -108,7 +107,5 @@ export class ReservationController {
     catch (error) {
       next(error);
     }
-
   };
-
 }

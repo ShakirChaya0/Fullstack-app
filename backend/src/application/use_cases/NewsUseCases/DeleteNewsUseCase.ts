@@ -5,6 +5,7 @@ export class DeleteNewsUseCase {
     constructor(
         private readonly newsRepository = new NewsRepository()
     ){}
+    
     async execute (id: number): Promise<void>{
         const exists = this.newsRepository.getOne(id)
         if(!exists) throw new NotFoundError("No se encontro la novedad a eliminar")

@@ -6,11 +6,11 @@ export class GetByDate{
   constructor(
     private readonly reservationRepository = new ReservationRepository(),
   ) {}
+  
   async execute(date: Date): Promise<Reservation[]> {
     const reservations = await this.reservationRepository.getByDate(date);
-        if (reservations.length === 0) {
-            throw new NotFoundError(`No se encontraron reservas para la fecha dada.`);
-        }
+    if (reservations.length === 0) throw new NotFoundError(`No se encontraron reservas para la fecha dada.`);
+
     return reservations;
   }
 }

@@ -7,20 +7,8 @@ import { QRTokenRepository } from "../../../infrastructure/database/repository/Q
 import { TableRepository } from "../../../infrastructure/database/repository/TableRepository.js";
 import { BusinessError } from "../../../shared/exceptions/BusinessError.js";
 import { NotFoundError } from "../../../shared/exceptions/NotFoundError.js";
+import { UserType } from "../../../shared/types/SharedTypes.js";
 import { OrderLineSchema, OrderSchema } from "../../../shared/validators/OrderZod.js";
-
-
-function isAlcoholicDrink(orderLines: OrderLineSchema[]): boolean {
-    return orderLines.some(order => order.esAlcoholica === true);
-}
-    
-
-function getAge(birthday: Date): number {
-  const today = new Date();
-  return today.getFullYear() - birthday.getFullYear() - 
-    (today < new Date(today.getFullYear(), birthday.getMonth(), birthday.getDate()) ? 1 : 0);
-}
-
 
 export class CUU02RegisterOrder {
     constructor(
@@ -30,14 +18,14 @@ export class CUU02RegisterOrder {
         private readonly tableRepository = new TableRepository(),
         private readonly productRepository = new ProductRepository()
     ){}
-    // Cambiar tipado de userType al enum
-    public async execute(order: OrderSchema, userId: string | undefined, userType: string | undefined, qrtoken: string | undefined, tableNumberIsWaiter: number | undefined): Promise<Order>{
+
+    public async execute(order: OrderSchema, userId: string | undefined, userType: UserType | undefined, qrtoken: string | undefined, tableNumberIsWaiter: number | undefined): Promise<Order>{
 
         if (userId != undefined && userType == 'Cliente') {
             //Validando edad del Cliente
             const client = await this.clientRepository.getClientByidUser(userId);
-            const age = getAge(client!.birthDate)
-            if(age < 18 && isAlcoholicDrink(order.items)){
+            const age = this.getAge(client!.birthDate)
+            if (age < 18 && this.isAlcoholicDrink(order.items)) {
                 throw new BusinessError('El cliente debe ser mayor de 18 años para pedir una bebida alcohólica')
             }
         }
@@ -45,7 +33,7 @@ export class CUU02RegisterOrder {
         let qrTokenData: QRTokenInterface | null
         if(qrtoken){
             qrTokenData = await this.qrTokenRepository.getQRDataByToken(qrtoken);
-            if(!qrTokenData) {
+            if (!qrTokenData) {
                 throw new NotFoundError('No se encontro registro para ese token');
             }
 
@@ -54,7 +42,7 @@ export class CUU02RegisterOrder {
         if(tableNumberIsWaiter){
             const table = await this.tableRepository.getByNumTable(tableNumberIsWaiter)
 
-            if(!table) {
+            if (!table) {
                 throw new NotFoundError(`No se encontro un la mesa con el numero de mesa: ${tableNumberIsWaiter}`);
             }
         }
@@ -78,4 +66,12 @@ export class CUU02RegisterOrder {
         return createdOrder
     }
 
+    private isAlcoholicDrink(orderLines: OrderLineSchema[]): boolean {
+        return orderLines.some(order => order.esAlcoholica === true);
+    }
+
+    private getAge(birthday: Date): number {
+        const today = new Date();
+        return today.getFullYear() - birthday.getFullYear() - (today < new Date(today.getFullYear(), birthday.getMonth(), birthday.getDate()) ? 1 : 0);
+    }
 }

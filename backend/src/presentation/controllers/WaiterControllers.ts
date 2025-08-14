@@ -1,5 +1,5 @@
-import { CUU10RegisterWaiter } from "../../application/use_cases/WaiterUseCases/CUU10_registerWaiter.js";
-import { CUU22ModifyWaiter } from "../../application/use_cases/WaiterUseCases/CUU22_modifyWaiter.js";
+import { CUU10RegisterWaiter } from "../../application/use_cases/WaiterUseCases/CUU10RegisterWaiter.js";
+import { CUU22ModifyWaiter } from "../../application/use_cases/WaiterUseCases/CUU22ModifyWaiter.js";
 import { CUU24DeleteWaiter } from "../../application/use_cases/WaiterUseCases/CUU24_deleteWaiter.js";
 import { GetWaiterByUserName } from "../../application/use_cases/WaiterUseCases/GetWaiterByUserNameUseCase.js";
 import { GetWaiterById } from "../../application/use_cases/WaiterUseCases/GetWaiterByIdUseCase.js";
@@ -87,12 +87,9 @@ export class WaiterController {
     public async getWaiterByUserName(req: Request, res: Response, next: NextFunction) {
         try {
             const nombreUsuario = req.params.nombreUsuario;
-            if (!nombreUsuario) {
-                throw new ValidationError("Se debe ingresar un nombre de usuario válido")
-            }
-            const validation = ValidateWaiterPartial({ nombreUsuario });
+            if (!nombreUsuario) throw new ValidationError("Se debe ingresar un nombre de usuario válido");
 
-            const waiter = await this.getWaiterByUserNameUseCase.execute(validation.nombreUsuario || null);
+            const waiter = await this.getWaiterByUserNameUseCase.execute(nombreUsuario);
             
             const filteredWaiters = {
                 nombreUsuario: waiter.userName,
@@ -103,13 +100,14 @@ export class WaiterController {
                 telefono: waiter.telefono
             }
             
-            res.status(201).json(filteredWaiters);
+            res.status(200).json(filteredWaiters);
         }
         catch (error) {
             next(error);
         }
 
     }
+
     public async getWaiterById(req: Request, res: Response, next: NextFunction) {
         try {
             const waiterId = req.params.idMozo;
@@ -128,12 +126,13 @@ export class WaiterController {
                 telefono: waiter.telefono
             }
             
-            res.status(201).json(filteredWaiters);
+            res.status(200).json(filteredWaiters);
         }
         catch (error) {
             next(error);
         }
     }
+
     public async getWaiters(req: Request, res: Response, next: NextFunction) {
         try {
             const waiters = await this.getWaiterUseCase.execute();

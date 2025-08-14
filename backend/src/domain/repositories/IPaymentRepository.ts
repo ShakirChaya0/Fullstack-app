@@ -1,5 +1,6 @@
+import { PaymentMethod } from "../../shared/types/SharedTypes.js";
 import { Order } from "../entities/Order.js";
-import { Payment, PaymentMethod } from "../entities/Payment.js";
+import { Payment } from "../entities/Payment.js";
 
 export interface IPaymentRepository {
     getAll(): Promise<Payment[]>;

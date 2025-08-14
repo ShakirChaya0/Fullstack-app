@@ -1,9 +1,9 @@
 import { Order } from "../../../domain/entities/Order.js";
-import { PaymentMethod } from "../../../domain/entities/Payment.js";
 import { OrderRepository } from "../../../infrastructure/database/repository/OrderRepository.js";
 import { PaymentRepository } from "../../../infrastructure/database/repository/PaymentRepository.js";
 import { BusinessError } from "../../../shared/exceptions/BusinessError.js";
 import { NotFoundError } from "../../../shared/exceptions/NotFoundError.js";
+import { PaymentMethod } from "../../../shared/types/SharedTypes.js";
 
 export class RegisterPaymentUseCase {
     constructor(
@@ -20,6 +20,7 @@ export class RegisterPaymentUseCase {
             await this.paymentRepository.create(order, paymentMethod, transactionId);
             return order;
         }
+        
         throw new BusinessError("El pedido debe estar pendiente de pago o cobro para poder ser pagado");
     }
 }

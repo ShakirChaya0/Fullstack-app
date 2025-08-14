@@ -4,7 +4,6 @@ import { ProductRepository } from "../../../infrastructure/database/repository/P
 import { NotFoundError } from "../../../shared/exceptions/NotFoundError.js";
 import { OrderLineSchema } from "../../../shared/validators/OrderZod.js";
 
-
 export class AddOrderLineUseCase {
     constructor(
         private readonly orderRepository = new OrderRepository(),

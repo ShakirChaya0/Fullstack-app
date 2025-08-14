@@ -13,14 +13,14 @@ export class AuthController {
     async login(req: Request, res: Response, next: NextFunction) {
         try{
             const { email, password } = req.body;
-            if(!email || !password) throw new ValidationError("No se ingresaron todos los campos obligatorios");
+            if (!email || !password) throw new ValidationError("No se ingresaron todos los campos obligatorios");
 
             const result = await this.loginUC.execute(email, password);
 
             res
-            .cookie('refreshToken', result.refreshToken, { httpOnly: true, secure: true, sameSite: 'strict', maxAge: 1000 * 60 * 15 })
-            .status(200).json(result.accessToken);
-        }catch (error) {
+                .cookie('refreshToken', result.refreshToken, { httpOnly: true, secure: true, sameSite: 'strict', maxAge: 1000 * 60 * 15 })
+                .status(200).json(result.accessToken);
+        } catch (error) {
             next(error);
         }
     }
@@ -33,8 +33,8 @@ export class AuthController {
             const result = await this.refreshUC.execute(token);
 
             res
-            .cookie('refreshToken', result.refreshToken, { httpOnly: true, secure: true, sameSite: 'strict', maxAge: 1000 * 60 * 15 })
-            .status(200).json(result.accessToken);
+                .cookie('refreshToken', result.refreshToken, { httpOnly: true, secure: true, sameSite: 'strict', maxAge: 1000 * 60 * 15 })
+                .status(200).json(result.accessToken);
         } catch (error) {
             next(error);
         }
@@ -50,8 +50,8 @@ export class AuthController {
             // Acordarse de que despues de que el front realice esta peticion, debe eliminar el token de acceso del contexto global
 
             res
-            .clearCookie('refreshToken', { httpOnly: true, secure: true, sameSite: 'strict' })
-            .status(204).send();
+                .clearCookie('refreshToken', { httpOnly: true, secure: true, sameSite: 'strict' })
+                .status(204).send();
         } catch (error) {
             next(error);
         }

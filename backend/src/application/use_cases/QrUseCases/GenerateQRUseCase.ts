@@ -1,5 +1,5 @@
 import { QRTokenRepository } from "../../../infrastructure/database/repository/QRTokenRepository.js";
-import {randomUUID} from 'crypto'
+import { randomUUID } from 'crypto'
 import { TableRepository } from "../../../infrastructure/database/repository/TableRepository.js";
 import { WaiterRepository } from "../../../infrastructure/database/repository/WaiterRepository.js";
 import { NotFoundError } from "../../../shared/exceptions/NotFoundError.js";

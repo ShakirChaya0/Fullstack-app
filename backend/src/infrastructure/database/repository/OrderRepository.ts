@@ -1,14 +1,14 @@
 import prisma from "../prisma/PrismaClientConnection.js"
 import { Prisma } from "@prisma/client";
 import { IOrderRepository } from "../../../domain/repositories/IOrderRepository.js";
-import { Order, OrderStatus } from "../../../domain/entities/Order.js";
+import { Order } from "../../../domain/entities/Order.js";
 import { Table } from "../../../domain/entities/Table.js";
 import { Waiter } from "../../../domain/entities/Waiter.js";
 import { UUID } from "crypto";
-import { OrderLine, OrderLineStatus } from "../../../domain/entities/OrderLine.js";
+import { OrderLine } from "../../../domain/entities/OrderLine.js";
 import { ProductoVO } from "../../../domain/value-objects/ProductVO.js";
-import { FoodType } from "../../../domain/entities/Product.js";
 import { OrderLineSchema, OrderSchema, PartialOrderMinimal } from "../../../shared/validators/OrderZod.js";
+import { FoodType, OrderLineStatus, OrderStatus } from "../../../shared/types/SharedTypes.js";
 
 type OrderWithAll = Prisma.PedidoGetPayload<{
     include: { Mesa: true, Linea_De_Pedido: true, Mozos: { include: { Usuarios: true }} }

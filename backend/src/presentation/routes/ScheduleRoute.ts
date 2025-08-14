@@ -6,13 +6,13 @@ export function HorariosRouter() {
     const horarioRouter = Router();
     const horarioController = new HorarioController();
 
-    horarioRouter.post('/', (req, res) => {horarioController.create(req, res)});
+    horarioRouter.post('/', (req, res, next) => { horarioController.create(req, res, next) });
 
-    horarioRouter.patch('/update/:idHorario', (req, res) => {horarioController.update(req, res)});
+    horarioRouter.patch('/update/:diaSemana', (req, res, next) => { horarioController.update(req, res, next) });
 
-    horarioRouter.get('/', (req, res) => { horarioController.getAll(req, res)});
+    horarioRouter.get('/', (req, res, next) => { horarioController.getAll(req, res, next) });
     
-    horarioRouter.get('/id/:idHorario', (req, res) => { horarioController.getById(req, res)});
+    horarioRouter.get('/id/:diaSemana', (req, res, next) => { horarioController.getById(req, res, next) });
 
-    return horarioRouter
+    return horarioRouter;
 }

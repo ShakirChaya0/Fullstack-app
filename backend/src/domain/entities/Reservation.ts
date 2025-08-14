@@ -1,7 +1,6 @@
 import { Table } from "./Table.js";
-import { ClientPublicInfo } from "../repositories/IClientPublicInfo.js";
-
-export type StateReservation = "Realizada" | "Asistida" | "No_Asistida" | "Cancelada";
+import { ClientPublicInfo } from "../interfaces/ClientPublicInfo.js";
+import { StateReservation } from "../../shared/types/SharedTypes.js";
 
 export class Reservation {
     constructor(

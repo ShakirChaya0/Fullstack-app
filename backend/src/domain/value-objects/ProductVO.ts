@@ -1,4 +1,4 @@
-import { FoodType } from "../entities/Product.js";
+import { FoodType } from "../../shared/types/SharedTypes.js";
 
 export class ProductoVO {
     constructor(

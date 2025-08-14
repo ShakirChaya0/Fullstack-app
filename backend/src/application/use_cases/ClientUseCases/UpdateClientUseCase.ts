@@ -4,7 +4,6 @@ import { PasswordHashingService } from '../../services/PasswordHashing.js';
 import { PartialClientSchema } from "../../../shared/validators/ClientZod.js";
 import { NotFoundError } from '../../../shared/exceptions/NotFoundError.js';
 
-
 export class UpdateClientUseCase {
     constructor(
         private readonly clientRepository = new ClientRepository,

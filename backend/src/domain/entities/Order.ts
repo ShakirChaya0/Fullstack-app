@@ -1,11 +1,11 @@
-import { OrderClientInfo } from "../interfaces/OrderClientInfo.js";
-import { OrderKitchenInfo } from "../interfaces/OrderKitchenInfo.js";
-import { OrderWaiterInfo } from "../interfaces/OrderWaiterInfo.js";
+import { OrderStatus } from "../../shared/types/SharedTypes.js";
+import { OrderClientInfo } from "../interfaces/FIX-orderClientInfo.js";
+import { OrderKitchenInfo } from "../interfaces/FIX-orderKitchenInfo.js";
+import { OrderWaiterInfo } from "../interfaces/FIX-orderWaiterInfo.js";
 import { WaiterPublicInfo } from "../interfaces/WaiterPublicInfo.js";
 import { OrderLine } from "./OrderLine.js";
 import { Table } from "./Table.js";
 
-export type OrderStatus = 'Solicitado' | 'En_Preparacion' | 'Completado' | 'Pendiente_De_Pago' | 'Pendiente_De_Cobro' | 'Pagado';
 
 export class Order {
     constructor(

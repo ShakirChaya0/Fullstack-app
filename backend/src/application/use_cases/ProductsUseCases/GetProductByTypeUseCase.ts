@@ -6,7 +6,7 @@ export class GetProductByTypeUseCase {
         private readonly productRepository = new ProductRepository()
     ) {}
 
-    public async execute(tipoProducto: string): Promise<Product[] | null> {
+    public async execute(tipoProducto: string): Promise<Product[]> {
         return await this.productRepository.getByType(tipoProducto);
     }
 }

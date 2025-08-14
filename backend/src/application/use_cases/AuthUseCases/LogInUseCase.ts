@@ -1,10 +1,10 @@
-import { TipoUsuario_Type } from "@prisma/client";
 import { UserRepository } from "../../../infrastructure/database/repository/UserRepository.js";
 import { UnauthorizedError } from "../../../shared/exceptions/UnauthorizedError.js";
 import { JWTService } from "../../services/JWTService.js";
 import { PasswordHashingService } from "../../services/PasswordHashing.js";
 import { UUID } from "crypto";
 import { RefreshTokenRepository } from "../../../infrastructure/database/repository/RefreshTokenRepository.js";
+import { UserType } from "../../../shared/types/SharedTypes.js";
 
 export class LoginUseCase{
     constructor(
@@ -13,6 +13,7 @@ export class LoginUseCase{
         private readonly hashService = new PasswordHashingService(),
         private readonly refreshTokenRepository = new RefreshTokenRepository() 
     ){}
+    
     async execute(email: string, password: string): Promise<{accessToken: string, refreshToken: string}> {
         const user = await this.userRepository.findByEmail(email)
 
@@ -25,7 +26,7 @@ export class LoginUseCase{
         const payload = {
             idUsuario: user.userId as UUID,
             email: user.email,
-            tipoUsuario: user.userType as TipoUsuario_Type,
+            tipoUsuario: user.userType as UserType,
             username: user.userName
         }
 

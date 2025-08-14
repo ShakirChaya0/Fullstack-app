@@ -1,17 +1,4 @@
-export type CheckLine = {
-    nombreProducto: string,
-    cantidad: number,
-    montoUnitario: number,
-    importe: number
-}
-
-export type PedidoCheck = {
-    idPedido: number,
-    lines: CheckLine[]
-    subtotal: number,
-    importeImpuestos: number,
-    total: number
-}
+import { PedidoCheck } from "../../shared/types/SharedTypes.js";
 
 export class Check {
     constructor(

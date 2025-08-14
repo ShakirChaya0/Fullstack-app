@@ -5,9 +5,7 @@ import { IWaiterRepository } from "../../../domain/repositories/IWaiterRepositor
 import { SchemaWaiter ,PartialSchemaWaiter } from "../../../shared/validators/WaiterZod.js";
 import { ConflictError } from "../../../shared/exceptions/ConflictError.js";
 import { ServiceError } from "../../../shared/exceptions/ServiceError.js";
-import { NotFoundError } from "../../../shared/exceptions/NotFoundError.js";
 import { UUID } from "crypto";
-
 
 type MozoWithUsuario = Prisma.MozosGetPayload<{
     include: { Usuarios: true };
@@ -33,6 +31,7 @@ export class WaiterRepository implements IWaiterRepository {
                 },
                 include: { Usuarios: true }
             });
+
             return this.toDomainEntity(newWaiter);
         }
         catch (error: any) {
@@ -59,19 +58,20 @@ export class WaiterRepository implements IWaiterRepository {
         const waiters = await prisma.mozos.findMany({
             include: { Usuarios: true }
         });
+
         return waiters.map((waiter) => { return this.toDomainEntity(waiter) });
     }
 
-    public async getWaiterByUserName(userName: string): Promise<Waiter> {
+    public async getWaiterByUserName(userName: string): Promise<Waiter | null> {
         const waiter = await prisma.mozos.findFirst({
             where: {
                 Usuarios: { nombreUsuario: userName }
             },
             include: { Usuarios: true }
         });
-        if (!waiter) {
-            throw new NotFoundError(`No se encontro un Mozo con el nombre de usuario: ${userName}`);
-        }
+
+        if (!waiter) return null;
+
         return this.toDomainEntity(waiter);
     }
 
@@ -84,6 +84,7 @@ export class WaiterRepository implements IWaiterRepository {
                 },
                 include: { Usuarios: true }
             });
+
             return this.toDomainEntity(updatedWaiter);
         }
         catch(error: any){
@@ -100,14 +101,14 @@ export class WaiterRepository implements IWaiterRepository {
         }
     }
 
-    public async getWaiterById(idMozo: string): Promise<Waiter> {
+    public async getWaiterById(idMozo: string): Promise<Waiter | null> {
         const waiter = await prisma.mozos.findUnique({
             where: { idMozo: idMozo },
             include: { Usuarios: true }
         });
-        if (!waiter) {
-            throw new NotFoundError("Mozo no encontrado");
-        }
+
+        if (!waiter) return null;
+
         return this.toDomainEntity(waiter);
     }
 

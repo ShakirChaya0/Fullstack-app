@@ -8,6 +8,7 @@ export class CUU10RegisterWaiter {
         private readonly waiterRepository = new WaiterRepository(),
         private readonly passwordHashingService = new PasswordHashingService()
     ) {}
+
     public async execute(data: SchemaWaiter): Promise<Waiter> {
         const hashedPassword = await this.passwordHashingService.hashPassword(data.contrasenia);
         const newWaiterData = {
@@ -15,7 +16,6 @@ export class CUU10RegisterWaiter {
             contrasenia: hashedPassword,
         };
 
-        const newWaiter = await this.waiterRepository.createWaiter(newWaiterData);
-        return newWaiter;
+        return await this.waiterRepository.createWaiter(newWaiterData);
     }
 }

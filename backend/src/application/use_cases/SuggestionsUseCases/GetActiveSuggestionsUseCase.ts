@@ -8,7 +8,6 @@ export class GetActiveSuggestionsUseCase {
     ) {}
 
     public async execute(): Promise<Suggestion[]> {
-        const suggestions = await this.suggestionRepository.getActiveSuggestions();
-        return suggestions;
+        return await this.suggestionRepository.getActiveSuggestions();
     }
 }

@@ -1,6 +1,6 @@
+import { Order } from "../entities/Order.js";
+import { OrderLineStatus, OrderStatus } from "../../shared/types/SharedTypes.js";
 import { OrderLineSchema, OrderSchema, PartialOrderSchema } from "../../shared/validators/OrderZod.js";
-import { Order, OrderStatus } from "../entities/Order.js";
-import { OrderLineStatus } from "../entities/OrderLine.js";
 
 export interface IOrderRepository {
     getActiveOrders(): Promise<Order[]>;

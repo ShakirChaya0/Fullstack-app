@@ -1,5 +1,4 @@
 import { z } from 'zod';
-import { AdminInterface } from '../../domain/interfaces/AdminInterface.js';
 import { ValidationError } from '../exceptions/ValidationError.js';
 
 const AdminSchema = z.object({
@@ -17,13 +16,13 @@ const AdminSchema = z.object({
     telefono: z.string().min(5, 'El teléfono debe tener al menos 5 caracteres').max(15, 'El teléfono no puede exceder los 15 caracteres'),
 });
 
-//type SchemaAdmin = z.infer<typeof AdminSchema>;  
+type SchemaAdmin = z.infer<typeof AdminSchema>;  
 
 const partialSchemaAdmin = AdminSchema.partial();
 
 export type PartialSchemaAdmin = z.infer<typeof partialSchemaAdmin>;
 
-export function ValidatePartialAdmin(data: Partial<AdminInterface>) {
+export function ValidatePartialAdmin(data: Partial<SchemaAdmin>) {
     const result = partialSchemaAdmin.safeParse(data);
     if (!result.success) {
         const mensajes = result.error.errors.map(e => e.message).join(", ")

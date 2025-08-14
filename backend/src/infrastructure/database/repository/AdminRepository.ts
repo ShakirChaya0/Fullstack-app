@@ -11,7 +11,7 @@ export class AdminRepository implements IAdminRepository {
     public async getAdmin(): Promise<Admin | null>{
         const admin = await prisma.administrador.findFirst({
             where: {
-                Usuarios: {tipoUsuario: "Administrador"}
+                Usuarios: { tipoUsuario: "Administrador" }
             },
             include: {
                 Usuarios: true
@@ -66,7 +66,7 @@ export class AdminRepository implements IAdminRepository {
                 adminActualizarDetalle.telefono 
             )
 
-        }catch(error: any){
+        } catch(error: any) {
             if (error?.code === 'P2002' && error?.meta?.target?.includes('nombreUsuario')) {
                 throw new ConflictError("El nombreUsuario ingresado ya esta registrado");
             } else if(error?.code === 'P2002' && error?.meta?.target?.includes('email')){
@@ -75,7 +75,7 @@ export class AdminRepository implements IAdminRepository {
                 throw new ConflictError("El DNI ingresado ya esta registrado");
             }
             else{
-                throw new ServiceError(`Error al crear el Mozo: ${error.message}`);
+                throw new ServiceError(`Error al crear el Adminisitrador: ${error.message}`);
             }
         }
     }

@@ -1,9 +1,9 @@
-import { TipoUsuario_Type } from "@prisma/client";
 import { UUID } from 'crypto';
+import { UserType } from '../../shared/types/SharedTypes.js';
 
 export interface JwtPayloadInterface {
     idUsuario: UUID
     email: string
-    tipoUsuario: TipoUsuario_Type
+    tipoUsuario: UserType
     username: string
 }

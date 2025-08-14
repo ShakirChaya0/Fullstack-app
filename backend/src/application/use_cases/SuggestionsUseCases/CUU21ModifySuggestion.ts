@@ -19,7 +19,6 @@ export class CUU21ModifySuggestion {
             if (!product) throw new NotFoundError("Producto no encontrado");
         }
 
-        const modifiedSuggestion = await this.suggestionRepository.update(data, idProducto, fechaDesde);
-        return modifiedSuggestion;
+        return await this.suggestionRepository.update(data, idProducto, fechaDesde);
     }
 }

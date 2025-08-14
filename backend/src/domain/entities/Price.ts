@@ -10,8 +10,4 @@ export class Price {
     public get product(): Product { return this._product }
     public get dateFrom(): Date { return this._dateFrom }
     public get amount(): number { return this._amount }
-
-    // public set product(product: Product) { this._product = product }
-    // public set dateFrom(dateFrom: Date) { this._dateFrom = dateFrom }
-    // public set amount(amount: number) { this._amount = amount }
 }

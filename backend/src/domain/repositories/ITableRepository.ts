@@ -1,7 +1,6 @@
 import { Table } from "../entities/Table.js";
 import { schemaTable } from "../../shared/validators/TableZod.js";
 
-
 export interface ITableRepository {
     getAll() : Promise<Table[]>; 
     getByNumTable(numTable: number) : Promise<Table | null>; 

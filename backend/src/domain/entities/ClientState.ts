@@ -1,5 +1,4 @@
-
-export type stateClient = 'Habilitado' | 'Deshabilitado';
+import { stateClient } from "../../shared/types/SharedTypes.js"
 
 export class ClientState {
     constructor(
@@ -10,10 +9,6 @@ export class ClientState {
     get modifyDate() { return this._modifyDate}
     get state() { return this._state}
 
-    set modifyDate(date: Date){
-        this._modifyDate = date
-    }
-    set state( state: stateClient) {
-        this._state = state
-    }
+    set modifyDate(date: Date){ this._modifyDate = date }
+    set state( state: stateClient) { this._state = state }
 }

@@ -36,9 +36,9 @@ export class PayWithMercadoPagoUseCase {
                 excluded_payment_types: []
             },
             back_urls: {
-                success: "/success",
-                failure: "/failure",
-                pending: "/pending"
+                success: "https://github.com/ShakirChaya0/Fullstack-app/tree/dev",
+                failure: "https://github.com/ShakirChaya0/Fullstack-app/tree/dev",
+                pending: "https://github.com/ShakirChaya0/Fullstack-app/tree/dev"
             },
             auto_return: "approved",
             external_reference: JSON.stringify({orderId: order.orderId, metodoPago: "MercadoPago"}),

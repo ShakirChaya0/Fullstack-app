@@ -1,7 +1,8 @@
 import { Information } from "../../domain/entities/Information.js";
 import { Order } from "../../domain/entities/Order.js";
 import { Policy } from "../../domain/entities/Policy.js";
-import { Check, CheckLine, PedidoCheck } from "../../domain/value-objects/Check.js";
+import { Check } from "../../domain/value-objects/Check.js";
+import { CheckLine, PedidoCheck } from "../../shared/types/SharedTypes.js";
 
 export class CheckService {
     public generate(order: Order, information: Information, policy: Policy) {

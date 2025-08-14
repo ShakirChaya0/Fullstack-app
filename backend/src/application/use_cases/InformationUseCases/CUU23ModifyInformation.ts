@@ -2,7 +2,6 @@ import { InformationRepository } from '../../../infrastructure/database/reposito
 import { Information } from '../../../domain/entities/Information.js';
 import { PartialSchemaInformation } from '../../../shared/validators/InformationZod.js';
 
-
 export class CUU23ModifyInformation {
     constructor(
         private readonly informationRepository = new InformationRepository()

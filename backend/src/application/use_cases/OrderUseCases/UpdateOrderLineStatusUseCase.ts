@@ -1,7 +1,7 @@
 import { Order } from "../../../domain/entities/Order.js";
-import { OrderLineStatus } from "../../../domain/entities/OrderLine.js";
 import { OrderRepository } from "../../../infrastructure/database/repository/OrderRepository.js";
 import { NotFoundError } from "../../../shared/exceptions/NotFoundError.js";
+import { OrderLineStatus } from "../../../shared/types/SharedTypes.js";
 
 export class UpdateOrderLineUseCase {
     constructor(

@@ -3,7 +3,6 @@ import { Admin } from "../../../domain/entities/Admin.js";
 import { PartialSchemaAdmin } from "../../../shared/validators/AdminZod.js";
 import { PasswordHashingService } from "../../services/PasswordHashing.js";
 
-
 export class UpdateAdminProfileUseCase {
     constructor (
         private readonly AdministradorRepository = new AdminRepository(),

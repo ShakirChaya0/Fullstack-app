@@ -1,9 +1,8 @@
 import { UUID } from "crypto";
 import { User } from "./User.js";
-import { TipoUsuario_Type } from "@prisma/client";
 import { ClientState } from "./ClientState.js";
 import { Reservation } from "./Reservation.js";
-
+import { UserType } from "../../shared/types/SharedTypes.js";
 
 export class Client extends User {
     constructor(
@@ -11,7 +10,7 @@ export class Client extends User {
         _userName: string,
         _email: string,
         _password: string,
-        _userType: TipoUsuario_Type,
+        _userType: UserType,
         private _name: string,
         private _lastName: string,
         private _phone: string,
@@ -25,45 +24,63 @@ export class Client extends User {
     get email(): string {
         return this._email;
     }
+    
     get name(): string {
         return this._name;
     }
+
     get lastname(): string {
         return this._lastName;
     }
+
     get phone(): string {
         return this._phone;
     }
+
     get birthDate(): Date {
         return this._birthDate;
     }
-    get states(): ClientState[] { return this._states}
-    get reservation(): Reservation[] { return this._reservation}
+
+    get states(): ClientState[] { 
+        return this._states 
+    }
+
+    get reservation(): Reservation[] { 
+        return this._reservation
+    }
 
     set nombreUsuario(nombreUsuario: string) {
         this._userName = nombreUsuario;
     }
+
     set contrasenia(contrasenia: string) {
         this._password = contrasenia;
     }
+
     set nombre(nombre: string) {
         this._name = nombre;
     }
+
     set apellido(apellido: string) {
         this._lastName = apellido;
     }
+
     set telefono(telefono: string) {
         this._phone = telefono;
     }
+
     set email(email: string) {
         this._email = email;
     }
+
     set fechaNacimiento(fechaNacimiento: Date) {
         this._birthDate = fechaNacimiento;
     }
+
     set addState(nuevoEstado: ClientState){
         this._states.push(nuevoEstado);
     }
+
     set addReservation(newReservation: Reservation){
         this._reservation.push(newReservation);
     }

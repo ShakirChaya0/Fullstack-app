@@ -2,35 +2,47 @@ import prisma from "../prisma/PrismaClientConnection.js"
 import { Prisma } from '@prisma/client';
 import { PartialSchemaProductos, SchemaProductos } from '../../../shared/validators/ProductZod.js';
 import { IProductoRepository } from '../../../domain/repositories/IProductRepository.js';
-import { Product, Food, Drink } from '../../../domain/entities/Product.js';
+import { Product } from '../../../domain/entities/Product.js';
+import { Drink } from "../../../domain/entities/Drink.js";
+import { Food } from "../../../domain/entities/Food.js";
 
 type ProductWithPrice = Prisma.ProductoGetPayload<{
     include: { Precios: true };
 }>;
 
-export class ProductRepository implements IProductoRepository{
+export class ProductRepository implements IProductoRepository {
 
     public async getAll(): Promise<Product[]> {
         const products = await prisma.producto.findMany({
-            include: { Precios: true }
+            include: { 
+                Precios: {
+                    orderBy: {
+                        fechaActual: 'desc' 
+                    },
+                    take: 1 
+                } 
+            }
         });
         
-        return products.map((product) => {
-            return this.toDomainEntity(product)
-        })
+        return products.map((product) => { return this.toDomainEntity(product) })
     }
 
     public async getById(idProducto: number): Promise<Product | null> {
         const product = await prisma.producto.findUnique({
             where: { idProducto: idProducto },
-            include: { Precios: true } 
+            include: { 
+                Precios: {
+                    orderBy: {
+                        fechaActual: 'desc' 
+                    },
+                    take: 1 
+                } 
+            } 
         });
 
-        if (!product) {
-            return null;
-        }
+        if (!product) return null;
 
-        return this.toDomainEntity(product)
+        return this.toDomainEntity(product);
     }
 
     public async getByName(nombreProducto: string): Promise<Product[]> {
@@ -41,23 +53,33 @@ export class ProductRepository implements IProductoRepository{
                     mode: 'insensitive'
                 }
             },
-            include: { Precios: true }
+            include: { 
+                Precios: {
+                    orderBy: {
+                        fechaActual: 'desc' 
+                    },
+                    take: 1 
+                } 
+            }        
         });
 
-        return product.map((prod) => {
-            return this.toDomainEntity(prod)
-        })
+        return product.map((prod) => { return this.toDomainEntity(prod) })
     }
 
     public async getByUniqueName(nombreProducto: string): Promise<Product | null> {
         const product = await prisma.producto.findUnique({
             where: { nombre: nombreProducto },
-            include: { Precios: true }
+            include: { 
+                Precios: {
+                    orderBy: {
+                        fechaActual: 'desc' 
+                    },
+                    take: 1 
+                } 
+            }        
         });
 
-        if (!product) {
-            return null;
-        }
+        if (!product) return null;
 
         return this.toDomainEntity(product)
     }
@@ -66,23 +88,33 @@ export class ProductRepository implements IProductoRepository{
         if (tipoProducto === "Bebida") {
             const drinks = await prisma.producto.findMany({
                 where: { tipo: null },
-                include: { Precios: true }
+                include: { 
+                    Precios: {
+                        orderBy: {
+                            fechaActual: 'desc' 
+                        },
+                        take: 1 
+                    } 
+                } 
             });
 
-            return drinks.map((drink) => {
-                return this.toDomainEntity(drink)
-            });
-
+            return drinks.map((drink) => { return this.toDomainEntity(drink) });
         } else {
             const foods = await prisma.producto.findMany({
                 where: { 
                     tipo: { not: null } 
                 },
-                include: { Precios: true }
+                include: { 
+                    Precios: {
+                        orderBy: {
+                            fechaActual: 'desc' 
+                        },
+                        take: 1 
+                    } 
+                }            
             });
-            return foods.map((food) => {                
-                return this.toDomainEntity(food)
-            });
+
+            return foods.map((food) => { return this.toDomainEntity(food) });
         }
     }
 
@@ -91,7 +123,14 @@ export class ProductRepository implements IProductoRepository{
             data: {
                 ...product
             },
-            include: { Precios: true }
+            include: { 
+                Precios: {
+                    orderBy: {
+                        fechaActual: 'desc' 
+                    },
+                    take: 1 
+                } 
+            }       
         });
         
         return this.toDomainEntity(newProduct)
@@ -103,7 +142,14 @@ export class ProductRepository implements IProductoRepository{
             data: {
                 ...product
             },
-            include: { Precios: true}
+            include: { 
+                Precios: {
+                    orderBy: {
+                        fechaActual: 'desc' 
+                    },
+                    take: 1 
+                } 
+            }      
         });
 
         return this.toDomainEntity(updatedProduct)
@@ -115,7 +161,7 @@ export class ProductRepository implements IProductoRepository{
                         Product.nombre,
                         Product.descripcion,
                         Product.estado,
-                        Product.Precios?.[Product.Precios.length - 1]?.monto ? +Product.Precios[0].monto : 0,
+                        Product.Precios[0].monto.toNumber(),
                         Product.esVegetariana ?? false,
                         Product.esVegana ?? false,
                         Product.esSinGluten ?? false,
@@ -127,7 +173,7 @@ export class ProductRepository implements IProductoRepository{
                     Product.nombre,
                     Product.descripcion,
                     Product.estado,
-                    Product.Precios?.[Product.Precios.length - 1]?.monto ? +Product.Precios[0].monto : 0,
+                    Product.Precios[0].monto.toNumber(),
                     Product.esAlcoholica ?? false
                 );
             }

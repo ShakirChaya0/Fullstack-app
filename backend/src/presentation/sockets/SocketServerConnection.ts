@@ -41,6 +41,6 @@ export function SocketServerConnection(server: Http2Server) {
       registerOrderHandlers(ioConnection, socket);
     });
     
-    return ioConnection
+    return ioConnection;
 }
 

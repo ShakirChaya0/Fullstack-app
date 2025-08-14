@@ -1,5 +1,5 @@
 import { Table } from "../../../domain/entities/Table.js";
-import {schemaTable } from "../../../shared/validators/TableZod.js";
+import { schemaTable } from "../../../shared/validators/TableZod.js";
 import { TableRepository } from "../../../infrastructure/database/repository/TableRepository.js";
 
 export class CUU17RegisterTable {
@@ -7,8 +7,7 @@ export class CUU17RegisterTable {
         private readonly tableRepository = new TableRepository
     ){}
 
-    public async execute (table: schemaTable) : Promise<Table>{
-        const existingTable = await this.tableRepository.createTable(table);
-        return existingTable;
+    public async execute(table: schemaTable): Promise<Table>{
+        return await this.tableRepository.createTable(table);
     }
 }

@@ -4,16 +4,17 @@ import { NewsClass } from "../../../domain/entities/News.js";
 import { PartialNews } from "../../../domain/interfaces/NewsInterface.js";
 import { ConflictError } from "../../../shared/exceptions/ConflictError.js";
 import { ServiceError } from "../../../shared/exceptions/ServiceError.js";
+import { SchemaNews } from "../../../shared/validators/NewsZod.js";
 
 export class NewsRepository implements INewsRepository{
-    async register (data: NewsClass): Promise<NewsClass>{
+    async register (data: SchemaNews): Promise<NewsClass>{
         try{
             const novedad = await prisma.novedad.create({
                 data: {
-                    titulo: data.title,
-                    descripcion: data.description,
-                    fechaInicio: new Date(data.startDate),
-                    fechaFin: new Date(data.endDate)
+                    titulo: data.titulo,
+                    descripcion: data.descripcion,
+                    fechaInicio: new Date(data.fechaInicio),
+                    fechaFin: new Date(data.fechaFin)
                 }
             })
             return new NewsClass(novedad.idNovedad, novedad.titulo, novedad.descripcion, novedad.fechaInicio, novedad.fechaFin)
@@ -22,14 +23,14 @@ export class NewsRepository implements INewsRepository{
             if (error?.code === 'P2002' && error?.meta?.target?.includes('titulo')) {
                 throw new ConflictError("Ya existe una novedad con ese título")
             }
-            else{
+            else {
                 throw new ServiceError("Error al registrar la novedad en la base de datos")
             }
         }
     }
 
     async modify (id: number, data: PartialNews): Promise<NewsClass> {
-        try{
+        try {
             const novedad = await prisma.novedad.update({
                 where: {
                     idNovedad: id
@@ -40,75 +41,74 @@ export class NewsRepository implements INewsRepository{
             })
             return new NewsClass(novedad.idNovedad, novedad.titulo, novedad.descripcion, novedad.fechaInicio, novedad.fechaFin)
         }
-        catch (error: any){
+        catch (error: any) {
             if (error?.code === 'P2002' && error?.meta?.target?.includes('titulo')) {
                 throw new ConflictError("Ya existe una novedad con ese título")
             }
-            else{
+            else {
                 throw new ServiceError("Error al registrar la novedad en la base de datos")
             }
         }
     }
 
     async getOne (id: number): Promise<NewsClass | null> {
-        try{
+        try {
             const novedad = await prisma.novedad.findUnique({
                 where: {idNovedad: id}
             })
-            if(!novedad) return null
+            if (!novedad) return null
     
             return new NewsClass(novedad.idNovedad, novedad.titulo, novedad.descripcion, novedad.fechaInicio, novedad.fechaFin)
         }
-        catch(error){
+        catch (error) {
             throw new ServiceError("Error al registrar la novedad en la base de datos")
         }
     }
 
     async getAll (): Promise<NewsClass[]>{
-        try{
+        try {
             const news = await prisma.novedad.findMany()
             return news.map((n) => {
                 return new NewsClass(n.idNovedad, n.titulo, n.descripcion, n.fechaInicio, n.fechaFin)
             })
         }
-        catch(error){
+        catch (error) {
             throw new ServiceError("Error al registrar la novedad en la base de datos")
         }
     }
 
     async delete (id: number): Promise<void>{
-        try{
+        try {
             await prisma.novedad.delete({
                 where: {idNovedad: id}
             })
             return
         }
-        catch(error){
+        catch (error) {
             throw new ServiceError("Error al registrar la novedad en la base de datos")
         }
     }
-    // getActive no funciona en su totalidad por problemas con la hora que te devuelve el new Date(), probablemente sea mejor validarlo en el front, 
-    // por el momento lo dejo por las dudas 
+
     async getActive (): Promise<NewsClass[]>{
-        try{
+        try {
             const hoy = new Date();
             hoy.setHours(0, 0, 0, 0);
             const news = await prisma.novedad.findMany({
                 where: {
                     fechaInicio: {
-                        lte: hoy
+                        gte: hoy
                     },
                     fechaFin: {
-                        gte: hoy
+                        lte: hoy
                     }
                 }
-            })
+            });
+
             return news.map((n) => {
                 return new NewsClass(n.idNovedad, n.titulo, n.descripcion, n.fechaInicio, n.fechaFin)
             })
         }
-        catch(error){
-            console.log(error)
+        catch (error) {
             throw new ServiceError("Error al registrar la novedad en la base de datos")
         }
     }

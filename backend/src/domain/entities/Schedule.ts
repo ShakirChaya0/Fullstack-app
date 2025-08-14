@@ -14,14 +14,4 @@ export class Schedule {
     public get horaCierre(): string {
         return this._horaCierre;
     }
-
-
-    // public modificarHorarios(nuevaApertura: Date, nuevoCierre: Date): void {
-    //     if (nuevaApertura >= nuevoCierre) {
-    //         throw new Error("Opening time must be earlier than closing time");
-    //     }
-        
-    //     this._horaApertura = nuevaApertura;
-    //     this._horaCierre = nuevoCierre;
-    // }
 }

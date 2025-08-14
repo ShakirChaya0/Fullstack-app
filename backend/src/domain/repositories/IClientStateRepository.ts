@@ -1,7 +1,6 @@
-// import { SchemaClientState } from "../../shared/validators/clienteStateZod.js";
-import { stateClient } from "../entities/ClientState.js";
 import { UUID } from "crypto";
+import { stateClient } from "../../shared/types/SharedTypes.js";
 
 export interface IClientStateRepository {
-    create(idCliente: UUID, clientState:stateClient ): Promise<void>
+    create(idCliente: UUID, clientState: stateClient ): Promise<void>
 }

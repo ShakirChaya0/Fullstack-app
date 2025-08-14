@@ -1,5 +1,3 @@
-import { ValidatePolicy, ValidatePolicyPartial } from "../../shared/validators/PolicyZod.js";
-
 export class Policy {
     constructor(
         private readonly _policyId: number,
@@ -11,7 +9,7 @@ export class Policy {
         private _cantDiasDeshabilitacion: number,
         private _porcentajeIVA: number, // Decimal (ej: 21.0 para 21%)
         private _montoCubiertosPorPersona: number // Decimal para manejar centavos   
-    ) { ValidatePolicy(this) }
+    ) {}
 
     public get idPolitica() { return this._policyId; }
     public get minutosTolerancia() { return this._minutosTolerancia; }  
@@ -23,34 +21,12 @@ export class Policy {
     public get porcentajeIVA() { return this._porcentajeIVA; }
     public get montoCubiertosPorPersona() { return this._montoCubiertosPorPersona; }
 
-
-    public set minutosTolerancia(minutosTolerancia: number) { ValidatePolicyPartial({ minutosTolerancia }); this._minutosTolerancia = minutosTolerancia }
-    public set horarioMaximoDeReserva(horarioMaximoDeReserva: string) {
-        ValidatePolicyPartial({ horarioMaximoDeReserva });
-        this._horarioMaximoDeReserva = horarioMaximoDeReserva;
-    }
-    public set horasDeAnticipacionParaCancelar(horasDeAnticipacionParaCancelar: number) {
-        ValidatePolicyPartial({ horasDeAnticipacionParaCancelar });
-        this._horasDeAnticipacionParaCancelar = horasDeAnticipacionParaCancelar;
-    }
-    public set horasDeAnticipacionParaReservar(horasDeAnticipacionParaReservar: number) {
-        ValidatePolicyPartial({ horasDeAnticipacionParaReservar });
-        this._horasDeAnticipacionParaReservar = horasDeAnticipacionParaReservar;
-    }
-    public set limiteDeNoAsistencias(limiteDeNoAsistencias: number) {
-        ValidatePolicyPartial({ limiteDeNoAsistencias });
-        this._limiteDeNoAsistencias = limiteDeNoAsistencias;
-    }
-    public set cantDiasDeshabilitacion(cantDiasDeshabilitacion: number) {
-        ValidatePolicyPartial({ cantDiasDeshabilitacion });
-        this._cantDiasDeshabilitacion = cantDiasDeshabilitacion;
-    }
-    public set porcentajeIVA(porcentajeIVA: number) {
-        ValidatePolicyPartial({ porcentajeIVA });
-        this._porcentajeIVA = porcentajeIVA;
-    }
-    public set montoCubiertosPorPersona(montoCubiertosPorPersona: number) {
-        ValidatePolicyPartial({ montoCubiertosPorPersona });
-        this._montoCubiertosPorPersona = montoCubiertosPorPersona;
-    }
+    public set minutosTolerancia(minutosTolerancia: number) { this._minutosTolerancia = minutosTolerancia }
+    public set horarioMaximoDeReserva(horarioMaximoDeReserva: string) { this._horarioMaximoDeReserva = horarioMaximoDeReserva }
+    public set horasDeAnticipacionParaCancelar(horasDeAnticipacionParaCancelar: number) { this._horasDeAnticipacionParaCancelar = horasDeAnticipacionParaCancelar }
+    public set horasDeAnticipacionParaReservar(horasDeAnticipacionParaReservar: number) { this._horasDeAnticipacionParaReservar = horasDeAnticipacionParaReservar }
+    public set limiteDeNoAsistencias(limiteDeNoAsistencias: number) { this._limiteDeNoAsistencias = limiteDeNoAsistencias }
+    public set cantDiasDeshabilitacion(cantDiasDeshabilitacion: number) { this._cantDiasDeshabilitacion = cantDiasDeshabilitacion }
+    public set porcentajeIVA(porcentajeIVA: number) { this._porcentajeIVA = porcentajeIVA }
+    public set montoCubiertosPorPersona(montoCubiertosPorPersona: number) { this._montoCubiertosPorPersona = montoCubiertosPorPersona }
 }

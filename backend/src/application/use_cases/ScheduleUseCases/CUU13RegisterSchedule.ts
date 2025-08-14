@@ -1,7 +1,7 @@
 import { Schedule } from "../../../domain/entities/Schedule.js";
 import { ScheduleRepositoy } from "../../../infrastructure/database/repository/ScheduleRepositoy.js";
-import { diaDentroSemana, SchemaSchedule } from "../../../shared/validators/ScheduleZod.js";
-
+import { ConflictError } from "../../../shared/exceptions/ConflictError.js";
+import { SchemaSchedule } from "../../../shared/validators/ScheduleZod.js";
 
 export class CUU13RegisterSchedule {
     constructor(
@@ -9,14 +9,9 @@ export class CUU13RegisterSchedule {
     ) {}
 
     public async execute(horario: SchemaSchedule): Promise<Schedule> {
-
         const validarExistencia = await this.scheduleRepository.getById(horario.diaSemana);
 
-        if(validarExistencia !== null) throw new Error ('El día ' + horario.diaSemana + ' ya se encuentra registrado');
-
-        const validarDia = diaDentroSemana(horario.diaSemana);
-
-        if(validarDia === false) throw new Error('Día a crear fuera de la semana [1-7]');
+        if (validarExistencia !== null) throw new ConflictError('El día ' + horario.diaSemana + ' ya se encuentra registrado');
 
         const horarioBD = await this.scheduleRepository.create(horario);
         return horarioBD

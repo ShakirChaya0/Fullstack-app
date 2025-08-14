@@ -1,14 +1,11 @@
 import { NextFunction, Request, Response } from "express";
-import dotenv from 'dotenv';
 import { UnauthorizedError } from "../../shared/exceptions/UnauthorizedError.js";
 import { JwtPayloadInterface } from "../../domain/interfaces/JwtPayloadInterface.js";
 import { JWTService } from "../../application/services/JWTService.js";
 
-dotenv.config();
-
 export interface AuthenticatedRequest extends Request {
-  user?: JwtPayloadInterface;
-  qrToken?: string
+    user?: JwtPayloadInterface;
+    qrToken?: string
 }
 
 export async function AuthMiddleware(req: AuthenticatedRequest, res: Response, next: NextFunction) {
@@ -16,7 +13,7 @@ export async function AuthMiddleware(req: AuthenticatedRequest, res: Response, n
 
     const jwtService = new JWTService();
 
-    if(!token) throw new UnauthorizedError("Token no proporcionado");
+    if (!token) throw new UnauthorizedError("Token no proporcionado");
 
     try {
         const payload =  jwtService.verifyAccessToken(token);

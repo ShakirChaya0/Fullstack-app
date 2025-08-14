@@ -1,9 +1,11 @@
 import prisma from "../prisma/PrismaClientConnection.js"
 import { ISuggestionRepository } from "../../../domain/repositories/ISuggestionRepository.js";
 import { Suggestion } from "../../../domain/entities/Suggestion.js";
-import { Drink, Food, Product } from "../../../domain/entities/Product.js";
+import { Product } from "../../../domain/entities/Product.js";
 import { Prisma } from "@prisma/client";
 import { PartialSchemaSuggestion } from "../../../shared/validators/SuggestionZod.js";
+import { Food } from "../../../domain/entities/Food.js";
+import { Drink } from "../../../domain/entities/Drink.js";
 
 type SuggestionWithProduct = Prisma.SugerenciasGetPayload<{
     include: { Producto: { include: { Precios: true }} }
@@ -27,8 +29,8 @@ export class SuggestionRepository implements ISuggestionRepository {
 
         const suggestions = await prisma.sugerencias.findMany({
             where: {
-                fechaDesde: { lte: now },
-                fechaHasta: { gte: now }
+                fechaDesde: { gte: now },
+                fechaHasta: { lte: now }
             },
             include: {
                 Producto: { include: { Precios: true }}
@@ -47,7 +49,7 @@ export class SuggestionRepository implements ISuggestionRepository {
                 }
             },
             include: {
-                Producto: { include: { Precios: true }}
+                Producto: { include: { Precios: true } }
             }
         });
 
@@ -64,7 +66,7 @@ export class SuggestionRepository implements ISuggestionRepository {
                 idProducto: sugg.product.productId
             },
             include: {
-                Producto: { include: { Precios: true }}
+                Producto: { include: { Precios: true } }
             }
         });
 
@@ -81,7 +83,7 @@ export class SuggestionRepository implements ISuggestionRepository {
             },
             data: { ...data },
             include: {
-                Producto: { include: { Precios: true }}
+                Producto: { include: { Precios: true } }
             }
         });
 

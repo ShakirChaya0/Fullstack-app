@@ -12,14 +12,10 @@ export class CUU22ModifyWaiter {
 
     public async execute(idMozo: string, data: PartialSchemaWaiter): Promise<Waiter> {
         const existingWaiter = await this.waiterRepository.getWaiterById(idMozo);
-        if (!existingWaiter) {
-            throw new NotFoundError("Mozo no encontrado");
-        }
-
-        if (data.contrasenia) {
-            data.contrasenia = await this.passwordHashingService.hashPassword(data.contrasenia);
-        }
-
+        if (!existingWaiter) throw new NotFoundError("Mozo no encontrado");
+        
+        if (data.contrasenia) data.contrasenia = await this.passwordHashingService.hashPassword(data.contrasenia);
+        
         const updatedData = {
             ...existingWaiter,
             ...data,
@@ -35,7 +31,6 @@ export class CUU22ModifyWaiter {
             email: updatedData.email
         };
 
-        const updatedWaiter = await this.waiterRepository.updateWaiter(idMozo, draft);
-        return updatedWaiter;
+        return await this.waiterRepository.updateWaiter(idMozo, draft);
     }
 }
