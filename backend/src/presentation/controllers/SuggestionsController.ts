@@ -4,14 +4,11 @@ import { CUU21ModifySuggestion } from '../../application/use_cases/SuggestionsUs
 import { GetActiveSuggestionsUseCase } from '../../application/use_cases/SuggestionsUseCases/GetActiveSuggestionsUseCase.js';
 import { GetSuggestionsUseCase } from '../../application/use_cases/SuggestionsUseCases/GetSuggestionsUseCase.js';
 import { GetOneSuggestionUseCase } from '../../application/use_cases/SuggestionsUseCases/GetOneSuggestion.js';
-import { GetProductByIdUseCase } from '../../application/use_cases/ProductsUseCases/GetProductByIdUseCase.js';
 import { ValidateSuggestion, ValidateSuggestionPartial } from '../../shared/validators/SuggestionZod.js';
 import { ValidationError } from '../../shared/exceptions/ValidationError.js';
-import { NotFoundError } from '../../shared/exceptions/NotFoundError.js';
 
 export class SuggestionsController {
     constructor(
-        private readonly getProductByIdUseCase = new GetProductByIdUseCase(),
         private readonly getSuggestionsUseCase = new GetSuggestionsUseCase(),
         private readonly getActiveSuggestionsUseCase = new GetActiveSuggestionsUseCase(),
         private readonly registerSuggestionUseCase = new CUU20RegisterSuggestion(),
@@ -33,20 +30,6 @@ export class SuggestionsController {
         try {
             const suggestions = await this.getActiveSuggestionsUseCase.execute();
             res.json(suggestions);
-        } 
-        catch (error) {
-            next(error);
-        }
-    }
-
-    public async findProduct(req: Request, res: Response, next: NextFunction) {
-        try {
-            const idProducto = req.params.id;
-            if (!idProducto || isNaN(+idProducto)) throw new ValidationError("El ID enviado debe ser un número");
-
-            const product = await this.getProductByIdUseCase.execute(+idProducto);
-            if (!product) throw new NotFoundError("Producto no encontrado");
-            res.json(product);
         } 
         catch (error) {
             next(error);

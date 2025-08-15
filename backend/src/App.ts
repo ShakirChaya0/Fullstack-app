@@ -26,6 +26,7 @@ import { QrRoute } from './presentation/routes/QrRoute.js'
 import { ReservationRouter } from './presentation/routes/ReservationRoute.js'
 import { runReservationCheckJob } from './infrastructure/jobs/CheckReservationsJob.js'
 import { SocketServerConnection } from './presentation/sockets/SocketServerConnection.js'
+import { RoleMiddleware } from './presentation/middlewares/RoleMiddleware.js';
 
 dotenv.config()
 const app = express()
@@ -51,7 +52,7 @@ app.use('/productos', ProductosRouter())
 
 app.use("/novedades", NewsRouter())
 
-app.use("/politicas", PolicyRouter())
+app.use("/politicas", AuthMiddleware, RoleMiddleware(["Administrador"]), PolicyRouter())
 
 app.use('/informacion', InformationRouter())
 
@@ -61,23 +62,23 @@ app.use("/sugerencias", SuggestionsRouter())
 
 app.use('/mozos', AuthMiddleware, WaiterRouter())
 
-app.use('/mesas', MesaRouter())
+app.use('/mesas',  AuthMiddleware, MesaRouter())
 
-app.use("/precios", PricesRouter())
+app.use("/precios", AuthMiddleware, RoleMiddleware(["Administrador"]), PricesRouter())
 
-app.use("/clientes", ClientRouter() )
+app.use("/clientes", ClientRouter())
 
-app.use('/administradores', AdminRouter())
+app.use('/administradores', AuthMiddleware, RoleMiddleware(["Administrador"]), AdminRouter())
 
-app.use("/cocina", KitchenRouter())
+app.use("/cocina", AuthMiddleware, RoleMiddleware(["Administrador", "SectorCocina"]), KitchenRouter())
 
 app.use("/pagos", PaymentRouter())
 
 app.use("/pedidos", OptionalAuthMiddleware, OrderRouter())
 
-app.use("/qr", AuthMiddleware, QrRoute())
+app.use("/qr", AuthMiddleware, RoleMiddleware(["Mozo"]), QrRoute())
 
-app.use("/reservas", ReservationRouter());
+app.use("/reservas", ReservationRouter())
 
 app.use((req, res, next) => {
     const error =  new NotFoundError("Endpoint not found");

@@ -8,6 +8,7 @@ import { validateReservation} from "../../shared/validators/ReservationZod.js";
 import { CUU01RegisterAttendance } from "../../application/use_cases/ReservationUseCases/CUU01RegisterAttendance.js";
 import { ValidationError } from "../../shared/exceptions/ValidationError.js";
 import { StateReservation } from "../../shared/types/SharedTypes.js";
+import { AuthenticatedRequest } from "../middlewares/AuthMiddleware.js";
 
 export class ReservationController {
   constructor(
@@ -19,15 +20,12 @@ export class ReservationController {
     private readonly cuu01RegisterAttendance = new CUU01RegisterAttendance()
   ) {}
 
-  public createReservation = async (req: Request, res: Response, next: NextFunction) => {
+  public createReservation = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
     try {
-      const clientId  = req.params.idCliente;
-      if (!clientId) {
-        throw new ValidationError("Se ingreso un ID válido")
-      }
+      const user = req.user
 
       const data = validateReservation(req.body);
-      const newReservation = await this.registerReservation.execute(data, clientId);
+      const newReservation = await this.registerReservation.execute(data, user!.idUsuario);
       res.status(201).json(newReservation);
     } catch (error) {
       next(error);

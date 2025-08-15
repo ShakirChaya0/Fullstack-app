@@ -1,5 +1,7 @@
 import { Router } from "express";
 import { ProductController } from "../controllers/ProductsController.js";
+import { RoleMiddleware } from "../middlewares/RoleMiddleware.js";
+import { AuthMiddleware } from "../middlewares/AuthMiddleware.js";
 
 export function ProductosRouter () {
     const productRouter = Router();
@@ -13,9 +15,9 @@ export function ProductosRouter () {
 
     productRouter.get("/tipoProducto/:tipoProducto", (req, res, next) => { productController.getByType(req, res, next) });
 
-    productRouter.post("/", (req, res, next) => { productController.create(req, res, next) });
+    productRouter.post("/", AuthMiddleware, RoleMiddleware(["Administrador"]), (req, res, next) => { productController.create(req, res, next) });
 
-    productRouter.patch("/id/:idProducto", (req, res, next) => { productController.update(req, res, next) });
+    productRouter.patch("/id/:idProducto", AuthMiddleware, RoleMiddleware(["Administrador"]), (req, res, next) => { productController.update(req, res, next) });
 
     return productRouter;
 }

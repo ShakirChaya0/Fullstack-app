@@ -20,13 +20,24 @@ export class RegisterReservation {
     const mesasAsignadas: Table[] = [];
     let capacidadAcumulada = 0;
 
+    //Para buscar mesa de igual capacidad
+    const table = availableTables.find(table => table.capacity >= amountDiner)
+
+    if (table) {
+      mesasAsignadas.push(table)
+      return mesasAsignadas
+    }  
+
+    //Para juntar mesa
     for (const mesa of availableTables) {
-      mesasAsignadas.push(mesa);
       capacidadAcumulada += mesa.capacity;
+      mesasAsignadas.push(mesa);
+
       if (capacidadAcumulada >= amountDiner) {
         return mesasAsignadas;
       }
     }
+
     return null;
   }
 
@@ -47,10 +58,9 @@ export class RegisterReservation {
     const policy = await this.policyRepository.getPolicy();
     const now = new Date();
     const reservaDateTime = this.combineDateTime(data.fechaReserva, data.horarioReserva);
-    const diffMs = reservaDateTime.getTime() - now.getTime();
-    const diffHours = diffMs / (1000 * 60 * 60);
+    const diffMs = reservaDateTime.getTime() - (now.getTime() - 1000 * 60 * 60 * 3);
 
-    if (diffHours < policy.horasDeAnticipacionParaReservar) throw new BusinessError(`Las reservas deben realizarse con al menos ${policy.horasDeAnticipacionParaReservar} horas de anticipación.`);
+    if (diffMs < (policy.horasDeAnticipacionParaReservar * 60 * 60 * 1000)) throw new BusinessError(`Las reservas deben realizarse con al menos ${policy.horasDeAnticipacionParaReservar} horas de anticipación.`);
 
     const client = await this.clientRepository.getClientByidUser(clientId);
     if (!client) throw new NotFoundError('Cliente no encontrado');
@@ -62,6 +72,9 @@ export class RegisterReservation {
     if (!currentState) throw new BusinessError('Usted no está habilitado para hacer una reserva');
 
     const mesasDisponibles = await this.tableRepository.getAvailableTables(data.fechaReserva, data.horarioReserva);
+
+    console.log("Mesas disponibles")
+    console.log(mesasDisponibles)
     
     const existingReservation = await this.reservationRepository.getExistingReservation(clientId, data);
     

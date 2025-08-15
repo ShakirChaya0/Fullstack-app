@@ -4,8 +4,6 @@ import { Product } from "../entities/Product.js";
 export interface IProductoRepository {
     getAll(): Promise<Product[]>;
 
-    getById(idProducto: number): Promise<Product | null>;
-
     getByName(nombreProducto: string): Promise<Product[] | null>;
 
     getByType(tipoProducto: string): Promise<Product[] | null>;

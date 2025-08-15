@@ -5,7 +5,8 @@ GET http://localhost:3000/mozos
 GET http://localhost:3000/mozos/id/9ae3b11b-f8ff-4a1e-ac7d-2867dbcf77ff
 
 ###
-GET http://localhost:3000/mozos/nombre/franconicolas
+GET http://localhost:3000/mozos/nombre/Herlaumarsan
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzdWFyaW8iOiIzYTIwMDQyNS0zYTU2LTRmYWEtYTA3Yy1lY2UwYjdkMmFjZWQiLCJlbWFpbCI6Im1hcnRpbmdhbHZhbm9AZ21haWwuY29tIiwidGlwb1VzdWFyaW8iOiJNb3pvIiwidXNlcm5hbWUiOiJIZXJsYXVtYXJzYW4iLCJpYXQiOjE3NTUyNjkzNzAsImV4cCI6MTc1NTg3NDE3MH0.Q_1_SvJYatPlXhRCf76JbzxxQl0FReAv6h8PpcPLPbc
 
 ###
 POST http://localhost:3000/mozos
@@ -23,7 +24,8 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzdWFyaW8iOiIzN
 }   
 
 ###
-PATCH http://localhost:3000/mozos/id/99023c62-9b66-41a3-aac2-c857099fd573
+PATCH http://localhost:3000/mozos/id/3a200425-3a56-4faa-a07c-ece0b7d2aced
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzdWFyaW8iOiIzYTIwMDQyNS0zYTU2LTRmYWEtYTA3Yy1lY2UwYjdkMmFjZWQiLCJlbWFpbCI6Im1hcnRpbmdhbHZhbm9AZ21haWwuY29tIiwidGlwb1VzdWFyaW8iOiJNb3pvIiwidXNlcm5hbWUiOiJIZXJsYXVtYXJzYW4iLCJpYXQiOjE3NTUyNjkzNzAsImV4cCI6MTc1NTg3NDE3MH0.Q_1_SvJYatPlXhRCf76JbzxxQl0FReAv6h8PpcPLPbc
 Content-Type: application/json
 
 {

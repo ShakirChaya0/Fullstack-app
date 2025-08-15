@@ -1,17 +1,19 @@
 import { Router } from "express";
 import { PaymentController } from "../controllers/PaymentController.js";
+import { RoleMiddleware } from "../middlewares/RoleMiddleware.js";
+import { AuthMiddleware } from "../middlewares/AuthMiddleware.js";
 
 export function PaymentRouter () {
     const paymentRouter = Router();
     const paymentController = new PaymentController();
 
-    paymentRouter.get("/", (req, res, next) => { paymentController.getAll(req, res, next) });
+    paymentRouter.get("/", AuthMiddleware, RoleMiddleware(["Administrador"]), (req, res, next) => { paymentController.getAll(req, res, next) });
 
-    paymentRouter.get("/pedido/:idPedido", (req, res, next) => { paymentController.getByOrder(req, res, next) });
+    paymentRouter.get("/pedido/:idPedido", AuthMiddleware, RoleMiddleware(["Administrador", "Mozo"]), (req, res, next) => { paymentController.getByOrder(req, res, next) });
     
-    paymentRouter.get("/fechas", (req, res, next) => { paymentController.getByDateRange(req, res, next) });
+    paymentRouter.get("/fechas", AuthMiddleware, RoleMiddleware(["Administrador"]), (req, res, next) => { paymentController.getByDateRange(req, res, next) });
     
-    paymentRouter.get("/metodoPago/:metodoPago", (req, res, next) => { paymentController.getByPaymentMethod(req, res, next) });
+    paymentRouter.get("/metodoPago/:metodoPago", AuthMiddleware, RoleMiddleware(["Administrador"]), (req, res, next) => { paymentController.getByPaymentMethod(req, res, next) });
     
     paymentRouter.get("/cuenta/:id", (req, res, next) => { paymentController.generateCheck(req, res, next) });
 

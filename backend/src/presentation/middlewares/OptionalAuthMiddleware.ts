@@ -3,7 +3,7 @@ import { AuthenticatedRequest } from "./AuthMiddleware.js";
 import { JWTService } from "../../application/services/JWTService.js";
 import { JwtPayloadInterface } from "../../domain/interfaces/JwtPayloadInterface.js";
 
-export const OptionalAuthMiddleware = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+export const OptionalAuthMiddleware = (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
     const userJWT = req.headers.authorization?.split(' ')[1];
     const qrToken = req.headers.cookie
     req.qrToken = qrToken

@@ -1,11 +1,12 @@
 ### Crear reserva
-POST http://localhost:3000/reservas/991bd649-5fea-48e9-8062-e3cd12d0bb4d
+POST http://localhost:3000/reservas/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzdWFyaW8iOiIwNjNhOTNmNS0xNDY1LTQyNWUtYmY4Mi1kYjdiM2Q2N2NlODAiLCJlbWFpbCI6InRlc3QyQGdtYWlsLmNvbSIsInRpcG9Vc3VhcmlvIjoiQ2xpZW50ZSIsInVzZXJuYW1lIjoiVGVzdDIiLCJpYXQiOjE3NTUyNzQ0NzEsImV4cCI6MTc1NTg3OTI3MX0.nWN0CqHJFsMWaO424FhflFFwwKhEB02nyjEcQJHVSlA
 Content-Type: application/json
 
 {
-    "fechaReserva" : "09/08/2025",
+    "fechaReserva" : "15/08/2025",
     "horarioReserva": "20:00",  
-    "cantidadComensales": 4
+    "cantidadComensales": 10
 }
 
 ### Obetner reserva por Id
@@ -14,12 +15,15 @@ GET http://localhost:3000/reservas/7
 
 ### Obtener reserva por fecha
 GET http://localhost:3000/reservas?date=2025-08-14
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzdWFyaW8iOiIzYTIwMDQyNS0zYTU2LTRmYWEtYTA3Yy1lY2UwYjdkMmFjZWQiLCJlbWFpbCI6Im1hcnRpbmdhbHZhbm9AZ21haWwuY29tIiwidGlwb1VzdWFyaW8iOiJNb3pvIiwidXNlcm5hbWUiOiJIZXJsYXVtYXJzYW4iLCJpYXQiOjE3NTUyNjkzNzAsImV4cCI6MTc1NTg3NDE3MH0.Q_1_SvJYatPlXhRCf76JbzxxQl0FReAv6h8PpcPLPbc
 
 ### Obtener reserva por id de Cliente
 GET http://localhost:3000/reservas/cliente/991bd649-5fea-48e9-8062-e3cd12d0bb4d
 
 ### Actualizar solo el estado de la reserva, dependiendo de la query que se mande
 PATCH http://localhost:3000/reservas/estado/26?estado=No_Asistida
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzdWFyaW8iOiIzYTIwMDQyNS0zYTU2LTRmYWEtYTA3Yy1lY2UwYjdkMmFjZWQiLCJlbWFpbCI6Im1hcnRpbmdhbHZhbm9AZ21haWwuY29tIiwidGlwb1VzdWFyaW8iOiJNb3pvIiwidXNlcm5hbWUiOiJIZXJsYXVtYXJzYW4iLCJpYXQiOjE3NTUyNjkzNzAsImV4cCI6MTc1NTg3NDE3MH0.Q_1_SvJYatPlXhRCf76JbzxxQl0FReAv6h8PpcPLPbc
 
 ### Obtener reserva por nombre y apellido del Cliente
 GET http://localhost:3000/reservas/clienteReserva?nombre=Guillermo&apellido=Sussi
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzdWFyaW8iOiIzYTIwMDQyNS0zYTU2LTRmYWEtYTA3Yy1lY2UwYjdkMmFjZWQiLCJlbWFpbCI6Im1hcnRpbmdhbHZhbm9AZ21haWwuY29tIiwidGlwb1VzdWFyaW8iOiJNb3pvIiwidXNlcm5hbWUiOiJIZXJsYXVtYXJzYW4iLCJpYXQiOjE3NTUyNjkzNzAsImV4cCI6MTc1NTg3NDE3MH0.Q_1_SvJYatPlXhRCf76JbzxxQl0FReAv6h8PpcPLPbc
