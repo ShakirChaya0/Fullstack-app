@@ -15,9 +15,9 @@ export class ScheduleRepositoy implements IScheduleRepository{
         ))
     }
 
-    public async getById(idHorario: number): Promise<Schedule | null> {
+    public async getById(idDay: number): Promise<Schedule | null> {
         const horario = await prisma.horarios.findUnique({
-            where: { diaSemana: idHorario}
+            where: { diaSemana: idDay}
         })
         
         if (!horario) return null;
@@ -30,13 +30,16 @@ export class ScheduleRepositoy implements IScheduleRepository{
     }
 
     public async create(horario: SchemaSchedule): Promise<Schedule> {
+        // Parsear las horas para evitar conversión de zona horaria
+        const [aperturaHours, aperturaMinutes] = horario.horaApertura.split(':').map(Number);
+        const [cierreHours, cierreMinutes] = horario.horaCierre.split(':').map(Number);
+
         const nuevoHorario = await prisma.horarios.create({
             data: {
                 diaSemana: horario.diaSemana,
-                //Se establece fechas fijas para los horarios ya que en la BD se guardaran como datos Time without zone time
-                //pero prisma exige que sean del tipo Date aunque solo use la hora
-                horaApertura: new Date(`1970-01-01T${horario.horaApertura}:00`),
-                horaCierre: new Date(`1970-01-01T${horario.horaCierre}:00`)
+                // USAR Date.UTC() para evitar conversión de zona horaria
+                horaApertura: new Date(Date.UTC(1970, 0, 1, aperturaHours, aperturaMinutes, 0, 0)),
+                horaCierre: new Date(Date.UTC(1970, 0, 1, cierreHours, cierreMinutes, 0, 0))
             }
         });
 
@@ -46,7 +49,7 @@ export class ScheduleRepositoy implements IScheduleRepository{
             nuevoHorario.horaCierre.toTimeString().slice(0,5)
         );
     }
-
+    
     public async update(diaSemana: number, horarioApertura: string | undefined, horarioCierre: string | undefined): Promise<Schedule>{
         //Como se desean guardar los horarios como variables del tipo Time y debido a que prisma requiere que estas mismas variables sean
         //del tipo Date se implementa una interfaz provisoria para ejecutar el update

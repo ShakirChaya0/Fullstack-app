@@ -112,37 +112,26 @@ export class TableRepository implements ITableRepository {
 
     public async getAvailableTables(reservationDate: Date, reservationTime: string): Promise<Table[]> {
         const [hours, minutes] = reservationTime.split(':').map(Number);
-        const timeAsDate = new Date(0, 0, 0, hours, minutes);
+        const timeAsDate = new Date(Date.UTC(1970, 0, 1, hours, minutes, 0, 0));
 
-        console.log('Buscando mesas disponibles para:', {
-            fecha: reservationDate,
-            hora: reservationTime,
-            timeAsDate: timeAsDate
-        });
-        
         const availableTables = await prisma.mesa.findMany({
             where: {
-                NOT: {
-                    Mesas_Reservas: {
-                        some: {
-                            Reserva: {
-                                estado: "Realizada",
-                                fechaReserva: reservationDate,     
-                                horarioReserva: timeAsDate          
-                            }
+                Mesas_Reservas: {
+                    none: {
+                        Reserva: {
+                            fechaReserva: reservationDate, 
+                            horarioReserva: timeAsDate      
                         }
                     }
                 }
             },
             orderBy: { capacidad: "asc" }
         });
-
-        console.log('Mesas disponibles encontradas:', availableTables.length);
-
-        return availableTables.map(table => new Table (
+    
+        return availableTables.map(table => new Table(
             table.nroMesa,
             table.capacidad,
             table.estado 
         ));
-    }
+    }   
 }

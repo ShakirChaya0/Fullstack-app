@@ -30,7 +30,7 @@ export class ReservationRepository implements IReservationRepository {
   public async getExistingReservation(clientId: string, reservation: SchemaReservation): Promise<Reservation | null> {
     const [hours, minutes] = reservation.horarioReserva.split(':').map(Number);
 
-    const timeAsDate = new Date(Date.UTC(1970, 0, 1, hours, minutes, 0));
+    const timeAsDate = new Date(Date.UTC(1970, 0, 1, hours, minutes, 0, 0));
 
     const existingReservation = await prisma.reserva.findFirst({
       where: {
@@ -62,7 +62,7 @@ export class ReservationRepository implements IReservationRepository {
   public async create(reservation: SchemaReservation, clientId: string, tables: Table[]): Promise<Reservation | null> {
     const [hours, minutes] = reservation.horarioReserva.split(':').map(Number);
 
-    const timeAsDate = new Date(Date.UTC(1970, 0, 1, hours, minutes, 0));
+    const timeAsDate = new Date(Date.UTC(1970, 0, 1, hours, minutes, 0, 0));
 
     const createdReservation = await prisma.reserva.create({
       data: {

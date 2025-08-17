@@ -6,10 +6,11 @@ GET http://localhost:3000/horarios/id/7
 
 ###
 POST http://localhost:3000/horarios/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzdWFyaW8iOiI0MWJiN2JlMy1mODNiLTQ5YWQtOGE3ZS02YTkwYmJmYjM4OGMiLCJlbWFpbCI6InRlc3QxQGdtYWlsLmNvbSIsInRpcG9Vc3VhcmlvIjoiQ2xpZW50ZSIsInVzZXJuYW1lIjoiVGVzdDEiLCJpYXQiOjE3NTU0NDMwNDQsImV4cCI6MTc1NjA0Nzg0NH0.EC6ZQK5zOtdjvFd6uiG4-o5Iipbwz-kBbcTTInpFydQ
 Content-Type: application/json
 
 {
-    "diaSemana": 7,   
+    "diaSemana": 1,   
     "horaApertura": "22:00",
     "horaCierre": "03:00"
 }

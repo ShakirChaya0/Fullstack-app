@@ -7,13 +7,15 @@ import { Reservation } from '../../../domain/entities/Reservation.js';
 import { BusinessError } from '../../../shared/exceptions/BusinessError.js';
 import { NotFoundError } from '../../../shared/exceptions/NotFoundError.js';
 import { PolicyRepository } from '../../../infrastructure/database/repository/PolicyRepository.js';
+import { ScheduleRepositoy } from '../../../infrastructure/database/repository/ScheduleRepositoy.js';
 
 export class RegisterReservation {
   constructor(
     private readonly reservationRepository = new ReservationRepository(),
     private readonly clientRepository = new ClientRepository(),
     private readonly tableRepository = new TableRepository(), 
-    private readonly policyRepository = new PolicyRepository()
+    private readonly policyRepository = new PolicyRepository(), 
+    private readonly schedulelRepository = new ScheduleRepositoy()
   ) {}
 
   private assignTables(availableTables: Table[], amountDiner: number): Table[] | null {
@@ -21,7 +23,7 @@ export class RegisterReservation {
     let capacidadAcumulada = 0;
 
     //Para buscar mesa de igual capacidad
-    const table = availableTables.find(table => table.capacity >= amountDiner)
+    const table = availableTables.find(table => table.capacity == amountDiner)
 
     if (table) {
       mesasAsignadas.push(table)
@@ -71,14 +73,37 @@ export class RegisterReservation {
 
     if (!currentState) throw new BusinessError('Usted no está habilitado para hacer una reserva');
 
-    const mesasDisponibles = await this.tableRepository.getAvailableTables(data.fechaReserva, data.horarioReserva);
-
-    console.log("Mesas disponibles")
-    console.log(mesasDisponibles)
-    
     const existingReservation = await this.reservationRepository.getExistingReservation(clientId, data);
     
     if (existingReservation) throw new BusinessError('Usted ya tiene una reserva para esa fecha y ese horario');
+
+    // Se valida que el horario de la Reserva sea en los Horarios del Restaurante
+    const dayReservation = data.fechaReserva.getDay();
+
+    const schedule = await this.schedulelRepository.getById(dayReservation); 
+
+    if (!schedule) throw new NotFoundError('No hay horarios disponibles para ese dia'); 
+
+    console.log(schedule.horaApertura);
+    console.log(schedule.horaCierre);
+    console.log(data.horarioReserva)
+
+    const [hours, minutes] = data.horarioReserva.split(':').map(Number);
+    const timeAsDate = new Date(Date.UTC(1970, 0, 1, hours, minutes, 0, 0));
+
+    const [aperturaHours, aperturaMinutes] = schedule.horaApertura.split(':').map(Number);
+    const [cierreHours, cierreMinutes] = schedule.horaCierre.split(':').map(Number);
+
+    const aperturaDate = new Date(Date.UTC(1970, 0, 1, aperturaHours, aperturaMinutes, 0, 0));
+    const cierreDate = new Date(Date.UTC(1970, 0, 1, cierreHours, cierreMinutes, 0, 0));
+
+    console.log(aperturaDate);
+    console.log(cierreDate);
+
+    if (timeAsDate < aperturaDate || timeAsDate > cierreDate) throw new BusinessError('Horario fuera del rango de atención');
+    
+    //Validacion de Mesas disponibles y su asignacion
+    const mesasDisponibles = await this.tableRepository.getAvailableTables(data.fechaReserva, data.horarioReserva);
     
     if (mesasDisponibles.length === 0) throw new BusinessError('No hay mesas disponibles para esta fecha y hora');
     
