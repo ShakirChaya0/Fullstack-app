@@ -23,7 +23,7 @@ export class RegisterReservation {
     let capacidadAcumulada = 0;
 
     //Para buscar mesa de igual capacidad
-    const table = availableTables.find(table => table.capacity == amountDiner)
+    const table = availableTables.find(table => table.capacity >= amountDiner)
 
     if (table) {
       mesasAsignadas.push(table)

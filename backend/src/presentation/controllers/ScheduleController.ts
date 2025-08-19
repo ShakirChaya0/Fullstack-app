@@ -28,11 +28,11 @@ export class HorarioController {
 
     public getById = async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const idHorario = req.params.idHorario;
+            const diaSemana = req.params.diaSemana;
             
-            if (!idHorario || isNaN(+idHorario)) throw new ValidationError("El ID debe ser un número")
+            if (!diaSemana || isNaN(+diaSemana)) throw new ValidationError("El ID debe ser un número")
 
-            const horario = await this.getScheduleById.execute(+idHorario);
+            const horario = await this.getScheduleById.execute(+diaSemana);
 
             res.status(200).json(horario);
         } catch(error) {
@@ -44,7 +44,7 @@ export class HorarioController {
         try {
             const { diaSemana , horaApertura, horaCierre}  = req.body;
 
-            if (!diaSemana || !horaApertura || !horaCierre) throw new ValidationError("Todos los campos son obligatorios")
+            if ((!diaSemana && diaSemana != 0) || !horaApertura || !horaCierre) throw new ValidationError("Todos los campos son obligatorios")
 
             const validarHorario = ValidateSchedule(req.body);
             if (!validarHorario.success) throw new ValidationError(`Validation failed: ${validarHorario.error.message}`);

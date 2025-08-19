@@ -7,8 +7,8 @@ export class GetScheduleById {
         private readonly scheduleRepository = new ScheduleRepositoy()
     ) {}
 
-    public async execute(idHorario: number): Promise<Schedule> {
-        const schedule =  await this.scheduleRepository.getById(idHorario);
+    public async execute(diaSemana: number): Promise<Schedule> {
+        const schedule =  await this.scheduleRepository.getById(diaSemana);
 
         if (!schedule) throw new NotFoundError("Horario no encontrado");
 

@@ -1,4 +1,3 @@
-import { Producto } from '@prisma/client';
 import z from 'zod'
 
 const ProductosSchema = z.object({
@@ -18,10 +17,10 @@ export const partialProductosSchema = ProductosSchema.partial();
 
 export type PartialSchemaProductos = z.infer<typeof partialProductosSchema>;
 
-export function ValidateProduct(data: Producto){
+export function ValidateProduct(data: SchemaProductos){
     return ProductosSchema.safeParse(data)
 }
 
-export function ValidateProductPartial(data: Partial<Producto>){
-    return ProductosSchema.partial().safeParse(data)
+export function ValidateProductPartial(data: PartialSchemaProductos){
+    return partialProductosSchema.safeParse(data)
 }

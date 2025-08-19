@@ -1,7 +1,4 @@
 import z from 'zod'
-import { Novedad } from '@prisma/client';
-import { NewsClass } from '../../domain/entities/News.js';
-import { News } from '../../domain/interfaces/NewsInterface.js';
 import { ValidationError } from '../exceptions/ValidationError.js';
 
 const newsSchema = z.object({
@@ -17,7 +14,7 @@ const partialNewsSchema = newsSchema.partial();
 
 export type PartialSchemaNews = z.infer<typeof partialNewsSchema>
 
-export function ValidateNews(data: (Novedad | News)){
+export function ValidateNews(data: SchemaNews){
     const result = newsSchema.safeParse(data)
     if (!result.success) {
             throw new ValidationError(result.error.errors.map(e => e.message).join(", "))
@@ -25,8 +22,8 @@ export function ValidateNews(data: (Novedad | News)){
     return result.data
 }
 
-export function ValidateNewsPartial(data: Partial<Novedad | NewsClass>){
-    const result = newsSchema.partial().safeParse(data)
+export function ValidateNewsPartial(data: PartialSchemaNews){
+    const result = partialNewsSchema.safeParse(data)
     if (!result.success) {
         const mensajes = result.error.errors.map(e => e.message).join(", ")
         throw new ValidationError(`${mensajes}`)

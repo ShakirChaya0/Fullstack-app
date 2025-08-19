@@ -1,4 +1,3 @@
-import { Precios } from '@prisma/client';
 import z from 'zod'
 
 export const PreciosSchema = z.object({
@@ -9,6 +8,6 @@ export const PreciosSchema = z.object({
 
 export type SchemaPrice = z.infer<typeof PreciosSchema>;
 
-export function ValidatePrice(data: Precios){
+export function ValidatePrice(data: SchemaPrice){
     return PreciosSchema.safeParse(data)
 }

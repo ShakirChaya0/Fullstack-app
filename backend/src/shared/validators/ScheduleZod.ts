@@ -1,11 +1,10 @@
 import { z } from 'zod';
-import { Horarios } from '@prisma/client';
 
 export const ScheduleSchema = z.object({
   diaSemana: z.number()
     .int()
-    .min(1, "El ID debe ser mayor o igual a 1 (Lunes)")
-    .max(7, "El ID debe ser menor o igual a 7 (Domingo)"),
+    .min(0, "El ID debe ser mayor o igual a 0 (Domingo)")
+    .max(6, "El ID debe ser menor o igual a 6 (Sabado)"),
 
   //formato HH:MM
   horaApertura: z.string()
@@ -21,10 +20,10 @@ const PartialSchemaSchedule = ScheduleSchema.partial();
 export type SchemaSchedule = z.infer<typeof ScheduleSchema>;
 export type PartialSchemaSchedule = z.infer<typeof PartialSchemaSchedule>;
 
-export function ValidateSchedule(data: Horarios) {
+export function ValidateSchedule(data: SchemaSchedule) {
     return ScheduleSchema.safeParse(data);
 }
 
-export function ValidatePartialSchedule(data: Partial<Horarios>) {
+export function ValidatePartialSchedule(data: PartialSchemaSchedule) {
     return PartialSchemaSchedule.safeParse(data);
 }

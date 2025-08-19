@@ -49,7 +49,11 @@ const ReservationSchema = z.object({
 
 export type SchemaReservation = z.infer<typeof ReservationSchema>;
 
-export function validateReservation(data: Partial<SchemaReservation>) {
+export const PartialReservationSchema = ReservationSchema.partial();
+
+export type PartialSchemaReservation = z.infer<typeof PartialReservationSchema>;
+
+export function validateReservation(data: SchemaReservation) {
   const result = ReservationSchema.safeParse(data);
     if(!result.success) {
             throw new ValidationError(result.error.errors.map(e => e.message).join(", "))
@@ -57,11 +61,7 @@ export function validateReservation(data: Partial<SchemaReservation>) {
   return result.data;
 }
 
-export const PartialReservationSchema = ReservationSchema.partial();
-
-export type PartialSchemaReservation = z.infer<typeof PartialReservationSchema>;
-
-export function validatePartialReservation(data: Partial<SchemaReservation>) {
+export function validatePartialReservation(data: PartialSchemaReservation) {
   const result = PartialReservationSchema.safeParse(data);
     if(!result.success) {
             throw new ValidationError(result.error.errors.map(e => e.message).join(", "))

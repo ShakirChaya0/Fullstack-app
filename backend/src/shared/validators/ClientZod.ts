@@ -1,5 +1,4 @@
 import z from "zod"; 
-import { Client } from "../../domain/entities/Client.js";
 import { ValidationError } from "../exceptions/ValidationError.js";
 
 export const ClientSchema = z.object({
@@ -45,7 +44,7 @@ export const ClientSchema = z.object({
 export type SchemaCliente = z.infer<typeof ClientSchema>; 
 
 
-export function validateClient ( data:Client){
+export function validateClient(data: SchemaCliente) {
     const result = ClientSchema.safeParse(data); 
     if(!result.success) {
         throw new ValidationError(result.error.errors.map(e => e.message).join(", "))
@@ -57,7 +56,7 @@ const PartialSchemClient = ClientSchema.partial();
 
 export type PartialClientSchema = z.infer<typeof PartialSchemClient>; 
 
-export function validateClientPartial (data:Client) {
+export function validateClientPartial(data: PartialClientSchema) {
         const result = PartialSchemClient.safeParse(data);
         if (!result.success) {
             throw new ValidationError(result.error.errors.map(e => e.message).join(", "))

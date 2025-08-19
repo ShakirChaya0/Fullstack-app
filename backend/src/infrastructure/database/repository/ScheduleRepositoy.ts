@@ -10,43 +10,43 @@ export class ScheduleRepositoy implements IScheduleRepository{
         const horarios = await prisma.horarios.findMany();
         return horarios.map(horario => new Schedule(
             horario.diaSemana,        
-            horario.horaApertura.toTimeString().slice(0,5),
-            horario.horaCierre.toTimeString().slice(0,5)
+            horario.horaApertura.toISOString().slice(11, 16),
+            horario.horaCierre.toISOString().slice(11, 16)
         ))
     }
 
-    public async getById(idDay: number): Promise<Schedule | null> {
+    public async getById(diaSemana: number): Promise<Schedule | null> {
         const horario = await prisma.horarios.findUnique({
-            where: { diaSemana: idDay}
+            where: { diaSemana: diaSemana}
         })
         
         if (!horario) return null;
 
         return new Schedule(
             horario.diaSemana,
-            horario.horaApertura.toTimeString().slice(0,5),
-            horario.horaCierre.toTimeString().slice(0,5)
+            horario.horaApertura.toISOString().slice(11, 16),
+            horario.horaCierre.toISOString().slice(11, 16)
         );
     }
 
     public async create(horario: SchemaSchedule): Promise<Schedule> {
-        // Parsear las horas para evitar conversión de zona horaria
-        const [aperturaHours, aperturaMinutes] = horario.horaApertura.split(':').map(Number);
-        const [cierreHours, cierreMinutes] = horario.horaCierre.split(':').map(Number);
+        const [openHours, openMinutes] = horario.horaApertura.split(':').map(Number)
+        const [closeHours, closeMinutes] = horario.horaCierre.split(':').map(Number)
 
         const nuevoHorario = await prisma.horarios.create({
             data: {
                 diaSemana: horario.diaSemana,
-                // USAR Date.UTC() para evitar conversión de zona horaria
-                horaApertura: new Date(Date.UTC(1970, 0, 1, aperturaHours, aperturaMinutes, 0, 0)),
-                horaCierre: new Date(Date.UTC(1970, 0, 1, cierreHours, cierreMinutes, 0, 0))
+                //Se establece fechas fijas para los horarios ya que en la BD se guardaran como datos Time without zone time
+                //pero prisma exige que sean del tipo Date aunque solo use la hora
+                horaApertura: new Date(Date.UTC(1970, 0, 1, openHours, openMinutes, 0, 0)),
+                horaCierre: new Date(Date.UTC(1970, 0, 1, closeHours, closeMinutes, 0, 0))
             }
-        });
+        })
 
         return new Schedule(
             nuevoHorario.diaSemana,
-            nuevoHorario.horaApertura.toTimeString().slice(0,5),
-            nuevoHorario.horaCierre.toTimeString().slice(0,5)
+            nuevoHorario.horaApertura.toISOString().slice(11, 16),
+            nuevoHorario.horaCierre.toISOString().slice(11, 16)
         );
     }
     
@@ -56,11 +56,13 @@ export class ScheduleRepositoy implements IScheduleRepository{
         const camposQueActualizar: IUpdateSchedule = {} 
 
         if (horarioApertura){
-            camposQueActualizar.horaApertura = new Date(`1970-01-01T${horarioApertura}:00`);
+            const [openHours, openMinutes] = horarioApertura.split(':').map(Number)
+            camposQueActualizar.horaApertura = new Date(Date.UTC(1970, 0, 1, openHours, openMinutes, 0, 0))
         }
 
         if (horarioCierre){
-            camposQueActualizar.horaCierre = new Date(`1970-01-01T${horarioCierre}:00`)
+            const [closeHours, closeMinutes] = horarioCierre.split(':').map(Number)
+            camposQueActualizar.horaCierre = new Date(Date.UTC(1970, 0, 1, closeHours, closeMinutes, 0, 0))
         }
         
         const horarioActualizado = await prisma.horarios.update({
@@ -71,8 +73,8 @@ export class ScheduleRepositoy implements IScheduleRepository{
         })
         return new Schedule(
             horarioActualizado.diaSemana,
-            horarioActualizado.horaApertura.toTimeString().slice(0,5),
-            horarioActualizado.horaCierre.toTimeString().slice(0,5)
+            horarioActualizado.horaApertura.toISOString().slice(11, 16),
+            horarioActualizado.horaCierre.toISOString().slice(11, 16)
         );
     }
 }

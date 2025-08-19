@@ -1,6 +1,4 @@
-import { PoliticasRestaurante } from '@prisma/client';
 import { z } from 'zod';
-import { Policy } from '../../domain/entities/Policy.js';
 import { ValidationError } from '../exceptions/ValidationError.js';
 
 export const PolicySchema = z.object({
@@ -48,7 +46,7 @@ const PolicySchemaPartial = PolicySchema.partial();
 
 export type PartialSchemaPolicy = z.infer<typeof PolicySchemaPartial>;
 
-export function ValidatePolicy(data: Policy | PoliticasRestaurante) {
+export function ValidatePolicy(data: SchemaPolicy) {
     const result = PolicySchema.safeParse(data);
     if (!result.success) {
         const mensajes = result.error.errors.map(e => e.message).join(", ");
@@ -57,8 +55,8 @@ export function ValidatePolicy(data: Policy | PoliticasRestaurante) {
     return result.data; 
 }
 
-export function ValidatePolicyPartial(data: Partial<PoliticasRestaurante> | Partial<Policy>) {
-    const validate = PolicySchema.partial().safeParse(data);  
+export function ValidatePolicyPartial(data: PartialSchemaPolicy) {
+    const validate = PolicySchemaPartial.safeParse(data);  
     if (!validate.success) {
       const mensajes = validate.error.errors.map(e => e.message).join(", ")
             throw new ValidationError(mensajes);

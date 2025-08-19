@@ -1,6 +1,4 @@
 import z from 'zod';
-import { Information } from '../../domain/entities/Information.js';
-import { InformacionRestaurante } from '@prisma/client';
 import { ValidationError } from '../exceptions/ValidationError.js';
 
 export const InformationSchema = z.object({ 
@@ -16,7 +14,7 @@ const PartialInformationSchema = InformationSchema.partial();
 
 export type PartialSchemaInformation = z.infer<typeof PartialInformationSchema>
 
-export function ValidateInformation(data: Information) {
+export function ValidateInformation(data: SchemaInformation) {
     const result = InformationSchema.safeParse(data);
     if (!result.success) {
         const mensajes = result.error.errors.map(e => e.message).join(", ");
@@ -25,7 +23,7 @@ export function ValidateInformation(data: Information) {
     return result.data;
 }
 
-export function ValidatePartialInformation(data: Partial<InformacionRestaurante> | Partial<Information>) {
+export function ValidatePartialInformation(data: PartialSchemaInformation) {
     const validate = PartialInformationSchema.partial().safeParse(data);
     if (!validate.success) {
         const mensajes = validate.error.errors.map(e => e.message).join(", ");

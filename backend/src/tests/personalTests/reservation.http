@@ -1,12 +1,12 @@
 ### Crear reserva
 POST http://localhost:3000/reservas/
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzdWFyaW8iOiI0MWJiN2JlMy1mODNiLTQ5YWQtOGE3ZS02YTkwYmJmYjM4OGMiLCJlbWFpbCI6InRlc3QxQGdtYWlsLmNvbSIsInRpcG9Vc3VhcmlvIjoiQ2xpZW50ZSIsInVzZXJuYW1lIjoiVGVzdDEiLCJpYXQiOjE3NTU0NDMwNDQsImV4cCI6MTc1NjA0Nzg0NH0.EC6ZQK5zOtdjvFd6uiG4-o5Iipbwz-kBbcTTInpFydQ
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzdWFyaW8iOiI4ZTA2ZTRiOS1jYzU4LTRmZWEtOWQ2ZS04MThjZmQ1Zjg2ZjciLCJlbWFpbCI6InRlc3RAZ21haWwuY29tIiwidGlwb1VzdWFyaW8iOiJDbGllbnRlIiwidXNlcm5hbWUiOiJUZXN0IiwiaWF0IjoxNzU1NjA1MjU2LCJleHAiOjE3NTYyMTAwNTZ9.9Dx1qVyYyhP28CCd-VPmfHQRiOSLAqBuA_ut2yl4pUQ
 Content-Type: application/json
 
 {
     "fechaReserva" : "19/08/2025",
-    "horarioReserva": "22:00",  
-    "cantidadComensales": 2
+    "horarioReserva": "21:00",  
+    "cantidadComensales": 4
 }
 
 ### Obetner reserva por Id

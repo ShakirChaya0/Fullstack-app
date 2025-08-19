@@ -13,7 +13,7 @@ const partialKitchenSchema = kitchenSchema.partial();
 
 export type PartialSchemaKitchen = z.infer<typeof partialKitchenSchema>
 
-export function ValidateKitchen(data: any){
+export function ValidateKitchen(data: SchemaKitchen){
     const result = kitchenSchema.safeParse(data)
     if (!result.success) {
             throw new ValidationError(result.error.errors.map(e => e.message).join(", "))
@@ -21,7 +21,7 @@ export function ValidateKitchen(data: any){
     return result.data
 }
 
-export function ValidateKitchenPartial(data: Partial<any>){
+export function ValidateKitchenPartial(data: PartialSchemaKitchen){
     const result = kitchenSchema.partial().safeParse(data)
     if (!result.success) {
         const mensajes = result.error.errors.map(e => e.message).join(", ")

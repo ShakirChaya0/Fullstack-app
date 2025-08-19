@@ -1,4 +1,3 @@
-import { Sugerencias } from '@prisma/client';
 import z from 'zod'
 
 const SugerenciaSchema = z.object({
@@ -13,10 +12,10 @@ const partialProductosSchema = SugerenciaSchema.partial();
 
 export type PartialSchemaSuggestion = z.infer<typeof partialProductosSchema>;
 
-export function ValidateSuggestion(data: Sugerencias){
+export function ValidateSuggestion(data: SchemaSuggestion){
     return SugerenciaSchema.safeParse(data)
 }
 
-export function ValidateSuggestionPartial(data: Partial<Sugerencias>){
-    return SugerenciaSchema.partial().safeParse(data)
+export function ValidateSuggestionPartial(data: PartialSchemaSuggestion){
+    return partialProductosSchema.safeParse(data)
 }

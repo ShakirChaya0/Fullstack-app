@@ -178,7 +178,7 @@ model RefreshTokens {
   fechaCreacion   DateTime @db.Timestamptz(6)
   fechaExpiracion DateTime @db.Timestamptz(6)
   revocado        Boolean  @default(false)
-  Usuarios        Usuarios @relation(fields: [idUsuario], references: [idUsuario], onDelete: NoAction, onUpdate: NoAction, map: "userFK")
+  Usuarios        Usuarios @relation(fields: [idUsuario], references: [idUsuario], onDelete: Cascade, onUpdate: NoAction, map: "userFK")
 }
 
 model QRToken {
