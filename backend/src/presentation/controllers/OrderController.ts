@@ -55,7 +55,11 @@ export class OrderController {
             if(!validatedOrder.success) throw new ValidationError(`Validation failed: ${validatedOrder.error.message}`);
             const createdOrder = await this.registerOrderUseCase.execute(validatedOrder.data, user?.idUsuario, user?.tipoUsuario, qrToken, tableNumber ? +tableNumber : undefined);
 
-            await this.orderSocketService.emitOrderEvent("newOrder", createdOrder);
+            try {
+                await this.orderSocketService.emitOrderEvent("newOrder", createdOrder);
+            } catch (error) {
+                console.log(error)
+            }
 
             // if (qrToken) {
             //     ioConnection.to("cocina")
@@ -71,7 +75,7 @@ export class OrderController {
             //         .emit("newOrder", createdOrder.toWaiterInfo());
             // }
 
-            res.status(201).send("Orden creada correctamente");
+            res.status(201).send({ message: "Orden creada correctamente" });
         } 
         catch(error) {
             next(error);

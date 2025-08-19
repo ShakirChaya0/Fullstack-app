@@ -19,7 +19,7 @@ export class AuthController {
 
             res
                 .cookie('refreshToken', result.refreshToken, { httpOnly: true, secure: true, sameSite: 'strict', maxAge: 1000 * 60 * 15 })
-                .status(200).json(result.accessToken);
+                .status(200).json({ token: result.accessToken });
         } catch (error) {
             next(error);
         }

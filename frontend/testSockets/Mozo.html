@@ -10,7 +10,7 @@
 
     const ws = new io('ws://localhost:3000',{
         auth: {
-            jwt: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzdWFyaW8iOiIxYzVjNjUyOC03MjZhLTRjNzQtYjlhYS02MjI1OTViMTEwZDciLCJlbWFpbCI6Impvc2VicHBAZ21haWwuY29tIiwidGlwb1VzdWFyaW8iOiJNb3pvIiwidXNlcm5hbWUiOiJKb3NlQl8yMDA0IiwiaWF0IjoxNzU0NzY5MTA1LCJleHAiOjE3NTUzNzM5MDV9.aogFmoRgsjFcB7jd_oJSjt17_SC_L_bbW6OL7mxCDyc"
+            jwt: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzdWFyaW8iOiI5OTAyM2M2Mi05YjY2LTQxYTMtYWFjMi1jODU3MDk5ZmQ1NzMiLCJlbWFpbCI6ImZyYW5jb25pY29sYXNAZ21haWwuY29tIiwidGlwb1VzdWFyaW8iOiJNb3pvIiwidXNlcm5hbWUiOiJmcmFuY29uaWNvbGFzIiwiaWF0IjoxNzU1NjA3NjE4LCJleHAiOjE3NTYyMTI0MTh9.MqukPxFbUks8dqBIIUCECjNZ1FjnTp5mjhBckap1FJ4"
         }
     });
 
@@ -61,18 +61,18 @@
         // })
 
     
-        ws.emit('modifyOrder', {
-            orderId: 24,
-            lineNumbers: [176, 177],
-            data: {
-                cantidadCubiertos: 7,
-                observacion: "Observación del pedido nueva nueva",
-                items: [
-                    { cantidad: 8 },
-                    { cantidad: 9 }
-                ]
-            }
-        })
+        // ws.emit('modifyOrder', {
+        //     orderId: 24,
+        //     lineNumbers: [176, 177],
+        //     data: {
+        //         cantidadCubiertos: 7,
+        //         observacion: "Observación del pedido nueva nueva",
+        //         items: [
+        //             { cantidad: 8 },
+        //             { cantidad: 9 }
+        //         ]
+        //     }
+        // })
 
         
         // ws.emit('deleteOrderLine', {orderId: 24, lineNumber: 182});

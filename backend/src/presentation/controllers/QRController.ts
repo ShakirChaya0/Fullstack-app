@@ -22,7 +22,7 @@ export class QRController {
             if(!waiterId) throw new NotFoundError('No se encontro el mozo')
 
             const createdQR = await this.registerOrModifyQRUseCase.execute(+tableNumber, waiterId)
-            res.status(201).json(createdQR)
+            res.status(201).json({ QrToken: createdQR })
         }catch(error) {
             next(error);
         }

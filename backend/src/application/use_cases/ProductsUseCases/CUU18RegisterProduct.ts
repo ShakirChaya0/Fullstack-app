@@ -9,8 +9,8 @@ export class CUU18RegisterProduct {
   ) {}
 
   public async execute(product: SchemaProductos): Promise<Product> {
-    const existingProduct = await this.productRepository.getByName(product.nombre);
-    if (existingProduct.length > 0) {
+    const existingProduct = await this.productRepository.getByUniqueName(product.nombre);
+    if (existingProduct) {
       throw new ConflictError(`Ya existe un producto con el nombre: ${product.nombre}`);
     }
     const productoDatabase = await this.productRepository.create(product);

@@ -9,8 +9,7 @@ export class UpdateOrderLineUseCase {
     ){}
 
     public async execute(orderId: number, lineNumber: number, status: OrderLineStatus): Promise<Order>{
-
-        const order = await this.orderRepository.getOne(orderId)
+        let order = await this.orderRepository.getOne(orderId)
 
         if (!order) throw new NotFoundError("No se ha encontrado el Pedido para la línea de pedido")
 
@@ -18,11 +17,11 @@ export class UpdateOrderLineUseCase {
 
         if (!orderLine) throw new NotFoundError("No se ha encontrado la línea de pedido para el pedido")
             
-        await this.orderRepository.changeOrderLineStatus(orderId, lineNumber,status)
+        order = await this.orderRepository.changeOrderLineStatus(orderId, lineNumber,status)
 
         const isFinish = order.orderLines.filter(ol => ol.status !== "Terminada")
         const isInProcess = order.orderLines.some(ol => ol.status === "En_Preparacion")
-            
+
         if (order.status === "Solicitado" && isInProcess) await this.orderRepository.changeState(order, "En_Preparacion")
         if (isFinish.length === 0) return await this.orderRepository.changeState(order, "Completado")
         else return order 

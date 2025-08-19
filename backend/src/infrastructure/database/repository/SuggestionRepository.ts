@@ -29,8 +29,8 @@ export class SuggestionRepository implements ISuggestionRepository {
 
         const suggestions = await prisma.sugerencias.findMany({
             where: {
-                fechaDesde: { gte: now },
-                fechaHasta: { lte: now }
+                fechaDesde: { lte: now },
+                fechaHasta: { gte: now }
             },
             include: {
                 Producto: { include: { Precios: true }}

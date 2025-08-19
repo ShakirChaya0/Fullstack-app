@@ -10,8 +10,8 @@
 
     const ws = new io('ws://localhost:3000',{
         auth: {
-            qrToken: "17134ce5-d71b-494d-ba32-999bf44a0906",
-            jwt: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzdWFyaW8iOiI1MGExOTdlYi1lYzA5LTRmYzEtYWZiNy04Y2M3NTUyZDdkNWYiLCJlbWFpbCI6ImpvcGVAZ21haWwuY29tIiwidGlwb1VzdWFyaW8iOiJDbGllbnRlIiwidXNlcm5hbWUiOiJKb3BlIiwiaWF0IjoxNzU0NzY5MDE0LCJleHAiOjE3NTUzNzM4MTR9.WZc5aDNvmyk1cN9pxQLAbFgibUMt8DZLNdeDOIeE8R4"
+            qrToken: "e185e54f-e7c2-4931-aefe-6b3605e0096d",
+            jwt: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzdWFyaW8iOiIwZGM4ZDVjZi04ZTI5LTQzNmItOTVhNS1mNTUyYTA1MzY3NDgiLCJlbWFpbCI6InRlc3QyQGdtYWlsLmNvbSIsInRpcG9Vc3VhcmlvIjoiQ2xpZW50ZSIsInVzZXJuYW1lIjoiVGVzdDIiLCJpYXQiOjE3NTU2MTExMTEsImV4cCI6MTc1NjIxNTkxMX0.o71-CnSzNTC_AOPlXntAdG_0SxWDVhjKkF5p-DDkT-o"
         }
     });
 
@@ -46,28 +46,27 @@
         console.log('WebSocket connection opened');
 
         // ws.emit('addOrderLine', {
-        //     orderId: 24,
+        //     orderId: 37,
         //     orderLines: [
         //         {
-        //             nombre: "Choripan",
-        //             tipo: "Postre",
-        //             monto: 150.25,
-        //             cantidad: 4
+        //             nombre: "Empanada de Carne",
+        //             tipo: "Entrada",
+        //             monto: 7000,
+        //             cantidad: 2
         //         }
         //     ]
         // })
 
     
         ws.emit('modifyOrder', {
-            orderId: 24,
-            // lineNumbers: [176, 177],
+            orderId: 37,
+            lineNumbers: [65],
             data: {
-                cantidadCubiertos: 7,
-                observacion: "Observación del pedido nueva nueva",
-                // items: [
-                //     { cantidad: 10 },
-                //     { cantidad: 10 }
-                // ]
+                cantidadCubiertos: 3,
+                observacion: "La empanada tiene que ser la de tu señora",
+                items: [
+                    { cantidad: 3 }
+                ]
             }
         })
 
