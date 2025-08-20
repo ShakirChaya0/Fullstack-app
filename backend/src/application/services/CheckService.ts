@@ -26,8 +26,17 @@ export class CheckService {
             lines,
             subtotal,
             importeImpuestos,
-            total
+            total: total + totalCubiertos
         }
+
+        const fecha = new Date(Date.UTC(
+            (new Date()).getFullYear(),
+            (new Date()).getMonth(),
+            (new Date()).getDate(),
+            (new Date()).getHours(),
+            (new Date()).getMinutes(),
+            0, 0
+        ))
 
         return new Check(
             information.nombreRestaurante,
@@ -35,7 +44,7 @@ export class CheckService {
             information.razonSocial,
             information.telefonoContacto,
             order.table!.tableNum,
-            new Date(),
+            fecha,
             order.waiter!.nombre,
             totalCubiertos,
             pedido,

@@ -28,8 +28,8 @@ export const SchemaOrder = z.object({
 const PartialOrderLineCantidadSchema = SchemaOrderLine.pick({ cantidad: true });
 
 const PartialOrderMinimalSchema = z.object({
-  cantidadCubiertos: SchemaOrder.shape.cantidadCubiertos,
-  observacion: SchemaOrder.shape.observacion,
+  cantidadCubiertos: SchemaOrder.shape.cantidadCubiertos.optional(),
+  observacion: SchemaOrder.shape.observacion.optional(),
   items: z.array(PartialOrderLineCantidadSchema).optional(),
 });
 
@@ -48,7 +48,7 @@ export function ValidateOrder(data: OrderSchema){
     return SchemaOrder.safeParse(data)
 }
 
-export function ValidateOrderPartialMinimal(data: Partial<PartialOrderMinimal>) {
+export function ValidateOrderPartialMinimal(data: PartialOrderMinimal) {
   return PartialOrderMinimalSchema.safeParse(data);
 }
 

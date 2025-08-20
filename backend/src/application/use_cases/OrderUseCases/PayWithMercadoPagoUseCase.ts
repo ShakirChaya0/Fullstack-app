@@ -20,7 +20,8 @@ export class PayWithMercadoPagoUseCase {
             throw new BusinessError('El pedido debe estar pendiente de pago para poder abonarse con Mercado Pago');
         }
 
-        const iva = (await this.policyRepository.getPolicy()).porcentajeIVA;
+        const policy = await this.policyRepository.getPolicy()
+        const iva = policy.porcentajeIVA;
 
         const draft = {
             items: [
@@ -28,7 +29,7 @@ export class PayWithMercadoPagoUseCase {
                     id: `${order.orderId}`,
                     title: `Pagar Pedido: ${order.orderId}`,
                     quantity: 1,
-                    unit_price: order.calculateTotal(iva).total
+                    unit_price: order.calculateTotal(iva).total + order.calculateCutleryTotal(policy.montoCubiertosPorPersona)
                 }
             ],
             payment_methods: {
@@ -36,13 +37,13 @@ export class PayWithMercadoPagoUseCase {
                 excluded_payment_types: []
             },
             back_urls: {
-                success: "https://github.com/ShakirChaya0/Fullstack-app/tree/dev",
-                failure: "https://github.com/ShakirChaya0/Fullstack-app/tree/dev",
-                pending: "https://github.com/ShakirChaya0/Fullstack-app/tree/dev"
+                success: "payment/success", //cambiar cuando se haga el front
+                failure: "payment/failure", //cambiar cuando se haga el front
+                pending: "payment/pending" //cambiar cuando se haga el front
             },
             auto_return: "approved",
             external_reference: JSON.stringify({orderId: order.orderId, metodoPago: "MercadoPago"}),
-            notification_url: "/pagos/pagado",
+            notification_url: "/pagos/pagado", //cambiar cuando se haga el deploy por el endpoint que corresponda
         }
 
         const preference = await this.mpService.createPreference(draft)

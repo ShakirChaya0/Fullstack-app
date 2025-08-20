@@ -11,16 +11,16 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzdWFyaW8iOiIzY
 ###
 POST http://localhost:3000/mozos
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzdWFyaW8iOiIzNzE2YmMxMy1jY2JkLTQ1MDctYWYzZS04OTQ0YmEzYzE3MDQiLCJlbWFpbCI6Im5pY29sYXNtYXp6YWdsaWFAZ21haWwuY29tIiwidGlwb1VzdWFyaW8iOiJBZG1pbmlzdHJhZG9yIiwiaWF0IjoxNzU0NDE4NTExLCJleHAiOjE3NTQ0MTkxMTF9.DuGxRplTZkchFrlPiiKRt4ft3fWTxdjmuSVSqmfn2H0
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzdWFyaW8iOiJlNTM0YjUyMS1iNzEwLTRhNjQtOGUyOC1iMTZkMTY5ZDVlYjQiLCJlbWFpbCI6ImFkbWluQGdtYWlsLmNvbSIsInRpcG9Vc3VhcmlvIjoiQWRtaW5pc3RyYWRvciIsInVzZXJuYW1lIjoiYWRtaW4iLCJpYXQiOjE3NTU2MDk2MzEsImV4cCI6MTc1NjIxNDQzMX0.56jCQ5DHfhVtDWciHrmX6b1WWK12rbIiLx3AfLQ5p48
 
 {
-    "nombreUsuario": "shakirboca05",
+    "nombreUsuario": "example3",
     "contrasenia": "holamundo",
     "nombre": "Shakir",
     "apellido": "Barragan Landriel",
-    "dni": "46132659",
-    "telefono": "3413151500",
-    "email": "shakirboca05@gmail.com"
+    "dni": "11222555",
+    "telefono": "34asc",
+    "email": "example3@gmail.com"
 }   
 
 ###
@@ -33,4 +33,5 @@ Content-Type: application/json
 }
 
 ###
-DELETE http://localhost:3000/mozos/id/d701b3f5-477c-41cd-b453-5606d25ce8b0
+DELETE http://localhost:3000/mozos/id/c8c5405b-101c-4d89-8714-01ef9b2a69a0
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzdWFyaW8iOiJlNTM0YjUyMS1iNzEwLTRhNjQtOGUyOC1iMTZkMTY5ZDVlYjQiLCJlbWFpbCI6ImFkbWluQGdtYWlsLmNvbSIsInRpcG9Vc3VhcmlvIjoiQWRtaW5pc3RyYWRvciIsInVzZXJuYW1lIjoiYWRtaW4iLCJpYXQiOjE3NTU2MDk2MzEsImV4cCI6MTc1NjIxNDQzMX0.56jCQ5DHfhVtDWciHrmX6b1WWK12rbIiLx3AfLQ5p48

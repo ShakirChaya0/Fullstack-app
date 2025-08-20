@@ -23,8 +23,6 @@ export function SocketServerConnection(server: Http2Server) {
   
     ioConnection.on('connection', async (socket: AuthenticatedSocket) => {
       if (socket.user?.tipoUsuario === "SectorCocina") {
-        console.log("Socket conectado:", socket.id, "rooms:", socket.rooms);
-
         socket.join("cocina");
         // REVISAR: debería hacerse en otro lado
         const activeOrders = await orderController.getActiveOrders();

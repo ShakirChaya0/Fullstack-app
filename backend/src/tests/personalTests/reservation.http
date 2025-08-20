@@ -1,15 +1,15 @@
 ### Crear reserva
 POST http://localhost:3000/reservas/
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzdWFyaW8iOiI4ZTA2ZTRiOS1jYzU4LTRmZWEtOWQ2ZS04MThjZmQ1Zjg2ZjciLCJlbWFpbCI6InRlc3RAZ21haWwuY29tIiwidGlwb1VzdWFyaW8iOiJDbGllbnRlIiwidXNlcm5hbWUiOiJUZXN0IiwiaWF0IjoxNzU1NjA1MjU2LCJleHAiOjE3NTYyMTAwNTZ9.9Dx1qVyYyhP28CCd-VPmfHQRiOSLAqBuA_ut2yl4pUQ
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzdWFyaW8iOiIwZGM4ZDVjZi04ZTI5LTQzNmItOTVhNS1mNTUyYTA1MzY3NDgiLCJlbWFpbCI6InRlc3QyQGdtYWlsLmNvbSIsInRpcG9Vc3VhcmlvIjoiQ2xpZW50ZSIsInVzZXJuYW1lIjoiVGVzdDIiLCJpYXQiOjE3NTU2MTExMTEsImV4cCI6MTc1NjIxNTkxMX0.o71-CnSzNTC_AOPlXntAdG_0SxWDVhjKkF5p-DDkT-o
 Content-Type: application/json
 
 {
-    "fechaReserva" : "19/08/2025",
-    "horarioReserva": "21:00",  
+    "fechaReserva" : "22/08/2025",
+    "horarioReserva": "21:00",
     "cantidadComensales": 4
 }
 
-### Obetner reserva por Id
+### Obtener reserva por Id
 GET http://localhost:3000/reservas/54
 
 
@@ -21,7 +21,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzdWFyaW8iOiIzY
 GET http://localhost:3000/reservas/cliente/991bd649-5fea-48e9-8062-e3cd12d0bb4d
 
 ### Actualizar solo el estado de la reserva, dependiendo de la query que se mande
-PATCH http://localhost:3000/reservas/estado/1&estado=Cancelada
+PATCH http://localhost:3000/reservas/estado/3?estado=Cancelada
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzdWFyaW8iOiI5OTAyM2M2Mi05YjY2LTQxYTMtYWFjMi1jODU3MDk5ZmQ1NzMiLCJlbWFpbCI6ImZyYW5jb25pY29sYXNAZ21haWwuY29tIiwidGlwb1VzdWFyaW8iOiJNb3pvIiwidXNlcm5hbWUiOiJmcmFuY29uaWNvbGFzIiwiaWF0IjoxNzU1NjA3NjE4LCJleHAiOjE3NTYyMTI0MTh9.MqukPxFbUks8dqBIIUCECjNZ1FjnTp5mjhBckap1FJ4
 
 ### Obtener reserva por nombre y apellido del Cliente

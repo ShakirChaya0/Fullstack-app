@@ -11,7 +11,6 @@ import { NotFoundError } from "../../shared/exceptions/NotFoundError.js";
 import { PayWithMercadoPagoUseCase } from "../../application/use_cases/OrderUseCases/PayWithMercadoPagoUseCase.js";
 import { mercadoPagoClient } from "../../infrastructure/config/MercadoPago.js";
 import { Payment } from "mercadopago";
-import { ioConnection } from "./../sockets/SocketServerConnection.js"
 import { OrderSocketService } from "../../application/services/OrderSocketService.js";
 
 export class PaymentController {
@@ -91,11 +90,7 @@ export class PaymentController {
             
             const { order, check } = await this.generateCheckUseCase.execute(+orderId);
 
-            await this.orderSocketService.emitOrderEvent("updatedOrderStatus", order);
-
-            // ioConnection.to("cocina")
-            //     .to(`mozo:${order.waiter?.username}`)
-            //     .emit("newOrder", order);
+            await this.orderSocketService.emitOrderEvent("orderPaymentEvent", order);
 
             res.status(200).json(check);
         }
@@ -110,7 +105,7 @@ export class PaymentController {
             if (!orderId || isNaN(+orderId)) throw new ValidationError("El ID enviado debe ser un número");
 
             const preference = await this.payWithMPUseCase.execute(+orderId)
-            res.status(200).json(preference.init_point)
+            res.status(200).json({ redirect_url: preference.init_point})
         }
         catch (err) {
             next(err);
@@ -124,11 +119,7 @@ export class PaymentController {
 
             const order = await this.setToWaitingForChargeUseCase.execute(+orderId);
 
-            await this.orderSocketService.emitOrderEvent("updatedOrderStatus", order);
-
-            // ioConnection.to("cocina")
-            //     .to(`mozo:${order.waiter?.username}`)
-            //     .emit("newOrder", order);
+            await this.orderSocketService.emitOrderEvent("orderPaymentEvent", order);
 
             res.status(204).send();
         }
@@ -157,11 +148,7 @@ export class PaymentController {
                 order = await this.registerPaymentUseCase.execute(+idPedido, metodoPago, null);
             }
 
-            await this.orderSocketService.emitOrderEvent("updatedOrderStatus", order);
-            
-            // ioConnection.to("cocina")
-            //     .to(`mozo:${order.waiter?.username}`)
-            //     .emit("newOrder", order);
+            await this.orderSocketService.emitOrderEvent("orderPaymentEvent", order);
 
             res.status(204).send();
         }

@@ -86,7 +86,6 @@ export class OrderRepository implements IOrderRepository {
         return this.toDomainEntity(createdOrder)
     }
     
-    
     public async getOne(id: number): Promise<Order | null> {
         const order = await prisma.pedido.findUnique({
             where: { idPedido: id },
@@ -174,42 +173,36 @@ export class OrderRepository implements IOrderRepository {
     }
 
     public async modifyOrder(orderId: number, lineNumber: number[] | undefined, data: Partial<PartialOrderMinimal>): Promise<Order> {
-
         const itemsToProcess = data.items ?? [];
-        if (data.items && lineNumber) {
-            if (lineNumber.length !== itemsToProcess.length) {
-                throw new Error("El arreglo de lineNumbers y de items deben tener la misma longitud");
-            }
-        }
-
+        
         const updatedOrder = await prisma.pedido.update({
             where: { idPedido: orderId },
             data: {
-            cantCubiertos: data.cantidadCubiertos,
-            observaciones: data.observacion,
-            Linea_De_Pedido: {
-                update: lineNumber?.map((line, index) => ({
-                where: {
-                    idPedido_nroLinea: {
-                    idPedido: orderId,
-                    nroLinea: line,
-                    }
-                },
-                data: {
-                    cantidad: itemsToProcess ? itemsToProcess[index]!.cantidad : undefined,
+                cantCubiertos: data.cantidadCubiertos,
+                observaciones: data.observacion,
+                Linea_De_Pedido: {
+                    update: lineNumber?.map((line, index) => ({
+                        where: {
+                            idPedido_nroLinea: {
+                                idPedido: orderId,
+                                nroLinea: line,
+                            }
+                        },
+                        data: {
+                            cantidad: itemsToProcess ? itemsToProcess[index].cantidad : undefined,
+                        } 
+                    }))
                 }
-                }))
-            }
             },
             include: {
-            Mesa: true,
-            Linea_De_Pedido: true,
-            Mozos: { include: { Usuarios: true } },
+                Mesa: true,
+                Linea_De_Pedido: true,
+                Mozos: { include: { Usuarios: true } },
             },
         });
 
         return this.toDomainEntity(updatedOrder);
-        }
+    }
 
 
     public async deleteOrderLine(orderId: number, lineNumber: number): Promise<Order> {

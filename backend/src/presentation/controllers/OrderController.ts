@@ -1,5 +1,4 @@
 import { Response, NextFunction } from "express"
-import { ioConnection } from "./../sockets/SocketServerConnection.js"
 import { OrderLineSchema, OrderSchema, PartialOrderMinimal, ValidateOrder, ValidateOrderLine, ValidateOrderPartialMinimal } from "../../shared/validators/OrderZod.js"
 import { ValidationError } from "../../shared/exceptions/ValidationError.js";
 import { CUU02RegisterOrder } from "../../application/use_cases/OrderUseCases/RegisterOrderUseCase.js";
@@ -61,20 +60,6 @@ export class OrderController {
                 console.log(error)
             }
 
-            // if (qrToken) {
-            //     ioConnection.to("cocina")
-            //         .emit("newOrder", createdOrder.toKitchenInfo());
-            //     ioConnection.to(`mozo:${createdOrder.waiter?.username}`).
-            //         emit("newOrder", createdOrder.toWaiterInfo());
-            //     ioConnection.to(`comensal:${qrToken}`)
-            //         .emit("newOrder", createdOrder.toClientInfo());
-            // } else {
-            //     ioConnection.to("cocina")
-            //         .emit("newOrder", createdOrder.toKitchenInfo());
-            //     ioConnection.to(`mozo:${createdOrder.waiter?.username}`)
-            //         .emit("newOrder", createdOrder.toWaiterInfo());
-            // }
-
             res.status(201).send({ message: "Orden creada correctamente" });
         } 
         catch(error) {
@@ -122,6 +107,9 @@ export class OrderController {
 
     public async updateOrder(orderId: number, lineNumbers: number[] | undefined, data: Partial<PartialOrderMinimal>) {
         if(isNaN(orderId)) throw new ValidationError("El número de Pedido debe ser válido");
+
+        if ((lineNumbers && !data.items) || (!lineNumbers && data.items)) 
+            throw new ValidationError("Para modificar lineas, se requieren los números de las líneas y los items a modificar en conjunto");
     
         const validatedOrder = ValidateOrderPartialMinimal(data);
         if(!validatedOrder.success) throw new ValidationError(`Validation failed: ${validatedOrder.error.message}`);

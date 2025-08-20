@@ -3,7 +3,7 @@ import { Order } from "../../domain/entities/Order.js";
 import { SocketIOEventEmitter } from "../../infrastructure/events/SocketIOEventEmitter.js";
 import { ioConnection } from "../../presentation/sockets/SocketServerConnection.js";
 
-type OrderEvent = "newOrder" | "updatedOrderStatus" | "updatedOrderLineStatus" | "addedOrderLine" | "modifiedOrderLine" | "deletedOrderLine"
+type OrderEvent = "newOrder" | "updatedOrderStatus" | "updatedOrderLineStatus" | "addedOrderLine" | "modifiedOrderLine" | "deletedOrderLine" | "orderPaymentEvent"
 
 export class OrderSocketService {
     constructor(

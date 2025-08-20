@@ -8,7 +8,7 @@ export class DeleteTable {
 
     public async execute (numTable : number): Promise<void> {
         const tableFound = await this.tableRepository.getByNumTable(numTable);
-
+        
         if (!tableFound) throw new NotFoundError("Mesa no encontrada");
 
         await this.tableRepository.deleteTable(numTable);

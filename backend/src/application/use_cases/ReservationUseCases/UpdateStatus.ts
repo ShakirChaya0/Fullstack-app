@@ -6,6 +6,8 @@ import { NotFoundError } from '../../../shared/exceptions/NotFoundError.js';
 import { ClientStateRepository } from '../../../infrastructure/database/repository/ClientStateRepository.js';
 import { PolicyRepository } from '../../../infrastructure/database/repository/PolicyRepository.js';
 import { StateReservation } from '../../../shared/types/SharedTypes.js';
+import { Reservation } from '../../../domain/entities/Reservation.js';
+import { Policy } from '../../../domain/entities/Policy.js';
 
 export class UpdateStatus {
   constructor(
@@ -19,6 +21,20 @@ export class UpdateStatus {
   private combineDateTime(date: Date, time: string): Date {
     const dateStr = date.toISOString().split("T")[0]; 
     return new Date(`${dateStr}T${time}`);
+  }
+
+  private async validateNonAttendaces(reservation: Reservation, policy: Policy) {
+    const client = await this.clientRepository.getClientByOtherDatas(reservation.toPublicInfo); 
+
+    if (!client) throw new NotFoundError("Cliente no encontrado");
+
+    const nonAttendance = client.reservation.filter(r => r.status === 'No_Asistida').length; 
+
+    const disabled = client.states.filter(s => s.state === 'Deshabilitado').length
+
+    const disabledWaiting = Math.floor(nonAttendance / policy.limiteDeNoAsistencias);
+
+    if (disabled < disabledWaiting) await this.clientStateRepository.create(client.userId, 'Deshabilitado'); 
   }
 
   public async execute(reservationId: number, status: StateReservation): Promise<void> {
@@ -36,10 +52,13 @@ export class UpdateStatus {
       const differenceMs = reservationDateTime.getTime() - now.getTime();
       const differenceHours = differenceMs / (1000 * 60 * 60);
 
-      if (differenceHours < policy.horasDeAnticipacionParaCancelar) throw new BusinessError("No se puede cancelar con menos de 6 horas de anticipación.");
+      if (differenceHours < policy.horasDeAnticipacionParaCancelar) {
+        await this.reservationRepository.updateStatus(reservation.reserveId, "No_Asistida");
+        await this.validateNonAttendaces(reservation, policy);
+        return
+      }
       
       await this.reservationRepository.updateStatus(reservation.reserveId, status);
-      await this.tableRepository.updateTableFree(reservation.table);
       return;
     }
 
@@ -47,19 +66,8 @@ export class UpdateStatus {
 
     if (updatedReservation.status === 'Asistida') await this.tableRepository.updateTableBusy(updatedReservation.table)
     
-    if (updatedReservation.status === 'No_Asistida'){
-      await this.tableRepository.updateTableFree(updatedReservation.table)
-      const client = await this.clientRepository.getClientByOtherDatas(reservation.toPublicInfo); 
-
-      if (!client) throw new NotFoundError("Cliente no encontrado");
-
-      const nonAttendance = client.reservation.filter(r => r.status === 'No_Asistida').length; 
-
-      const disabled = client.states.filter(s => s.state === 'Deshabilitado').length
-
-      const disabledWaiting = Math.floor(nonAttendance / policy.limiteDeNoAsistencias);
-
-      if (disabled < disabledWaiting) await this.clientStateRepository.create(client.userId, 'Deshabilitado'); 
+    if (updatedReservation.status === 'No_Asistida') {
+      await this.validateNonAttendaces(reservation, policy);
     }
   }   
 } 

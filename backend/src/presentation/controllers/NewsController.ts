@@ -20,7 +20,6 @@ export class NewsController {
 
     async create(req: Request, res: Response, next: NextFunction) {
         try{
-            console.log(req.body)
             const validatedData = ValidateNews(req.body)
             const news = await this.createNewsUC.execute(validatedData)
             res.status(201).json(news)

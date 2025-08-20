@@ -48,12 +48,12 @@ model Horarios {
 }
 
 model Mesa {
-  nroMesa   Int        @id @default(autoincrement())
-  capacidad Int
-  estado    estadoMesa
-  Pedido    Pedido[]
-  QRToken   QRToken?
+  nroMesa        Int              @id @default(autoincrement())
+  capacidad      Int
+  estado         estadoMesa
   Mesas_Reservas Mesas_Reservas[]
+  Pedido         Pedido[]
+  QRToken        QRToken?
 }
 
 model Sugerencias {
@@ -105,7 +105,7 @@ model Clientes {
 model Mozos {
   nombre   String    @db.VarChar(255)
   apellido String    @db.VarChar(255)
-  telefono String    @db.VarChar(20)
+  telefono String    @unique(map: "unique_telefono_mozo") @db.VarChar(20)
   idMozo   String    @id(map: "Mozo_pkey") @db.Uuid
   dni      String    @unique(map: "unique_dni_mozo") @db.VarChar(10)
   Usuarios Usuarios  @relation(fields: [idMozo], references: [idUsuario], onDelete: Cascade, onUpdate: NoAction, map: "Mozo_fkey")
@@ -194,7 +194,7 @@ model QRToken {
 model Mesas_Reservas {
   idReserva Int
   nroMesa   Int
-  Mesa      Mesa    @relation(fields: [nroMesa], references: [nroMesa], onDelete: NoAction, onUpdate: NoAction, map: "Mesa_fKey")
+  Mesa      Mesa    @relation(fields: [nroMesa], references: [nroMesa], onDelete: Cascade, onUpdate: NoAction, map: "Mesa_fKey")
   Reserva   Reserva @relation(fields: [idReserva], references: [idReserva], onDelete: NoAction, onUpdate: NoAction, map: "Reserva_fKey")
 
   @@id([idReserva, nroMesa])
@@ -262,6 +262,7 @@ enum metodosPago {
   Debito
   Credito
 }
+
 enum EstadoReserva {
   Realizada
   Asistida

@@ -106,7 +106,7 @@ export class TableRepository implements ITableRepository {
 
     public async deleteTable(numTable: number): Promise<void> {
         await prisma.mesa.delete({
-            where: {nroMesa: numTable}
+            where: { nroMesa: numTable }
         }); 
     }
 

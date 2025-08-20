@@ -41,6 +41,8 @@ export class WaiterRepository implements IWaiterRepository {
                 throw new ConflictError("Ya existe un Mozo con ese email");
             } else if (error?.code === 'P2002' && error?.meta?.target?.includes('dni')) {
                 throw new ConflictError("Ya existe un Mozo con ese dni");
+            } else if (error?.code === 'P2002' && error?.meta?.target?.includes('telefono')) {
+                throw new ConflictError("Ya existe un Mozo con ese telefono");
             }
             else {
                 throw new ServiceError(`Error al crear el Mozo: ${error.message}`);

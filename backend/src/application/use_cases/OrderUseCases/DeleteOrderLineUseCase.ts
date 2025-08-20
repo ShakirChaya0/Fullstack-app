@@ -15,18 +15,22 @@ export class DeleteOrderLineUseCase {
             throw new NotFoundError("Pedido no encontrado");
         }
         
-        const existThisLine = order.orderLines.some(line => line.lineNumber === lineNumber);
+        const line = order.orderLines.find(line => line.lineNumber === lineNumber);
 
-        if(!existThisLine) {
+        if(!line) {
             throw new NotFoundError("No existe la linea de pedido en el pedido")
         }
 
-        if(order.status != "Solicitado") {
-             throw new BusinessError("No se puede eliminar la línea si no se encuentra en estado solicitado")
+        if (line.status !== "Pendiente") {
+             throw new BusinessError("No se puede eliminar la línea si no se encuentra en estado pendiente")
         }
 
         const deletedOrder = await this.orderRepository.deleteOrderLine(orderId, lineNumber)
 
+        const isFinished = order.orderLines.filter(ol => ol.status !== "Terminada")
+
+        if (isFinished.length === 0) return await this.orderRepository.changeState(order, "Completado")
+        
         return deletedOrder
     }
 }

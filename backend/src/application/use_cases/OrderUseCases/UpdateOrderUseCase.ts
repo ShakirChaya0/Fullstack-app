@@ -2,6 +2,7 @@ import { Order } from "../../../domain/entities/Order.js";
 import { OrderRepository } from "../../../infrastructure/database/repository/OrderRepository.js";
 import { BusinessError } from "../../../shared/exceptions/BusinessError.js";
 import { NotFoundError } from "../../../shared/exceptions/NotFoundError.js";
+import { ValidationError } from "../../../shared/exceptions/ValidationError.js";
 import { PartialOrderMinimal } from "../../../shared/validators/OrderZod.js";
 
 
@@ -30,13 +31,23 @@ export class UpdateOrderUseCase {
             throw new BusinessError(`No se puede modificar la observación. El pedido ya se encuentra en preparación`)
         }
 
-        if (order.status != "En_Preparacion" && order.status != "Solicitado" && order.status == "Completado" && data.cantidadCubiertos) {
+        if (order.status != "En_Preparacion" && order.status != "Solicitado" && order.status != "Completado" && data.cantidadCubiertos) {
             throw new BusinessError(`No se puede modificar la cantidad de comensales. El pedido se encuentra pagado o por pagar`)
+        }
+
+        if (data.items && lineNumbers) {
+            if (lineNumbers.length !== data.items.length) throw new ValidationError("La cantidad de números de líneas y de items debe ser la misma");
+        }
+
+        if (lineNumbers) {
+            lineNumbers.forEach(number => {
+                const exists = order.orderLines.find(ol => ol.lineNumber == number);
+                if (!exists) throw new NotFoundError("La linea de pedido que quiere modificar no existe");
+            })
         }
 
         const updatedOrder = await this.orderRepository.modifyOrder(orderId, lineNumbers, data)
 
         return updatedOrder
     }
-
 }
