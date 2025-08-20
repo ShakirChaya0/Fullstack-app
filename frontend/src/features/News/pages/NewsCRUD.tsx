@@ -1,6 +1,7 @@
 import NewsTable from "../components/NewsTable";
 import TableHeader from "../components/TableHeader";
 import { useNews } from "../hooks/useNews";
+import SkeletonNewsBody from "./SkeletonNewsBody";
 
 
 export default function NewsCRUD () {
@@ -16,7 +17,7 @@ export default function NewsCRUD () {
                             { isError && <p>Error</p> }
                         </div>
                     </section>
-                ):(<></>)
+                ):(<SkeletonNewsBody/>)
                 
             }
         </>

@@ -1,5 +1,4 @@
-import { Box, Typography, IconButton } from "@mui/material";
-import { Facebook, Instagram, Twitter } from "@mui/icons-material";
+import { Box, Typography } from "@mui/material";
 
 export function ClientFooter() {
   return (

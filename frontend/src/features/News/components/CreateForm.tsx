@@ -9,7 +9,7 @@ type FormData = {
   FechaFin: string
 };
 
-export default function FormEjemplo() {
+export default function CreateForm() {
     const { handleCreateNews } = useNewsActions()
     const {
       register,           

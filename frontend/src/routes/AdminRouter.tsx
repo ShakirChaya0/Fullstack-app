@@ -1,6 +1,7 @@
 import { Route } from "react-router";
 import { lazy, Suspense } from "react";
 import { AdminMainLayout } from "../shared/components/AdminMainLayout";
+import SkeletonNewsBody from "../features/News/pages/SkeletonNewsBody";
 const NewsCRUD = lazy(() => import("../features/News/pages/NewsCRUD"))
 
 
@@ -11,7 +12,7 @@ export function AdminRouter() {
         <Route element={<AdminMainLayout/>}>
             <Route path="/Admin" element={<h1>Hola admin</h1>}/>
             <Route path="/Admin/Novedades" element={
-              <Suspense fallback={<h1>Cargando...</h1>}>
+              <Suspense fallback={<SkeletonNewsBody/>}>
                 <NewsCRUD/>
               </Suspense>}/>
         </Route>

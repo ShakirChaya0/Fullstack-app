@@ -1,4 +1,4 @@
-import { createNew, setNews } from "../../../store/slices/News";
+import { createNew, deleteNews, setNews, updateNews } from "../../../store/slices/News";
 import { useAppDispatch } from "../../../shared/hooks/store";
 import type  News  from "../interfaces/News";
 
@@ -11,5 +11,11 @@ export const useNewsActions = () => {
     const handleSetNews = (data: News[]) => {
         dispatch(setNews(data))
     }
-    return {handleCreateNews, handleSetNews}
+    const handleDeleteNews = (id?: number) => {
+        dispatch(deleteNews(id))
+    }
+    const handleUpdateNews = (_newsId: number | undefined, _title: string, _description: string, _startDate: string, _endDate: string) => {
+        dispatch(updateNews({_newsId, _title, _description, _startDate, _endDate}))
+    }
+    return {handleCreateNews, handleSetNews, handleDeleteNews, handleUpdateNews}
 }
