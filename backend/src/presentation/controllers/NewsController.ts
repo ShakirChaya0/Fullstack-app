@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { CreateNewsUseCases } from "../../application/use_cases/NewsUseCases/CreateNewsUseCase.js";
 import { ModifyNewsUseCases } from "../../application/use_cases/NewsUseCases/ModifyNewsUseCase.js";
-import { ValidateNewsPartial } from "../../shared/validators/NewsZod.js";
+import { ValidateNews, ValidateNewsPartial } from "../../shared/validators/NewsZod.js";
 import { ValidationError } from "../../shared/exceptions/ValidationError.js";
 import { GetOneNewsUseCase } from "../../application/use_cases/NewsUseCases/GetOneNewsUseCase.js";
 import { GetAllNewsUseCase } from "../../application/use_cases/NewsUseCases/GetAllNewsUseCase.js";
@@ -20,7 +20,9 @@ export class NewsController {
 
     async create(req: Request, res: Response, next: NextFunction) {
         try{
-            const news = await this.createNewsUC.execute(req.body)
+            console.log(req.body)
+            const validatedData = ValidateNews(req.body)
+            const news = await this.createNewsUC.execute(validatedData)
             res.status(201).json(news)
         }
         catch(error){

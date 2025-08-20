@@ -10,7 +10,7 @@ import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
 import { NavLink } from 'react-router';
 
-export default function Header() {
+export default function AdminHeader() {
   const [auth, setAuth] = React.useState(true);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
 
@@ -36,7 +36,7 @@ export default function Header() {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            <NavLink to="/Menu">Menu</NavLink>
+            <NavLink to="/Admin/Novedades">Novedades</NavLink>
           </Typography>
           {auth && (
             <div>

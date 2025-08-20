@@ -1,15 +1,14 @@
 import { useMemo, useState } from "react";
-import { useDrinks } from "../../hooks/useDrinks";
-import FilterDrinks from "../drinks/filterDrinks";
-import ProductsCard from "../ProductsCard";
-import { SkeletonBody } from "../skeletonBody";
-import { OrderList } from "../orderList";
+import { useDrinks } from "../hooks/useDrinks";
+import FilterDrinks from "../components/drinks/filterDrinks";
+import ProductsCard from "../components/ProductsCard";
+import SkeletonBody from "./skeletonBody";
+import { OrderList } from "../components/orderList";
 
 function DrinksList () {
     const {isLoading, isError, drinks} = useDrinks();
     const filtros = ["Alcoholicas", "No_Alcoholicas"]
     const [query, setQuery] = useState("")
-    console.log(isError, drinks)
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const query = event.currentTarget.value

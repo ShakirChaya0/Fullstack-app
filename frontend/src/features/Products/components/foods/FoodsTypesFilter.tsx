@@ -1,7 +1,8 @@
+import { memo } from "react"
 import type { Comida } from "../../interfaces/products"
 import ProductsCard from "../ProductsCard"
 
-function FoodsTypesFilter ({filteredFoods}: {filteredFoods: Comida[]}) {
+const FoodsTypesFilter =  memo(({filteredFoods}: {filteredFoods: Comida[]}) => {
     const filtrosPrincipales = ["Entrada", "Plato_Principal", "Postre"]
     
     return (
@@ -24,6 +25,6 @@ function FoodsTypesFilter ({filteredFoods}: {filteredFoods: Comida[]}) {
             )
         })
     )
-}
+})
 
 export default FoodsTypesFilter

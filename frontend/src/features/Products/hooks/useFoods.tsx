@@ -9,7 +9,7 @@ export function useFoods () {
         staleTime: 1000 * 60 * 60,
         refetchOnWindowFocus: false,
         refetchOnMount: false,
+        retry: 1
     })
-    
     return {isLoading, isError, foods: data?.Foods}
 }

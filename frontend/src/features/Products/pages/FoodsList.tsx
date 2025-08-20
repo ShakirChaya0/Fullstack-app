@@ -1,19 +1,19 @@
-import { useMemo, useState } from "react";
-import { useFoods } from "../../hooks/useFoods";
-import FilterProducts from "./filterFoods";
-import { SkeletonBody } from "../skeletonBody";
-import { OrderList } from "../orderList";
-import FoodsTypesFilter from "./FoodsTypesFilter";
-import FoodsSpecialFilter from "./FoodsSpecialFilter";
+import { useCallback, useMemo, useState } from "react";
+import { useFoods } from "../hooks/useFoods";
+import FilterProducts from "../components/foods/filterFoods";
+import SkeletonBody from "./skeletonBody";
+import { OrderList } from "../components/orderList";
+import FoodsTypesFilter from "../components/foods/FoodsTypesFilter";
+import FoodsSpecialFilter from "../components/foods/FoodsSpecialFilter";
 
 function FoodsList () {
     const {isLoading, isError, foods} = useFoods();
     const [query, setQuery] = useState<string>("")
 
-    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const handleChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
         const query = event.currentTarget.value
         setQuery(query)
-    }
+    }, [])
 
     const filteredFoods = useMemo(() => {
         return foods?.filter((food) => food._name.toLowerCase().includes(query.toLowerCase())) ?? [];

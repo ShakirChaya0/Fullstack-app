@@ -1,0 +1,15 @@
+import { Outlet } from "react-router";
+import AdminHeader from "./AdminHeader";
+import { AdminFooter } from "./AdminFooter";
+
+export function AdminMainLayout() {
+  return (
+    <div className="min-h-screen w-full flex flex-col">
+      <AdminHeader />
+        <main className="flex-1 flex">
+          <Outlet />
+        </main>
+      <AdminFooter />
+    </div>
+  );
+}

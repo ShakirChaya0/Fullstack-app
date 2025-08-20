@@ -9,6 +9,7 @@ export function useDrinks () {
         staleTime: 1000 * 60 * 60,
         refetchOnWindowFocus: false,
         refetchOnMount: false,
+        retry: 1
     })
     
     return {isLoading, isError, drinks: data?.Drinks}

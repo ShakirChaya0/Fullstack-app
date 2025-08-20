@@ -3,13 +3,19 @@ import './index.css'
 import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 import App from './App.tsx'
 import { BrowserRouter } from 'react-router';
+import { Provider } from 'react-redux';
+import { store } from './store/store.ts';
+import { ToastContainer } from "react-toastify"
 
 const query = new QueryClient
 
 createRoot(document.getElementById('root')!).render(
   <BrowserRouter>
-    <QueryClientProvider client={query}>
-      <App />
-    </QueryClientProvider>
+    <Provider store={store}>
+      <QueryClientProvider client={query}>
+        <App />
+        <ToastContainer />
+      </QueryClientProvider>
+    </Provider>
   </BrowserRouter>
 )

@@ -161,7 +161,7 @@ export class ProductRepository implements IProductoRepository {
                         Product.nombre,
                         Product.descripcion,
                         Product.estado,
-                        Product.Precios[0].monto.toNumber(),
+                        Product.Precios[0]?.monto ? Product.Precios[0]?.monto.toNumber() : 0,
                         Product.esVegetariana ?? false,
                         Product.esVegana ?? false,
                         Product.esSinGluten ?? false,
@@ -173,7 +173,7 @@ export class ProductRepository implements IProductoRepository {
                     Product.nombre,
                     Product.descripcion,
                     Product.estado,
-                    Product.Precios[0].monto.toNumber(),
+                    Product.Precios[0]?.monto ? Product.Precios[0]?.monto.toNumber() : 0,
                     Product.esAlcoholica ?? false
                 );
             }

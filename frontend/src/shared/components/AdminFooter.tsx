@@ -1,7 +1,7 @@
 import { Box, Typography, IconButton } from "@mui/material";
 import { Facebook, Instagram, Twitter } from "@mui/icons-material";
 
-export function Footer() {
+export function AdminFooter() {
   return (
     <Box
       component="footer"
@@ -19,6 +19,7 @@ export function Footer() {
         Seguinos en redes:
       </Typography>
       <Box>
+        {/* OCUPAN 7.4 MB, HAY QUE ENCONTRAR UNA ALTERNATIVA
         <IconButton href="#" color="inherit">
           <Facebook />
         </IconButton>
@@ -28,6 +29,7 @@ export function Footer() {
         <IconButton href="#" color="inherit">
           <Twitter />
         </IconButton>
+        */}
       </Box>
       <Typography variant="body2" sx={{ mt: 2 }}>
         © {new Date().getFullYear()} Tu Restaurante

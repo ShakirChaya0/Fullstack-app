@@ -1,6 +1,6 @@
 import { Skeleton } from "@mui/material";
 
-export function SkeletonBody () {
+export default function SkeletonBody () {
     return(
         <section className="flex-1 grid grid-cols-1 md:grid-cols-[3fr_1fr] gap-6 p-4 w-full">
             <Skeleton

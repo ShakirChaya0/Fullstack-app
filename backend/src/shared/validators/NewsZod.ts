@@ -4,8 +4,20 @@ import { ValidationError } from '../exceptions/ValidationError.js';
 const newsSchema = z.object({
     titulo: z.string({message: "El titulo debe ser un string"}).nonempty({message: "Este campo es requerido"}).min(6),
     descripcion: z.string({message: "La descripcion debe ser un string"}).nonempty({message: "Este campo es requerido"}).min(12),
-    fechaInicio: z.date({message: "La fecha debe ser de tipo date"}),
-    fechaFin: z.date({message: "La fecha debe ser de tipo date"})
+    fechaInicio: z
+    .string()
+    .refine(val => {
+      const [day, month, year] = val.split("/").map(Number);
+      const date = new Date(year, month - 1, day);
+      return !isNaN(date.getTime());
+    }, { message: "Fecha inválida" }),
+    fechaFin: z
+    .string()
+    .refine(val => {
+      const [day, month, year] = val.split("/").map(Number);
+      const date = new Date(year, month - 1, day);
+      return !isNaN(date.getTime());
+    }, { message: "Fecha inválida" }),
 });
 
 export type SchemaNews = z.infer<typeof newsSchema>

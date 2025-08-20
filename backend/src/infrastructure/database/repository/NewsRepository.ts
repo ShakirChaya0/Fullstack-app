@@ -6,6 +6,12 @@ import { ConflictError } from "../../../shared/exceptions/ConflictError.js";
 import { ServiceError } from "../../../shared/exceptions/ServiceError.js";
 import { SchemaNews } from "../../../shared/validators/NewsZod.js";
 
+function parseDDMMYYYYtoISO(str: string) {
+  const [day, month, year] = str.split("/").map(Number);
+  const date = new Date(year, month - 1, day);
+  return date.toISOString(); 
+}
+
 export class NewsRepository implements INewsRepository{
     async register (data: SchemaNews): Promise<NewsClass>{
         try{
@@ -13,8 +19,8 @@ export class NewsRepository implements INewsRepository{
                 data: {
                     titulo: data.titulo,
                     descripcion: data.descripcion,
-                    fechaInicio: new Date(data.fechaInicio),
-                    fechaFin: new Date(data.fechaFin)
+                    fechaInicio: parseDDMMYYYYtoISO(data.fechaInicio),
+                    fechaFin: parseDDMMYYYYtoISO(data.fechaFin)
                 }
             })
             return new NewsClass(novedad.idNovedad, novedad.titulo, novedad.descripcion, novedad.fechaInicio, novedad.fechaFin)
@@ -24,7 +30,7 @@ export class NewsRepository implements INewsRepository{
                 throw new ConflictError("Ya existe una novedad con ese título")
             }
             else {
-                throw new ServiceError("Error al registrar la novedad en la base de datos")
+                throw new ServiceError(`Error al registrar la novedad en la base de datos: ${error}`)
             }
         }
     }
