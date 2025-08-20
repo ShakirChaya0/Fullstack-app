@@ -2,31 +2,32 @@
 GET http://localhost:3000/novedades
 
 ###
-GET http://localhost:3000/novedades/id/45
+GET http://localhost:3000/novedades/id/58
 
 ###
 GET http://localhost:3000/novedades/actives
 
 ###
 POST http://localhost:3000/novedades
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzdWFyaW8iOiJlNTM0YjUyMS1iNzEwLTRhNjQtOGUyOC1iMTZkMTY5ZDVlYjQiLCJlbWFpbCI6ImFkbWluQGdtYWlsLmNvbSIsInRpcG9Vc3VhcmlvIjoiQWRtaW5pc3RyYWRvciIsInVzZXJuYW1lIjoiYWRtaW4iLCJpYXQiOjE3NTU2MDk2MzEsImV4cCI6MTc1NjIxNDQzMX0.56jCQ5DHfhVtDWciHrmX6b1WWK12rbIiLx3AfLQ5p48
 Content-Type: application/json
 
 {
-    "titulo": "Nasdasdaa",
+    "titulo": "Nasdasdssa",
     "descripcion": "ajasfafsdafasdadasdf",
-    "fechaInicio": "2025/07/25",
-    "fechaFin": "2025/08/25"
+    "fechaInicio": "2025/12/25",
+    "fechaFin": "2025/12/25"
 }
 
 ###
-PATCH http://localhost:3000/novedades/45
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzdWFyaW8iOiJlNTM0YjUyMS1iNzEwLTRhNjQtOGUyOC1iMTZkMTY5ZDVlYjQiLCJlbWFpbCI6ImFkbWluQGdtYWlsLmNvbSIsInRpcG9Vc3VhcmlvIjoiQWRtaW5pc3RyYWRvciIsInVzZXJuYW1lIjoiYWRtaW4iLCJpYXQiOjE3NTU2MDk2MzEsImV4cCI6MTc1NjIxNDQzMX0.56jCQ5DHfhVtDWciHrmX6b1WWK12rbIiLx3AfLQ5p48
+PATCH http://localhost:3000/novedades/58
 Content-Type: application/json
 
 {
     "titulo": "aaaaaaaaaaaa",
     "descripcion": "aaaaaaaaaaaaaaa",
-    "fechaInicio": "2025/07/25",
-    "fechaFin": "2025/08/25"
+    "fechaInicio": "2025/12/24",
+    "fechaFin": "2025/12/25"
 }
+
+###
+DELETE http://localhost:3000/novedades/58

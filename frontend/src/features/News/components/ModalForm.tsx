@@ -19,7 +19,7 @@ export default function FormEjemplo() {
     } = useForm<FormData>();
 
     const onSubmit =  (data: FormData) => {
-        handleCreateNews(data.Titulo, data.Descripcion, data.FechaInicio.split("-").reverse().join("/"), data.FechaFin.split("-").reverse().join("/"))
+        handleCreateNews(data.Titulo, data.Descripcion, data.FechaInicio.split("-").join("/"), data.FechaFin.split("-").join("/"))
     };
 
     const fechaInicioValue = watch("FechaInicio");
