@@ -19,7 +19,7 @@ export class PolicyController {
             next(error);
         }
     };
-    public getById = async (req: Request, res: Response, next: NextFunction) => {
+    public getPolicy = async (req: Request, res: Response, next: NextFunction) => {
         try {
             const policy = await this.getPolicyUseCase.execute();
             res.status(200).json(policy);

@@ -15,7 +15,6 @@ export class CUU20RegisterSuggestion {
 
         if (!product) throw new NotFoundError("El ID ingresado no pertecene a un Producto");
 
-        const newSuggestion = await this.suggestionRepository.create(new Suggestion(product, data.fechaDesde, data.fechaHasta));
-        return newSuggestion;
+        return await this.suggestionRepository.create(new Suggestion(product, data.fechaDesde, data.fechaHasta));
     }
 }

@@ -21,7 +21,7 @@ export class InformationController {
         }
     };
 
-    public getById = async (req: Request, res: Response, next: NextFunction) => {
+    public getInformation = async (req: Request, res: Response, next: NextFunction) => {
         try {
             const information = await this.getInformationUseCase.execute();
             res.status(200).json(information);

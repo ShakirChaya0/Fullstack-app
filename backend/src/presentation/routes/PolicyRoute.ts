@@ -1,4 +1,4 @@
-import { Router} from 'express';
+import { Router } from 'express';
 import { PolicyController } from '../controllers/PolicyController.js';
 
 export function PolicyRouter() {
@@ -9,8 +9,8 @@ export function PolicyRouter() {
         policyController.updatePoliticy(req, res, next); 
     });
 
-    policyRouter.get('/id/:idPolitica', (req, res, next) => { 
-        policyController.getById(req, res, next); 
+    policyRouter.get('/', (req, res, next) => { 
+        policyController.getPolicy(req, res, next); 
     });
 
     return policyRouter;

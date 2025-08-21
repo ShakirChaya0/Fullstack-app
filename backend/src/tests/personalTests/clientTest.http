@@ -19,7 +19,8 @@ Content-Type: application/json
 }
 
 ###
-PATCH http://localhost:3000/clientes/id/672c3549-51d7-4f30-a8cd-83883e9c4204
+PATCH http://localhost:3000/clientes/id/21169869-1cd2-45ea-a962-d3b48f665599
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzdWFyaW8iOiIyMTE2OTg2OS0xY2QyLTQ1ZWEtYTk2Mi1kM2I0OGY2NjU1OTkiLCJlbWFpbCI6ImNsaWVudGUxQGdtYWlsLmNvbSIsInRpcG9Vc3VhcmlvIjoiQ2xpZW50ZSIsInVzZXJuYW1lIjoiY2xpZW50ZTEiLCJpYXQiOjE3NTU3ODAxMzksImV4cCI6MTc1NjM4NDkzOX0.HFQRO6T5gRXsuXw5_D0Rw1OyqCHe2-DQMJg191OKzoA
 Content-Type: application/json
 
 {

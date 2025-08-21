@@ -19,7 +19,7 @@ Content-Type: application/json
 }
 
 ###
-PATCH http://localhost:3000/novedades/58
+PATCH http://localhost:3000/novedades/2
 Content-Type: application/json
 
 {
@@ -30,4 +30,4 @@ Content-Type: application/json
 }
 
 ###
-DELETE http://localhost:3000/novedades/58
+DELETE http://localhost:3000/novedades/1

@@ -1,10 +1,12 @@
 ###
 GET http://localhost:3000/administradores/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzdWFyaW8iOiJlNTM0YjUyMS1iNzEwLTRhNjQtOGUyOC1iMTZkMTY5ZDVlYjQiLCJlbWFpbCI6ImFkbWluQGdtYWlsLmNvbSIsInRpcG9Vc3VhcmlvIjoiQWRtaW5pc3RyYWRvciIsInVzZXJuYW1lIjoiYWRtaW4iLCJpYXQiOjE3NTU2MDk2MzEsImV4cCI6MTc1NjIxNDQzMX0.56jCQ5DHfhVtDWciHrmX6b1WWK12rbIiLx3AfLQ5p48
 
 ###
-PATCH http://localhost:3000/administradores/update/e534b521-b710-4a64-8e28-b16d169d5eb4
+PATCH http://localhost:3000/administradores/update/3a200425-3a56-4faa-a07c-ece0b7d2aced
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzdWFyaW8iOiJlNTM0YjUyMS1iNzEwLTRhNjQtOGUyOC1iMTZkMTY5ZDVlYjQiLCJlbWFpbCI6ImFkbWluQGdtYWlsLmNvbSIsInRpcG9Vc3VhcmlvIjoiQWRtaW5pc3RyYWRvciIsInVzZXJuYW1lIjoiYWRtaW4iLCJpYXQiOjE3NTU2MDk2MzEsImV4cCI6MTc1NjIxNDQzMX0.56jCQ5DHfhVtDWciHrmX6b1WWK12rbIiLx3AfLQ5p48
 Content-Type: application/json
 
 {
-    "email": "shakirchaya@gmail.com"
+    "dni": "39132659"
 }

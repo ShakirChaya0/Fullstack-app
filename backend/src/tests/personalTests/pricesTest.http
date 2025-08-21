@@ -1,24 +1,29 @@
 ### GET ALL
 GET http://localhost:3000/precios
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzdWFyaW8iOiJlNTM0YjUyMS1iNzEwLTRhNjQtOGUyOC1iMTZkMTY5ZDVlYjQiLCJlbWFpbCI6ImFkbWluQGdtYWlsLmNvbSIsInRpcG9Vc3VhcmlvIjoiQWRtaW5pc3RyYWRvciIsInVzZXJuYW1lIjoiYWRtaW4iLCJpYXQiOjE3NTU2MDk2MzEsImV4cCI6MTc1NjIxNDQzMX0.56jCQ5DHfhVtDWciHrmX6b1WWK12rbIiLx3AfLQ5p48
 
 ### GET ONE 
 GET http://localhost:3000/precios/search?idProducto=4&fechaActual=2023-07-14T00:00:00.000Z
 
 ### GET BY PRODUCT
-GET http://localhost:3000/precios/producto/4
+GET http://localhost:3000/precios/producto/3
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzdWFyaW8iOiJlNTM0YjUyMS1iNzEwLTRhNjQtOGUyOC1iMTZkMTY5ZDVlYjQiLCJlbWFpbCI6ImFkbWluQGdtYWlsLmNvbSIsInRpcG9Vc3VhcmlvIjoiQWRtaW5pc3RyYWRvciIsInVzZXJuYW1lIjoiYWRtaW4iLCJpYXQiOjE3NTU2MDk2MzEsImV4cCI6MTc1NjIxNDQzMX0.56jCQ5DHfhVtDWciHrmX6b1WWK12rbIiLx3AfLQ5p48
 
 ### GET ACTUAL
-GET http://localhost:3000/precios/actual/4
+GET http://localhost:3000/precios/actual/3
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzdWFyaW8iOiJlNTM0YjUyMS1iNzEwLTRhNjQtOGUyOC1iMTZkMTY5ZDVlYjQiLCJlbWFpbCI6ImFkbWluQGdtYWlsLmNvbSIsInRpcG9Vc3VhcmlvIjoiQWRtaW5pc3RyYWRvciIsInVzZXJuYW1lIjoiYWRtaW4iLCJpYXQiOjE3NTU2MDk2MzEsImV4cCI6MTc1NjIxNDQzMX0.56jCQ5DHfhVtDWciHrmX6b1WWK12rbIiLx3AfLQ5p48
 
 ### REGISTER PRICE
 POST http://localhost:3000/precios
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzdWFyaW8iOiJlNTM0YjUyMS1iNzEwLTRhNjQtOGUyOC1iMTZkMTY5ZDVlYjQiLCJlbWFpbCI6ImFkbWluQGdtYWlsLmNvbSIsInRpcG9Vc3VhcmlvIjoiQWRtaW5pc3RyYWRvciIsInVzZXJuYW1lIjoiYWRtaW4iLCJpYXQiOjE3NTU2MDk2MzEsImV4cCI6MTc1NjIxNDQzMX0.56jCQ5DHfhVtDWciHrmX6b1WWK12rbIiLx3AfLQ5p48
 Content-Type: application/json
 
 {
-    "idProducto": 5,
-    "monto": 5500.85 
+    "idProducto": 3,
+    "monto": 7000.85 
 }
 
 
 ### DELETE PRICE
-DELETE http://localhost:3000/precios?idProducto=4&fechaActual=2023-07-14T00:00:00.000Z
+DELETE http://localhost:3000/precios?idProducto=3&fechaActual=2025-08-21T12:58:12.394Z
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzdWFyaW8iOiJlNTM0YjUyMS1iNzEwLTRhNjQtOGUyOC1iMTZkMTY5ZDVlYjQiLCJlbWFpbCI6ImFkbWluQGdtYWlsLmNvbSIsInRpcG9Vc3VhcmlvIjoiQWRtaW5pc3RyYWRvciIsInVzZXJuYW1lIjoiYWRtaW4iLCJpYXQiOjE3NTU2MDk2MzEsImV4cCI6MTc1NjIxNDQzMX0.56jCQ5DHfhVtDWciHrmX6b1WWK12rbIiLx3AfLQ5p48

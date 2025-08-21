@@ -75,7 +75,7 @@ model Novedad {
 
 model Precios {
   idProducto  Int
-  fechaActual DateTime @db.Date
+  fechaActual DateTime @db.Timestamp(6)
   monto       Decimal  @db.Decimal(10, 2)
   Producto    Producto @relation(fields: [idProducto], references: [idProducto], onDelete: Cascade, onUpdate: NoAction, map: "producto_fkey")
 
