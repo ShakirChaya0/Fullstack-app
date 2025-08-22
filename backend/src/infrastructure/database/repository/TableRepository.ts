@@ -104,6 +104,21 @@ export class TableRepository implements ITableRepository {
         return updatedTables;
     }
 
+    public async updateTable(numTable: number): Promise<Table | null> {
+        const table = await prisma.mesa.update({
+            where: {
+                nroMesa: numTable
+            }, 
+            data: {
+                estado: 'Libre'
+            }
+        });
+
+        if (!table) return null;
+
+        return new Table(table.nroMesa, table.capacidad, table.estado);
+    }
+
     public async deleteTable(numTable: number): Promise<void> {
         await prisma.mesa.delete({
             where: { nroMesa: numTable }

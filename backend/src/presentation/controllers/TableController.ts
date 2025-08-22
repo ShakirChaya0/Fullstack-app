@@ -2,16 +2,18 @@ import { Request, Response, NextFunction } from "express";
 import { CUU17RegisterTable } from "../../application/use_cases/TableUseCase/CUU17RegisterTable.js";
 import { validateTable } from "../../shared/validators/TableZod.js";
 import { GetAllTable} from "../../application/use_cases/TableUseCase/GetTablesUseCase.js";
+import { UpdateTableUseCase } from "../../application/use_cases/TableUseCase/UpdateTableUseCase.js";
 import { GetTableByCapacity } from "../../application/use_cases/TableUseCase/GetTablesByCapacity.js";
 import { DeleteTable } from "../../application/use_cases/TableUseCase/DeleteTable.js";
 import { ValidationError } from "../../shared/exceptions/ValidationError.js";
 
 export class TableController {
     constructor(
-        private readonly CU17RegisterTable = new CUU17RegisterTable,
-        private readonly getAllTable = new GetAllTable,
-        private readonly getTableByCapacity = new GetTableByCapacity,
-        private readonly deletedTable = new DeleteTable
+        private readonly CU17RegisterTable = new CUU17RegisterTable(),
+        private readonly getAllTable = new GetAllTable(),
+        private readonly getTableByCapacity = new GetTableByCapacity(),
+        private readonly deletedTable = new DeleteTable(), 
+        private readonly updateTable = new UpdateTableUseCase()
     ){}
 
     public getAll = async (req: Request, res: Response, next: NextFunction) => {
@@ -55,6 +57,24 @@ export class TableController {
             }
             await this.deletedTable.execute(+nroMesa);
             res.status(204).json({message: "Mesa eliminada exitosamente"});
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    public update = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const { numTable, statusTable } = req.query; 
+
+            if (!numTable) throw new ValidationError('El numero de mesa es obligatorio'); 
+            
+            const numTableint = Number(numTable)
+
+            if (statusTable !== 'Libre') throw new ValidationError('El estado de la mesa ingresado es incorrecto');
+
+            await this.updateTable.execute(numTableint); 
+            res.status(204).json({message: "Mesa liberarada exitosamente"});
+
         } catch (error) {
             next(error);
         }

@@ -77,16 +77,12 @@ export class RegisterReservation {
     
     if (existingReservation) throw new BusinessError('Usted ya tiene una reserva para esa fecha y ese horario');
 
-    // Se valida que el horario de la Reserva sea en los Horarios del Restaurante
+    // Se valida que el horario de la Reserva sea entre los Horarios del Restaurante
     const dayReservation = data.fechaReserva.getDay();
 
     const schedule = await this.schedulelRepository.getById(dayReservation); 
 
     if (!schedule) throw new NotFoundError('No hay horarios disponibles para ese dia'); 
-
-    console.log(schedule.horaApertura);
-    console.log(schedule.horaCierre);
-    console.log(data.horarioReserva)
 
     const [hours, minutes] = data.horarioReserva.split(':').map(Number);
     const timeAsDate = new Date(Date.UTC(1970, 0, 1, hours, minutes, 0, 0));
@@ -96,9 +92,6 @@ export class RegisterReservation {
 
     const aperturaDate = new Date(Date.UTC(1970, 0, 1, aperturaHours, aperturaMinutes, 0, 0));
     const cierreDate = new Date(Date.UTC(1970, 0, 1, cierreHours, cierreMinutes, 0, 0));
-
-    console.log(aperturaDate);
-    console.log(cierreDate);
 
     if (timeAsDate < aperturaDate || timeAsDate > cierreDate) throw new BusinessError('Horario fuera del rango de atención');
     

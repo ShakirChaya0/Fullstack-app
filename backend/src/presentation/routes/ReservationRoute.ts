@@ -17,7 +17,7 @@ export const ReservationRouter = () => {
 
   router.post("/", AuthMiddleware, RoleMiddleware(["Cliente"]), controller.createReservation);
 
-  router.patch("/estado/:idReserva", AuthMiddleware, RoleMiddleware(["Mozo"]), controller.updateReservationStatus);
+  router.patch("/estado", AuthMiddleware, RoleMiddleware(["Mozo"]), controller.updateReservationStatus);
   
   return router;
 };

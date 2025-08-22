@@ -1,6 +1,5 @@
 import { PolicyRepository } from "../../../infrastructure/database/repository/PolicyRepository.js";
 import { ReservationRepository } from "../../../infrastructure/database/repository/ReservationRepository.js";
-import { TableRepository } from "../../../infrastructure/database/repository/TableRepository.js";
 import { NotFoundError } from "../../../shared/exceptions/NotFoundError.js";
 import { ClientRepository } from "../../../infrastructure/database/repository/ClientRepository.js";
 import { ClientStateRepository } from "../../../infrastructure/database/repository/ClientStateRepository.js";
@@ -9,7 +8,6 @@ export class CheckExpiredReservations{
     constructor(
         private readonly policyRepoitory = new PolicyRepository(), 
         private readonly reservationRepository = new ReservationRepository(), 
-        private readonly tableRepository = new TableRepository(),
         private readonly clientRepository = new ClientRepository(), 
         private readonly clientStateRepository = new ClientStateRepository()
     ){}
@@ -31,14 +29,13 @@ export class CheckExpiredReservations{
 
                 if (now > expiration) {
                     await this.reservationRepository.updateStatus(reservation.reserveId, 'No_Asistida');
-                    await this.tableRepository.updateTableFree(reservation.table);
 
                     const client = await this.clientRepository.getClientByOtherDatas(reservation.toPublicInfo); 
                     
                     if (!client) throw new NotFoundError("Cliente no encontrado");
                         
-                    const nonAttendance = client.reservation.filter(r => {r.status === 'No_Asistida'}).length; 
-                    const disabled = client.states.filter(s => {s.state === 'Deshabilitado'}).length
+                    const nonAttendance = client.reservation.filter(r => r.status === 'No_Asistida').length; 
+                    const disabled = client.states.filter(s => s.state === 'Deshabilitado').length
                     const disabledWaiting = Math.floor(nonAttendance / policy.limiteDeNoAsistencias);
                         
                     if (disabled < disabledWaiting) await this.clientStateRepository.create(client.userId, 'Deshabilitado'); 
