@@ -3,8 +3,11 @@ import { ValidationError } from '../exceptions/ValidationError.js';
 
 export const InformationSchema = z.object({ 
     nombreRestaurante: z.string({message: "El nombre debe ser un string"}).min(3, "Nombre del restaurante es requerido"),
+
     direccionRestaurante: z.string().min(3, "Direccion es requerida"),
+
     razonSocial: z.string().min(3, "El nombre de la empresa es requerido"),
+    
     telefonoContacto: z.string().min(3, "El telefono es requerido")
 })
 

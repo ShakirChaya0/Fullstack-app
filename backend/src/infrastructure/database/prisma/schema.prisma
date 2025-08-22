@@ -135,7 +135,7 @@ model EstadosCliente {
 }
 
 model Linea_De_Pedido {
-  nroLinea       Int      @default(autoincrement())
+  nroLinea       Int
   idPedido       Int
   cantidad       Int
   estado         estadoLP
@@ -158,8 +158,8 @@ model Pedido {
   idMozo          String?           @db.Uuid
   Linea_De_Pedido Linea_De_Pedido[]
   Pagos           Pagos[]
-  Mozos           Mozos?            @relation(fields: [idMozo], references: [idMozo], onDelete: SetNull, onUpdate: NoAction, map: "idMozo")
-  Mesa            Mesa?             @relation(fields: [nroMesa], references: [nroMesa], onDelete: SetNull, onUpdate: NoAction, map: "nroMesa")
+  Mozos           Mozos?            @relation(fields: [idMozo], references: [idMozo], onUpdate: NoAction, map: "idMozo")
+  Mesa            Mesa?             @relation(fields: [nroMesa], references: [nroMesa], onUpdate: NoAction, map: "nroMesa")
 }
 
 model Pagos {
@@ -184,8 +184,8 @@ model RefreshTokens {
 model QRToken {
   nroMesa       Int      @id
   idMozo        String   @db.Uuid
-  tokenQR       String   @unique(map: "uniqueTokenQR") @db.VarChar
   revocado      Boolean  @default(false)
+  tokenQR       String   @unique(map: "uniqueTokenQR") @db.VarChar
   fechaCreacion DateTime @default(now())
   Mozos         Mozos    @relation(fields: [idMozo], references: [idMozo], onDelete: Cascade, onUpdate: NoAction, map: "idMozo")
   Mesa          Mesa     @relation(fields: [nroMesa], references: [nroMesa], onDelete: Cascade, onUpdate: NoAction, map: "nroMesa")

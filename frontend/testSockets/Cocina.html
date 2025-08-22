@@ -10,12 +10,16 @@
 
     const ws = new io('ws://localhost:3000',{
         auth: {
-            jwt: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzdWFyaW8iOiIzYjE2MzE1MC0yNzZiLTQ4NTUtODgwNi05MDlkNmI2YjMzOTIiLCJlbWFpbCI6ImNvY2luYUBnbWFpbC5jb20iLCJ0aXBvVXN1YXJpbyI6IlNlY3RvckNvY2luYSIsInVzZXJuYW1lIjoic2VjdG9yY29jaW5hIiwiaWF0IjoxNzU1NjE1NjU5LCJleHAiOjE3NTYyMjA0NTl9.TBRX3qUspszYdlieJmzZIrAyrZx2fomUmCUfiiPZ6Hw"
+            jwt: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzdWFyaW8iOiIzYjE2MzE1MC0yNzZiLTQ4NTUtODgwNi05MDlkNmI2YjMzOTIiLCJlbWFpbCI6ImNvY2luYUBnbWFpbC5jb20iLCJ0aXBvVXN1YXJpbyI6IlNlY3RvckNvY2luYSIsInVzZXJuYW1lIjoic2VjdG9yY29jaW5hIiwiaWF0IjoxNzU1ODk0NzcyLCJleHAiOjE3NTY0OTk1NzJ9.EFExde8szfLBcaMkay4Jv9BqB9x4Xb98BDieU0NykuI"
         }
     });
 
     // ws.emit('updateLineStatus', {idPedido: 38, nroLinea: 65, estadoLP: 'Terminada'})
     
+    ws.on('activeOrders', (data) => {
+        console.log(data)
+    })
+
     ws.on('errorEvent', (data) => {
         console.log(data)
     })

@@ -5,19 +5,26 @@ export const ClientSchema = z.object({
     nombreUsuario: z.string()
             .min(1, 'El nombre de usuario del mozo es obligatorio')
             .max(50, 'El nombre de usuario del mozo no puede exceder los 50 caracteres'),
+
     contrasenia: z.string().nonempty({message: 'La contraseña es obligatoria'}).min(6, 'La contraseña del mozo debe tener al menos 6 caracteres').max(100, 'La contraseña del mozo no puede exceder los 100 caracteres'),
+    
     email: z.string()
         .email('El correo electrónico debe ser válido')
         .max(100, 'El correo electrónico no puede exceder los 100 caracteres'),
+        
     nombre: z.string()
             .min(1, 'El nombre del mozo es obligatorio')
             .max(50, 'El nombre del mozo no puede exceder los 50 caracteres'), 
+
     apellido: z.string()
             .min(1, 'El apellido del mozo es obligatorio')
             .max(50, 'El apellido del mozo no puede exceder los 50 caracteres'),
+
     telefono: z.string()
-            .min(5, 'El teléfono del mozo debe tener al menos 5 caracteres')
-            .max(15, 'El teléfono del mozo no puede exceder los 15 caracteres'),
+    .min(5, 'El teléfono debe tener al menos 5 caracteres')
+    .max(15, 'El teléfono no puede exceder los 15 caracteres')
+    .regex(/^\+?\d+$/, 'El teléfono debe contener solo números y puede incluir un + al inicio'),
+
     fechaNacimiento: z.string()
     .refine(str => /^\d{2}\/\d{2}\/\d{4}$/.test(str), {
         message: "Formato inválido. Usa dd/mm/yyyy",

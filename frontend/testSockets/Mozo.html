@@ -10,9 +10,13 @@
 
     const ws = new io('ws://localhost:3000',{
         auth: {
-            jwt: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzdWFyaW8iOiI5OTAyM2M2Mi05YjY2LTQxYTMtYWFjMi1jODU3MDk5ZmQ1NzMiLCJlbWFpbCI6ImZyYW5jb25pY29sYXNAZ21haWwuY29tIiwidGlwb1VzdWFyaW8iOiJNb3pvIiwidXNlcm5hbWUiOiJmcmFuY29uaWNvbGFzIiwiaWF0IjoxNzU1NjA3NjE4LCJleHAiOjE3NTYyMTI0MTh9.MqukPxFbUks8dqBIIUCECjNZ1FjnTp5mjhBckap1FJ4"
+            jwt: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzdWFyaW8iOiI5OTAyM2M2Mi05YjY2LTQxYTMtYWFjMi1jODU3MDk5ZmQ1NzMiLCJlbWFpbCI6ImZyYW5jb25pY29sYXNAZ21haWwuY29tIiwidGlwb1VzdWFyaW8iOiJNb3pvIiwidXNlcm5hbWUiOiJmcmFuY29uaWNvbGFzIiwiaWF0IjoxNzU1ODk0ODI0LCJleHAiOjE3NTY0OTk2MjR9.xlIBviwBybKfRl8HjGjPJF0wtNtHjq77jAjpV2MS3kE"
         }
     });
+
+    ws.on('waiterOrders', (data) => {
+        console.log(data)
+    })
 
     ws.on('errorEvent', (data) => {
         console.log(data)
