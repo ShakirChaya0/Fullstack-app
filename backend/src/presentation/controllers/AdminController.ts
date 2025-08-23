@@ -5,6 +5,7 @@ import { ValidationError } from "../../shared/exceptions/ValidationError.js";
 import { ValidatePartialAdmin } from "../../shared/validators/AdminZod.js";
 import { PartialSchemaAdmin } from "../../shared/validators/AdminZod.js";
 import { NotFoundError } from "../../shared/exceptions/NotFoundError.js";
+import { AuthenticatedRequest } from "../middlewares/AuthMiddleware.js";
 
 export class AdminController {
     constructor(
@@ -31,9 +32,10 @@ export class AdminController {
         }
     }
 
-    public updateAdminProfile = async (req: Request, res: Response, next: NextFunction) => {
+    public updateAdminProfile = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
         try {
-            const idAdmin = req.params.idAdmin;
+            const idAdmin = req.user?.idUsuario
+            
             if(!idAdmin) throw new ValidationError('El id del Administrador no puede ser vacio');
 
             const data = req.body;

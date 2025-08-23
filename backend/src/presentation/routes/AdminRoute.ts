@@ -7,7 +7,7 @@ export function AdminRouter() {
 
     adminRouter.get('/', (req, res, next) => { adminController.getAdmin(req, res, next) });
 
-    adminRouter.patch('/update/:idAdmin', (req, res, next) => { adminController.updateAdminProfile(req, res, next) });
+    adminRouter.patch('/update', (req, res, next) => { adminController.updateAdminProfile(req, res, next) });
 
     return adminRouter
 }

@@ -66,6 +66,7 @@ export class OrderRepository implements IOrderRepository {
                 idMozo: waiterId,
                 Linea_De_Pedido: {
                 create: order.items.map(linea => ({
+                    nroLinea: 0, //El trigger en BD pondrá el valor correspondiente
                     nombreProducto: linea.nombre,
                     monto: linea.monto,
                     estado: 'Pendiente',
@@ -153,6 +154,7 @@ export class OrderRepository implements IOrderRepository {
             data: {
                 Linea_De_Pedido: {
                     create: orderLines.map( linea => ({
+                        nroLinea: 0, //El trigger en BD pondrá el valor correspondiente
                         nombreProducto: linea.nombre,
                         monto: linea.monto,
                         estado: 'Pendiente',

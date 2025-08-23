@@ -6,6 +6,7 @@ import { validateClient, validateClientPartial } from "../../shared/validators/C
 import { RegisterClientUseCase } from "../../application/use_cases/ClientUseCases/RegisterClientUseCase.js";
 import { UpdateClientUseCase } from "../../application/use_cases/ClientUseCases/UpdateClientUseCase.js";
 import { GetClientByUserNameUseCase } from "../../application/use_cases/ClientUseCases/GetClientByUsernameUseCase.js";
+import { AuthenticatedRequest } from "../middlewares/AuthMiddleware.js";
 
 export class ClientController {
     constructor(
@@ -105,13 +106,11 @@ export class ClientController {
         }
     }
 
-    public async updateClient(req:Request, res:Response, next: NextFunction) {
+    public async updateClient(req: AuthenticatedRequest, res: Response, next: NextFunction) {
         try {
+            const id = req.user?.idUsuario;
 
-            const id = req.params.idUsuario; 
-            if(!id) {
-                throw new ValidationError('Se ingreso un ID válido');
-            }
+            if(!id) throw new ValidationError('Se ingreso un ID válido');
 
             const newData = req.body
             const validation = validateClientPartial(newData);

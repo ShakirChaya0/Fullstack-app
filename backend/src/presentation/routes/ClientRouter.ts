@@ -15,7 +15,7 @@ export function ClientRouter () {
 
     clientRouter.post('/', (req,res,next) => { clientController.createClient(req,res,next) });
 
-    clientRouter.patch('/id/:idUsuario', AuthMiddleware, RoleMiddleware(["Cliente"]), (req,res,next) => { clientController.updateClient(req,res,next) });
+    clientRouter.patch('/update', AuthMiddleware, RoleMiddleware(["Cliente"]), (req,res,next) => { clientController.updateClient(req,res,next) });
     
     return clientRouter;
 
