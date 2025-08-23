@@ -1,15 +1,15 @@
 ### CASO DE USO PAGAR PEDIDO
 ### Generar cuenta
-GET http://localhost:3000/pagos/cuenta/37
+GET http://localhost:3000/pagos/cuenta/1
 
 ### Pagar con MP
 POST http://localhost:3000/pagos/mp/37
 
 ### Pagar en efectivo/Tarjeta
-POST http://localhost:3000/pagos/tarjeta/37
+POST http://localhost:3000/pagos/tarjeta/1
 
 ### Registrar pago de la cuenta
-POST http://localhost:3000/pagos/pagado?idPedido=37&metodoPago=Credito
+POST http://localhost:3000/pagos/pagado?idPedido=1&metodoPago=Credito
 
 
 ### CRUD PAGOS

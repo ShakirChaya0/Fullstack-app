@@ -3,10 +3,11 @@ GET http://localhost:3000/precios
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzdWFyaW8iOiJlNTM0YjUyMS1iNzEwLTRhNjQtOGUyOC1iMTZkMTY5ZDVlYjQiLCJlbWFpbCI6ImFkbWluQGdtYWlsLmNvbSIsInRpcG9Vc3VhcmlvIjoiQWRtaW5pc3RyYWRvciIsInVzZXJuYW1lIjoiYWRtaW4iLCJpYXQiOjE3NTU2MDk2MzEsImV4cCI6MTc1NjIxNDQzMX0.56jCQ5DHfhVtDWciHrmX6b1WWK12rbIiLx3AfLQ5p48
 
 ### GET ONE 
-GET http://localhost:3000/precios/search?idProducto=4&fechaActual=2023-07-14T00:00:00.000Z
+GET http://localhost:3000/precios/search?idProducto=3&fechaActual=2025-08-23T03:57:29.895Z
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzdWFyaW8iOiJlNTM0YjUyMS1iNzEwLTRhNjQtOGUyOC1iMTZkMTY5ZDVlYjQiLCJlbWFpbCI6ImFkbWluQGdtYWlsLmNvbSIsInRpcG9Vc3VhcmlvIjoiQWRtaW5pc3RyYWRvciIsInVzZXJuYW1lIjoiYWRtaW4iLCJpYXQiOjE3NTU2MDk2MzEsImV4cCI6MTc1NjIxNDQzMX0.56jCQ5DHfhVtDWciHrmX6b1WWK12rbIiLx3AfLQ5p48
 
 ### GET BY PRODUCT
-GET http://localhost:3000/precios/producto/3
+GET http://localhost:3000/precios/producto/1
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzdWFyaW8iOiJlNTM0YjUyMS1iNzEwLTRhNjQtOGUyOC1iMTZkMTY5ZDVlYjQiLCJlbWFpbCI6ImFkbWluQGdtYWlsLmNvbSIsInRpcG9Vc3VhcmlvIjoiQWRtaW5pc3RyYWRvciIsInVzZXJuYW1lIjoiYWRtaW4iLCJpYXQiOjE3NTU2MDk2MzEsImV4cCI6MTc1NjIxNDQzMX0.56jCQ5DHfhVtDWciHrmX6b1WWK12rbIiLx3AfLQ5p48
 
 ### GET ACTUAL
@@ -19,11 +20,11 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzdWFyaW8iOiJlN
 Content-Type: application/json
 
 {
-    "idProducto": 3,
-    "monto": 7000.85 
+    "idProducto": 4,
+    "monto": 8000.85 
 }
 
 
 ### DELETE PRICE
-DELETE http://localhost:3000/precios?idProducto=3&fechaActual=2025-08-21T12:58:12.394Z
+DELETE http://localhost:3000/precios?idProducto=3&fechaActual=2025-08-23T04:07:20.060Z
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzdWFyaW8iOiJlNTM0YjUyMS1iNzEwLTRhNjQtOGUyOC1iMTZkMTY5ZDVlYjQiLCJlbWFpbCI6ImFkbWluQGdtYWlsLmNvbSIsInRpcG9Vc3VhcmlvIjoiQWRtaW5pc3RyYWRvciIsInVzZXJuYW1lIjoiYWRtaW4iLCJpYXQiOjE3NTU2MDk2MzEsImV4cCI6MTc1NjIxNDQzMX0.56jCQ5DHfhVtDWciHrmX6b1WWK12rbIiLx3AfLQ5p48

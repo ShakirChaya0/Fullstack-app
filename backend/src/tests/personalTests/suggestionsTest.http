@@ -5,19 +5,15 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzdWFyaW8iOiJlM
 ### GET ACTIVES
 GET http://localhost:3000/sugerencias/activas
 
-### REGISTER SUGGESTION USE CASE
-### STEP 1
-GET http://localhost:3000/sugerencias/producto/2
-
-### STEP 2
+### CREATE SUGGESTION
 POST http://localhost:3000/sugerencias
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzdWFyaW8iOiJlMTBjNmRmYS0xYjUxLTRhZGItOGI1MC1iYTIzMjgzNmU3YWMiLCJlbWFpbCI6ImNvY2luYUBnbWFpbC5jb20iLCJ0aXBvVXN1YXJpbyI6IlNlY3RvckNvY2luYSIsInVzZXJuYW1lIjoiY29jaW5hIiwiaWF0IjoxNzU1Nzc3NjIwLCJleHAiOjE3NTYzODI0MjB9.svoj3XAHVJBSSO5QNCH1iWMlio8V2NytfszPeb7Euxg
 Content-Type: application/json
 
 {
-    "idProducto": 64,
-    "fechaDesde": "2025-06-25T00:00:00Z",
-    "fechaHasta": "2025-07-17T23:59:59Z"
+    "idProducto": 1,
+    "fechaDesde": "17/09/2025",
+    "fechaHasta": "20/09/2025"
 }
 
 
@@ -31,6 +27,6 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzdWFyaW8iOiJlM
 Content-Type: application/json
 
 {
-    "idProducto": 4,
-    "fechaHasta": "2025-07-20T23:59:59Z"
+    "idProducto": 3,
+    "fechaHasta": "21/09/2025"
 }

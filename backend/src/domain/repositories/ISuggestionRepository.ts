@@ -8,7 +8,7 @@ export interface ISuggestionRepository {
 
     findByProductAndDate(productId: number, dateFrom: Date): Promise<Suggestion | null>
 
-    create(sugg: Suggestion): Promise<Suggestion>;
+    create(productId: number, dateFrom: Date, dateTo: Date): Promise<Suggestion>;
 
     update(data: PartialSchemaSuggestion, idProducto: number, fechaDesde: Date): Promise<Suggestion>;
 }

@@ -60,7 +60,14 @@ export class PriceRepository implements IPriceRepository {
     }
 
     public async create(price: SchemaPrice): Promise<Price> {
-        const today = new Date();
+        const today = new Date(Date.UTC(
+            new Date().getFullYear(),
+            new Date().getMonth(),
+            new Date().getDate(),
+            new Date().getHours(),
+            new Date().getMinutes(),
+            new Date().getSeconds()
+        ));
         const newPrice = await prisma.precios.create({
             data: {
                 ...price,

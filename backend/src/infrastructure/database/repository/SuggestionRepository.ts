@@ -6,6 +6,8 @@ import { Prisma } from "@prisma/client";
 import { PartialSchemaSuggestion } from "../../../shared/validators/SuggestionZod.js";
 import { Food } from "../../../domain/entities/Food.js";
 import { Drink } from "../../../domain/entities/Drink.js";
+import { ServiceError } from "../../../shared/exceptions/ServiceError.js";
+import { ConflictError } from "../../../shared/exceptions/ConflictError.js";
 
 type SuggestionWithProduct = Prisma.SugerenciasGetPayload<{
     include: { Producto: { include: { Precios: true }} }
@@ -58,12 +60,12 @@ export class SuggestionRepository implements ISuggestionRepository {
         return this.toDomainEntity(suggestion);
     }
 
-    public async create(sugg: Suggestion): Promise<Suggestion> {
+    public async create(productId: number, dateFrom: Date, dateTo: Date): Promise<Suggestion> {
         const newSuggestion = await prisma.sugerencias.create({
             data: {
-                fechaDesde: sugg.dateFrom,
-                fechaHasta: sugg.dateTo,
-                idProducto: sugg.product.productId
+                fechaDesde: dateFrom,
+                fechaHasta: dateTo,
+                idProducto: productId
             },
             include: {
                 Producto: { include: { Precios: true } }
@@ -73,21 +75,30 @@ export class SuggestionRepository implements ISuggestionRepository {
         return this.toDomainEntity(newSuggestion);
     }
 
-    public async update(data: PartialSchemaSuggestion, idProducto: number, fechaDesde: Date): Promise<Suggestion> {        
-        const updatedSuggestion = await prisma.sugerencias.update({
-            where: { 
-                idProducto_fechaDesde: {
-                    idProducto: idProducto,
-                    fechaDesde: fechaDesde
+    public async update(data: PartialSchemaSuggestion, idProducto: number, fechaDesde: Date): Promise<Suggestion> {       
+        try {
+            const updatedSuggestion = await prisma.sugerencias.update({
+                where: { 
+                    idProducto_fechaDesde: {
+                        idProducto: idProducto,
+                        fechaDesde: fechaDesde
+                    }
+                },
+                data: { ...data },
+                include: {
+                    Producto: { include: { Precios: true } }
                 }
-            },
-            data: { ...data },
-            include: {
-                Producto: { include: { Precios: true } }
-            }
-        });
+            });
 
-        return this.toDomainEntity(updatedSuggestion);
+            return this.toDomainEntity(updatedSuggestion);
+        } catch (error: any) {
+            if (error?.code === 'P2002') {
+                throw new ConflictError("Ya existe una sugerencia para ese producto con esa fecha desde")
+            }
+            else {
+                throw new ServiceError(`Error al registrar la sugerencia en la base de datos: ${error}`)
+            }
+        }
     }
 
     private toDomainEntity(sugg: SuggestionWithProduct): Suggestion {

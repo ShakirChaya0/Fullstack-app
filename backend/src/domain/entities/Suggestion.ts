@@ -1,3 +1,4 @@
+import { ValidationError } from "../../shared/exceptions/ValidationError.js";
 import { Product } from "./Product.js";
 
 export class Suggestion {
@@ -6,7 +7,7 @@ export class Suggestion {
         private _dateFrom: Date,
         private _dateTo: Date
     ) {
-        if (_dateFrom > _dateTo) throw new Error('La fecha de inicio no puede ser posterior a la fecha de fin');
+        if (_dateFrom > _dateTo) throw new ValidationError('La fecha de inicio no puede ser posterior a la fecha de fin');
     }
 
     public get product(): Product { return this._product }

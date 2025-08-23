@@ -3,6 +3,7 @@ import { LoginUseCase } from "../../application/use_cases/AuthUseCases/LogInUseC
 import { ValidationError } from "../../shared/exceptions/ValidationError.js";
 import { RefreshUseCase } from "../../application/use_cases/AuthUseCases/RefreshUseCase.js";
 import { LogOutUseCase } from "../../application/use_cases/AuthUseCases/LogOutUseCase.js";
+import { ValidateAuth } from "../../shared/validators/AuthZod.js";
 
 export class AuthController {
     constructor(
@@ -15,6 +16,9 @@ export class AuthController {
             const { email, password } = req.body;
             if (!email || !password) throw new ValidationError("No se ingresaron todos los campos obligatorios");
 
+            const validation = ValidateAuth({ email, password });
+            if (!validation.success) throw new ValidationError(`Validation failed: ${validation.error.message}`);
+            
             const result = await this.loginUC.execute(email, password);
 
             res
@@ -34,7 +38,7 @@ export class AuthController {
 
             res
                 .cookie('refreshToken', result.refreshToken, { httpOnly: true, secure: true, sameSite: 'strict', maxAge: 1000 * 60 * 15 })
-                .status(200).json(result.accessToken);
+                .status(200).json({ token: result.accessToken});
         } catch (error) {
             next(error);
         }
@@ -43,7 +47,7 @@ export class AuthController {
     async logout(req: Request, res: Response, next: NextFunction) {
         try {
             const token = req.cookies.refreshToken;
-            if (!token) res.status(204).send();
+            if (!token) throw new ValidationError("No se proporcionó un token a revocar");
 
             await this.logOutUC.execute(token);
 
