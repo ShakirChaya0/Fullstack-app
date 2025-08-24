@@ -4,13 +4,16 @@ import { ValidationError } from "../../shared/exceptions/ValidationError.js";
 import { RefreshUseCase } from "../../application/use_cases/AuthUseCases/RefreshUseCase.js";
 import { LogOutUseCase } from "../../application/use_cases/AuthUseCases/LogOutUseCase.js";
 import { ValidateAuth } from "../../shared/validators/AuthZod.js";
+import { CheckClientStatusUseCase } from "../../application/use_cases/ClientUseCases/CheckClientStatusUseCase.js";
 
 export class AuthController {
     constructor(
         private readonly loginUC = new LoginUseCase(),
+        private readonly checkClientStatusUC = new CheckClientStatusUseCase(),
         private readonly refreshUC = new RefreshUseCase(),
         private readonly logOutUC = new LogOutUseCase()
     ) {}
+    
     async login(req: Request, res: Response, next: NextFunction) {
         try{
             const { email, password } = req.body;
@@ -19,11 +22,13 @@ export class AuthController {
             const validation = ValidateAuth({ email, password });
             if (!validation.success) throw new ValidationError(`Validation failed: ${validation.error.message}`);
             
-            const result = await this.loginUC.execute(email, password);
+            const { accessToken, refreshToken, user } = await this.loginUC.execute(email, password);
+
+            if (user.userType === "Cliente") await this.checkClientStatusUC.execute(user.userId);
 
             res
-                .cookie('refreshToken', result.refreshToken, { httpOnly: true, secure: true, sameSite: 'strict', maxAge: 1000 * 60 * 15 })
-                .status(200).json({ token: result.accessToken });
+                .cookie('refreshToken', refreshToken, { httpOnly: true, secure: true, sameSite: 'strict', maxAge: 1000 * 60 * 15 })
+                .status(200).json({ token: accessToken });
         } catch (error) {
             next(error);
         }

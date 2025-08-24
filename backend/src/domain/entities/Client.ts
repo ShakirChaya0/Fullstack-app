@@ -84,4 +84,8 @@ export class Client extends User {
     set addReservation(newReservation: Reservation){
         this._reservation.push(newReservation);
     }
+
+    public getActualState(): ClientState {
+        return this.states[this.states.length - 1];
+    }
 }

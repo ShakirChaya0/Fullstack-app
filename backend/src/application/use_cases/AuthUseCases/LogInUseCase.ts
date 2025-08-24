@@ -5,6 +5,7 @@ import { PasswordHashingService } from "../../services/PasswordHashing.js";
 import { UUID } from "crypto";
 import { RefreshTokenRepository } from "../../../infrastructure/database/repository/RefreshTokenRepository.js";
 import { UserType } from "../../../shared/types/SharedTypes.js";
+import { User } from "../../../domain/entities/User.js";
 
 export class LoginUseCase{
     constructor(
@@ -14,7 +15,7 @@ export class LoginUseCase{
         private readonly refreshTokenRepository = new RefreshTokenRepository() 
     ){}
     
-    async execute(email: string, password: string): Promise<{accessToken: string, refreshToken: string}> {
+    async execute(email: string, password: string): Promise<{ accessToken: string, refreshToken: string, user: User }> {
         const user = await this.userRepository.findByEmail(email)
 
         if(!user) throw new UnauthorizedError("Email o contraseña incorrectos")
@@ -37,6 +38,6 @@ export class LoginUseCase{
 
         await this.refreshTokenRepository.saveRefreshedToken(user.userId, refreshToken, endDate)
 
-        return {accessToken, refreshToken}
+        return { accessToken, refreshToken, user }
     }
 }

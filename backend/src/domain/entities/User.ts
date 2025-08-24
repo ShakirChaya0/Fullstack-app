@@ -14,7 +14,7 @@ export class User {
     get userName(): string { return this._userName } 
     get email(): string { return this._email }
     get password(): string { return this._password }
-    get userType(): string { return this._userType }
+    get userType(): UserType { return this._userType }
 
     set userName(userName: string) { this._userName  = userName } 
     set email(email: string) { this._email = email }
