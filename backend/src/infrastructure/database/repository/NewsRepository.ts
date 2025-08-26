@@ -65,12 +65,20 @@ export class NewsRepository implements INewsRepository{
         }
     }
 
-    async getAll (): Promise<NewsClass[]>{
+    async getAll (page: number): Promise<{News: NewsClass[], pages: number, totalItems: number}>{
         try {
-            const news = await prisma.novedad.findMany()
-            return news.map((n) => {
-                return new NewsClass(n.idNovedad, n.titulo, n.descripcion, n.fechaInicio, n.fechaFin)
+            const limit = 10
+            const skip = (page - 1) * limit
+            const news = await prisma.novedad.findMany({
+                skip: skip,
+                take: limit,
+                orderBy: { idNovedad: "asc" }
             })
+            const totalItems = await prisma.novedad.count()
+            const totalPages = Math.ceil(totalItems / limit)
+            return {News: news.map((n) => {
+                return new NewsClass(n.idNovedad, n.titulo, n.descripcion, n.fechaInicio, n.fechaFin)
+            }), pages: totalPages, totalItems: totalItems}
         }
         catch (error) {
             throw new ServiceError("Error al registrar la novedad en la base de datos")

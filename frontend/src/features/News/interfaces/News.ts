@@ -5,3 +5,9 @@ export default interface News {
     _startDate: string,
     _endDate: string
 }
+
+export interface BackResults {
+    News: News[],
+    pages: number,
+    totalItems: number
+}

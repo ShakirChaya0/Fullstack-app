@@ -1,25 +1,22 @@
-import type News from "../interfaces/News";
+import { type BackResults } from "../interfaces/News";
 import { useQuery } from "@tanstack/react-query";
 import { fetchNews } from "../services/fetchNews";
-import { useEffect } from "react";
 import { useNewsActions } from "./useNewsActions"
 
-export function useNews () {
+export function useNews (page: number) {
     const { handleSetNews } = useNewsActions()
-    const {isLoading, isError, data} = useQuery<{News: News[]}>({
-        queryKey: ["News"],
-        queryFn: fetchNews,
+    const {isLoading, isError, data} = useQuery<BackResults>({
+        queryKey: ["News", page],
+        queryFn: () => fetchNews(page),
         staleTime: 1000 * 60 * 60,
         refetchOnWindowFocus: false,
         refetchOnMount: false,
         retry: 1
     })
 
-    useEffect(() => {
-        if (data) {
-          handleSetNews(data.News) 
-        }
-    }, [data, handleSetNews]);
+    if (data) {
+      handleSetNews(data) 
+    }
     
-    return {isLoading, isError}
+    return {isLoading, isError, pages: data?.pages, totalItems: data?.totalItems}
 }

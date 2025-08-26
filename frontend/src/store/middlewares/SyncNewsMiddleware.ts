@@ -10,7 +10,7 @@ export const SyncNewsMiddleware: Middleware = (store) => (next) => async (action
   switch (action.type) {
     case "news/createNew" :
       try { 
-        const latestNews: News = store.getState().news.at(-1);
+        const latestNews: News = store.getState().news.items.at(-1);
         const tempId = latestNews?._newsId ?? 0;
 
         const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/novedades`, {
@@ -27,13 +27,14 @@ export const SyncNewsMiddleware: Middleware = (store) => (next) => async (action
         if(!response.ok) throw new Error("error")
         
         const data = await response.json()
-        if (data.id || data._newsId || data.newsId) {
-          const realId = data.id || data._newsId || data.newsId;
+        if (data._newsId) {
+          const realId = data._newsId;
           store.dispatch(updateNewsId({ tempId, realId }));
         }
-        
+
         toast.success("Se registro exitosamente")
       } catch (error) {
+        console.log(previousState)
         store.dispatch(rollbackNews(previousState))
         toast.error("Error al cargar la novedad")
         

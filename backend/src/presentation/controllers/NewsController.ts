@@ -67,8 +67,10 @@ export class NewsController {
 
     async getAll (req: Request, res: Response, next: NextFunction) {
         try{
-            const news = await this.getAllNewsUC.execute()
-            res.status(200).json(news)
+            const { page } = req.query
+            const draft = (page && !isNaN(+page)) ? +page : 1; 
+            const result = await this.getAllNewsUC.execute(draft)
+            res.status(200).json(result)
         }
         catch(error){
             next(error)
