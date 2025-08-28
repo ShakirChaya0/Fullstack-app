@@ -6,7 +6,7 @@ import Button from '@mui/material/Button';
 import UpdateForm from './UpdateForm';
 import type News from '../interfaces/News';
 
-export default function ModalUpdateNews({news}: {news: News}) {
+export default function ModalUpdateNews({news, currentPage}: {news: News, currentPage: number}) {
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -31,7 +31,7 @@ export default function ModalUpdateNews({news}: {news: News}) {
       >
         <Fade in={open}>
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white p-6 rounded-lg shadow-lg w-full max-w-2xl">
-                <UpdateForm news={news} />
+                <UpdateForm news={news} currentPage={currentPage}/>
             </div>
         </Fade>
       </Modal>

@@ -6,7 +6,7 @@ import Button from '@mui/material/Button';
 import ControlPointIcon from '@mui/icons-material/ControlPoint';
 import CreateForm from './CreateForm';
 
-export default function ModalCreateNews() {
+export default function ModalCreateNews({currentPage}: {currentPage: number}) {
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -31,7 +31,7 @@ export default function ModalCreateNews() {
       >
         <Fade in={open}>
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white p-6 rounded-lg shadow-lg w-full max-w-2xl">
-                <CreateForm/>
+                <CreateForm currentPage={currentPage}/>
             </div>
         </Fade>
       </Modal>

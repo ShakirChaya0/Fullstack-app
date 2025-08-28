@@ -1,6 +1,8 @@
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import React from "react";
 import { useForm } from "react-hook-form";
-import { useNewsActions } from "../hooks/useNewsActions";
+import createNews from "../services/createNews";
+import { toast } from "react-toastify";
 
 type FormData = {
   Titulo: string,
@@ -9,8 +11,7 @@ type FormData = {
   FechaFin: string
 };
 
-export default function CreateForm() {
-    const { handleCreateNews } = useNewsActions()
+export default function CreateForm({currentPage}: {currentPage: number}) {
     const {
       register,           
       handleSubmit,       
@@ -18,8 +19,23 @@ export default function CreateForm() {
       formState: { errors }
     } = useForm<FormData>();
 
+    const queryClient = useQueryClient()
+
+    const { mutate } = useMutation({
+      mutationFn: createNews,
+      onSuccess: async () => {
+        await queryClient.invalidateQueries({ queryKey: ['News', currentPage] });
+        toast.success("Se creo una novedad con exito")
+      },
+      onError: (err) => {
+        toast.error("Error al crear la novedad")
+        console.log(err)
+      }
+    })
+
+
     const onSubmit =  (data: FormData) => {
-        handleCreateNews(data.Titulo, data.Descripcion, data.FechaInicio.split("-").join("/"), data.FechaFin.split("-").join("/"))
+        mutate({_title: data.Titulo, _description: data.Descripcion, _startDate: data.FechaInicio, _endDate: data.FechaFin})
     };
 
     const fechaInicioValue = watch("FechaInicio");

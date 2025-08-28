@@ -7,10 +7,12 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import { Button, Pagination } from '@mui/material';
-import { useNewsActions } from '../hooks/useNewsActions';
+import { Button } from '@mui/material';
 import ModalUpdateNews from './ModalUpdateNews';
-import { useAppSelector } from '../../../shared/hooks/store';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { deleteNews } from '../services/deleteNews';
+import type { BackResults } from '../interfaces/News';
+import { toast } from 'react-toastify';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -32,19 +34,32 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 
-export default function NewsTable () {
-  const pageNews = useAppSelector(state => state.news)
-  const { handleDeleteNews } = useNewsActions() 
-  const { handleSetPage } = useNewsActions()
-  const handleChange = (event: React.ChangeEvent<unknown>, value: number) => {
-    handleSetPage(value)
+export default function NewsTable ({data, currentPage}: {data: BackResults | undefined, currentPage: number}) {
+
+  const queryClient = useQueryClient()
+
+  const { mutate } = useMutation({
+    mutationFn: deleteNews,
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ['News', currentPage] });
+      toast.success("La novedad se elimino con exito")
+    },
+    onError: (err) => {
+      toast.error("Error al eliminar la novedad")
+      console.log(err)
+    }
+  });
+
+  const News = data?.News ?? []
+
+  const handleDeleteNews = (id: number) => {
+    mutate(id)
   }
-  
-  console.log(pageNews)
+
   return (
     <>
     {
-      pageNews.items.length !== 0 ? (
+      News.length !== 0 ? (
         <div className='w-full'>
           <TableContainer component={Paper}>
             <Table sx={{ minWidth: 700 }} aria-label="customized table">
@@ -61,8 +76,8 @@ export default function NewsTable () {
               <TableBody>
                 <>
                   {
-                    pageNews.items?.map((news) => (
-                      <StyledTableRow key={news._title}>
+                    News?.map((news) => (
+                      <StyledTableRow key={news._newsId}>
                         <StyledTableCell component="th" scope="row" align="center">
                           {news._newsId}
                         </StyledTableCell>
@@ -71,8 +86,8 @@ export default function NewsTable () {
                         <StyledTableCell align="center">{news._startDate.split("T")[0]}</StyledTableCell>
                         <StyledTableCell align="center">{news._endDate.split("T")[0]}</StyledTableCell>
                         <StyledTableCell align="center" sx={{display: 'flex', gap: "5px", justifyContent: "center"}}>
-                            <ModalUpdateNews news={news}/>
-                            <Button variant="contained" color="error" onClick={() => handleDeleteNews(news._newsId)}>
+                            <ModalUpdateNews news={news} currentPage={currentPage}/>
+                            <Button variant="contained" color="error" onClick={() => handleDeleteNews(news._newsId ?? 0)}>
                                 Eliminar
                             </Button>   
                     
@@ -84,9 +99,6 @@ export default function NewsTable () {
               </TableBody>
             </Table>
           </TableContainer>
-          <div className="flex flex-col items-center justify-center">
-            <Pagination count={Math.ceil(pageNews.totalItems / pageNews.limit)} shape="rounded" onChange={handleChange} page={pageNews.page}/>
-          </div>
       </div>
       ) : (<h1 className='text-center font-medium'>No hay novedades cargadas</h1>)
     }

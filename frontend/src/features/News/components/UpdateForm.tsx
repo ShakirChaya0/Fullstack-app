@@ -1,7 +1,9 @@
 import React from "react";
 import { useForm } from "react-hook-form";
-import { useNewsActions } from "../hooks/useNewsActions";
 import type News from "../interfaces/News";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import updateNews from "../services/updateNews";
+import { toast } from "react-toastify";
 
 type FormData = {
   Titulo: string,
@@ -10,17 +12,29 @@ type FormData = {
   FechaFin: string
 };
 
-export default function UpdateForm({news}: {news: News}) {
-    const { handleUpdateNews } = useNewsActions()
+export default function UpdateForm({news, currentPage}: {news: News, currentPage: number}) {
     const {
       register,           
       handleSubmit,       
       watch,
       formState: { errors }
     } = useForm<FormData>();
+    const queryClient = useQueryClient()
+
+    const { mutate } = useMutation({
+      mutationFn: updateNews,
+      onSuccess: async () => {
+        await queryClient.invalidateQueries({ queryKey: ['News', currentPage] });
+        toast.success("La novedad se modifico con exito")
+      },
+      onError: (err) => {
+        toast.error("Error al modificar la novedad")
+        console.log(err)
+      }
+    });
 
     const onSubmit =  (data: FormData) => {
-        handleUpdateNews(news._newsId, data.Titulo, data.Descripcion, data.FechaInicio.split("-").join("/"), data.FechaFin.split("-").join("/"))
+        mutate({_newsId: news._newsId, _title: data.Titulo, _description: data.Descripcion, _startDate: data.FechaInicio, _endDate: data.FechaFin})
     };
 
     const fechaInicioValue = watch("FechaInicio");
