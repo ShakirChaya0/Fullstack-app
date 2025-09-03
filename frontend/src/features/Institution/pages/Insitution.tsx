@@ -1,7 +1,10 @@
 import { useState } from "react"
 import EntitySelector from "../components/EntitySelector"
 import useEntity from "../hooks/useEntity"
-import EntityTable from "../components/EntityForm"
+import PolicyForm from "../components/PolicyForm"
+import InformationForm from "../components/InformationForm"
+import type Policy from "../interfaces/Policy"
+import type Information from "../interfaces/Information"
 
 export type EntityState = "Policy" | "Information"
 
@@ -11,10 +14,15 @@ export default function Institution() {
     
     return(
         <section className="flex flex-col items-center w-full sm:p-4 gap-6 sm:py-8">
-            <EntitySelector/>
-            <div className="flex flex-col gap-5 sm:p-16 sm:rounded-2xl sm:shadow-2xl sm:border sm:border-gray-300 w-full max-w-7xl">
-            </div>
-            {/* <EntityForm entity={entity}/> */}
+            <EntitySelector entity={entity} setEntity={setEntity} />
+            {isLoading && <div>Cargando...</div>}
+            {isError && <div>Error al cargar los datos</div>}
+            {!isLoading && !isError && (
+                <>
+                    {entity === "Policy" && <PolicyForm data={data as Policy} />}
+                    {entity === "Information" && <InformationForm data={data as Information} />}
+                </>
+            )}
         </section>
     )
 }

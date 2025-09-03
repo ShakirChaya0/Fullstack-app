@@ -1,4 +1,5 @@
 export default interface Policy {
+  _policyId: number;
   _minutosTolerancia: number;
   _horarioMaximoDeReserva: string;
   _horasDeAnticipacionParaCancelar: number;

@@ -18,8 +18,9 @@ export function AdminRouter() {
                 <NewsCRUD/>
               </Suspense>}/>
             <Route path="/Admin/DatosRestaurantes" element={
-              <Institution/>
-            }/>
+              <Suspense fallback={<SkeletonInstitution/>}>
+                  <Institution/>
+              </Suspense>}/>
         </Route>
     </>
   );

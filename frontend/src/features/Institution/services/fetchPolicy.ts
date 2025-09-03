@@ -1,6 +1,5 @@
 import type Policy from "../interfaces/Policy";
 
-
 export const fetchPolicy = async (): Promise<Policy> => {
     const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/politicas`);
     

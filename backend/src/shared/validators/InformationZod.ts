@@ -8,7 +8,10 @@ export const InformationSchema = z.object({
 
     razonSocial: z.string().min(3, "El nombre de la empresa es requerido"),
     
-    telefonoContacto: z.string().min(3, "El telefono es requerido")
+    telefonoContacto: z.string()
+        .min(5, 'El teléfono debe tener al menos 5 caracteres')
+        .max(15, 'El teléfono no puede exceder los 15 caracteres')
+        .regex(/^\+?\d+$/, 'El teléfono debe contener solo números y puede incluir un + al inicio'),
 })
 
 export type SchemaInformation = z.infer<typeof InformationSchema>

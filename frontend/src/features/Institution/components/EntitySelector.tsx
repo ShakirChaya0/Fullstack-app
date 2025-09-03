@@ -1,20 +1,31 @@
+import type { EntityState } from "../pages/Insitution";
 
-export default function EntitySelector() {
-    return(
-        <div className="flex flex-row gap-5">
-            <button className="w-full max-w-40 sm:min-w-40  px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition cursor-pointer">Políticas</button>
-            <button className="w-full max-w-40 sm:min-w-40  px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition cursor-pointer">Información</button>
-        </div>
+export default function EntitySelector({entity, setEntity}: {entity: EntityState; setEntity: (entity: EntityState) => void;}) {
+  const baseClasses =  "px-4 py-2 rounded-xl font-semibold transition-all duration-300 cursor-pointer text-center min-w-[120px]";
 
-        // <div className="flex flex-row gap-5">
-        //     <ButtonGroup
-        //     disableElevation
-        //     variant="contained"
-        //     aria-label="Disabled button group"
-        //     >
-        //     <Button>Políticas</Button>
-        //     <Button>Información</Button>
-        //     </ButtonGroup>
-        // </div>
-    )
+  return (
+    <div className="flex flex-row gap-4 justify-center items-start mt-2">
+      <button
+        onClick={() => setEntity("Policy")}
+        className={`${baseClasses} ${
+          entity === "Policy"
+            ? "bg-blue-600 text-white shadow-lg border-2 border-blue-900 scale-105"
+            : "bg-gray-200 text-gray-700 hover:bg-blue-500 hover:text-white"
+        }`}
+      >
+        Políticas
+      </button>
+
+      <button
+        onClick={() => setEntity("Information")}
+        className={`${baseClasses} ${
+          entity === "Information"
+            ? "bg-blue-600 text-white shadow-lg border-2 border-blue-900 scale-105"
+            : "bg-gray-200 text-gray-700 hover:bg-blue-500 hover:text-white"
+        }`}
+      >
+        Información
+      </button>
+    </div>
+  );
 }
