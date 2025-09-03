@@ -67,12 +67,12 @@ export class NewsRepository implements INewsRepository{
 
     async getAll (page: number): Promise<{News: NewsClass[], pages: number, totalItems: number}>{
         try {
-            const limit = 10
+            const limit = 5
             const skip = (page - 1) * limit
             const news = await prisma.novedad.findMany({
                 skip: skip,
                 take: limit,
-                orderBy: { idNovedad: "asc" }
+                orderBy: { idNovedad: "desc" }
             })
             const totalItems = await prisma.novedad.count()
             const totalPages = Math.ceil(totalItems / limit)

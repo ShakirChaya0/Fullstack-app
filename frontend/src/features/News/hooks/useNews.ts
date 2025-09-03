@@ -7,9 +7,6 @@ export function useNews (page?: number) {
         queryKey: ["News", page],
         queryFn: () => fetchNews(page),
         staleTime: 1000 * 60 * 60,
-        refetchOnWindowFocus: false,
-        refetchOnMount: false,
-        retry: 1
     })
     
     return {isLoading, isError, data}

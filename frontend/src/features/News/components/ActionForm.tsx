@@ -1,9 +1,9 @@
 import React from "react";
 import { useForm } from "react-hook-form";
-import type News from "../interfaces/News";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import updateNews from "../services/updateNews";
-import { toast } from "react-toastify";
+import { usePage } from "../hooks/usePage";
+import { useMutationNews } from "../hooks/useMutationNews";
+import { useModalProvider } from "../hooks/useModalProvider";
+import { CircularProgress } from "@mui/material";
 
 type FormData = {
   Titulo: string,
@@ -12,35 +12,26 @@ type FormData = {
   FechaFin: string
 };
 
-export default function UpdateForm({news, currentPage}: {news: News, currentPage: number}) {
+export default function ActionForm() {
+    const currentPage = usePage()
     const {
       register,           
       handleSubmit,       
       watch,
       formState: { errors }
     } = useForm<FormData>();
-    const queryClient = useQueryClient()
 
-    const { mutate } = useMutation({
-      mutationFn: updateNews,
-      onSuccess: async () => {
-        await queryClient.invalidateQueries({ queryKey: ['News', currentPage] });
-        toast.success("La novedad se modifico con exito")
-      },
-      onError: (err) => {
-        toast.error("Error al modificar la novedad")
-        console.log(err)
-      }
-    });
+    const {fn, msgs, news} = useModalProvider()
+
+    const { mutate, isLoading } = useMutationNews({fn: fn, currentPage: currentPage, SuccessMsg: msgs.SuccessMsg, ErrorMsg: msgs.ErrorMsg})
 
     const onSubmit =  (data: FormData) => {
-        mutate({_newsId: news._newsId, _title: data.Titulo, _description: data.Descripcion, _startDate: data.FechaInicio, _endDate: data.FechaFin})
+        mutate({_newsId: news?._newsId, _title: data.Titulo, _description: data.Descripcion, _startDate: data.FechaInicio, _endDate: data.FechaFin})
     };
 
     const fechaInicioValue = watch("FechaInicio");
 
     return (
-
         <form
           onSubmit={handleSubmit(onSubmit)}
           className="flex flex-col gap-6 w-full"
@@ -51,7 +42,7 @@ export default function UpdateForm({news, currentPage}: {news: News, currentPage
                 {...register("Titulo", { required: "El Título es obligatorio" })}
                 placeholder="Escribe el título..."
                 className="px-2 py-1 sm:px-4 sm:py-3 sm:text-lg border border-gray-300 rounded-lg sm:rounded-xl shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
-                defaultValue={news._title}
+                defaultValue={news?._title}
             />
             {errors.Titulo && (
                 <p className="text-base text-red-500">{errors.Titulo.message}</p>
@@ -67,7 +58,7 @@ export default function UpdateForm({news, currentPage}: {news: News, currentPage
                 placeholder="Escribe la descripción..."
                 rows={3}
                 className="px-2 py-1 sm:px-4 sm:py-3 sm:text-lg border border-gray-300 rounded-lg sm:rounded-xl shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition resize-none"
-                defaultValue={news._description}
+                defaultValue={news?._description}
             />
             {errors.Descripcion && (
                 <p className="text-base text-red-500">{errors.Descripcion.message}</p>
@@ -86,7 +77,7 @@ export default function UpdateForm({news, currentPage}: {news: News, currentPage
                 })}
                 min={new Date().toISOString().split("T")[0]}
                 className="px-2 py-1 sm:px-4 sm:py-3 sm:text-lg border border-gray-300 rounded-lg sm:rounded-xl shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
-                defaultValue={news._endDate
+                defaultValue={news?._endDate
                     ? new Date(news._endDate).toISOString().split("T")[0]
                     : ""}
             />
@@ -115,7 +106,7 @@ export default function UpdateForm({news, currentPage}: {news: News, currentPage
                 })}
                 min={new Date().toISOString().split("T")[0]}
                 className="px-2 py-1 sm:px-4 sm:py-3 sm:text-lg border border-gray-300 rounded-lg sm:rounded-xl shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
-                defaultValue={news._endDate
+                defaultValue={news?._endDate
                     ? new Date(news._endDate).toISOString().split("T")[0]
                     : ""}
             />
@@ -123,12 +114,17 @@ export default function UpdateForm({news, currentPage}: {news: News, currentPage
                 <p className="text-base text-red-500">{errors.FechaFin.message}</p>
             )}
           </div>
-
+          
           <button
             type="submit"
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium sm:font-bold sm:text-lg py-2 sm:py-3 sm:px-6 rounded-lg sm:rounded-xl shadow-lg transition cursor-pointer"
+            className={`flex flex-col items-center w-full bg-blue-600 hover:bg-blue-700 text-white font-medium sm:font-bold sm:text-lg py-2 sm:py-3 sm:px-6 rounded-lg sm:rounded-xl shadow-lg transition cursor-pointer`}
           >
-            Modificar
+            {
+              !isLoading ? "Modificar" 
+              :(
+                <CircularProgress color="inherit"/>
+              )
+            }
           </button>
         </form>
   );

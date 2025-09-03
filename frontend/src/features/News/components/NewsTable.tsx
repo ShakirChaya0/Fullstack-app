@@ -8,11 +8,15 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import { Button } from '@mui/material';
-import ModalUpdateNews from './ModalUpdateNews';
+import ModalNews from './ModalNews';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { deleteNews } from '../services/deleteNews';
 import type { BackResults } from '../interfaces/News';
 import { toast } from 'react-toastify';
+import { usePage } from '../hooks/usePage';
+import updateNews from '../services/updateNews';
+import type News from '../interfaces/News';
+import { ModalContext } from '../hooks/useModalProvider';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -34,19 +38,35 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 
-export default function NewsTable ({data, currentPage}: {data: BackResults | undefined, currentPage: number}) {
-
+export function NewsTable ({data}: {data: BackResults | undefined}) {
+  const currentPage = usePage()
   const queryClient = useQueryClient()
 
   const { mutate } = useMutation({
     mutationFn: deleteNews,
+    onMutate: async (newData) => {
+      await queryClient.cancelQueries({ queryKey: ["News", currentPage]})
+
+      const previousState = await queryClient.getQueryData(["News", currentPage])
+      
+      await queryClient.setQueryData(["News", currentPage], (oldData: News[]) => {
+        const safeData = Array.isArray(oldData) ? oldData : []
+        return [...safeData, newData]
+      })
+
+      return { previousState }
+    },
     onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: ['News', currentPage] });
+      await queryClient.invalidateQueries({ queryKey: ["News"] });
       toast.success("La novedad se elimino con exito")
     },
-    onError: (err) => {
-      toast.error("Error al eliminar la novedad")
-      console.log(err)
+    onError: (err, variables, context) => {
+        toast.error("Error al eliminar la novedad")
+        if (context?.previousState) queryClient.setQueryData(["News", currentPage], context.previousState)
+        console.log(err)
+      },
+    onSettled: async () => {
+      await queryClient.invalidateQueries({queryKey: ["News"]})
     }
   });
 
@@ -86,7 +106,9 @@ export default function NewsTable ({data, currentPage}: {data: BackResults | und
                         <StyledTableCell align="center">{news._startDate.split("T")[0]}</StyledTableCell>
                         <StyledTableCell align="center">{news._endDate.split("T")[0]}</StyledTableCell>
                         <StyledTableCell align="center" sx={{display: 'flex', gap: "5px", justifyContent: "center"}}>
-                            <ModalUpdateNews news={news} currentPage={currentPage}/>
+                          <ModalProvider news={news} fn={updateNews} msgs={{SuccessMsg: "Novedad modificada con exito", ErrorMsg: "Error al modificar una novedad"}} ButtonName={"Modificar"}>
+                            <ModalNews/>
+                          </ModalProvider>
                             <Button variant="contained" color="error" onClick={() => handleDeleteNews(news._newsId ?? 0)}>
                                 Eliminar
                             </Button>   
@@ -104,4 +126,12 @@ export default function NewsTable ({data, currentPage}: {data: BackResults | und
     }
     </>
   );
+}
+
+export function ModalProvider ({children, news, fn, msgs, ButtonName}: {children: React.ReactNode, news?: News, fn: (data: News) => Promise<News>, msgs: {SuccessMsg: string, ErrorMsg: string}, ButtonName: string}) {
+  return(
+    <ModalContext.Provider value={{news, fn, msgs, ButtonName}}>
+      {children}
+    </ModalContext.Provider>
+  )
 }

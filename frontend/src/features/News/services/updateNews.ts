@@ -1,6 +1,6 @@
 import type News from "../interfaces/News"
 
-export default async function updateNews (data: News) {
+export default async function updateNews (data: News): Promise<News> {
     const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/novedades/${data._newsId}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
@@ -12,5 +12,8 @@ export default async function updateNews (data: News) {
       })
     })
     if(!response.ok) throw new Error("Error")
-    return
+    
+    const datas = await response.json()
+
+    return datas
 }

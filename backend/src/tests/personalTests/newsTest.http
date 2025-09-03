@@ -1,5 +1,5 @@
 ###
-GET http://localhost:3000/novedades
+GET http://localhost:3000/novedades?page=3
 
 ###
 GET http://localhost:3000/novedades/id/58
@@ -30,4 +30,4 @@ Content-Type: application/json
 }
 
 ###
-DELETE http://localhost:3000/novedades/1
+DELETE http://localhost:3000/novedades/190

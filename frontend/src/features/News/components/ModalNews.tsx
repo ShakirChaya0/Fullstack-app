@@ -3,18 +3,21 @@ import Backdrop from '@mui/material/Backdrop';
 import Modal from '@mui/material/Modal';
 import Fade from '@mui/material/Fade';
 import Button from '@mui/material/Button';
-import UpdateForm from './UpdateForm';
-import type News from '../interfaces/News';
+import ActionForm from './ActionForm';
+import { useModalProvider } from '../hooks/useModalProvider';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 
-export default function ModalUpdateNews({news, currentPage}: {news: News, currentPage: number}) {
+export default function ModalNews() {
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+  const { ButtonName } = useModalProvider()
 
   return (
     <div>
-        <Button variant='contained' onClick={handleOpen}>
-            Modificar
+        <Button variant='contained' onClick={handleOpen} className='gap-2.5'>
+          {(ButtonName.includes("Crear")) && <AddCircleOutlineIcon/>}
+            {ButtonName}
         </Button>
       <Modal
         aria-labelledby="transition-modal-title"
@@ -31,7 +34,7 @@ export default function ModalUpdateNews({news, currentPage}: {news: News, curren
       >
         <Fade in={open}>
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white p-6 rounded-lg shadow-lg w-full max-w-2xl">
-                <UpdateForm news={news} currentPage={currentPage}/>
+                <ActionForm/>
             </div>
         </Fade>
       </Modal>
