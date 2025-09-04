@@ -1,4 +1,4 @@
-import type { EntityState } from "../pages/Insitution";
+import type { EntityState } from "../pages/Institution";
 
 export default function EntitySelector({entity, setEntity}: {entity: EntityState; setEntity: (entity: EntityState) => void;}) {
   const baseClasses =  "px-4 py-2 rounded-xl font-semibold transition-all duration-300 cursor-pointer text-center min-w-[120px]";

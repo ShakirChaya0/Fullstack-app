@@ -7,7 +7,8 @@ export const PolicySchema = z.object({
     .min(0, 'Los minutos de tolerancia no pueden ser negativos')
     .max(120, 'Los minutos de tolerancia no pueden ser mayores a 120 minutos'),
 
-  horarioMaximoDeReserva: z.string(),
+  horarioMaximoDeReserva: z.string()
+    .regex(/^(?:[01]\d|2[0-3]):[0-5]\d|24:00$/, 'El horario debe tener formato HH:MM de 00:00 a 24:00'),
 
   horasDeAnticipacionParaCancelar: z.number()
     .int('Las horas de anticipación para cancelar deben ser un número entero')

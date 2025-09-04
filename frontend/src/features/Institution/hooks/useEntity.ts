@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import type Information from "../interfaces/Information";
 import type Policy from "../interfaces/Policy";
-import type { EntityState } from "../pages/Insitution";
+import type { EntityState } from "../pages/Institution";
 import { fetchPolicy } from "../services/fetchPolicy";
 import { fetchInformation } from "../services/fetchInformation";
 

@@ -4,7 +4,7 @@ import { AdminMainLayout } from "../shared/components/AdminMainLayout";
 import SkeletonNewsBody from "../features/News/pages/SkeletonNewsBody";
 const NewsCRUD = lazy(() => import("../features/News/pages/NewsCRUD"))
 import  SkeletonInstitution  from "../features/Institution/pages/SkeletonInstitution";
-import  Institution  from "../features/Institution/pages/Insitution";
+import  Institution  from "../features/Institution/pages/Institution";
 
 
 
