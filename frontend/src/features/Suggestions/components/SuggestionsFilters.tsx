@@ -1,16 +1,25 @@
 import { Button, ButtonGroup } from "@mui/material";
 
-export default function SuggestionsFilters({ filter, setFilter }: { filter: "ALL" | "Actives", setFilter: (filter: "ALL" | "Actives") => void }) {
+type SuggFilters = "ALL" | "Actives";
+
+interface SortBySelectProps {
+    filter: SuggFilters;
+    onFilterChange: (newFilter: SuggFilters) => void;
+}
+
+export default function SuggestionsFilters({ filter, onFilterChange }: SortBySelectProps) {
     return(
-        <section aria-label="filtros" className="my-4">
-            <ButtonGroup variant="contained" aria-label="filtros de sugerencias">
-                <Button variant={`${filter === "ALL" ? "contained" : "outlined"}`} onClick={() => setFilter("ALL")}>
-                    Todas
-                </Button>
-                <Button variant={`${filter === "ALL" ? "outlined" : "contained"}`} onClick={() => setFilter("Actives")}>
-                    Activas
-                </Button>
-            </ButtonGroup>
+        <section aria-label="filtros">
+            <div className="flex flex-row justify-center items-center gap-4 w-full h-full">
+                <ButtonGroup variant="contained" aria-label="filtros de sugerencias" className="h-full">
+                    <Button variant={`${filter === "ALL" ? "contained" : "outlined"}`} onClick={() => onFilterChange("ALL")}>
+                        Todas
+                    </Button>
+                    <Button variant={`${filter === "ALL" ? "outlined" : "contained"}`} onClick={() => onFilterChange("Actives")}>
+                        Activas
+                    </Button>
+                </ButtonGroup>
+            </div>
         </section>
     )
 }

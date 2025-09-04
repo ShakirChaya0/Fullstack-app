@@ -2,7 +2,7 @@ import type { Suggestion } from "../interfaces/Suggestion";
 
 export default function SuggestionCard({ suggestion }: { suggestion: Suggestion } ) {
     return(
-        <div className="w-full max-w-sm bg-white rounded-xl shadow-lg overflow-hidden border border-transparent hover:border-amber-500 transform hover:-translate-y-1 transition-all duration-300">
+        <div className="w-full max-w-sm bg-white rounded-xl shadow-lg/30 overflow-hidden border border-transparent hover:border-amber-500 transform hover:-translate-y-1 transition-all duration-300">
             <div className="p-6">
                 <div>
                     <p className="text-xs font-semibold text-amber-600 uppercase">Producto</p>
@@ -24,7 +24,7 @@ export default function SuggestionCard({ suggestion }: { suggestion: Suggestion 
                 </div>
                             
                 <div className="mt-6 flex justify-end">
-                    <button className="bg-amber-600 text-white font-semibold py-2 px-5 rounded-lg hover:bg-amber-700 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-opacity-50 transition-colors duration-200">
+                    <button className="bg-amber-600 cursor-pointer text-white font-semibold py-2 px-5 rounded-lg hover:bg-amber-700 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-opacity-50 transition-colors duration-200">
                         Modificar
                     </button>
                 </div>
