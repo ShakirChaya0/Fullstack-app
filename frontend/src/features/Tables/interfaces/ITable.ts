@@ -1,7 +1,7 @@
 export type statusTable = 'Libre' |'Ocupda';
 
 export interface ITable {
-    readonly _numTable: number, 
+    readonly _tableNum: number, 
     _capacity: number, 
-    _status: statusTable
+    _state: statusTable
 }
