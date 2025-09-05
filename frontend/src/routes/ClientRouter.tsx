@@ -1,8 +1,8 @@
 import { Route } from "react-router";
 import { Menu } from "../features/Products/pages/Menu";
 import { lazy, Suspense } from "react";
-import SkeletonBody from "../features/Products/pages/skeletonBody";
 import { ClientMainLayout } from "../shared/components/ClientMainLayout";
+import SkeletonBody from "../features/Products/pages/skeletonBody";
 const FoodsListed = lazy(() => import("../features/Products/pages/FoodsList"))
 const DrinksListed = lazy(() => import("../features/Products/pages/DrinksList"))
 

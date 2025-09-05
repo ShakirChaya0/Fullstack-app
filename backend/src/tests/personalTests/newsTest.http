@@ -1,8 +1,8 @@
 ###
-GET http://localhost:3000/novedades?page=3
+GET http://localhost:3000/novedades?page=1&status=Activas
 
 ###
-GET http://localhost:3000/novedades/id/58
+GET http://localhost:3000/novedades/title/asd?page=1&status=Activas
 
 ###
 GET http://localhost:3000/novedades/actives
@@ -30,4 +30,4 @@ Content-Type: application/json
 }
 
 ###
-DELETE http://localhost:3000/novedades/190
+DELETE http://localhost:3000/novedades/173

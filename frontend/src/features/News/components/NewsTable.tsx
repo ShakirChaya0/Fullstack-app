@@ -38,7 +38,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 
-export function NewsTable ({data}: {data: BackResults | undefined}) {
+export default function NewsTable ({data}: {data: BackResults | undefined}) {
   const currentPage = usePage()
   const queryClient = useQueryClient()
 
@@ -51,13 +51,12 @@ export function NewsTable ({data}: {data: BackResults | undefined}) {
       
       await queryClient.setQueryData(["News", currentPage], (oldData: News[]) => {
         const safeData = Array.isArray(oldData) ? oldData : []
-        return [...safeData, newData]
+        return safeData.filter(item => item._newsId !== newData)
       })
 
       return { previousState }
     },
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: ["News"] });
+    onSuccess: () => {
       toast.success("La novedad se elimino con exito")
     },
     onError: (err, variables, context) => {
@@ -70,16 +69,16 @@ export function NewsTable ({data}: {data: BackResults | undefined}) {
     }
   });
 
-  const News = data?.News ?? []
+  const News = data?.News
 
-  const handleDeleteNews = (id: number) => {
+  const handleDeleteNews = React.useCallback((id: number) => {
     mutate(id)
-  }
+  }, [mutate])
 
   return (
     <>
     {
-      News.length !== 0 ? (
+      News?.length !== 0 ? (
         <div className='w-full'>
           <TableContainer component={Paper}>
             <Table sx={{ minWidth: 700 }} aria-label="customized table">
@@ -94,30 +93,11 @@ export function NewsTable ({data}: {data: BackResults | undefined}) {
                 </TableRow>
               </TableHead>
               <TableBody>
-                <>
                   {
-                    News?.map((news) => (
-                      <StyledTableRow key={news._newsId}>
-                        <StyledTableCell component="th" scope="row" align="center">
-                          {news._newsId}
-                        </StyledTableCell>
-                        <StyledTableCell align="center">{news._title}</StyledTableCell> 
-                        <StyledTableCell align="center">{news._description}</StyledTableCell>
-                        <StyledTableCell align="center">{news._startDate.split("T")[0]}</StyledTableCell>
-                        <StyledTableCell align="center">{news._endDate.split("T")[0]}</StyledTableCell>
-                        <StyledTableCell align="center" sx={{display: 'flex', gap: "5px", justifyContent: "center"}}>
-                          <ModalProvider news={news} fn={updateNews} msgs={{SuccessMsg: "Novedad modificada con exito", ErrorMsg: "Error al modificar una novedad"}} ButtonName={"Modificar"}>
-                            <ModalNews/>
-                          </ModalProvider>
-                            <Button variant="contained" color="error" onClick={() => handleDeleteNews(news._newsId ?? 0)}>
-                                Eliminar
-                            </Button>   
-                    
-                        </StyledTableCell> 
-                      </StyledTableRow>
+                    News?.map((n) => (
+                      <NewsRow key={n._newsId} news={n} handleDeleteNews={handleDeleteNews} />
                     ))
                   }
-                </>
               </TableBody>
             </Table>
           </TableContainer>
@@ -135,3 +115,23 @@ export function ModalProvider ({children, news, fn, msgs, ButtonName}: {children
     </ModalContext.Provider>
   )
 }
+
+const NewsRow = React.memo(function NewsRow({ news, handleDeleteNews }: { news: News, handleDeleteNews: (id: number) => void }) {
+  return (
+    <StyledTableRow key={news._newsId}>
+      <StyledTableCell component="th" scope="row" align="center">{news._newsId}</StyledTableCell>
+      <StyledTableCell align="center">{news._title}</StyledTableCell> 
+      <StyledTableCell align="center">{news._description}</StyledTableCell>
+      <StyledTableCell align="center">{news._startDate.split("T")[0]}</StyledTableCell>
+      <StyledTableCell align="center">{news._endDate.split("T")[0]}</StyledTableCell>
+      <StyledTableCell align="center" sx={{ display: 'flex', gap: "5px", justifyContent: "center" }}>
+        <ModalProvider news={news} fn={updateNews} msgs={{ SuccessMsg: "Novedad modificada con exito", ErrorMsg: "Error al modificar una novedad" }} ButtonName={"Modificar"}>
+          <ModalNews/>
+        </ModalProvider>
+        <Button variant="contained" color="error" onClick={() => handleDeleteNews(news._newsId ?? 0)}>
+          Eliminar
+        </Button>   
+      </StyledTableCell>
+    </StyledTableRow>
+  )
+});

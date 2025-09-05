@@ -19,8 +19,7 @@ export function useMutationNews ({fn, currentPage, SuccessMsg, ErrorMsg}: {fn: (
 
         return { previousState }
       },
-      onSuccess: async () => {
-        await queryClient.invalidateQueries({ queryKey: ["News"] });
+      onSuccess: () => {
         toast.success(SuccessMsg)
       },
       onError: (err, variables, context) => {
