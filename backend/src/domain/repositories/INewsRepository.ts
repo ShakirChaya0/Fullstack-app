@@ -4,8 +4,7 @@ import { NewsClass } from "../entities/News.js";
 export interface INewsRepository {
     register(data: SchemaNews): Promise<NewsClass>;
     modify(id: number, data: any): Promise<NewsClass>;
-    getOne(id: number): Promise<NewsClass | null>;
-    getAll(page: number): Promise<{News: NewsClass[], pages: number, totalItems: number}>;
+    getByTitle(title: string, page: number, status: any): Promise<{News: NewsClass[], pages: number, totalItems: number}>;
+    getAll(page: number, status: any): Promise<{News: NewsClass[], pages: number, totalItems: number}>;
     delete(id: number): Promise<void>;
-    getActive(): Promise<NewsClass[]>;
 }
