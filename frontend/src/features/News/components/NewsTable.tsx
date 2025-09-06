@@ -7,7 +7,7 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import { Button } from '@mui/material';
+import Button from '@mui/material/Button';
 import ModalNews from './ModalNews';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { deleteNews } from '../services/deleteNews';
@@ -25,6 +25,10 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
   },
   [`&.${tableCellClasses.body}`]: {
     fontSize: 14,
+    maxWidth: 370,           
+    whiteSpace: 'nowrap',   
+    overflow: 'hidden',     
+    textOverflow: 'ellipsis',
   },
 }));
 
@@ -79,7 +83,7 @@ export default function NewsTable ({data}: {data: BackResults | undefined}) {
     <>
     {
       News?.length !== 0 ? (
-        <div className='w-full'>
+        <div className='w-full max-w-[1500px] h-full min-h-[400px]'>
           <TableContainer component={Paper}>
             <Table sx={{ minWidth: 700 }} aria-label="customized table">
               <TableHead>

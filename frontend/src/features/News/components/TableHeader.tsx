@@ -8,7 +8,7 @@ export default function TableHeader () {
     return (
         <>
             <h1 className="font-medium text-center md:text-left">Novedades</h1>
-            <div className="flex gap-4 md:gap-0  md:flex-row flex-col items-center sm:justify-between w-full">
+            <div className="flex gap-4 lg:gap-0 lg:flex-row flex-col items-center lg:justify-between w-full">
                 <FilterBar />
                 <ModalProvider fn={createNews} msgs={{SuccessMsg: "Novedad creada con exito", ErrorMsg: "Error al crear la novedad"}} ButtonName="Crear Novedad">
                     <ModalNews />
@@ -22,7 +22,7 @@ function FilterBar (){
     const { filter, handleChangeFilter, query, isDebouncing, handleSearch} = useFilter()
     return (
         <>
-            <form className="w-full max-w-sm xl:max-w-2xl flex xl:flex-row items-center md:items-baseline flex-col gap-5">
+            <form className="w-full max-w-sm xl:max-w-2xl flex xl:flex-row items-center md:items-baseline flex-col gap-5 md:self-start">
                 <ButtonGroup variant="contained" className="w-fit">
                     <Button variant={filter === "Todas" ? "contained" : "outlined"} onClick={() => handleChangeFilter("Todas")}>
                         Todas

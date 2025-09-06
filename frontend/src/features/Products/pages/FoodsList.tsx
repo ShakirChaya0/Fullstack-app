@@ -37,10 +37,10 @@ function FoodsList () {
                           No se ha encontrado dicho plato
                         </h1>
                       )}
-                      <Suspense>
+                      <Suspense fallback={<SkeletonBody/>}>
                         <FoodsTypesFilter filteredFoods={filteredFoods} />
                       </Suspense>
-                      <Suspense>
+                      <Suspense fallback={<SkeletonBody/>}>
                         <FoodsSpecialFilter filteredFoods={filteredFoods} />
                       </Suspense>
                     </>

@@ -14,7 +14,7 @@ export default function ModalNews() {
   const { ButtonName } = useModalProvider()
 
   return (
-    <div className='md:self-end'>
+    <div className='lg:self-end md:self-start'>
         <Button variant='contained' onClick={handleOpen} className='gap-2.5'>
           {(ButtonName.includes("Crear")) && <AddCircleOutlineIcon/>}
             {ButtonName}

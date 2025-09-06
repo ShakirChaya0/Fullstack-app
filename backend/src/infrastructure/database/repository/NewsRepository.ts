@@ -152,27 +152,4 @@ export class NewsRepository implements INewsRepository{
             throw new ServiceError("Error al registrar la novedad en la base de datos")
         }
     }
-
-    async getActive (): Promise<NewsClass[]>{
-        try {
-            const news = await prisma.novedad.findMany({
-                where: {
-                    fechaInicio: {
-                        lte: hoy
-                    },
-                    fechaFin: {
-                        gte: hoy
-                    }
-                },
-                orderBy: { idNovedad: "desc" }
-            });
-
-            return news.map((n) => {
-                return new NewsClass(n.idNovedad, n.titulo, n.descripcion, n.fechaInicio, n.fechaFin)
-            })
-        }
-        catch (error) {
-            throw new ServiceError("Error al registrar la novedad en la base de datos")
-        }
-    }
 }

@@ -1,4 +1,3 @@
-import React from "react";
 import { useForm } from "react-hook-form";
 import { usePage } from "../hooks/usePage";
 import { useMutationNews } from "../hooks/useMutationNews";
@@ -21,7 +20,7 @@ export default function ActionForm() {
       formState: { errors }
     } = useForm<FormData>();
 
-    const {fn, msgs, news} = useModalProvider()
+    const {fn, msgs, news, ButtonName} = useModalProvider()
 
     const { mutate, isLoading } = useMutationNews({fn: fn, currentPage: currentPage, SuccessMsg: msgs.SuccessMsg, ErrorMsg: msgs.ErrorMsg})
 
@@ -39,7 +38,7 @@ export default function ActionForm() {
           <div className="flex flex-col gap-2">
             <label className="sm:text-lg font-semibold text-gray-800">Título</label>
             <input
-                {...register("Titulo", { required: "El Título es obligatorio" })}
+                {...register("Titulo", {required: "El Título es obligatorio"})}
                 placeholder="Escribe el título..."
                 className="px-2 py-1 sm:px-4 sm:py-3 sm:text-lg border border-gray-300 rounded-lg sm:rounded-xl shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
                 defaultValue={news?._title}
@@ -117,10 +116,11 @@ export default function ActionForm() {
           
           <button
             type="submit"
-            className={`flex flex-col items-center w-full bg-blue-600 hover:bg-blue-700 text-white font-medium sm:font-bold sm:text-lg py-2 sm:py-3 sm:px-6 rounded-lg sm:rounded-xl shadow-lg transition cursor-pointer`}
+            className={`flex flex-col items-center w-ful text-white font-medium sm:font-bold sm:text-lg py-2 sm:py-3 sm:px-6 rounded-lg sm:rounded-xl shadow-lg transition ${isLoading ? "bg-blue-900" : "bg-blue-600 hover:bg-blue-700 cursor-pointer"}`}
+            disabled={isLoading}
           >
             {
-              !isLoading ? "Modificar" 
+              !isLoading ? ButtonName
               :(
                 <CircularProgress color="inherit"/>
               )
