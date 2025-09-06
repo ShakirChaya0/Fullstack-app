@@ -8,7 +8,7 @@ interface SortBySelectProps {
 }
 
 export default function SuggestionsFilters({ filter, onFilterChange }: SortBySelectProps) {
-    return(
+    return (
         <section aria-label="filtros">
             <div className="flex flex-row justify-center items-center gap-4 w-full h-full">
                 <ButtonGroup variant="contained" aria-label="filtros de sugerencias" className="h-full">

@@ -7,15 +7,15 @@ const SuggestionsPage = lazy(() => import("../features/Suggestions/pages/Suggest
 export function KitchenRouter() {
   return (
     <>
-        <Route element={<KitchenMainLayout/>}>
-            <Route path="/Cocina" element={<h1>Hola cocina</h1>}/>
-            <Route path="/Cocina/Sugerencias" element={
-              <Suspense fallback={<SuggestionSkeletonBody/>}>
-                <SuggestionsPage/>
-              </Suspense>}
-            />
-            <Route path="/Cocina/Pedidos"/>
-        </Route>
+      <Route element={<KitchenMainLayout/>}>
+        <Route path="/Cocina" element={<h1>Hola cocina</h1>}/>
+        <Route path="/Cocina/Sugerencias" element={
+          <Suspense fallback={<SuggestionSkeletonBody/>}>
+            <SuggestionsPage/>
+          </Suspense>}
+        />
+        <Route path="/Cocina/Pedidos"/>
+      </Route>
     </>
   );
 }
