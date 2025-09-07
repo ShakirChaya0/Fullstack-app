@@ -5,6 +5,7 @@ import { GetAllTable} from "../../application/use_cases/TableUseCase/GetTablesUs
 import { UpdateTableUseCase } from "../../application/use_cases/TableUseCase/UpdateTableUseCase.js";
 import { GetTableByCapacity } from "../../application/use_cases/TableUseCase/GetTablesByCapacity.js";
 import { DeleteTable } from "../../application/use_cases/TableUseCase/DeleteTable.js";
+import { UpdateCapacityTableUseCase } from "../../application/use_cases/TableUseCase/UpdateCapacitytableUseCase.js";
 import { ValidationError } from "../../shared/exceptions/ValidationError.js";
 
 export class TableController {
@@ -13,7 +14,8 @@ export class TableController {
         private readonly getAllTable = new GetAllTable(),
         private readonly getTableByCapacity = new GetTableByCapacity(),
         private readonly deletedTable = new DeleteTable(), 
-        private readonly updateTable = new UpdateTableUseCase()
+        private readonly updateTable = new UpdateTableUseCase(), 
+        private readonly updateCapacityTable = new UpdateCapacityTableUseCase() 
     ){}
 
     public getAll = async (req: Request, res: Response, next: NextFunction) => {
@@ -52,7 +54,7 @@ export class TableController {
     public delete = async (req: Request, res: Response, next: NextFunction) => {
         try {
             const nroMesa = req.params.numTable; 
-            if(!nroMesa || isNaN(+nroMesa)){
+            if ( !nroMesa || isNaN(+nroMesa) ) {
                 throw new ValidationError("El numero de la mesa debe ser un entero");
             }
             await this.deletedTable.execute(+nroMesa);
@@ -77,6 +79,20 @@ export class TableController {
 
         } catch (error) {
             next(error);
+        }
+    }
+
+    public updateCapacity = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const { numTable } = req.params
+
+            if ( !numTable || isNaN(+numTable)) throw new ValidationError("El numero de la mesa debe ser un entero");
+
+            const result = validateTable(req.body)
+            const updatedTable = await this.updateCapacityTable.execute(+numTable, result.capacity)
+            res.status(200).json(updatedTable);
+        } catch(error) {
+            next(error)
         }
     }
 }

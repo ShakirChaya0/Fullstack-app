@@ -12,9 +12,11 @@ export function MesaRouter (){
 
     tableRouter.post('/', /*RoleMiddleware(["Administrador"]),*/ (req, res, next) => { tableController.create(req, res, next) }); 
     
-    tableRouter.delete('/nromesa/:numTable', RoleMiddleware(["Administrador"]), (req, res, next) => { tableController.delete(req, res, next) }); 
+    tableRouter.delete('/nromesa/:numTable', /*RoleMiddleware(["Administrador"]),*/ (req, res, next) => { tableController.delete(req, res, next) }); 
 
     tableRouter.patch('/liberarMesa', RoleMiddleware(['Mozo']), (req,res,next) => {tableController.update(req, res, next) });
+
+    tableRouter.patch('/actualizarCapacidad/:numTable', /*RoleMiddleware(['Administrador']),*/ (req, res, next) => {tableController.updateCapacity(req, res, next) });
 
     return tableRouter;
 }

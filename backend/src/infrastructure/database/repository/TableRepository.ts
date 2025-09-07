@@ -125,6 +125,19 @@ export class TableRepository implements ITableRepository {
         }); 
     }
 
+    public async updateCapacityTable(numTable: number, newCapacity: number): Promise<Table | null> {
+        const updatedTable = await prisma.mesa.update({
+            where: {nroMesa: numTable}, 
+            data: {
+                capacidad: newCapacity
+            }
+        });
+
+        if (!updatedTable) return null;
+
+        return new Table(updatedTable.nroMesa, updatedTable.capacidad, updatedTable.estado);
+    }   
+
     public async getAvailableTables(reservationDate: Date, reservationTime: string): Promise<Table[]> {
         const [hours, minutes] = reservationTime.split(':').map(Number);
         const timeAsDate = new Date(Date.UTC(1970, 0, 1, hours, minutes, 0, 0));
