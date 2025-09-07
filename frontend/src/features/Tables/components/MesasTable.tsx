@@ -9,25 +9,24 @@ import Button from "@mui/material/Button";
 import type { ITable } from '../interfaces/ITable';
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from '@mui/icons-material/Delete';
-
+import AddIcon from '@mui/icons-material/Add';
 
 type PropsTable = {
   tables: ITable[];
-  onEditar: (numTable: number) => void;
-  onEliminar: (numTable: number) => void;
+  onUpdate: (Table: ITable) => void;
+  onDelete: (numTable: number) => void;
+  onAdd: () => void;
 };
 
-export function TableList({ tables, onEditar, onEliminar }: PropsTable) {
-  console.log(tables)
+export function TableList({ tables, onUpdate, onDelete , onAdd}: PropsTable) {  
   return(  
     <>   
-    <div className="flex flex-col items-center w-full ml-6 mr-6" >
       <h1 className="text-2xl font-bold mb-4 mt-5">Mesas</h1>
       <TableContainer component={Paper} sx={{
         width: "100%",
         boxShadow: 3,
         borderRadius: 2
-       }}>
+        }}>
         <Table>
           <TableHead>
             <TableRow>
@@ -59,7 +58,7 @@ export function TableList({ tables, onEditar, onEliminar }: PropsTable) {
                         boxShadow: 6               
                       }
                   }}
-                    onClick={() => onEditar(table._tableNum)}
+                    onClick={() => onUpdate(table)}
                     >
                     <EditIcon sx={{mr:0.5}} ></EditIcon>
                     Editar
@@ -81,19 +80,38 @@ export function TableList({ tables, onEditar, onEliminar }: PropsTable) {
                           boxShadow: 6               
                         }
                       }}
-                    onClick={() => onEliminar(table._tableNum)}
+                    onClick={() => onDelete(table._tableNum)}
                     >
                     <DeleteIcon sx={{mr:0.5}}></DeleteIcon>
                     Eliminar
                   </Button>
-                </TableCell>
+                </TableCell> 
               </TableRow>
             ))}
           </TableBody>
         </Table>
       </TableContainer>
-    </div>
-    <Button>Agregar Mesa</Button>
+      <Button 
+      variant="contained"
+      sx={{
+        mt: 3, 
+        bgcolor: "transparent", 
+        fontSize: "16px", 
+        textTransform: "none",
+        color: "black", 
+        border: "2px solid #ffb300", 
+        paddingX: 3,
+        transition: "0.3s", 
+        "&:hover": {
+          bgcolor: "#ffb300", 
+          boxShadow: 6
+        }
+      }}
+      onClick={onAdd}
+      >
+        <AddIcon sx= {{ mr:0.5 }} ></AddIcon>
+          Agregar Mesa
+        </Button>
     </>
   )
 } 
