@@ -40,8 +40,10 @@ export function TableCRUD () {
     const handleDeleteSave = async (numTable: number) => {
         try {
             setLoadingDelete(true);
+            console.log(numTable)
             await fetchDeleteTable(numTable);
             setLocalTables(prev => prev.filter(t => t._tableNum !== numTable));
+            setDelete(null)
             toast.success("Mesa eliminada correctamente");
         } catch (error) {
             toast.error("No se pudo eliminar la mesa. Intente nuevamente.");
