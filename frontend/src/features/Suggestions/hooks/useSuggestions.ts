@@ -1,16 +1,16 @@
-import { useQuery,  } from "@tanstack/react-query";
+import { useInfiniteQuery  } from "@tanstack/react-query";
 import type { Suggestion } from "../interfaces/Suggestion";
 import { getSuggestions } from "../services/getSuggestions";
+import type { SuggFilters, SuggSortBy } from "../types/SuggSharedTypes";
 
-export function useSuggestions(filter: "ALL" | "Actives"): [ boolean, boolean, Suggestion[] | undefined ] {
-    const {isLoading, isError, data } = useQuery<Suggestion[]>({
-        queryKey: ["Suggestions", filter],
-        queryFn: () => getSuggestions(filter),
-        staleTime: 1000 * 60 * 60,
-        refetchOnWindowFocus: false,
-        refetchOnMount: false,
-        retry: 1
-    })
-    
-    return [ isLoading, isError, data ]
+export function useSuggestions(filter: SuggFilters, sortBy: SuggSortBy) {
+  return useInfiniteQuery<Suggestion[]>({
+    queryKey: ["suggestions", filter, sortBy],
+    queryFn: ({ pageParam = 1 }) => getSuggestions(filter, sortBy, pageParam),
+    getNextPageParam: (lastPage, allPages) => {
+      if (lastPage.length < 15) return undefined;
+      return allPages.length + 1;
+    },
+    initialPageParam: 1,
+  });
 }

@@ -9,8 +9,6 @@ export function SuggestionsRouter () {
     
     suggestionsRouter.get("/", /* AuthMiddleware, RoleMiddleware(["SectorCocina", "Administrador"]), */ (req, res, next) => { suggestionsController.getAll(req, res, next) });
 
-    suggestionsRouter.get("/activas", (req, res, next) => { suggestionsController.getActive(req, res, next) });
-
     suggestionsRouter.get("/search", (req, res, next) => { suggestionsController.findSuggestion(req, res, next) });
     
     suggestionsRouter.post("/", /* AuthMiddleware, RoleMiddleware(["SectorCocina"]), */ (req, res, next) => { suggestionsController.registerSuggestion(req, res, next) });

@@ -1,23 +1,14 @@
 import { useCallback, useState } from "react";
 import ProductAutocomplete from "../../Products/components/ProductAutocomplete";
 import { useForm } from "react-hook-form";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import createSuggestion from "../services/createSuggestion";
-import { toast } from "react-toastify";
 import dateParser from "../../../shared/utils/dateParser";
-import updateSuggestion from "../services/updateSuggestion";
 import type { Suggestion } from "../interfaces/Suggestion";
+import { useSuggMutation } from "../hooks/useSuggMutation";
 
 
 interface SuggestionFormProps {
     handleClose: () => void;
     suggestion?: Suggestion;
-}
-
-interface SuggestionPayload {
-    _product: { _productId: number; _name: string; _description: string };
-    _dateFrom: string;
-    _dateTo: string;
 }
 
 type FormData = {
@@ -40,38 +31,11 @@ export default function SuggestionForm({ handleClose, suggestion }: SuggestionFo
         control
     } = useForm<FormData>();
 
-    const queryClient = useQueryClient()
+    const handleError = useCallback((message: string | null) => {
+        setError(message);
+    }, []);
 
-    const { mutate } = useMutation({
-        mutationFn: (data: SuggestionPayload) => {
-            if (suggestion) {
-                return updateSuggestion({
-                    _previousProductId: suggestion._product._productId,
-                    _previousDateFrom: suggestion._dateFrom,
-                    _product: data._product,
-                    _dateFrom: data._dateFrom,
-                    _dateTo: data._dateTo
-                });
-            } else {
-                return createSuggestion({
-                    _product: data._product!,
-                    _dateFrom: data._dateFrom,
-                    _dateTo: data._dateTo
-                });
-            }
-        },        
-        onSuccess: async () => {
-            await queryClient.invalidateQueries({ queryKey: ["Suggestions"] });
-            toast.success(`Se ${suggestion ? "modificó" : "creó"} la sugerencia con exito`)
-            setError(null);
-            handleClose();
-        },
-        onError: (err) => {
-            toast.error(`Error al ${suggestion ? "modificar" : "crear"} la sugerencia`);
-            if (err instanceof Error) setError(err.message);
-            console.log(err)
-        }
-    })
+    const { mutate } = useSuggMutation({ handleClose, handleError, suggestion });
 
     const handleProductSelect = useCallback((product: { _productId: number; _name: string; _description: string } | null) => {
         setSelectedProduct(product);
@@ -152,7 +116,9 @@ export default function SuggestionForm({ handleClose, suggestion }: SuggestionFo
                 {error && <p className="text-base text-center text-red-500">{error}</p>}
             </div>
             <div className="flex justify-between gap-6">
-                <button type="button" onClick={handleClose} className="w-full bg-white border-2 border-gray-700 hover:bg-gray-200 font-medium sm:font-bold sm:text-lg py-2 sm:py-3 sm:px-6 rounded-lg sm:rounded-xl shadow-lg transition cursor-pointer">Cancelar</button>
+                <button type="button" onClick={handleClose} className="w-full bg-white border-2 border-gray-700 hover:bg-gray-200 font-medium sm:font-bold sm:text-lg py-2 sm:py-3 sm:px-6 rounded-lg sm:rounded-xl shadow-lg transition cursor-pointer">
+                    Cancelar
+                </button>
                 <button type="submit" className="w-full bg-amber-600 hover:bg-amber-700 text-white font-medium sm:font-bold sm:text-lg py-2 sm:py-3 sm:px-6 rounded-lg sm:rounded-xl shadow-lg transition cursor-pointer">
                     {suggestion ? "Modificar" : "Crear"}
                 </button>

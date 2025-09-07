@@ -1,8 +1,9 @@
 import type { Suggestion } from "../interfaces/Suggestion";
+import type { SuggFilters, SuggSortBy } from "../types/SuggSharedTypes";
 
-export const getSuggestions = async (filter: "ALL" | "Actives"): Promise<Suggestion[]> => {
-    const endpoint = filter === "ALL" ? "sugerencias" : "sugerencias/activas";
-    const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/${endpoint}`);
+export const getSuggestions = async (filter: SuggFilters, sorted: SuggSortBy, currentPage: unknown): Promise<Suggestion[]> => {
+    const query = `page=${currentPage}&filter=${filter}&sorted=${sorted}`;
+    const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/sugerencias?${query}`);
     
     if(!response.ok) throw new Error("Error al conseguir los datos")
 

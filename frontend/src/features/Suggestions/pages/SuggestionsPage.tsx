@@ -5,32 +5,18 @@ import SuggestionsList from "../components/SuggestionsList";
 import SuggestionsFilters from "../components/SuggestionsFilters";
 import SortBySelect from "../components/SortBySelect";
 import ModalCreateSuggestions from "../components/ModalCreateSuggestions";
+import type { SuggFilters, SuggSortBy } from "../types/SuggSharedTypes";
 
-type SuggFilters = "ALL" | "Actives";
-type SuggSortBy = "latest" | "oldest" | "A-Z" | "Z-A";
 
 export default function SuggestionsPage() {
     const [ filter, setFilter ] = useState<SuggFilters>('ALL');
-    const [ sortBy, setSortBy ] = useState<SuggSortBy>('latest');
-    const [ isLoading, isError, data ] = useSuggestions(filter);
+    const [ sortBy, setSortBy ] = useState<SuggSortBy>('DATE_DESC');
+    const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading, isError } = useSuggestions(filter, sortBy);
 
     const suggestions = useMemo(() => {
         if (!data) return [];
-        return [...data].sort((a, b) => {
-            switch (sortBy) {
-                case "latest":
-                    return new Date(b._dateFrom).getTime() - new Date(a._dateFrom).getTime();
-                case "oldest":
-                    return new Date(a._dateFrom).getTime() - new Date(b._dateFrom).getTime();
-                case "A-Z":
-                    return a._product._name.localeCompare(b._product._name);
-                case "Z-A":
-                    return b._product._name.localeCompare(a._product._name);
-                default:
-                    return 0;
-            }
-        });
-    }, [data, sortBy]);
+        return data.pages.flat();
+    }, [data]);
 
     const handleFilterChange = useCallback((newFilter: SuggFilters) => {
         setFilter(newFilter);
@@ -54,10 +40,19 @@ export default function SuggestionsPage() {
                 </div>
 
                 <section aria-label="listado de sugerencias" className="flex flex-col items-center justify-center w-full p-4">
+                    { suggestions.length > 0 && <SuggestionsList suggestions={suggestions}/> }
                     { isLoading && <CircularProgress size="3rem" /> }
                     { isError && <p className="text-base text-center text-red-500">Error al cargar las sugerencias</p> }
                     { !isLoading && !isError && suggestions.length === 0 && <p>No hay sugerencias</p> }
-                    { !isLoading && !isError && suggestions.length > 0 && <SuggestionsList suggestions={suggestions}/> }
+                    { hasNextPage && 
+                        <button
+                            onClick={() => fetchNextPage()}
+                            disabled={isFetchingNextPage}
+                            className="mt-8 bg-neutral-700 hover:bg-neutral-800 text-white p-3 sm:py-3 sm:px-6 rounded-lg sm:rounded-xl shadow-lg transition cursor-pointer"
+                        >
+                            {isFetchingNextPage ? "Cargando..." : "Cargar más sugerencias"}
+                        </button>
+                    }
                 </section>
             </main>
         </>

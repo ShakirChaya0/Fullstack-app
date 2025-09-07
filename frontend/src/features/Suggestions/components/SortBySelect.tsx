@@ -1,6 +1,5 @@
 import { FormControl, InputLabel, Select, MenuItem, type SelectChangeEvent } from "@mui/material";
-
-type SuggSortBy = "latest" | "oldest" | "A-Z" | "Z-A";
+import type { SuggSortBy } from "../types/SuggSharedTypes";
 
 interface SortBySelectProps {
     sortBy: SuggSortBy;
@@ -18,10 +17,10 @@ export default function SortBySelect({ sortBy, onSortChange }: SortBySelectProps
                 label="Ordenar Por"
                 onChange={onSortChange}
             >
-                <MenuItem value={"latest"}>Más Reciente</MenuItem>
-                <MenuItem value={"oldest"}>Más Antigua</MenuItem>
-                <MenuItem value={"A-Z"}>Producto, A-Z</MenuItem>
-                <MenuItem value={"Z-A"}>Producto, Z-A</MenuItem>
+                <MenuItem value={"DATE_DESC"}>Más Reciente</MenuItem>
+                <MenuItem value={"DATE_ASC"}>Más Antigua</MenuItem>
+                <MenuItem value={"NAME_ASC"}>Producto, A-Z</MenuItem>
+                <MenuItem value={"NAME_DESC"}>Producto, Z-A</MenuItem>
             </Select>
         </FormControl>
     );
