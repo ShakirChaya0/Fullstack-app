@@ -3,6 +3,10 @@ import { lazy, Suspense } from "react";
 import { AdminMainLayout } from "../shared/components/AdminMainLayout";
 import SkeletonNewsBody from "../features/News/pages/SkeletonNewsBody";
 const NewsCRUD = lazy(() => import("../features/News/pages/NewsCRUD"))
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { ScheduleCRUD } from "../features/Schedules/pages/ScheduleCRUD";
+
+const queryClient = new QueryClient()
 
 
 
@@ -15,6 +19,11 @@ export function AdminRouter() {
               <Suspense fallback={<SkeletonNewsBody/>}>
                 <NewsCRUD/>
               </Suspense>}/>
+            <Route path="/Admin/Horarios" element={
+              <QueryClientProvider client={queryClient}>
+                <ScheduleCRUD></ScheduleCRUD>
+              </QueryClientProvider>
+              }/>
         </Route>
     </>
   );
