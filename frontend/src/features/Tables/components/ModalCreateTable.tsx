@@ -1,7 +1,6 @@
 import { Box, Modal, Typography } from "@mui/material";
 import { TextField } from "@mui/material";
 import { useState } from "react";
-import { toast } from "react-toastify";
 
 type IModalCreateTable = {
     open: boolean; 
@@ -31,7 +30,6 @@ export function ModalCreateTable({ open, onClose, onSave }: IModalCreateTable) {
             return;
          } 
         onSave({ capacity: capacity }); 
-        toast.success('Mesa registrada exitosamente')
         handleClose();
     }
 

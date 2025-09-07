@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import type { ITable } from "../interfaces/ITable";
 import { Box, Modal, Typography } from "@mui/material";
 import { TextField } from "@mui/material";
-import { toast } from "react-toastify";
 
 const style = {
   position: "absolute",
@@ -19,9 +18,9 @@ const style = {
 
 type ModalUpdateTable = {
   open: boolean;
-  table: ITable | null;
+  table: ITable;
   onClose: () => void;
-  onSave: (data: { capacity: number}) => void;
+  onSave: (numTable: number, data: { capacity: number}) => void;
 };
 
 export function ModalUpdateTable ({open, table, onClose, onSave } : ModalUpdateTable){
@@ -35,12 +34,11 @@ export function ModalUpdateTable ({open, table, onClose, onSave } : ModalUpdateT
     }, [table]);
 
   const handleSubmit = () => {
-        if(capacity <= 0) {
+        if (capacity <= 0) {
             setError("La capacidad debe ser mayor a 0"); 
             return;
         }
-        onSave({capacity})
-        toast.success('Mesa modificada exitosamente');
+        onSave(table._tableNum, { capacity })
         onClose();
   }
 

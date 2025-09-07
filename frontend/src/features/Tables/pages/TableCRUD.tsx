@@ -5,36 +5,52 @@ import { ModalCreateTable } from "../components/ModalCreateTable";
 import { ModalDeleteTable } from "../components/ModalDeleteTable";
 import { ModalUpdateTable } from "../components/ModalUpdateTable";
 import type { ITable } from "../interfaces/ITable";
+import { fetchCreateTable, fetchDeleteTable, fetchUpdateTable } from "../services/fetchTable";
+import { toast } from "react-toastify";
 
 export function TableCRUD () {
     
     const { tables, loading, error } = useTables(); 
     
-    const handleCreateSave = () => {
+    const handleCreateSave = async (data: {capacity: number}) => {
         try {
-            //Llamo a la API
+            const newTable = await fetchCreateTable(data);
+            setLocalTables(prev => [...prev, newTable]);
+            toast.success('Mesa registrada exitosamente')
         } catch (error) {
-            console.log(error)
+            toast.error("No se pudo crear la mesa. Intente nuevamente.");
+            console.log(error);
         }
-    }
+    };
     
-    const handleUpdateSave = () => {
+    const handleUpdateSave = async (numTable: number, data: { capacity: number }) => {
         try {
-            console.log('Estoy en el Padre para actualizar en la API')
+           const updated = await fetchUpdateTable(numTable, data);
+            setLocalTables(prev =>
+               prev.map(t => (t._tableNum === numTable ? updated : t))
+            );
+            toast.success('Mesa modificada exitosamente');
+            
         } catch (error) {
-            console.log(error)
+            toast.error("No se pudo modificar la mesa. Intente nuevamente.");
+            console.log(error);
         }
-    }
+    };
     
     const handleDeleteSave = async (numTable: number) => {
         try {
-            console.log('Se elimino la mesa:' , numTable)
+            setLoadingDelete(true);
+            await fetchDeleteTable(numTable);
+            setLocalTables(prev => prev.filter(t => t._tableNum !== numTable));
+            toast.success("Mesa eliminada correctamente");
         } catch (error) {
+            toast.error("No se pudo eliminar la mesa. Intente nuevamente.");
             console.log(error)
+        } finally {
+            setLoadingDelete(false);
         }
-    }
+    };
  
-
     const [localTables, setLocalTables] = useState<ITable[]>([]);
 
     useEffect(() => {
@@ -50,9 +66,9 @@ export function TableCRUD () {
         if (error) return <p>Error: {error}</p>;
     
     return (
-        <main className="flex flex-col items-center w-full ml-6 mr-6">
+        <main className="flex flex-col items-center w-full ml-6 mr-6 min-h-screen">
             <TableList 
-                tables = {tables}
+                tables = {localTables}
                 onUpdate = {(table) => setUpdate(table)} 
                 onDelete = {(numTable) => setDelete(numTable)} 
                 onAdd = { () => setAdd(true) }
@@ -78,7 +94,7 @@ export function TableCRUD () {
                 )
             } 
             {
-                deletedTable && (
+                deletedTable !== null && (
                     <ModalDeleteTable
                         open = { deletedTable !== null }
                         numTable = { deletedTable }

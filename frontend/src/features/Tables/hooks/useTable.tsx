@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import type { ITable } from "../interfaces/ITable";
-import { fetchTable } from "../services/fetchTable";
+import { fetchGetAllTable } from "../services/fetchTable";
 
 export function useTables() {
   const [tables, setTables] = useState<ITable[]>([]);
@@ -11,10 +11,11 @@ export function useTables() {
     const loadTables = async () => {
       try {
         setLoading(true);
-        const { Tables } = await fetchTable();
-        setTables(Tables);
+        const  table  = await fetchGetAllTable();
+        setTables(table);
       } catch (err) {
         setError("Error cargando las mesas");
+        console.log(err);
       } finally {
         setLoading(false);
       }
