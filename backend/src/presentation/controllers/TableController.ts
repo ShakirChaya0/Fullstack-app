@@ -42,7 +42,7 @@ export class TableController {
         try {
             const result = validateTable(req.body);
             const tables = await this.CU17RegisterTable.execute(result);
-                res.status(201).json(tables);
+            res.status(201).json(tables);
             } 
         catch (error) {
             next(error);

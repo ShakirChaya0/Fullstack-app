@@ -54,7 +54,7 @@ export class TableRepository implements ITableRepository {
     public async createTable(table: schemaTable): Promise<Table> {
         const newTable = await prisma.mesa.create({
             data: {
-                capacidad: table.capacidad,
+                capacidad: table.capacity,
                 estado: 'Libre'
             }
         });

@@ -2,7 +2,7 @@ import z from "zod";
 import { ValidationError } from "../exceptions/ValidationError.js";
 
 const tableSchema = z.object({
-    capacidad: z.number({message: "La capacidad debe ser un numero entero"}).min(1).max(10), 
+    capacity: z.number({message: "La capacidad debe ser un numero entero"}).min(1).max(10), 
 }); 
 
 export type schemaTable = z.infer<typeof tableSchema>; 

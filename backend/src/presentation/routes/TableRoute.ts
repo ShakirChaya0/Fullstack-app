@@ -6,11 +6,11 @@ export function MesaRouter (){
     const tableRouter = Router(); 
     const tableController = new TableController; 
 
-    tableRouter.get('/', RoleMiddleware(["Administrador", "Mozo"]), (req, res, next) => { tableController.getAll(req, res, next) }); 
+    tableRouter.get('/', /*RoleMiddleware(["Administrador", "Mozo"])*/ (req, res, next) => { tableController.getAll(req, res, next) }); 
 
     tableRouter.get('/capacidad/:capacity', RoleMiddleware(["Administrador", "Mozo"]), (req, res, next)=> { tableController.getByCapacity(req, res, next) }); 
 
-    tableRouter.post('/', RoleMiddleware(["Administrador"]), (req, res, next) => { tableController.create(req, res, next) }); 
+    tableRouter.post('/', /*RoleMiddleware(["Administrador"]),*/ (req, res, next) => { tableController.create(req, res, next) }); 
     
     tableRouter.delete('/nromesa/:numTable', RoleMiddleware(["Administrador"]), (req, res, next) => { tableController.delete(req, res, next) }); 
 
