@@ -28,6 +28,10 @@ export default function NewsCRUD () {
         setPage(value)
     }
 
+    const handleResetPage = useCallback((value: number) => {
+        setPage(value)
+    }, [setPage])
+
     const handleChangeFilter = useCallback(async (data: FilterProps) => {
         setPage(1)
         setFilter(data)
@@ -36,8 +40,8 @@ export default function NewsCRUD () {
     
     return (
         <>
-            <section className="flex flex-col items-center justify-center w-full p-4 min-h-[400px]">
-                <div className="flex flex-col gap-5 sm:p-16 sm:rounded-2xl sm:shadow-2xl sm:border sm:border-gray-300 w-full max-w-[1600px] min-h-[400px]">
+            <section className="flex flex-col items-center justify-center w-full p-4 min-h-[600px]">
+                <div className="flex flex-col gap-5 sm:p-16 sm:rounded-2xl sm:shadow-2xl sm:border sm:border-gray-300 w-full max-w-[1600px] min-h-[600px]">
                     <PageContext.Provider value={currentPage}>
                         <FilterContext.Provider value={{filter: filter, handleSearch: handleSearch, isDebouncing: isDebouncing, query: query, handleChangeFilter: handleChangeFilter}}>
                             <TableHeader/>
@@ -47,14 +51,14 @@ export default function NewsCRUD () {
                     <>
                         { !isError && ((debouncedValue.length === 0) || (data?.News.length !== 0)) && 
                             <Suspense fallback={<SkeletonNewsBody/>}>
-                                <NewsTable data={data}/> 
+                                <NewsTable data={data} handleResetPage={handleResetPage}/> 
                             </Suspense>
                         
                         }
                         { (debouncedValue.length !== 0) && (data?.News.length === 0) && <h1 className="text-center font-medium">No se encontraron los datos buscados</h1>}
                         { isError && <p>Error</p> }
                         {
-                            !isError && data?.News.length !== 0 &&
+                            !isError && data?.totalItems !== 0 &&
                             <div className="flex flex-col items-center justify-center">
                                 <Pagination count={data?.totalItems ? Math.ceil(data.totalItems / 5) : 1} shape="rounded" onChange={handleChangePage} page={currentPage}/>
                             </div>

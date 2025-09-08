@@ -22,7 +22,6 @@ export class CUU22ModifyWaiter {
         };
 
         const draft = {
-            nombreUsuario: updatedData.nombreUsuario,
             contrasenia: updatedData.contrasenia,
             nombre: updatedData.nombre,
             apellido: updatedData.apellido,

@@ -86,21 +86,28 @@ export class WaiterController {
     
     public async getWaiterByUserName(req: Request, res: Response, next: NextFunction) {
         try {
+            const { page } = req.query 
             const nombreUsuario = req.params.nombreUsuario;
+
+            const draft = (page && !isNaN(+page)) ? +page : 1; 
+
             if (!nombreUsuario) throw new ValidationError("Se debe ingresar un nombre de usuario válido");
 
-            const waiter = await this.getWaiterByUserNameUseCase.execute(nombreUsuario);
+            const result = await this.getWaiterByUserNameUseCase.execute(nombreUsuario, draft);
             
-            const filteredWaiters = {
-                nombreUsuario: waiter.userName,
-                email: waiter.email,
-                nombre: waiter.nombre,
-                apellido: waiter.apellido,
-                dni: waiter.dni,
-                telefono: waiter.telefono
-            }
+            const filteredWaiters = result.Waiters.map((w) => {
+                return {
+                    idMozo: w.userId,
+                    nombreUsuario: w.userName,
+                    email: w.email,
+                    nombre: w.nombre,
+                    apellido: w.apellido,
+                    dni: w.dni,
+                    telefono: w.telefono
+                }
+            });
             
-            res.status(200).json(filteredWaiters);
+            res.status(200).json({Waiters: filteredWaiters, totalItems: result.totalItems, pages: result.pages});
         }
         catch (error) {
             next(error);
@@ -135,10 +142,13 @@ export class WaiterController {
 
     public async getWaiters(req: Request, res: Response, next: NextFunction) {
         try {
-            const waiters = await this.getWaiterUseCase.execute();
+            const { page } = req.query
+            const draft = (page && !isNaN(+page)) ? +page : 1
+            const result = await this.getWaiterUseCase.execute(draft);
             
-            const filteredWaiters = waiters.map((w) => {
+            const filteredWaiters = result.Waiters.map((w) => {
                 return {
+                    idMozo: w.userId,
                     nombreUsuario: w.userName,
                     email: w.email,
                     nombre: w.nombre,
@@ -148,7 +158,7 @@ export class WaiterController {
                 }
             });
 
-            res.status(200).json(filteredWaiters);
+            res.status(200).json({Waiters: filteredWaiters, totalItems: result.totalItems, pages: result.pages});
         }
         catch (error) {
             next(error);

@@ -42,7 +42,7 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 
-export default function NewsTable ({data}: {data: BackResults | undefined}) {
+export default function NewsTable ({data, handleResetPage}: {data: BackResults | undefined, handleResetPage: (id: number) => void}) {
   const currentPage = usePage()
   const queryClient = useQueryClient()
 
@@ -61,6 +61,11 @@ export default function NewsTable ({data}: {data: BackResults | undefined}) {
       return { previousState }
     },
     onSuccess: () => {
+      const totalItems = data?.totalItems ?? 0;
+      const itemsPerPage = 5
+      if (currentPage > 1 && (totalItems - 1) <= (currentPage - 1) * itemsPerPage) {
+        handleResetPage(currentPage - 1);
+      }
       toast.success("La novedad se elimino con exito")
     },
     onError: (err, variables, context) => {

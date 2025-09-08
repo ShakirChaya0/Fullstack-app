@@ -1,0 +1,144 @@
+import * as React from 'react';
+import { styled } from '@mui/material/styles';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell, { tableCellClasses } from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import Paper from '@mui/material/Paper';
+import Button from '@mui/material/Button';
+import type { BackResults, Waiter } from '../interfaces/Waiters';
+import { ModalContext } from '../hooks/useModalProvider';
+import updateWaiter from '../services/updateWaiter';
+import ModalWaiters from './ModalWaiters';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import deleteWaiter from '../services/deleteWaiter';
+import { usePage } from '../hooks/usePage';
+import { toast } from 'react-toastify';
+
+const StyledTableCell = styled(TableCell)(({ theme }) => ({
+  [`&.${tableCellClasses.head}`]: {
+    backgroundColor: theme.palette.common.black,
+    color: theme.palette.common.white,
+  },
+  [`&.${tableCellClasses.body}`]: {
+    fontSize: 14,
+    maxWidth: 500,           
+    whiteSpace: 'nowrap',   
+    overflow: 'hidden',     
+    textOverflow: 'ellipsis',
+  },
+}));
+
+const StyledTableRow = styled(TableRow)(({ theme }) => ({
+  '&:nth-of-type(odd)': {
+    backgroundColor: theme.palette.action.hover,
+  },
+  '&:last-child td, &:last-child th': {
+    border: 0,
+  },
+}));
+
+
+export default function WaitersTable ({waiters, handleResetPage}: {waiters: BackResults | undefined, handleResetPage: (page: number) => void}) {
+    const queryClient = useQueryClient()
+    const currentPage = usePage()
+
+
+    const { mutate } = useMutation({
+        mutationFn: deleteWaiter,
+        onMutate: async (newData) => {
+          await queryClient.cancelQueries({ queryKey: ["Waiters", currentPage]})
+    
+          const previousState = await queryClient.getQueryData(["Waiters", currentPage])
+          
+          await queryClient.setQueryData(["Waiters", currentPage], (oldData: Waiter[]) => {
+            const safeData = Array.isArray(oldData) ? oldData : []
+            return safeData.filter(item => item.idMozo !== newData)
+          })
+    
+          return { previousState }
+        },
+        onSuccess: () => {
+            const totalItems = waiters?.totalItems ?? 0;
+            const itemsPerPage = 5;
+
+            if (currentPage > 1 && (totalItems - 1) <= (currentPage - 1) * itemsPerPage) {
+              handleResetPage(currentPage - 1);
+            }
+            toast.success("La novedad se elimino con exito")
+        },
+        onError: (err, variables, context) => {
+            toast.error("Error al eliminar la novedad")
+            if (context?.previousState) queryClient.setQueryData(["Waiters", currentPage], context.previousState)
+            console.log(err)
+          },
+        onSettled: async () => {
+          await queryClient.invalidateQueries({queryKey: ["Waiters"]})
+        }
+      });
+    
+
+    const handleDeleteWaiter = React.useCallback((id: string) => {
+        mutate(id)
+    }, [mutate])
+
+    return (
+      <>
+      {
+        waiters?.Waiters?.length !== 0 ? (
+          <div className='w-full max-w-[1500px] h-full min-h-[400px]'>
+            <TableContainer component={Paper}>
+              <Table sx={{ minWidth: 700 }} aria-label="customized table">
+                <TableHead>
+                  <TableRow>
+                    <StyledTableCell align="center">Nombre de Usuario</StyledTableCell>
+                    <StyledTableCell align="center">Nombre</StyledTableCell>
+                    <StyledTableCell align="center">Apellido</StyledTableCell>
+                    <StyledTableCell align="center">telefono</StyledTableCell>
+                    <StyledTableCell align="center">Acciones</StyledTableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                    {
+                      waiters?.Waiters?.map((w) => (
+                        <WaitersRow key={w.idMozo} waiters={w} handleDeleteWaiter={handleDeleteWaiter}/>
+                      ))
+                    }
+                </TableBody>
+              </Table>
+            </TableContainer>
+        </div>
+        ) : (<h1 className='text-center font-medium'>No hay novedades cargadas</h1>)
+      }
+      </>
+    );
+}   
+
+export function ModalProvider ({children, waiters, fn, msgs, ButtonName}: {children: React.ReactNode, waiters?: Waiter, fn: (data: Waiter) => Promise<Waiter>, msgs: {SuccessMsg: string, ErrorMsg: string}, ButtonName: string}) {
+  return(
+    <ModalContext.Provider value={{waiters, fn, msgs, ButtonName}}>
+      {children}
+    </ModalContext.Provider>
+  )
+}
+
+const WaitersRow = React.memo(function WaitersRow({ waiters, handleDeleteWaiter }: { waiters: Waiter, handleDeleteWaiter: (id: string) => void }) {
+  return (
+    <StyledTableRow key={waiters.idMozo}>
+      <StyledTableCell align="center">{waiters.nombreUsuario}</StyledTableCell>
+      <StyledTableCell align="center">{waiters.nombre}</StyledTableCell> 
+      <StyledTableCell align="center">{waiters.apellido}</StyledTableCell>
+      <StyledTableCell align="center">{waiters.telefono}</StyledTableCell>
+      <StyledTableCell align="center" sx={{ display: 'flex', gap: "5px", justifyContent: "center" }}>
+        <ModalProvider fn={updateWaiter} waiters={waiters} msgs={{SuccessMsg: "Mozo modificado con exito", ErrorMsg: "Error al modificar el mozo"}} ButtonName='Modificar'>
+            <ModalWaiters/>
+        </ModalProvider>
+        <Button variant="contained" color="error" onClick={() => handleDeleteWaiter(waiters.idMozo ?? "")}>
+          Eliminar
+        </Button>   
+      </StyledTableCell>
+    </StyledTableRow>
+  )
+});
