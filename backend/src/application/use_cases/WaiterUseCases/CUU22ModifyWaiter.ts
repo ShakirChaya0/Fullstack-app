@@ -22,13 +22,13 @@ export class CUU22ModifyWaiter {
         };
 
         const draft = {
-            nombreUsuario: updatedData.nombreUsuario,
             contrasenia: updatedData.contrasenia,
             nombre: updatedData.nombre,
             apellido: updatedData.apellido,
             dni: updatedData.dni,
             telefono: updatedData.telefono,
-            email: updatedData.email
+            email: updatedData.email,
+            nombreUsuario: updatedData.nombreUsuario
         };
 
         return await this.waiterRepository.updateWaiter(idMozo, draft);

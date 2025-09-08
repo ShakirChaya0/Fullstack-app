@@ -30,3 +30,6 @@ export type PedidoCheck = {
     importeImpuestos: number,
     total: number
 }
+
+export type SuggSortOption = "DATE_ASC" | "DATE_DESC" | "NAME_ASC" | "NAME_DESC";
+export type SuggFilterOption = "ALL" | "ACTIVES";

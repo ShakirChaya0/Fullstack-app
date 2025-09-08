@@ -7,12 +7,16 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import { Button } from '@mui/material';
-import ModalUpdateNews from './ModalUpdateNews';
+import Button from '@mui/material/Button';
+import ModalNews from './ModalNews';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { deleteNews } from '../services/deleteNews';
 import type { BackResults } from '../interfaces/News';
 import { toast } from 'react-toastify';
+import { usePage } from '../hooks/usePage';
+import updateNews from '../services/updateNews';
+import type News from '../interfaces/News';
+import { ModalContext } from '../hooks/useModalProvider';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -21,6 +25,10 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
   },
   [`&.${tableCellClasses.body}`]: {
     fontSize: 14,
+    maxWidth: 370,           
+    whiteSpace: 'nowrap',   
+    overflow: 'hidden',     
+    textOverflow: 'ellipsis',
   },
 }));
 
@@ -34,33 +42,60 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 }));
 
 
-export default function NewsTable ({data, currentPage}: {data: BackResults | undefined, currentPage: number}) {
-
+export default function NewsTable ({data, handleResetPage}: {data: BackResults | undefined, handleResetPage: (id: number) => void}) {
+  const { currentPage, query, filter } = usePage()
   const queryClient = useQueryClient()
 
   const { mutate } = useMutation({
     mutationFn: deleteNews,
-    onSuccess: async () => {
-      await queryClient.invalidateQueries({ queryKey: ['News', currentPage] });
+    onMutate: async (newData) => {
+      await queryClient.cancelQueries({ queryKey: ["News", currentPage, query, filter]})
+          
+      const previousState = queryClient.getQueryData(["News", currentPage, query, filter])
+      
+      queryClient.setQueryData(["News", currentPage, query, filter], (oldData: BackResults) => {
+        if (!oldData) return { News: [], totalItems: 0, pages: 0 }
+
+        const filteredWaiters = oldData.News.filter(item => item._newsId !== newData) 
+              
+        return {
+          ...oldData,
+          News: filteredWaiters,
+          totalItems: oldData.totalItems - 1 
+        }
+      })
+
+      return { previousState }
+    },
+    onSuccess: () => {
+      const totalItems = data?.totalItems ?? 0;
+      const itemsPerPage = 5
+      if (currentPage > 1 && (totalItems - 1) <= (currentPage - 1) * itemsPerPage) {
+        handleResetPage(currentPage - 1);
+      }
       toast.success("La novedad se elimino con exito")
     },
-    onError: (err) => {
-      toast.error("Error al eliminar la novedad")
-      console.log(err)
+    onError: (err, variables, context) => {
+        toast.error("Error al eliminar la novedad")
+        if (context?.previousState) queryClient.setQueryData(["News", currentPage], context.previousState)
+        console.log(err)
+      },
+    onSettled: async () => {
+      await queryClient.invalidateQueries({queryKey: ["News"]})
     }
   });
 
-  const News = data?.News ?? []
+  const News = data?.News
 
-  const handleDeleteNews = (id: number) => {
+  const handleDeleteNews = React.useCallback((id: number) => {
     mutate(id)
-  }
+  }, [mutate])
 
   return (
     <>
     {
-      News.length !== 0 ? (
-        <div className='w-full'>
+      News?.length !== 0 ? (
+        <div className='w-full max-w-[1500px] h-full min-h-[400px]'>
           <TableContainer component={Paper}>
             <Table sx={{ minWidth: 700 }} aria-label="customized table">
               <TableHead>
@@ -74,28 +109,11 @@ export default function NewsTable ({data, currentPage}: {data: BackResults | und
                 </TableRow>
               </TableHead>
               <TableBody>
-                <>
                   {
-                    News?.map((news) => (
-                      <StyledTableRow key={news._newsId}>
-                        <StyledTableCell component="th" scope="row" align="center">
-                          {news._newsId}
-                        </StyledTableCell>
-                        <StyledTableCell align="center">{news._title}</StyledTableCell> 
-                        <StyledTableCell align="center">{news._description}</StyledTableCell>
-                        <StyledTableCell align="center">{news._startDate.split("T")[0]}</StyledTableCell>
-                        <StyledTableCell align="center">{news._endDate.split("T")[0]}</StyledTableCell>
-                        <StyledTableCell align="center" sx={{display: 'flex', gap: "5px", justifyContent: "center"}}>
-                            <ModalUpdateNews news={news} currentPage={currentPage}/>
-                            <Button variant="contained" color="error" onClick={() => handleDeleteNews(news._newsId ?? 0)}>
-                                Eliminar
-                            </Button>   
-                    
-                        </StyledTableCell> 
-                      </StyledTableRow>
+                    News?.map((n) => (
+                      <NewsRow key={n._newsId} news={n} handleDeleteNews={handleDeleteNews} />
                     ))
                   }
-                </>
               </TableBody>
             </Table>
           </TableContainer>
@@ -105,3 +123,31 @@ export default function NewsTable ({data, currentPage}: {data: BackResults | und
     </>
   );
 }
+
+export function ModalProvider ({children, news, fn, msgs, ButtonName}: {children: React.ReactNode, news?: News, fn: (data: News) => Promise<News>, msgs: {SuccessMsg: string, ErrorMsg: string}, ButtonName: string}) {
+  return(
+    <ModalContext.Provider value={{news, fn, msgs, ButtonName}}>
+      {children}
+    </ModalContext.Provider>
+  )
+}
+
+const NewsRow = React.memo(function NewsRow({ news, handleDeleteNews }: { news: News, handleDeleteNews: (id: number) => void }) {
+  return (
+    <StyledTableRow key={news._newsId}>
+      <StyledTableCell component="th" scope="row" align="center">{news._newsId}</StyledTableCell>
+      <StyledTableCell align="center">{news._title}</StyledTableCell> 
+      <StyledTableCell align="center">{news._description}</StyledTableCell>
+      <StyledTableCell align="center">{news._startDate.split("T")[0]}</StyledTableCell>
+      <StyledTableCell align="center">{news._endDate.split("T")[0]}</StyledTableCell>
+      <StyledTableCell align="center" sx={{ display: 'flex', gap: "5px", justifyContent: "center" }}>
+        <ModalProvider news={news} fn={updateNews} msgs={{ SuccessMsg: "Novedad modificada con exito", ErrorMsg: "Error al modificar una novedad" }} ButtonName={"Modificar"}>
+          <ModalNews/>
+        </ModalProvider>
+        <Button variant="contained" color="error" onClick={() => handleDeleteNews(news._newsId ?? 0)}>
+          Eliminar
+        </Button>   
+      </StyledTableCell>
+    </StyledTableRow>
+  )
+});

@@ -6,7 +6,7 @@ export class GetAllNewsUseCase {
         private readonly newsRepository = new NewsRepository()
     ){}
     
-    async execute (page: number): Promise<{News: NewsClass[], pages: number, totalItems: number}> {
-        return this.newsRepository.getAll(page)
+    async execute (page: number, status: any): Promise<{News: NewsClass[], pages: number, totalItems: number}> {
+        return this.newsRepository.getAll(page, status)
     }
 }

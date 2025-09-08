@@ -9,6 +9,7 @@ export interface ITableRepository {
     updateTableBusy(tables: Table[]): Promise<Table[]>;
     updateTableFree(tables: Table[]): Promise<Table[]>;
     updateTable(numTable: number): Promise<Table | null>;
+    updateCapacityTable(numTable: number, newCapacity: number): Promise<Table | null>
     deleteTable(numTable: number): Promise<void>;
     getAvailableTables(reservationDate: Date, reservationTime: string): Promise<Table[]>;
 }

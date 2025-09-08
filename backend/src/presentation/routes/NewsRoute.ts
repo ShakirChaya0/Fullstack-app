@@ -12,10 +12,8 @@ export function NewsRouter(){
     // SE ELIMINA LOS MIDDLEWARES PARA FACILITAR TESTEO
 
     newsRouter.get("/", (req, res, next) => {newsController.getAll(req, res, next)}) // AuthMiddleware, RoleMiddleware(["Administrador"])
-
-    newsRouter.get("/actives/", (req, res, next) => {newsController.getActives(req, res, next)})
     
-    newsRouter.get("/id/:newsId", (req, res, next) => {newsController.getOne(req, res, next)})
+    newsRouter.get("/title/:newsTitle", (req, res, next) => {newsController.getByTitle(req, res, next)})
 
     newsRouter.delete("/:newsId", (req, res, next) => {newsController.delete(req, res, next)}) //AuthMiddleware, RoleMiddleware(["Administrador"])
 

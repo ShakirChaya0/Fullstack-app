@@ -1,5 +1,5 @@
 ###
-GET http://localhost:3000/mozos
+GET http://localhost:3000/mozos?page=1
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzdWFyaW8iOiJlNTM0YjUyMS1iNzEwLTRhNjQtOGUyOC1iMTZkMTY5ZDVlYjQiLCJlbWFpbCI6ImFkbWluQGdtYWlsLmNvbSIsInRpcG9Vc3VhcmlvIjoiQWRtaW5pc3RyYWRvciIsInVzZXJuYW1lIjoiYWRtaW4iLCJpYXQiOjE3NTU2MDk2MzEsImV4cCI6MTc1NjIxNDQzMX0.56jCQ5DHfhVtDWciHrmX6b1WWK12rbIiLx3AfLQ5p48
 
 ###
@@ -7,7 +7,7 @@ GET http://localhost:3000/mozos/id/e534b521-b710-4a64-8e28-b16d169d5eb4
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzdWFyaW8iOiJlNTM0YjUyMS1iNzEwLTRhNjQtOGUyOC1iMTZkMTY5ZDVlYjQiLCJlbWFpbCI6ImFkbWluQGdtYWlsLmNvbSIsInRpcG9Vc3VhcmlvIjoiQWRtaW5pc3RyYWRvciIsInVzZXJuYW1lIjoiYWRtaW4iLCJpYXQiOjE3NTU2MDk2MzEsImV4cCI6MTc1NjIxNDQzMX0.56jCQ5DHfhVtDWciHrmX6b1WWK12rbIiLx3AfLQ5p48
 
 ###
-GET http://localhost:3000/mozos/nombre/mozo1
+GET http://localhost:3000/mozos/nombre/e?page=1
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzdWFyaW8iOiJlNTM0YjUyMS1iNzEwLTRhNjQtOGUyOC1iMTZkMTY5ZDVlYjQiLCJlbWFpbCI6ImFkbWluQGdtYWlsLmNvbSIsInRpcG9Vc3VhcmlvIjoiQWRtaW5pc3RyYWRvciIsInVzZXJuYW1lIjoiYWRtaW4iLCJpYXQiOjE3NTU2MDk2MzEsImV4cCI6MTc1NjIxNDQzMX0.56jCQ5DHfhVtDWciHrmX6b1WWK12rbIiLx3AfLQ5p48
 
 ###
@@ -16,22 +16,22 @@ Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzdWFyaW8iOiJlNTM0YjUyMS1iNzEwLTRhNjQtOGUyOC1iMTZkMTY5ZDVlYjQiLCJlbWFpbCI6ImFkbWluQGdtYWlsLmNvbSIsInRpcG9Vc3VhcmlvIjoiQWRtaW5pc3RyYWRvciIsInVzZXJuYW1lIjoiYWRtaW4iLCJpYXQiOjE3NTU2MDk2MzEsImV4cCI6MTc1NjIxNDQzMX0.56jCQ5DHfhVtDWciHrmX6b1WWK12rbIiLx3AfLQ5p48
 
 {
-    "nombreUsuario": "example3",
+    "nombreUsuario": "exampl",
     "contrasenia": "holamundo",
     "nombre": "Shakir",
     "apellido": "Barragan Landriel",
-    "dni": "11222555",
-    "telefono": "34asc",
-    "email": "example3@gmail.com"
+    "dni": "11222",
+    "telefono": "341555",
+    "email": "examp@gmail.com"
 }   
 
 ###
-PATCH http://localhost:3000/mozos/id/8e06e4b9-cc58-4fea-9d6e-818cfd5f86f7
+PATCH http://localhost:3000/mozos/id/0e370e27-a2b6-4be8-8c71-8e434ce3b63b
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzdWFyaW8iOiI4ZTA2ZTRiOS1jYzU4LTRmZWEtOWQ2ZS04MThjZmQ1Zjg2ZjciLCJlbWFpbCI6Im1vem9AZ21haWwuY29tIiwidGlwb1VzdWFyaW8iOiJNb3pvIiwidXNlcm5hbWUiOiJtb3pvIiwiaWF0IjoxNzU1NzgwMDkyLCJleHAiOjE3NTYzODQ4OTJ9.pwipmoVvvhjqSzZQSKBzBp0O3FxFP9JBoYNqAFnaB8E
 Content-Type: application/json
 
 {
-    "nombre": "Franco Nicolás"
+    "nombreUsuario": "Nicolásss"
 }
 
 ###

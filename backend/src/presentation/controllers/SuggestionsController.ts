@@ -1,16 +1,15 @@
 import { Request, Response, NextFunction } from 'express';
 import { CUU20RegisterSuggestion } from '../../application/use_cases/SuggestionsUseCases/CUU20RegisterSuggestion.js';
 import { CUU21ModifySuggestion } from '../../application/use_cases/SuggestionsUseCases/CUU21ModifySuggestion.js';
-import { GetActiveSuggestionsUseCase } from '../../application/use_cases/SuggestionsUseCases/GetActiveSuggestionsUseCase.js';
 import { GetSuggestionsUseCase } from '../../application/use_cases/SuggestionsUseCases/GetSuggestionsUseCase.js';
 import { GetOneSuggestionUseCase } from '../../application/use_cases/SuggestionsUseCases/GetOneSuggestion.js';
 import { ValidateSuggestion, ValidateSuggestionPartial } from '../../shared/validators/SuggestionZod.js';
 import { ValidationError } from '../../shared/exceptions/ValidationError.js';
+import { SuggFilterOption, SuggSortOption } from '../../shared/types/SharedTypes.js';
 
 export class SuggestionsController {
     constructor(
         private readonly getSuggestionsUseCase = new GetSuggestionsUseCase(),
-        private readonly getActiveSuggestionsUseCase = new GetActiveSuggestionsUseCase(),
         private readonly registerSuggestionUseCase = new CUU20RegisterSuggestion(),
         private readonly getOneSuggestionUseCase = new GetOneSuggestionUseCase(),
         private readonly modifySuggestionUseCase = new CUU21ModifySuggestion()
@@ -18,17 +17,20 @@ export class SuggestionsController {
 
     public async getAll(req: Request, res: Response, next: NextFunction) {
         try {
-            const suggestions = await this.getSuggestionsUseCase.execute();
-            res.json(suggestions);
-        } 
-        catch (error) {
-            next(error);
-        }
-    }
+            const { page, filter, sorted } = req.query
+            const draft = (page && !isNaN(+page)) ? +page : 1;
 
-    public async getActive(req: Request, res: Response, next: NextFunction) {
-        try {
-            const suggestions = await this.getActiveSuggestionsUseCase.execute();
+            const filterOption: SuggFilterOption =
+                typeof filter === "string" && (["ALL", "ACTIVES"] as const).includes(filter as SuggFilterOption)
+                    ? (filter as SuggFilterOption)
+                    : "ALL";
+
+            const sortOption: SuggSortOption =
+                typeof sorted === "string" && (["DATE_ASC", "DATE_DESC", "NAME_ASC", "NAME_DESC"] as const).includes(sorted as SuggSortOption)
+                    ? (sorted as SuggSortOption)
+                    : "DATE_DESC";
+
+            const suggestions = await this.getSuggestionsUseCase.execute(draft, filterOption, sortOption);
             res.json(suggestions);
         } 
         catch (error) {
