@@ -5,11 +5,7 @@ import { toast } from "react-toastify";
 import type Policy from "../interfaces/Policy";
 import updatePolicy from "../services/updatePolicy";
 
-type PolicyFormProps = {
-  data: Policy;
-};
-
-export default function PolicyForm({ data }: PolicyFormProps) {
+export default function PolicyForm({ data }: {data: Policy}) {
   const queryClient = useQueryClient();
 
   const { mutate, isPending } = useMutation({
