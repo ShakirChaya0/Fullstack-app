@@ -1,22 +1,30 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import type News from "../interfaces/News";
+import type { BackResults } from "../interfaces/News";
 
 
-export function useMutationNews ({fn, currentPage, SuccessMsg, ErrorMsg}: {fn: (data: News) => Promise<News>, currentPage: number, SuccessMsg: string, ErrorMsg: string}) {
+export function useMutationNews ({fn, currentPage, SuccessMsg, ErrorMsg, query, filter}: {fn: (data: News) => Promise<News>, currentPage: number, SuccessMsg: string, ErrorMsg: string, query: string, filter: string}) {
     const queryClient = useQueryClient()
     const { mutate, isPending: isLoading, failureReason } = useMutation({
       mutationFn: fn,
       onMutate: async (newData) => {
-        await queryClient.cancelQueries({ queryKey: ["News", currentPage]})
+        await queryClient.cancelQueries({ queryKey: ["News", currentPage, query, filter]})
+        
+        const previousState = queryClient.getQueryData(["News", currentPage, query, filter])
 
-        const previousState = await queryClient.getQueryData(["News", currentPage])
-
-        await queryClient.setQueryData(["News", currentPage], (oldData: News[]) => {
-          const safeData = Array.isArray(oldData) ? oldData : []
-          return [...safeData, newData]
+        queryClient.setQueryData(["News", currentPage, query, filter], (oldData?: BackResults) => {
+          if (!oldData) return { News: [newData], totalItems: 1, pages: 1 }
+          const newNews = [newData, ...oldData.News]
+          const NewData = {
+            ...oldData,
+            News: newNews,
+            totalItems: oldData.totalItems + 1
+          }
+          
+          return NewData
         })
-
+      
         return { previousState }
       },
       onSuccess: () => {
@@ -24,7 +32,7 @@ export function useMutationNews ({fn, currentPage, SuccessMsg, ErrorMsg}: {fn: (
       },
       onError: (err, variables, context) => {
         toast.error(ErrorMsg)
-        if (context?.previousState) queryClient.setQueryData(["News", currentPage], context.previousState)
+        if (context?.previousState != null) queryClient.setQueryData(["News", currentPage], context.previousState)
         console.log(err)
       },
       onSettled: async () => {

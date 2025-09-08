@@ -43,19 +43,26 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 
 
 export default function NewsTable ({data, handleResetPage}: {data: BackResults | undefined, handleResetPage: (id: number) => void}) {
-  const currentPage = usePage()
+  const { currentPage, query, filter } = usePage()
   const queryClient = useQueryClient()
 
   const { mutate } = useMutation({
     mutationFn: deleteNews,
     onMutate: async (newData) => {
-      await queryClient.cancelQueries({ queryKey: ["News", currentPage]})
-
-      const previousState = await queryClient.getQueryData(["News", currentPage])
+      await queryClient.cancelQueries({ queryKey: ["News", currentPage, query, filter]})
+          
+      const previousState = queryClient.getQueryData(["News", currentPage, query, filter])
       
-      await queryClient.setQueryData(["News", currentPage], (oldData: News[]) => {
-        const safeData = Array.isArray(oldData) ? oldData : []
-        return safeData.filter(item => item._newsId !== newData)
+      queryClient.setQueryData(["News", currentPage, query, filter], (oldData: BackResults) => {
+        if (!oldData) return { News: [], totalItems: 0, pages: 0 }
+
+        const filteredWaiters = oldData.News.filter(item => item._newsId !== newData) 
+              
+        return {
+          ...oldData,
+          News: filteredWaiters,
+          totalItems: oldData.totalItems - 1 
+        }
       })
 
       return { previousState }

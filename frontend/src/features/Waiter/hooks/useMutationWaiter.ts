@@ -1,22 +1,29 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
-import type { Waiter } from "../interfaces/Waiters";
+import type { BackResults, Waiter } from "../interfaces/Waiters";
 
 
-export function useMutationWaiter ({fn, currentPage, SuccessMsg, ErrorMsg}: {fn: (data: Waiter) => Promise<Waiter>, currentPage: number, SuccessMsg: string, ErrorMsg: string}) {
+export function useMutationWaiter ({fn, currentPage, SuccessMsg, ErrorMsg, query}: {fn: (data: Waiter) => Promise<Waiter>, currentPage: number, SuccessMsg: string, ErrorMsg: string, query: string}) {
     const queryClient = useQueryClient()
     const { mutate, isPending: isLoading, failureReason } = useMutation({
       mutationFn: fn,
       onMutate: async (newData) => {
-        await queryClient.cancelQueries({ queryKey: ["Waiters", currentPage]})
+        await queryClient.cancelQueries({ queryKey: ["Waiters", currentPage, query]})
 
-        const previousState = await queryClient.getQueryData(["Waiters", currentPage])
+        const previousState = queryClient.getQueryData(["Waiters", currentPage, query])
 
-        await queryClient.setQueryData(["Waiters", currentPage], (oldData: Waiter[]) => {
-          const safeData = Array.isArray(oldData) ? oldData : []
-          return [...safeData, newData]
+        queryClient.setQueryData(["Waiters", currentPage, query], (oldData?: BackResults) => {
+          if (!oldData) return { Waiters: [newData], totalItems: 1, pages: 1 }
+          const newWaiters = [newData, ...oldData.Waiters]
+          const NewData = {
+            ...oldData,
+            Waiters: newWaiters,
+            totalItems: oldData.totalItems + 1
+          }
+          
+          return NewData
         })
-
+      
         return { previousState }
       },
       onSuccess: () => {
@@ -24,7 +31,7 @@ export function useMutationWaiter ({fn, currentPage, SuccessMsg, ErrorMsg}: {fn:
       },
       onError: (err, variables, context) => {
         toast.error(ErrorMsg)
-        if (context?.previousState) queryClient.setQueryData(["Waiters", currentPage], context.previousState)
+        if (context?.previousState != null) queryClient.setQueryData(["Waiters", currentPage, query], context.previousState)
         console.log(err)
       },
       onSettled: async () => {

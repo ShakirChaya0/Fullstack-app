@@ -43,19 +43,26 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 
 export default function WaitersTable ({waiters, handleResetPage}: {waiters: BackResults | undefined, handleResetPage: (page: number) => void}) {
     const queryClient = useQueryClient()
-    const currentPage = usePage()
+    const { currentPage, query } = usePage()
 
 
     const { mutate } = useMutation({
         mutationFn: deleteWaiter,
-        onMutate: async (newData) => {
-          await queryClient.cancelQueries({ queryKey: ["Waiters", currentPage]})
+        onMutate: async (idToDelete) => {
+          await queryClient.cancelQueries({ queryKey: ["Waiters", currentPage, query]})
     
-          const previousState = await queryClient.getQueryData(["Waiters", currentPage])
+          const previousState = queryClient.getQueryData(["Waiters", currentPage, query])
           
-          await queryClient.setQueryData(["Waiters", currentPage], (oldData: Waiter[]) => {
-            const safeData = Array.isArray(oldData) ? oldData : []
-            return safeData.filter(item => item.idMozo !== newData)
+          queryClient.setQueryData(["Waiters", currentPage, query], (oldData: BackResults) => {
+            if (!oldData) return { Waiters: [], totalItems: 0, pages: 0 }
+    
+            const filteredWaiters = oldData.Waiters.filter(item => item.idMozo !== idToDelete) 
+                  
+            return {
+              ...oldData,
+              Waiters: filteredWaiters,
+              totalItems: oldData.totalItems - 1 
+            }
           })
     
           return { previousState }
@@ -103,7 +110,7 @@ export default function WaitersTable ({waiters, handleResetPage}: {waiters: Back
                 <TableBody>
                     {
                       waiters?.Waiters?.map((w) => (
-                        <WaitersRow key={w.idMozo} waiters={w} handleDeleteWaiter={handleDeleteWaiter}/>
+                        <WaitersRow key={w.email} waiters={w} handleDeleteWaiter={handleDeleteWaiter}/>
                       ))
                     }
                 </TableBody>

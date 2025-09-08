@@ -20,11 +20,11 @@ export default function ActionForm() {
       handleSubmit,       
       formState: { errors }
     } = useForm<FormData>();
-    const currentPage = usePage()
+    const {currentPage, query} = usePage()
 
     const {fn, msgs, waiters, ButtonName} = useModalProvider()
 
-    const { mutate, isLoading, failureReason } = useMutationWaiter({fn: fn, currentPage: currentPage, SuccessMsg: msgs.SuccessMsg, ErrorMsg: msgs.ErrorMsg})
+    const { mutate, isLoading, failureReason } = useMutationWaiter({fn: fn, currentPage: currentPage, SuccessMsg: msgs.SuccessMsg, ErrorMsg: msgs.ErrorMsg, query: query})
 
     const onSubmit = (data: FormData) => {
         mutate({idMozo: waiters?.idMozo, nombreUsuario: data.nombreUsuario, 
@@ -54,7 +54,7 @@ return (
           <div className="flex flex-col gap-2">
             <label className="sm:text-lg font-semibold text-gray-800">Contraseña</label>
             <input
-              {...register("contrasenia", {required: "La contraseña es obligatoria"})}
+              {...register("contrasenia")}
               placeholder="Escribe la contraseña..."
               className="px-2 py-1 sm:px-4 sm:py-3 sm:text-lg border border-gray-300 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               defaultValue={waiters?.contrasenia}

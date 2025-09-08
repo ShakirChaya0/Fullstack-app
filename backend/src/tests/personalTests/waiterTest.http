@@ -26,12 +26,12 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzdWFyaW8iOiJlN
 }   
 
 ###
-PATCH http://localhost:3000/mozos/id/04f30972-5fa8-4a2f-8ca8-8491d5c17509
+PATCH http://localhost:3000/mozos/id/0e370e27-a2b6-4be8-8c71-8e434ce3b63b
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzdWFyaW8iOiI4ZTA2ZTRiOS1jYzU4LTRmZWEtOWQ2ZS04MThjZmQ1Zjg2ZjciLCJlbWFpbCI6Im1vem9AZ21haWwuY29tIiwidGlwb1VzdWFyaW8iOiJNb3pvIiwidXNlcm5hbWUiOiJtb3pvIiwiaWF0IjoxNzU1NzgwMDkyLCJleHAiOjE3NTYzODQ4OTJ9.pwipmoVvvhjqSzZQSKBzBp0O3FxFP9JBoYNqAFnaB8E
 Content-Type: application/json
 
 {
-    "nombreUsuario": "Nicolás"
+    "nombreUsuario": "Nicolásss"
 }
 
 ###

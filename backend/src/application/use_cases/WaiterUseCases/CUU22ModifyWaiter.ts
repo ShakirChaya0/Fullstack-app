@@ -27,7 +27,8 @@ export class CUU22ModifyWaiter {
             apellido: updatedData.apellido,
             dni: updatedData.dni,
             telefono: updatedData.telefono,
-            email: updatedData.email
+            email: updatedData.email,
+            nombreUsuario: updatedData.nombreUsuario
         };
 
         return await this.waiterRepository.updateWaiter(idMozo, draft);
