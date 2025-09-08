@@ -6,7 +6,7 @@ export class GetWaiter {
         private readonly waiterRepository = new WaiterRepository()
     ) {}
 
-    public async execute(): Promise<Waiter[]> {
-        return await this.waiterRepository.getAllWaiters();
+    public async execute(page: number): Promise<{Waiters: Waiter[], totalItems: number, pages: number}> {
+        return await this.waiterRepository.getAllWaiters(page);
     }
 }

@@ -11,7 +11,17 @@ export default async function createNews (dataNews: News): Promise<News> {
         fechaFin: dataNews._endDate
       })
     }); 
-    if(!response.ok) throw new Error("error")
+    
+    if(!response.ok) {
+        const errorData = await response.json().catch(() => null);
+        const errorMessage = errorData?.message
+        switch(response.status){
+            case 409:
+                throw new Error(errorMessage)
+            case 503:
+                throw new Error(errorMessage)
+        }
+    }
     
     const data = await response.json()
     

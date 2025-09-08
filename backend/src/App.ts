@@ -60,7 +60,7 @@ app.use('/horarios', HorariosRouter())
 
 app.use("/sugerencias", SuggestionsRouter())
 
-app.use('/mozos', AuthMiddleware, WaiterRouter())
+app.use('/mozos', WaiterRouter()) // AuthMiddleware
 
 app.use('/mesas',  AuthMiddleware, MesaRouter())
 

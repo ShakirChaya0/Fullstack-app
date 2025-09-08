@@ -11,7 +11,16 @@ export default async function updateNews (data: News): Promise<News> {
         fechaFin: data._endDate
       })
     })
-    if(!response.ok) throw new Error("Error")
+    if(!response.ok) {
+        const errorData = await response.json().catch(() => null);
+        const errorMessage = errorData?.message
+        switch(response.status){
+            case 409:
+                throw new Error(errorMessage)
+            case 503:
+                throw new Error(errorMessage)
+        }
+    }
     
     const datas = await response.json()
 
