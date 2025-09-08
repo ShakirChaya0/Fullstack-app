@@ -15,7 +15,16 @@ export default async function createWaiter (datas: Waiter): Promise<Waiter> {
         })
     })
     
-    if(!response.ok) throw new Error("Error al conseguir los datos")
+    if(!response.ok) {
+        const errorData = await response.json().catch(() => null);
+        const errorMessage = errorData?.message
+        switch(response.status){
+            case 409:
+                throw new Error(errorMessage)
+            case 503:
+                throw new Error(errorMessage)
+        }
+    }
 
     const data = await response.json()
     return data

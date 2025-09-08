@@ -20,9 +20,9 @@ export default function ActionForm() {
       formState: { errors }
     } = useForm<FormData>();
 
-    const {fn, msgs, news, ButtonName} = useModalProvider()
+    const { fn, msgs, news, ButtonName } = useModalProvider()
 
-    const { mutate, isLoading } = useMutationNews({fn: fn, currentPage: currentPage, SuccessMsg: msgs.SuccessMsg, ErrorMsg: msgs.ErrorMsg})
+    const { mutate, isLoading, failureReason } = useMutationNews({fn: fn, currentPage: currentPage, SuccessMsg: msgs.SuccessMsg, ErrorMsg: msgs.ErrorMsg})
 
     const onSubmit =  (data: FormData) => {
         mutate({_newsId: news?._newsId, _title: data.Titulo, _description: data.Descripcion, _startDate: data.FechaInicio, _endDate: data.FechaFin})
@@ -31,6 +31,8 @@ export default function ActionForm() {
     const fechaInicioValue = watch("FechaInicio");
 
     return (
+      <>
+        <p className="text-base text-red-500">{failureReason?.message}</p>
         <form
           onSubmit={handleSubmit(onSubmit)}
           className="flex flex-col gap-6 w-full"
@@ -127,5 +129,6 @@ export default function ActionForm() {
             }
           </button>
         </form>
+      </>
   );
 }

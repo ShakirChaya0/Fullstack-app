@@ -5,7 +5,7 @@ import type News from "../interfaces/News";
 
 export function useMutationNews ({fn, currentPage, SuccessMsg, ErrorMsg}: {fn: (data: News) => Promise<News>, currentPage: number, SuccessMsg: string, ErrorMsg: string}) {
     const queryClient = useQueryClient()
-    const { mutate, isPending: isLoading } = useMutation({
+    const { mutate, isPending: isLoading, failureReason } = useMutation({
       mutationFn: fn,
       onMutate: async (newData) => {
         await queryClient.cancelQueries({ queryKey: ["News", currentPage]})
@@ -31,5 +31,5 @@ export function useMutationNews ({fn, currentPage, SuccessMsg, ErrorMsg}: {fn: (
         await queryClient.invalidateQueries({queryKey: ["News"]})
       }
     });
-    return { mutate, isLoading }
+    return { mutate, isLoading, failureReason }
 }

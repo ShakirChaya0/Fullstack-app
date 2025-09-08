@@ -5,7 +5,7 @@ import type { Waiter } from "../interfaces/Waiters";
 
 export function useMutationWaiter ({fn, currentPage, SuccessMsg, ErrorMsg}: {fn: (data: Waiter) => Promise<Waiter>, currentPage: number, SuccessMsg: string, ErrorMsg: string}) {
     const queryClient = useQueryClient()
-    const { mutate, isPending: isLoading } = useMutation({
+    const { mutate, isPending: isLoading, failureReason } = useMutation({
       mutationFn: fn,
       onMutate: async (newData) => {
         await queryClient.cancelQueries({ queryKey: ["Waiters", currentPage]})
@@ -31,5 +31,5 @@ export function useMutationWaiter ({fn, currentPage, SuccessMsg, ErrorMsg}: {fn:
         await queryClient.invalidateQueries({queryKey: ["Waiters"]})
       }
     });
-    return { mutate, isLoading }
+    return { mutate, isLoading, failureReason }
 }
