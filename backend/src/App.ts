@@ -62,7 +62,7 @@ app.use("/sugerencias", SuggestionsRouter())
 
 app.use('/mozos', AuthMiddleware, WaiterRouter())
 
-app.use('/mesas',  AuthMiddleware, MesaRouter())
+app.use('/mesas', /* AuthMiddleware,*/ MesaRouter())
 
 app.use("/precios", AuthMiddleware, RoleMiddleware(["Administrador"]), PricesRouter())
 
