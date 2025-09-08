@@ -1,16 +1,30 @@
-import { Skeleton } from "@mui/material";
+import Skeleton from "@mui/material/Skeleton";
 
 export default function SkeletonBody () {
-    return(
-        <section className="flex-1 grid grid-cols-1 md:grid-cols-[3fr_1fr] gap-6 p-4 w-full">
+    return (
+        <div className="scroll-mt-55">
             <Skeleton
-                sx={{ bgcolor: 'grey.700', height: "100%", borderRadius: 8 }}
-                variant="rectangular"
+              variant="rectangular"
+              sx={{ bgcolor: "grey.700", height: 2, width: "100%", marginY: 2 }}
             />
-            <Skeleton 
-                sx={{ bgcolor: 'grey.700', height: "60%", borderRadius: 8 }}
-                variant="rectangular"
-            />
-        </section>
-    )
+            <div className="grid grid-cols-1 col-start-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+              {Array.from({ length: 8 }).map((_, i) => (
+                  <>
+                      <Skeleton
+                        key={i}
+                        variant="rectangular"
+                        sx={{
+                          bgcolor: "grey.700",
+                          minWidth: 200,
+                          maxWidth: 680,
+                          minHeight: 110,
+                          borderRadius: "4px",
+                          marginY: 1,
+                        }}
+                      />
+                  </>
+              ))}
+            </div>
+        </div>
+  )
 }

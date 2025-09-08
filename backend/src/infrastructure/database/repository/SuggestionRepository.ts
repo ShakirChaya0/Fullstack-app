@@ -1,13 +1,14 @@
 import prisma from "../prisma/PrismaClientConnection.js"
+import { Prisma } from "@prisma/client";
 import { ISuggestionRepository } from "../../../domain/repositories/ISuggestionRepository.js";
 import { Suggestion } from "../../../domain/entities/Suggestion.js";
 import { Product } from "../../../domain/entities/Product.js";
-import { Prisma } from "@prisma/client";
 import { PartialSchemaSuggestion } from "../../../shared/validators/SuggestionZod.js";
 import { Food } from "../../../domain/entities/Food.js";
 import { Drink } from "../../../domain/entities/Drink.js";
 import { ServiceError } from "../../../shared/exceptions/ServiceError.js";
 import { ConflictError } from "../../../shared/exceptions/ConflictError.js";
+import { SuggFilterOption, SuggSortOption } from "../../../shared/types/SharedTypes.js";
 
 type SuggestionWithProduct = Prisma.SugerenciasGetPayload<{
     include: { Producto: { include: { Precios: true }} }
@@ -15,28 +16,33 @@ type SuggestionWithProduct = Prisma.SugerenciasGetPayload<{
 
 export class SuggestionRepository implements ISuggestionRepository {
     
-    public async getAll(): Promise<Suggestion[]> {
-        const suggestions = await prisma.sugerencias.findMany({
-            include: {
-                Producto: { include: { Precios: true }}
-            }
-        });
-
-        return suggestions.map((sugg) => { return this.toDomainEntity(sugg) });
-    }
-
-    public async getActiveSuggestions(): Promise<Suggestion[]> {
+    public async getAll(page: number, filter: SuggFilterOption, sorted: SuggSortOption): Promise<Suggestion[]> {
         const now = new Date();
         now.setHours(0, 0, 0, 0);
 
+        const whereClause = filter === "ACTIVES" ? {
+            fechaDesde: { lte: now },
+            fechaHasta: { gte: now }
+        } : {};
+
+        const orderByClause: Prisma.SugerenciasOrderByWithRelationInput = 
+            sorted === "DATE_ASC" ? { fechaDesde: Prisma.SortOrder.asc } :
+            sorted === "DATE_DESC" ? { fechaDesde: Prisma.SortOrder.desc } :
+            sorted === "NAME_ASC" ? { Producto: { nombre: Prisma.SortOrder.asc } } :
+            sorted === "NAME_DESC" ? { Producto: { nombre: Prisma.SortOrder.desc } } :
+            { fechaDesde: Prisma.SortOrder.desc };
+
+        const limit = 15;
+        const skip = (page - 1) * limit;
+
         const suggestions = await prisma.sugerencias.findMany({
-            where: {
-                fechaDesde: { lte: now },
-                fechaHasta: { gte: now }
-            },
+            skip: skip,
+            take: limit,
+            where: whereClause,
             include: {
                 Producto: { include: { Precios: true }}
-            }
+            },
+            orderBy: orderByClause
         });
 
         return suggestions.map((sugg) => { return this.toDomainEntity(sugg) });

@@ -1,10 +1,10 @@
-import { useCallback, useMemo, useState } from "react";
+import { lazy, Suspense, useCallback, useMemo, useState } from "react";
 import { useFoods } from "../hooks/useFoods";
 import FilterProducts from "../components/foods/filterFoods";
 import SkeletonBody from "./skeletonBody";
 import { OrderList } from "../components/orderList";
-import FoodsTypesFilter from "../components/foods/FoodsTypesFilter";
-import FoodsSpecialFilter from "../components/foods/FoodsSpecialFilter";
+const FoodsTypesFilter = lazy(() => import("../components/foods/FoodsTypesFilter"))
+const FoodsSpecialFilter = lazy(() => import("../components/foods/FoodsSpecialFilter"))
 
 function FoodsList () {
     const {isLoading, isError, foods} = useFoods();
@@ -21,22 +21,36 @@ function FoodsList () {
 
     return(
         <>
-        {
-            !isLoading ? (
-                <section className="flex-1 grid md:grid-cols-[minmax(280px,_7fr)_4fr] lg:grid-cols-[3fr_1fr] gap-6 md:p-4 pb-6 w-full">
-                    <div className="border border-gray-300 rounded-2xl p-4 w-full min-w-2 shadow-2xl">
-                        { !isError && <FilterProducts handleChange={handleChange}/>}
-                        { isError && <h1 className="flex w-full h-full justify-center items-center text-2xl text-red-600">Error al cargar los datos del menu</h1>}
-                        { filteredFoods.length === 0 && query.length !== 0 && !isError && <h1 className="flex justify-center items-center text-2xl text-red-600">No se ha encontrado dicho plato</h1> }
-                        <FoodsTypesFilter filteredFoods={filteredFoods}/>
-                        <FoodsSpecialFilter filteredFoods={filteredFoods}/>
-                    </div>
-                    <OrderList/>
-                </section>
-            ) : 
-            (<SkeletonBody/>)
-        }
-
+            <section className="flex-1 grid md:grid-cols-[minmax(280px,_7fr)_4fr] lg:grid-cols-[3fr_1fr] gap-6 md:p-4 pb-6 w-full">
+              <div className="border border-gray-300 rounded-2xl p-4 w-full min-w-2 shadow-2xl">
+                { !isError && <FilterProducts handleChange={handleChange} /> }
+                {
+                  !isLoading ? (
+                    <>
+                      { isError && (
+                        <h1 className="flex w-full h-full justify-center items-center text-2xl text-red-600">
+                          Error al cargar los datos del menú
+                        </h1>
+                      )}
+                      { filteredFoods.length === 0 && query.length !== 0 && !isError && (
+                        <h1 className="flex justify-center items-center text-2xl text-red-600">
+                          No se ha encontrado dicho plato
+                        </h1>
+                      )}
+                      <Suspense fallback={<SkeletonBody/>}>
+                        <FoodsTypesFilter filteredFoods={filteredFoods} />
+                      </Suspense>
+                      <Suspense fallback={<SkeletonBody/>}>
+                        <FoodsSpecialFilter filteredFoods={filteredFoods} />
+                      </Suspense>
+                    </>
+                  ) : (
+                    <SkeletonBody />
+                  )
+                }
+              </div>
+              <OrderList />
+            </section>
         </>
     )
 }

@@ -1,11 +1,11 @@
 import { Route } from "react-router";
-import { lazy, Suspense } from "react";
 import { AdminMainLayout } from "../shared/components/AdminMainLayout";
 import SkeletonNewsBody from "../features/News/pages/SkeletonNewsBody";
 import SkeletonTaleBody from "../features/Tables/pages/SkeletonTableBody";
 import { TableCRUD } from "../features/Tables/pages/TableCRUD";
 const NewsCRUD = lazy(() => import("../features/News/pages/NewsCRUD"))
- 
+import { lazy, Suspense } from "react";
+
 
 
 export function AdminRouter() {
