@@ -2,7 +2,7 @@ import { Route } from "react-router";
 import { AdminMainLayout } from "../shared/components/AdminMainLayout";
 import NewsCRUD from "../features/News/pages/NewsCRUD";
 import WaitersCRUD from "../features/Waiter/pages/WaitersCRUD";
-import SkeletonTaleBody from "../features/Tables/pages/SkeletonTableBody";
+import SkeletonTableBody from "../features/Tables/pages/SkeletonTableBody";
 import { TableCRUD } from "../features/Tables/pages/TableCRUD";
 import { Suspense } from "react";
 
@@ -16,7 +16,7 @@ export function AdminRouter() {
             <Route path="/Admin/Novedades" element={<NewsCRUD/>}/>
             <Route path="/Admin/Mozos" element={<WaitersCRUD/>}/>
             <Route path="/Admin/Mesas" element={
-              <Suspense fallback = {<SkeletonTaleBody/>}>
+              <Suspense fallback = {<SkeletonTableBody/>}>
                 <TableCRUD/>
               </Suspense>
             }/> 
