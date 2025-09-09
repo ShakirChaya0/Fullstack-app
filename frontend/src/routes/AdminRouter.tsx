@@ -4,11 +4,10 @@ import { AdminMainLayout } from "../shared/components/AdminMainLayout";
 import SkeletonNewsBody from "../features/News/pages/SkeletonNewsBody";
 const NewsCRUD = lazy(() => import("../features/News/pages/NewsCRUD"))
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { ScheduleCRUD } from "../features/Schedules/pages/ScheduleCRUD";
+import { MainPanelSchedules } from "../features/Schedules/pages/mainPanelSchedules";
+import { ModifySchedule } from "../features/Schedules/pages/ModifySchedule";
 
 const queryClient = new QueryClient()
-
-
 
 export function AdminRouter() {
   return (
@@ -21,7 +20,12 @@ export function AdminRouter() {
               </Suspense>}/>
             <Route path="/Admin/Horarios" element={
               <QueryClientProvider client={queryClient}>
-                <ScheduleCRUD></ScheduleCRUD>
+                <MainPanelSchedules></MainPanelSchedules>
+              </QueryClientProvider>
+              }/>
+            <Route path="/Admin/Horarios/modificar" element={
+              <QueryClientProvider client={queryClient}>
+                <ModifySchedule></ModifySchedule>
               </QueryClientProvider>
               }/>
         </Route>

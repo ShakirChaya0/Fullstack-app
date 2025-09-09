@@ -13,7 +13,7 @@ interface BackendScheduleRaw {
   _horaCierre: string;
 }
 
-const days = [
+export const days = [
   { label: "Domingo", value: 0 },
   { label: "Lunes", value: 1 },
   { label: "Martes", value: 2 },
@@ -36,8 +36,8 @@ export const sortAndNormalizeSchedules = (rawSchedules: BackendScheduleRaw[]): B
     }));
 };
 
-// Custom hook que encapsula toda la lógica del estado de horarios
-export const useScheduleState = (backendSchedules?: BackendScheduleRaw[]) => {
+// Custom hook que encapsula toda la lógica del estado de horarios modificar
+export const useScheduleStateModify = (backendSchedules?: BackendScheduleRaw[]) => {
 
   // useRef para almacenar los datos originales del backend 
   const originalSchedule = useRef<BackendSchedule[] | null>(null);
@@ -91,6 +91,51 @@ export const useScheduleState = (backendSchedules?: BackendScheduleRaw[]) => {
   return {
     schedules,
     originalSchedule,
+    updateOpenSchedule,
+    updateCloseSchedule,
+    error,
+    setError,
+    days
+  };
+};
+
+// Custom hook que encapsula toda la lógica del estado de horarios registro
+export const useScheduleStateRegister = () => {
+
+  // Estado local - inicializado con valores por defecto primero
+  const [schedules, setSchedules] = useState<BackendSchedule[]>(() => {
+    const defaultSchedules: BackendSchedule[] = [];
+    for (let index = 0; index < 7; index++) {
+      defaultSchedules.push({
+        diaSemana: index,
+        horaApertura: "00:00",
+        horaCierre: "00:00"
+      });
+    }
+    return defaultSchedules;
+  });
+  
+  const [error, setError] = useState<string>("");
+
+  // Función para actualizar horario específico
+  const updateOpenSchedule = (dayIndex: number, value: string) => {
+    setSchedules(prev => {
+      const newSchedules = [...prev];
+      newSchedules[dayIndex].horaApertura = value
+      return newSchedules;
+    });
+  }
+
+  const updateCloseSchedule = (dayIndex: number, value: string) => {
+    setSchedules(prev => {
+      const newSchedules = [...prev];
+      newSchedules[dayIndex].horaCierre = value
+      return newSchedules;
+    });
+  }
+
+  return {
+    schedules,
     updateOpenSchedule,
     updateCloseSchedule,
     error,
