@@ -2,16 +2,16 @@ import { Route, Routes } from "react-router"
 import { ClientRouter } from "./ClientRouter"
 import { AdminRouter } from "./AdminRouter"
 import { KitchenRouter } from "./KitchenRouter"
+import NotFoundPage from "../shared/components/NotFoundPage"
 
 
 function AppRouter () {
-    console.log("ASDasdasdasd")
     return(
         <Routes>
             { ClientRouter() }
             { AdminRouter() }
             { KitchenRouter() }
-            <Route path="*" element={<h1>404</h1>}/>
+            <Route path="*" element={<NotFoundPage />}/>
         </Routes>
     )
 }
