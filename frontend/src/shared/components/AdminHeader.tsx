@@ -14,6 +14,7 @@ import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
 import { NavLink } from 'react-router';
 import HomeIcon from './HomeIcon';
+import { ListItemButton } from '@mui/material';
 
 // Links de navegación
 const navLinks = [
@@ -26,14 +27,13 @@ const NavLinkItem = ({ to, label }: { to: string; label: string }) => (
   <Typography variant="h6" component="div">
     <NavLink
       to={to}
-      style={({ isActive }) => ({
-        color: isActive ? "#fff" : "rgba(255,255,255,0.7)",
-        textDecoration: "none",
-        fontWeight: isActive ? "bold" as const : "normal",
-        borderBottom: isActive ? "2px solid #fff" : "none",
-        paddingBottom: "2px",
-        transition: "all 0.2s ease",
-      })}
+      className={({ isActive }) =>
+      `
+        relative pb-1 transition-all duration-300 
+        ${isActive ? "text-white font-bold after:w-full after:left-0" : "text-white/70 font-normal after:w-0 after:left-1/2"}
+        after:content-[''] after:absolute after:bottom-0 after:h-[2px] after:bg-white after:transition-all after:duration-300
+      `
+    }
     >
       {label}
     </NavLink>
@@ -113,13 +113,44 @@ export default function AdminHeader() {
             onClick={toggleDrawer(false)}
             onKeyDown={toggleDrawer(false)}
           >
+            <div className='text-center py-4 font-bold'>
+              <h1>Restaurante</h1>
+            </div>
             <List>
               {navLinks.map(link => (
-                <ListItem  key={link.path} component={NavLink} to={link.path}>
-                  <ListItemText primary={link.label} />
-                </ListItem>
+                <NavLink
+                  key={link.path}
+                  to={link.path}
+                  style={{ textDecoration: "none", color: "inherit" }}
+                >
+                  {({ isActive }) => (
+                    <ListItem disablePadding>
+                      <ListItemButton disableRipple 
+                        sx={{
+                          bgcolor: isActive ? "black" : "transparent",
+                          color: isActive ? "white" : "inherit",
+                          transition: "background-color 0.2s ease, color 0.2s ease",
+
+                          "&.Mui-selected": {
+                            bgcolor: "transparent",
+                          },
+                          "&.Mui-focusVisible": {
+                            bgcolor: "transparent",
+                          },
+                        
+                          "&:hover": {
+                            bgcolor: isActive ? "grey.900" : "rgba(0,0,0,0.1)",
+                          },
+                        }}
+
+                      >
+                        <ListItemText primary={link.label} />
+                      </ListItemButton>
+                    </ListItem>
+                  )}
+                </NavLink>
               ))}
-            </List>
+          </List>
           </Box>
         </Drawer>
       </Toolbar>
