@@ -3,10 +3,13 @@ import {
     Button
 } from "@mui/material";
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import { Link } from "react-router";
 
-export function BackButton () {
+export function BackButton ({ url }: { url: string}) {
     return (
         <Button
+            component={Link}
+            to={url}
             variant="contained"
             onClick={() => window.history.back()}
             sx={{

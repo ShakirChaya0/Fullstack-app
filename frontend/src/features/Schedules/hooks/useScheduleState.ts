@@ -1,27 +1,7 @@
 import { useState, useEffect, useRef } from "react";
-
-export interface BackendSchedule {
-  diaSemana: number;
-  horaApertura: string;
-  horaCierre: string;
-}
-
-// Interfaz para el JSON que viene del backend (con underscores)
-interface BackendScheduleRaw {
-  diaSemana: number;
-  _horaApertura: string;
-  _horaCierre: string;
-}
-
-export const days = [
-  { label: "Domingo", value: 0 },
-  { label: "Lunes", value: 1 },
-  { label: "Martes", value: 2 },
-  { label: "Miércoles", value: 3 },
-  { label: "Jueves", value: 4 },
-  { label: "Viernes", value: 5 },
-  { label: "Sábado", value: 6 }
-];
+import { completeSchedule } from "../utils/completeSchedule";
+import type { BackendSchedule, BackendScheduleRaw } from "../types/scheduleTypes";
+import { days } from "../constants/scheduleConstants";
 
 // Función para ordenar y normalizar horarios del backend
 export const sortAndNormalizeSchedules = (rawSchedules: BackendScheduleRaw[]): BackendSchedule[] => {
@@ -76,6 +56,7 @@ export const useScheduleStateModify = (backendSchedules?: BackendScheduleRaw[]) 
     setSchedules(prev => {
       const newSchedules = [...prev];
       newSchedules[dayIndex].horaApertura = value
+      if(completeSchedule(newSchedules)) setError("") //Se limpia el error si se actualizó el valor incompleto
       return newSchedules;
     });
   }
@@ -84,6 +65,7 @@ export const useScheduleStateModify = (backendSchedules?: BackendScheduleRaw[]) 
     setSchedules(prev => {
       const newSchedules = [...prev];
       newSchedules[dayIndex].horaCierre = value
+      if(completeSchedule(newSchedules)) setError("") //Se limpia el error si se actualizó el valor incompleto
       return newSchedules;
     });
   }
@@ -117,11 +99,11 @@ export const useScheduleStateRegister = () => {
   
   const [error, setError] = useState<string>("");
 
-  // Función para actualizar horario específico
   const updateOpenSchedule = (dayIndex: number, value: string) => {
     setSchedules(prev => {
       const newSchedules = [...prev];
       newSchedules[dayIndex].horaApertura = value
+      if(completeSchedule(newSchedules)) setError("") //Se limpia el error si se actualizó el valor incompleto
       return newSchedules;
     });
   }
@@ -130,6 +112,7 @@ export const useScheduleStateRegister = () => {
     setSchedules(prev => {
       const newSchedules = [...prev];
       newSchedules[dayIndex].horaCierre = value
+      if(completeSchedule(newSchedules)) setError("") //Se limpia el error si se actualizó el valor incompleto
       return newSchedules;
     });
   }

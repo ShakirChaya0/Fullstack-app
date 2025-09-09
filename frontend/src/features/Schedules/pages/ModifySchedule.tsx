@@ -1,26 +1,20 @@
-import { useState } from "react";
 import {
-  Tabs,
-  Tab,
   Box,
-  TextField,
   Button,
   Typography,
   Alert,
   CircularProgress
 } from "@mui/material";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useNavigate } from "react-router";
+import { useQuery } from "@tanstack/react-query";
 import { useScheduleStateModify } from "../hooks/useScheduleState";
-import { getScheduleData, modifySchedulesToBackend } from "../shared/sheduleService";
-import { BackButton } from "../components/backButton";
-import { SuccessNotification } from "../utils/SuccessNotification";
+import { getScheduleData } from "../shared/sheduleService";
+import { BackButton } from "../components/FIX_BackButton"
+import { SuccessNotification } from "../components/SuccessNotification";
+import { LoadingSchedule } from "../components/FIX_LoadingSchedule";
+import { RegisterAndModifierTable } from "../components/RegisterAndModifierTable";
+import { useMutationModification } from "../hooks/useMutationModification";
 
-export function ModifySchedule () {
-  const [tab, setTab] = useState(0);
-  const queryClient = useQueryClient();
-  const navigate = useNavigate()
-  
+export function ModifySchedule () {  
   // React Query para obtener datos del backend
   const { data: backendSchedules, isLoading: queryLoading, error: queryError } = useQuery({
     queryKey: ['schedules'],
@@ -34,69 +28,29 @@ export function ModifySchedule () {
     updateOpenSchedule,
     updateCloseSchedule,
     error,
-    setError,
-    days
+    setError
   } = useScheduleStateModify(backendSchedules);
 
-  // useMutation para manejar la actualización de horarios (PATCH)
-  const saveSchedulesMutation = useMutation({
-    mutationFn: () => modifySchedulesToBackend(schedules, originalSchedule.current!),
-    onSuccess: () => {
-      // Invalidar query para refrescar datos del backend
-      queryClient.invalidateQueries({ queryKey: ['schedules'] });
-      setError(""); // Limpiar errores  
-
-      // Redireccionar después de 3 segundos
-      setTimeout(() => {
-        navigate('/Admin/Horarios');
-      }, 2000);
-    },
-    onError: (err: Error) => {
-      setError(`Error al actualizar los horarios: ${err.message}`);
-    }
-  });
+  const { modifySchedulesMutation } = useMutationModification({schedules, originalSchedule, setError})
 
   // Función handleSaveAll que usa la mutation
-  const handleSaveAll = () => {
-    saveSchedulesMutation.mutate();
+  const handleModifyAll = () => {
+    modifySchedulesMutation.mutate();
   };
 
-  if (queryLoading) {
-    return (
-      <Box sx={{ 
-        display: 'flex', 
-        justifyContent: 'center', 
-        alignItems: 'center', 
-        minHeight: '200px',
-        flexDirection: 'column',
-        gap: 2
-      }}>
-        <Typography variant="h6" sx={{ color: "#561d03" }}>
-          Cargando horarios...
-        </Typography>
-        <Box sx={{ 
-          width: 40, 
-          height: 40, 
-          border: 3, 
-          borderColor: "#c1280f",
-          borderTop: 3,
-          borderTopColor: "transparent",
-          borderRadius: "50%",
-          animation: "spin 1s linear infinite",
-          "@keyframes spin": {
-            "0%": { transform: "rotate(0deg)" },
-            "100%": { transform: "rotate(360deg)" }
-          }
-        }} />
-      </Box>
-    );
-  }
+  if (queryLoading) return <LoadingSchedule/>
 
   if (queryError) {
     return (
       <Box sx={{ width: "80%", mx: "auto", mt: 5 }}>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+          <Typography variant="h4" sx={{ color: "#561d03", fontWeight: 'bold', width: {xs: "70%"}}}>
+            Gestión de Horarios - Modificar
+          </Typography>
+          <BackButton url="/Admin/Horarios"></BackButton>
+        </Box>
         <Alert severity="error">
-          Error al cargar horarios: {queryError.message}
+          Error al cargar horarios
         </Alert>
       </Box>
     );
@@ -110,83 +64,23 @@ export function ModifySchedule () {
       mb: 4
     }}>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-        <Typography variant="h4" sx={{ color: "#561d03", fontWeight: 'bold' }}>
+        <Typography variant="h4" sx={{ color: "#561d03", fontWeight: 'bold', width: {xs: "70%"}}}>
           Gestión de Horarios - Modificar
         </Typography>
-        <BackButton></BackButton>
+        <BackButton url="/Admin/Horarios"></BackButton>
       </Box>
 
-      <Tabs
-        value={tab}
-        onChange={(_, v) => setTab(v)}
-        textColor="inherit"
-        variant="scrollable"
-        scrollButtons="auto"
-        allowScrollButtonsMobile
-        sx={{ 
-          bgcolor: "#e9ddc2", 
-          borderRadius: 3,
-          '& .MuiTabs-scrollButtons': {
-            color: "#561d03",
-          },
-          '& .MuiTabs-indicator': {
-            backgroundColor: '#c1280f'
-          }
-        }}
-      >
-        {days.map((day, index) => (
-          <Tab
-            key={index}
-            label={day.label}
-            sx={{
-              color: tab === index ? "#c1280f" : "#561d03",
-              fontWeight: "bold",
-              minWidth: { xs: "7rem" },
-              fontSize: { xs: "1rem"},
-              px: { xs: 1, sm: 2 }
-            }}
-          />
-        ))}
-      </Tabs>
-
-      <Box sx={{ mt: 3, p: 3, borderRadius: 3, border: 2, borderColor: "#000000ff", bgcolor: "#e9ddc2"}}>
-        <Typography variant="h6" sx={{ mb: 2, color: "#561d03" }}>
-          {days[tab].label}
-        </Typography>
-      
-        {error && (
-          <Alert severity="error" sx={{ mb: 3 }}>
-            {error}
+      {error && (
+          <Alert severity="error" sx={{ mb: 3, border: "1px solid black" }}>
+              {error}
           </Alert>
-        )}
-      
-        <TextField
-          label="Apertura"
-          type="time"
-          fullWidth
-          value={ schedules[tab].horaApertura }
-          onChange={(e) => updateOpenSchedule(tab, e.target.value)}
-          sx={{ mb: 2, bgcolor: "#fff" }}
-          slotProps={{
-            inputLabel: {
-              shrink: true,
-            },
-          }}
-        />
-        <TextField
-          label="Cierre"
-          type="time"
-          fullWidth
-          value={ schedules[tab].horaCierre }
-          onChange={(e) => updateCloseSchedule(tab, e.target.value)}
-          sx={{ mb: 2, bgcolor: "#fff" }}
-          slotProps={{
-            inputLabel: {
-              shrink: true,
-            },
-          }}
-        />
-      </Box>
+      )}
+
+      <RegisterAndModifierTable 
+        schedules={schedules}
+        updateOpenSchedule={updateOpenSchedule}
+        updateCloseSchedule={updateCloseSchedule}
+      ></RegisterAndModifierTable>
 
       <Box
         display="flex"
@@ -197,8 +91,8 @@ export function ModifySchedule () {
       >
         <Button
           variant="contained"
-          onClick={handleSaveAll}
-          disabled={saveSchedulesMutation.isPending}
+          onClick={handleModifyAll}
+          disabled={modifySchedulesMutation.isPending}
           sx={{
             bgcolor: "#b12e1aff",
             "&:hover": { bgcolor: "#561d03" },
@@ -208,7 +102,7 @@ export function ModifySchedule () {
             maxWidth: "200px",
           }}
         >
-          {saveSchedulesMutation.isSuccess && (
+          {modifySchedulesMutation.isSuccess && (
             <CircularProgress 
               size={20} 
               sx={{ 
@@ -217,29 +111,10 @@ export function ModifySchedule () {
               }} 
             />
           )}
-          {saveSchedulesMutation.isSuccess ? "Guardando..." : "Guardar"}
+          { modifySchedulesMutation.isSuccess ? "Guardando..." : "Guardar"}
         </Button>
       </Box>
-      <SuccessNotification activation={ saveSchedulesMutation.isSuccess }></SuccessNotification>
+      <SuccessNotification activation={ modifySchedulesMutation.isSuccess }></SuccessNotification>
     </Box>
   );
 }
-
-/* 
-Debuger
-  <Typography sx={{ mt: 2, p: 2, bgcolor: "#f0f0f0", borderRadius: 2 }}>
-    <strong>Debug Info:</strong><br />
-    <strong>useQuery:</strong><br />
-    isLoading: {queryLoading ? 'true' : 'false'}<br />
-    isError: {queryError ? 'true' : 'false'}<br />
-    error: {queryError ? String(queryError) : 'null'}<br />
-    data: {backendSchedules ? JSON.stringify(backendSchedules, null, 2) : 'null'}<br />
-    <strong>useScheduleState:</strong><br />
-    schedules[{tab}]: {schedules[tab] ? JSON.stringify(schedules[tab], null, 2) : 'null'}<br />
-    total schedules: {schedules.length}<br />
-    <strong>useMutation:</strong><br />
-    isPending: {saveSchedulesMutation.isPending ? 'true' : 'false'}<br />
-    isError: {saveSchedulesMutation.isError ? 'true' : 'false'}<br />
-    isSuccess: {saveSchedulesMutation.isSuccess ? 'true' : 'false'}<br />
-    error: {saveSchedulesMutation.error ? String(saveSchedulesMutation.error) : 'null'}
-  </Typography> */
