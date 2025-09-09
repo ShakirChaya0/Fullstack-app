@@ -1,6 +1,8 @@
 import { Box, Typography } from "@mui/material";
+import { useLocation } from "react-router";
 
 export function ClientFooter() {
+  const location = useLocation();
   return (
     <Box
       component="footer"
@@ -8,6 +10,7 @@ export function ClientFooter() {
         py: 3,
         px: 4,
         mt: "auto",
+        mb: location.pathname.includes("/Menu/") ? { xs: "85px", md: 0 } : 0,
         width: "100%",
         backgroundColor: "#333",
         color: "#fff",

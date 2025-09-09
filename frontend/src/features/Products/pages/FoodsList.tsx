@@ -7,8 +7,9 @@ const FoodsTypesFilter = lazy(() => import("../components/foods/FoodsTypesFilter
 const FoodsSpecialFilter = lazy(() => import("../components/foods/FoodsSpecialFilter"))
 
 function FoodsList () {
-    const {isLoading, isError, foods} = useFoods();
+    const {isLoading, isError, foods} = useFoods()
     const [query, setQuery] = useState<string>("")
+    
 
     const handleChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
         const query = event.currentTarget.value

@@ -118,7 +118,7 @@ export default function NewsTable ({data, handleResetPage}: {data: BackResults |
             </Table>
           </TableContainer>
       </div>
-      ) : (<h1 className='text-center font-medium'>No hay novedades cargadas</h1>)
+      ) : (<h1 className='text-center font-medium'>No hay novedades { filter === "Activas" ? "activas" : "cargadas" }</h1>)
     }
     </>
   );
