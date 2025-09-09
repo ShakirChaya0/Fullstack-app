@@ -2,7 +2,7 @@ import z from "zod";
 import { ValidationError } from "../exceptions/ValidationError.js";
 
 const ReservationSchema = z.object({
-  fechaReserva: z.string()    
+  reservationDate: z.string()    
     .refine(str => /^\d{2}\/\d{2}\/\d{4}$/.test(str), {
         message: "Formato inválido. Usa dd/mm/yyyy",
     })
@@ -17,7 +17,7 @@ const ReservationSchema = z.object({
         message: "La fecha de la reserva no puede ser en el pasado",
     }),
 
-  horarioReserva: z.string()
+  reserveTime: z.string()
     .regex(/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/, "Formato de hora inválido. Use HH:MM (24 horas)")
     .refine(time => {
         const [hour] = time.split(":").map(Number);
@@ -26,7 +26,7 @@ const ReservationSchema = z.object({
         message: "La hora debe estar entre 09:00 y 23:59",
     }),
 
-  fechaCancelacion: z.string()
+  cancelationDate: z.string()
     .refine(str => /^\d{2}\/\d{2}\/\d{4}$/.test(str), {
         message: "Formato inválido. Usa dd/mm/yyyy",
     })
@@ -39,12 +39,10 @@ const ReservationSchema = z.object({
     })
     .optional(),
 
-  cantidadComensales: z.number()
+  commensalsNumber: z.number()
     .int("Debe ser un número entero")
     .min(1, "El número de comensales debe ser al menos 1")
     .max(50, "El número de comensales no puede superar 50"),
-
-  // estado: z.enum(["Realizada", "Asistida", "No_Asistida", "Cancelada"])
 });
 
 export type SchemaReservation = z.infer<typeof ReservationSchema>;
