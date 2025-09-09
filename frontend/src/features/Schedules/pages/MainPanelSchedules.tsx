@@ -3,13 +3,17 @@ import {
     Typography,
     Alert,
 } from "@mui/material";
+import { Suspense, lazy } from "react";
 import { getScheduleData } from "../shared/sheduleService";
 import { useQuery } from "@tanstack/react-query";
 import { sortAndNormalizeSchedules } from "../hooks/useScheduleState";
-import { LoadingSchedule } from "../components/FIX_LoadingSchedule";
-import { ScheduleTable } from "../components/ScheduleTable";
+import { LoadingSchedule } from "../components/LoadingSchedule";
+import { SkeletonScheduleTable } from "./SkeletonScheduleTable";
 import { ModifySchedulesButton } from "../components/ModifySchedulesButton";
 import { RegisterSchedulesButton } from "../components/RegisterSchedulesButton";
+
+// Lazy load del componente ScheduleTable
+const ScheduleTable = lazy(() => import("../components/ScheduleTable").then(module => ({ default: module.ScheduleTable })));
 
 export function MainPanelSchedules() {
 
@@ -59,9 +63,9 @@ export function MainPanelSchedules() {
                     </Alert>
                 ) :
                 (
-                    <> {/* Ver si se puede sacar después del Suspence */}
+                    <Suspense fallback={<SkeletonScheduleTable />}>
                         <ScheduleTable schedules={ schedules }></ScheduleTable>
-                    </>
+                    </Suspense>
                 )
             }
             <Box

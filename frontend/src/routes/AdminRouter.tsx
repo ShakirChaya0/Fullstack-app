@@ -7,7 +7,7 @@ import SkeletonTaleBody from "../features/Tables/pages/SkeletonTableBody";
 import { TableCRUD } from "../features/Tables/pages/TableCRUD";
 import { Suspense } from "react";
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { MainPanelSchedules } from "../features/Schedules/pages/FIX_MainPanelSchedules";
+import { MainPanelSchedules } from "../features/Schedules/pages/MainPanelSchedules";
 import { ModifySchedule } from "../features/Schedules/pages/ModifySchedule";
 import NewsCRUD from "../features/News/pages/NewsCRUD";
 import { RegisterSchedule } from "../features/Schedules/pages/RegisterSchedules";
@@ -31,7 +31,7 @@ export function AdminRouter() {
                 <TableCRUD/>
               </Suspense>
             }/> 
-            {/* ✅ QueryClient único envuelve todas las rutas de Schedules */}
+            {/* Borrar todos los registros de horarios de la Base de datos antes de ejecutar /Admin/Horarios */}
             <Route path="/Admin/Horarios" element={
               <QueryClientProvider client={queryClient}>
                 <MainPanelSchedules/>

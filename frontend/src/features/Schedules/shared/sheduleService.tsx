@@ -80,7 +80,7 @@ export const saveSchedulesToBackend = async (schedules: BackendSchedule[]) => {
 
     if(schedules.length !== 7) throw new Error("Todos los días deben tener horarios asignados");
 
-    if(!validSchedule) throw new Error("Existen horario incompletos");
+    if(!validSchedule) throw new Error("Existen horarios incompletos");
 
     // Requests paralelos usando Promise.all
     const promises = schedules.map(schedule => 

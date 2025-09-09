@@ -6,7 +6,7 @@ import {
   CircularProgress
 } from "@mui/material";
 import { useScheduleStateRegister } from "../hooks/useScheduleState";
-import { BackButton } from "../components/FIX_BackButton";
+import { BackButton } from "../components/BackButton";
 import { SuccessNotification } from "../components/SuccessNotification";
 import { RegisterAndModifierTable } from "../components/RegisterAndModifierTable";
 import { useMutationRegistration } from "../hooks/useMutationRegistration";

@@ -8,9 +8,9 @@ import {
 import { useQuery } from "@tanstack/react-query";
 import { useScheduleStateModify } from "../hooks/useScheduleState";
 import { getScheduleData } from "../shared/sheduleService";
-import { BackButton } from "../components/FIX_BackButton"
+import { BackButton } from "../components/BackButton"
 import { SuccessNotification } from "../components/SuccessNotification";
-import { LoadingSchedule } from "../components/FIX_LoadingSchedule";
+import { LoadingSchedule } from "../components/LoadingSchedule";
 import { RegisterAndModifierTable } from "../components/RegisterAndModifierTable";
 import { useMutationModification } from "../hooks/useMutationModification";
 
