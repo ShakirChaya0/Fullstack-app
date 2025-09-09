@@ -35,21 +35,56 @@ export default function AdminHeader() {
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            <NavLink to="/Admin/Novedades">Novedades</NavLink>
-          </Typography>
+          <Box sx={{ flexGrow: 1, display: "flex", gap: 3 }}>
+            <Typography variant="h6" component="div">
+              <NavLink
+                  to="/Admin/Novedades"
+                  style={({ isActive }) => ({
+                    color: isActive ? "#fff" : "rgba(255,255,255,0.7)",
+                    textDecoration: "none",
+                    fontWeight: isActive ? "bold" as const : "normal",
+                    borderBottom: isActive ? "2px solid #fff" : "none",
+                    paddingBottom: "2px",
+                    transition: "all 0.2s ease",
+                  })}
+                >
+                  Novedades
+              </NavLink>
+            </Typography>
+            <Typography variant="h6" component="div">
+              <NavLink
+                  to="/Admin/DatosRestaurantes"
+                  style={({ isActive }) => ({
+                    color: isActive ? "#fff" : "rgba(255,255,255,0.7)",
+                    textDecoration: "none",
+                    fontWeight: isActive ? "bold" as const : "normal",
+                    borderBottom: isActive ? "2px solid #fff" : "none",
+                    paddingBottom: "2px",
+                    transition: "all 0.2s ease",
+                  })}
+                >
+                  Datos Restaurante
+              </NavLink>
+            </Typography>
+          </Box>
           {auth && (
             <div>
-              <IconButton
-                size="large"
-                aria-label="account of current user"
-                aria-controls="menu-appbar"
-                aria-haspopup="true"
-                onClick={handleMenu}
-                color="inherit"
-              >
-                <AccountCircle />
-              </IconButton>
+              <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                <Typography variant="body1" sx={{ fontWeight: 500 }}>
+                  Administrador
+                </Typography>
+                <IconButton
+                  size="large"
+                  aria-label="account of current user"
+                  aria-controls="menu-appbar"
+                  aria-haspopup="true"
+                  onClick={handleMenu}
+                  color="inherit"
+                >
+                  <AccountCircle />
+                </IconButton>
+              </Box>
+
               <Menu
                 id="menu-appbar"
                 anchorEl={anchorEl}

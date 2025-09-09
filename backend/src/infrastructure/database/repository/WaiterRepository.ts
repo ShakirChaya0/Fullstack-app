@@ -11,6 +11,8 @@ type MozoWithUsuario = Prisma.MozosGetPayload<{
     include: { Usuarios: true };
 }>;
 
+const limit = 5
+
 export class WaiterRepository implements IWaiterRepository {
     public async createWaiter(data: SchemaWaiter): Promise<Waiter> {
         try {
@@ -56,35 +58,64 @@ export class WaiterRepository implements IWaiterRepository {
         });
     }
 
-    public async getAllWaiters(): Promise<Waiter[]> {
+    public async getAllWaiters(page: number): Promise<{Waiters: Waiter[], totalItems: number, pages: number}> {
+        const skip = (page - 1) * limit
         const waiters = await prisma.mozos.findMany({
+            skip: skip,
+            take: limit,
             include: { Usuarios: true }
         });
+        const totalItems = await prisma.mozos.count()
+        const pages = Math.ceil(totalItems / limit)
 
-        return waiters.map((waiter) => { return this.toDomainEntity(waiter) });
+        return { Waiters: waiters.map((waiter) => { return this.toDomainEntity(waiter) }), totalItems: totalItems, pages: pages }
     }
 
-    public async getWaiterByUserName(userName: string): Promise<Waiter | null> {
-        const waiter = await prisma.mozos.findFirst({
-            where: {
-                Usuarios: { nombreUsuario: userName }
-            },
+    public async getWaiterByUserName(userName: string, page: number): Promise<{Waiters: Waiter[], totalItems: number, pages: number}> {
+        const skip = (page - 1) * limit
+
+        const whereClause = {
+            Usuarios: { 
+                nombreUsuario: {
+                    contains: userName,
+                    mode: Prisma.QueryMode.insensitive
+                } 
+            }
+        }
+
+        const waiters = await prisma.mozos.findMany({
+            skip: skip,
+            take: limit,
+            where: whereClause,
             include: { Usuarios: true }
         });
+        const totalItems = await prisma.mozos.count({
+            where: whereClause
+        })
+        const pages = Math.ceil(totalItems / limit)
 
-        if (!waiter) return null;
-
-        return this.toDomainEntity(waiter);
+        return {Waiters: waiters.map((waiter) => { return this.toDomainEntity(waiter) }), totalItems: totalItems, pages: pages}
     }
 
     public async updateWaiter(idMozo: string, data: PartialSchemaWaiter): Promise<Waiter> {
         try{
+            const { nombreUsuario, email, contrasenia, ...mozoFields } = data
+
             const updatedWaiter = await prisma.mozos.update({
-                where: { idMozo: idMozo },
+                where: { idMozo },
                 data: {
-                    ...data
+                  ...mozoFields,
+                  Usuarios: {
+                    update: {
+                      data: {
+                        ...(nombreUsuario && { nombreUsuario }),
+                        ...(email && { email }),
+                        ...(contrasenia && { contrasenia }),
+                      },
+                    },
+                  },
                 },
-                include: { Usuarios: true }
+                include: { Usuarios: true },
             });
 
             return this.toDomainEntity(updatedWaiter);
@@ -106,7 +137,7 @@ export class WaiterRepository implements IWaiterRepository {
     public async getWaiterById(idMozo: string): Promise<Waiter | null> {
         const waiter = await prisma.mozos.findUnique({
             where: { idMozo: idMozo },
-            include: { Usuarios: true }
+            include: { Usuarios: true },
         });
 
         if (!waiter) return null;

@@ -22,6 +22,10 @@ export class Waiter extends User {
         return this._name;
     }
 
+    get email(): string {
+        return this._email;
+    }
+
     get apellido(): string {
         return this._lastName;
     }

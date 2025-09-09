@@ -1,10 +1,9 @@
 import { Suggestion } from "../entities/Suggestion.js";
 import { PartialSchemaSuggestion } from "../../shared/validators/SuggestionZod.js";
+import { SuggFilterOption, SuggSortOption } from "../../shared/types/SharedTypes.js";
 
 export interface ISuggestionRepository {
-    getAll(): Promise<Suggestion[]>;
-
-    getActiveSuggestions(): Promise<Suggestion[]>;
+    getAll(page: number, filter: SuggFilterOption, sorted: SuggSortOption): Promise<Suggestion[]>;
 
     findByProductAndDate(productId: number, dateFrom: Date): Promise<Suggestion | null>
 

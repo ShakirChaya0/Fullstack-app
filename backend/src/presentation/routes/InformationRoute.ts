@@ -7,7 +7,7 @@ export function InformationRouter() {
     const informationRouter = Router();
     const informationController = new InformationController();
 
-    informationRouter.patch('/:idInformacion', AuthMiddleware, RoleMiddleware(["Administrador"]), (req, res, next) => { 
+    informationRouter.patch('/:idInformacion', (req, res, next) => { // AuthMiddleware, RoleMiddleware(["Administrador"])
         informationController.updateInformation(req, res, next); 
     });
 

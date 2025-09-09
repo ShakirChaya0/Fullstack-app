@@ -1,9 +1,9 @@
 ### GET ALL
-GET http://localhost:3000/sugerencias
+GET http://localhost:3000/sugerencias?page=1&filter=ALL&sorted=DATE_DESC
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzdWFyaW8iOiJlMTBjNmRmYS0xYjUxLTRhZGItOGI1MC1iYTIzMjgzNmU3YWMiLCJlbWFpbCI6ImNvY2luYUBnbWFpbC5jb20iLCJ0aXBvVXN1YXJpbyI6IlNlY3RvckNvY2luYSIsInVzZXJuYW1lIjoiY29jaW5hIiwiaWF0IjoxNzU1Nzc3NjIwLCJleHAiOjE3NTYzODI0MjB9.svoj3XAHVJBSSO5QNCH1iWMlio8V2NytfszPeb7Euxg
 
 ### GET ACTIVES
-GET http://localhost:3000/sugerencias/activas
+GET http://localhost:3000/sugerencias?filter=ACTIVES
 
 ### CREATE SUGGESTION
 POST http://localhost:3000/sugerencias
