@@ -3,6 +3,8 @@ import { useForm } from "react-hook-form";
 import { resetPassword } from "../services/resetPassword";
 import { toast } from "react-toastify";
 import { useState } from "react";
+import { useNavigate } from 'react-router';
+import RestaurantIcon from '@mui/icons-material/Restaurant'; 
 
 interface FormData {
     newPassword: string;
@@ -10,21 +12,22 @@ interface FormData {
 
 export default function ResetPasswordForm() {
     const [error, setError] = useState<string>("");
+    const navigate = useNavigate();
 
     const {
-        register,           
-        handleSubmit,       
+        register,
+        handleSubmit,
         formState: { errors },
     } = useForm<FormData>();
 
-    const { mutate } = useMutation({
+    const { mutate, isPending } = useMutation({
         mutationFn: resetPassword,
         onSuccess: () => {
-            toast.success("Contraseña restablecida con éxito");
-            // redirigir al login
+            toast.success("Contraseña restablecida con éxito.");
+            navigate('/login');
         },
         onError: (error) => {
-            toast.error("No se pudo restablecer la contraseña");
+            toast.error("No se pudo restablecer la contraseña.");
             setError((error as Error).message);
             console.log(error);
         },
@@ -35,36 +38,55 @@ export default function ResetPasswordForm() {
     };
 
     return (
-        <main className="flex flex-col items-center justify-center gap-4 min-h-screen bg-gray-200 p-4">
-            <h2 className="text-2xl font-bold mb-4">Recuperar Contraseña</h2>
-
-            <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col items-center justify-center gap-6 bg-white p-6 rounded-lg shadow-md w-full max-w-md">
-                <div className="flex flex-col gap-2 w-full">
-                    <label className="font-semibold text-gray-800" htmlFor="newPassword">Nueva Contraseña</label>
-                    <input 
-                        id="newPassword"
-                        type="text"
-                        {...register("newPassword", {
-                            required: "Debe ingresar una nueva contraseña",
-                            minLength: { value: 6, message: "La contraseña debe tener al menos 6 caracteres" },
-                            maxLength: { value: 100, message: "La contraseña no puede tener más de 100 caracteres" },
-                            pattern: { 
-                                value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{6,}$/, 
-                                message: "La contraseña debe contener al menos una letra mayúscula, una letra minúscula y un número" 
-                            }
-                        })}
-                        placeholder="ej: NuevaContraseña123"
-                        className="px-2 py-1 sm:px-4 sm:py-3 sm:text-lg border border-gray-300 rounded-lg sm:rounded-xl shadow-md focus:outline-none focus:ring-2 focus:ring-amber-600 focus:border-amber-600 transition" 
-                    />
-                    {errors.newPassword && <p className="text-base text-red-500">{errors.newPassword.message}</p>}    
-                    {error && <p className="text-base text-red-500">{error}</p>}
+        <main className="min-h-screen flex flex-col justify-center items-center bg-gradient-to-br from-amber-100 via-yellow-100 to-amber-200 font-sans p-3 sm:p-5">
+            <div className="text-center mb-6 sm:mb-8 text-gray-800 px-4">
+                <div className="flex justify-center mb-2">
+                    <RestaurantIcon className="text-5xl text-teal-700" />
                 </div>
+                <h2 className="text-3xl sm:text-4xl font-bold mb-2 drop-shadow-sm">
+                    Restaurante
+                </h2>
+            </div>
 
-                <button type="submit" className="w-full bg-amber-600 hover:bg-amber-700 text-white font-medium sm:font-bold sm:text-lg py-2 sm:py-3 sm:px-6 rounded-lg sm:rounded-xl shadow-lg transition cursor-pointer">
-                    Confirmar
-                </button>
-            </form>
+            <div className="bg-white rounded-2xl sm:rounded-3xl shadow-2xl p-6 sm:p-10 w-full max-w-sm flex flex-col items-center text-center">
+                <h3 className="text-2xl font-bold text-gray-800 mb-4">
+                    Nueva Contraseña
+                </h3>
+                <p className="text-gray-600 text-sm mb-6">
+                    Por favor, ingresa tu nueva contraseña para acceder a tu cuenta.
+                </p>
+                
+                <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col items-center gap-6 w-full">
+                    <div className="w-full">
+                        <label className="sr-only" htmlFor="newPassword">Nueva Contraseña</label>
+                        <input
+                            id="newPassword"
+                            type="password"
+                            {...register("newPassword", {
+                                required: "La nueva contraseña es obligatoria.",
+                                minLength: { value: 6, message: "La contraseña debe tener al menos 6 caracteres." },
+                                maxLength: { value: 100, message: "La contraseña no puede tener más de 100 caracteres." },
+                                pattern: {
+                                    value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{6,}$/,
+                                    message: "Debe incluir una mayúscula, una minúscula y un número."
+                                }
+                            })}
+                            placeholder="Nueva contraseña"
+                            className="bg-gray-100 border-2 border-transparent rounded-xl px-4 sm:px-5 py-3 sm:py-4 w-full text-sm transition-all duration-300 outline-none focus:bg-white focus:border-teal-500 focus:shadow-sm focus:shadow-teal-200"
+                        />
+                        {errors.newPassword && <p className="text-sm text-red-500 mt-2 text-left">{errors.newPassword.message}</p>}
+                    </div>
+                    {error && <p className="text-sm text-red-500 mt-2 text-center">{error}</p>}
 
-        </main >
+                    <button 
+                        type="submit" 
+                        className="w-full rounded-full border-none bg-gradient-to-r from-teal-700 to-teal-800 text-white text-sm font-semibold py-3 sm:py-4 px-8 sm:px-11 tracking-wide uppercase transition-all duration-300 cursor-pointer hover:-translate-y-0.5 hover:shadow-lg hover:shadow-teal-300 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+                        disabled={isPending}
+                    >
+                        {isPending ? 'Confirmando...' : 'Confirmar'}
+                    </button>
+                </form>
+            </div>
+        </main>
     );
 }

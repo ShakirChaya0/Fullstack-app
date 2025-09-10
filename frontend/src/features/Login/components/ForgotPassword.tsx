@@ -6,6 +6,7 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 import { forgotPassword } from '../services/forgotPassword';
+import { useNavigate } from 'react-router'; 
 
 interface ForgotPasswordProps {
     open: boolean;
@@ -18,22 +19,31 @@ interface FormData {
 
 export default function ForgotPassword({ open, handleClose }: ForgotPasswordProps) {
     const [error, setError] = useState<string>("");
+    const navigate = useNavigate();
 
     const {
-        register,           
-        handleSubmit,       
+        register,
+        handleSubmit,
         formState: { errors },
     } = useForm<FormData>();
 
     const { mutate, isPending } = useMutation({
         mutationFn: forgotPassword,
         onSuccess: () => {
-            toast.success("Se ha enviado un correo para restablecer la contraseña");
+            toast.success("¡Listo! Revisa tu correo electrónico para restablecer tu contraseña.");
             handleClose();
+            navigate('/login');
         },
         onError: (error) => {
-            setError((error as Error).message);
-            console.log(error);
+            const errorMessage = (error as Error).message;
+            if (errorMessage.includes("User not found")) {
+                setError("El correo electrónico no está registrado. Por favor, verifica que lo escribiste bien o regístrate.");
+            } else if (errorMessage.includes("Invalid email format")) {
+                setError("El formato del correo es inválido. Asegúrate de que tenga el formato: tu-correo@ejemplo.com.");
+            } else {
+                setError("Ocurrió un error inesperado. Inténtalo de nuevo más tarde.");
+            }
+            console.error(error);
         },
     });
 
@@ -49,35 +59,42 @@ export default function ForgotPassword({ open, handleClose }: ForgotPasswordProp
                 paper: {
                     component: 'form',
                     onSubmit: handleSubmit(onSubmit),
-                    sx: { backgroundImage: 'none' },
+                    sx: { backgroundImage: 'none', borderRadius: '1.5rem', boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)' },
                 },
             }}
         >
-            <DialogTitle>Recuperar Contraseña</DialogTitle>
-            <DialogContent sx={{ display: 'flex', flexDirection: 'column', gap: 2, width: '100%' }} >
-                <p className="text-gray-700">Ingrese su dirección de correo electrónico para recibir un enlace de restablecimiento de contraseña.</p>
-                <input 
-                    id="newPassword"
+            <DialogTitle className="text-2xl sm:text-3xl font-bold text-gray-800 text-center pt-8 px-6 pb-2">Recuperar Contraseña</DialogTitle>
+            <DialogContent sx={{ display: 'flex', flexDirection: 'column', gap: 2, paddingX: 3, paddingY: 2, width: '100%' }}>
+                <p className="text-gray-600 text-sm text-center">Ingresa tu dirección de correo electrónico para recibir un enlace de restablecimiento de contraseña.</p>
+                <input
                     type="text"
                     {...register("email", {
-                        required: "El correo es obligatorio",
+                        required: "El correo electrónico es obligatorio.",
                         pattern: {
                             value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-                            message: "Debe ingresar un correo válido"
+                            message: "Ingresa un correo electrónico válido."
                         }
                     })}
                     placeholder="tu-correo@ejemplo.com"
-                    className="px-2 py-1 sm:px-4 sm:py-3 sm:text-lg border border-gray-300 rounded-lg sm:rounded-xl shadow-md focus:outline-none focus:ring-2 focus:ring-amber-600 focus:border-amber-600 transition" 
+                    className="bg-gray-100 border-2 border-transparent rounded-xl px-4 sm:px-5 py-3 sm:py-4 w-full text-sm transition-all duration-300 outline-none focus:bg-white focus:border-teal-500 focus:shadow-sm focus:shadow-teal-200"
                 />
-                {errors.email && <p className="text-base text-red-500">{errors.email.message}</p>}    
-                {error && <p className="text-base text-red-500">{error}</p>}
+                {errors.email && <p className="text-sm text-red-500 text-center mt-1">{errors.email.message}</p>}
+                {error && <p className="text-sm text-red-500 text-center mt-1">{error}</p>}
             </DialogContent>
-            <div className='flex flex-row gap-6 m-6 mt-1'>
-                <button type="button" onClick={handleClose} className="w-full bg-white border-2 border-gray-700 hover:bg-gray-200 font-medium sm:font-bold sm:text-lg py-2 sm:py-3 sm:px-6 rounded-lg sm:rounded-xl shadow-lg transition cursor-pointer">
+            <div className="flex flex-row justify-center gap-4 m-6 mt-2">
+                <button
+                    type="button"
+                    onClick={handleClose}
+                    className="w-1/2 rounded-full border-2 border-gray-400 bg-white text-gray-700 text-sm font-semibold py-3 px-6 tracking-wide uppercase transition-all duration-300 cursor-pointer hover:bg-gray-100 active:scale-95"
+                >
                     Cancelar
                 </button>
-                <button type="submit" className="w-full bg-amber-600 hover:bg-amber-700 text-white font-medium sm:font-bold sm:text-lg py-2 sm:py-3 sm:px-6 rounded-lg sm:rounded-xl shadow-lg transition cursor-pointer">
-                    Confirmar
+                <button
+                    type="submit"
+                    className="w-1/2 rounded-full border-none bg-gradient-to-r from-teal-700 to-teal-800 text-white text-sm font-semibold py-3 px-6 tracking-wide uppercase transition-all duration-300 cursor-pointer hover:-translate-y-0.5 hover:shadow-lg hover:shadow-teal-300 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+                    disabled={isPending}
+                >
+                    {isPending ? 'Enviando...' : 'Restablecer'}
                 </button>
             </div>
         </Dialog>
