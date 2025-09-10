@@ -11,12 +11,11 @@ interface ReservationPayLoad {
 }
 
 interface UseResMutationnParams {
-    handleClose: () => void;
     handleError: (message: string | null) => void;
     reservation: IReservation | undefined;
 }
 
-export default function useReservationMutation ({handleError, handleClose, reservation}: UseResMutationnParams) {
+export default function useReservationMutation ({handleError, reservation}: UseResMutationnParams) {
     const queryClient = useQueryClient()
     
         return useMutation<IReservation, Error, ReservationPayLoad>({
@@ -42,7 +41,7 @@ export default function useReservationMutation ({handleError, handleClose, reser
                 await queryClient.invalidateQueries({ queryKey: ["suggestions"] });
                 toast.success(`Se ${reservation ? "modificó" : "creó"} la reserva con exito`)
                 handleError(null);
-                handleClose();
+                
             },
             onError: (err) => {
                 toast.error(`Error al ${reservation ? "modificar" : "crear"} la reserva`);
