@@ -14,3 +14,20 @@ Cookie: refreshToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzdWFyaW8iOiIzYT
 ###
 POST http://localhost:3000/auth/refresh
 Cookie: refreshToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzdWFyaW8iOiIzYTIwMDQyNS0zYTU2LTRmYWEtYTA3Yy1lY2UwYjdkMmFjZWQiLCJlbWFpbCI6InNoYWtpcmNoYXlhQGdtYWlsLmNvbSIsInRpcG9Vc3VhcmlvIjoiQWRtaW5pc3RyYWRvciIsInVzZXJuYW1lIjoic2hha2lyYm9jYSIsImlhdCI6MTc1NTkwOTU0NCwiZXhwIjoxNzU2NjAwNzQ0fQ.pWHZ2jhI44Pt82Lodowmo_z7hSzCNIdRpnIdLrfVMYA
+
+###
+POST http://localhost:3000/auth/forgotPassword
+Content-Type: application/json
+
+{
+    "email": "correoprueba@gmail.com"
+}
+
+###
+POST http://localhost:3000/auth/resetPassword
+Content-Type: application/json
+
+{
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyMTE2OTg2OS0xY2QyLTQ1ZWEtYTk2Mi1kM2I0OGY2NjU1OTkiLCJpYXQiOjE3NTc0NzA4MjcsImV4cCI6MTc1NzQ3MTQyN30.oywSJuOQmqsMhkKrtIgNE33-aRvTDWvc_MQWNoU5dlA",
+    "newPassword": "123456"
+}

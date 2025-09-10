@@ -11,5 +11,9 @@ export function AuthRouter() {
 
     authRouter.get('/logout', (req, res, next) => { authController.logout(req, res, next) });
 
+    authRouter.post('/forgotPassword', (req, res, next) => { authController.forgotPassword(req, res, next) });
+
+    authRouter.post('/resetPassword', (req, res, next) => { authController.resetPassword(req, res, next) });
+
     return authRouter
 }

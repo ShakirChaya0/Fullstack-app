@@ -4,6 +4,7 @@ import { AdminRouter } from "./AdminRouter";
 import { KitchenRouter } from "./KitchenRouter";
 import { useAuth } from "../shared/hooks/useAuth"; 
 import Login from "../features/Login/pages/Login";
+import ResetPasswordForm from "../features/Login/pages/ResetPasswordForm";
 
 function AppRouter() {
     // const { isAuthenticated, user } = useAuth();
@@ -12,6 +13,7 @@ function AppRouter() {
         return (
             <Routes>
                 <Route path="/login" element={<Login />} />
+                <Route path="/reset-password" element={<ResetPasswordForm />} />
                 <Route path="*" element={<Navigate to="/login" />} />
             </Routes>
         );

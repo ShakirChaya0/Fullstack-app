@@ -1,4 +1,6 @@
-import React from "react";
+import { Link } from "@mui/material";
+import React, { useState } from "react";
+import ForgotPassword from "./ForgotPassword";
 
 interface SignInProps {
   onSwitchToSignUp?: () => void;
@@ -6,6 +8,11 @@ interface SignInProps {
 }
 
 const SignIn: React.FC<SignInProps> = ({ onSwitchToSignUp, isMobile = false }) => {
+  const [open, setOpen] = useState(false);
+
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // Lógica de envío del formulario
@@ -49,9 +56,18 @@ const SignIn: React.FC<SignInProps> = ({ onSwitchToSignUp, isMobile = false }) =
               required
             />
           </div>
-          
-          <div className="text-blue-500 text-sm cursor-pointer my-3 sm:my-4 hover:text-blue-700 hover:underline transition-colors duration-300">
-            Forgot your password?
+
+          <ForgotPassword open={open} handleClose={handleClose} />
+          <div className="flex justify-center mt-5">
+            <Link
+              component="button"
+              type="button"
+              onClick={handleOpen}
+              variant="body2"
+              sx={{ alignSelf: 'center' }}
+            >
+              Forgot your password?
+            </Link>
           </div>
           
           <button 
