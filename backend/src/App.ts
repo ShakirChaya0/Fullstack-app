@@ -52,7 +52,7 @@ app.use('/productos', ProductosRouter())
 
 app.use("/novedades", NewsRouter())
 
-app.use("/politicas", AuthMiddleware, RoleMiddleware(["Administrador"]), PolicyRouter())
+app.use("/politicas", PolicyRouter()) //  AuthMiddleware, RoleMiddleware(["Administrador"])
 
 app.use('/informacion', InformationRouter())
 
