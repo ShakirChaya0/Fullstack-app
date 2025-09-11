@@ -11,6 +11,7 @@ import { MainPanelSchedules } from "../features/Schedules/pages/MainPanelSchedul
 import { ModifySchedule } from "../features/Schedules/pages/ModifySchedule";
 import NewsCRUD from "../features/News/pages/NewsCRUD";
 import { RegisterSchedule } from "../features/Schedules/pages/RegisterSchedules";
+import { MainPanelProduct } from "../features/Product&Price/pages/MainPanelProduct";
 
 
 const queryClient = new QueryClient()
@@ -45,6 +46,11 @@ export function AdminRouter() {
             <Route path="/Admin/Horarios/registrar" element={
               <QueryClientProvider client={queryClient}>
                 <RegisterSchedule/>
+              </QueryClientProvider>
+              }/>
+            <Route path="/Admin/Productos" element={
+              <QueryClientProvider client={queryClient}>
+                <MainPanelProduct/>
               </QueryClientProvider>
               }/>
         </Route>
