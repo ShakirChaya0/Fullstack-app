@@ -1,5 +1,5 @@
 export async function forgotPassword({ email }: { email: string }) {
-    const response = await fetch("http://localhost:3000/auth/forgotPassword", {
+    const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/auth/forgotPassword`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",

@@ -9,8 +9,10 @@ import AccountCircle from '@mui/icons-material/AccountCircle';
 import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
 import { NavLink } from 'react-router';
+import useAuth from "../hooks/useAuth";
 
 export default function KitchenHeader() {
+    const { logout, user } = useAuth();
     const [ auth, setAuth ] = useState(true);
     const [ anchorEl, setAnchorEl ] = useState<null | HTMLElement>(null);
     
@@ -66,7 +68,7 @@ export default function KitchenHeader() {
                                 onClose={handleClose}
                             >
                                 <MenuItem onClick={handleClose}>Profile</MenuItem>
-                                <MenuItem onClick={handleClose}>My account</MenuItem>
+                                <MenuItem onClick={logout}>Logout</MenuItem>
                             </Menu>
                         </div>
                     )}

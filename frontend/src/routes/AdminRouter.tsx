@@ -1,4 +1,4 @@
-import { Route } from "react-router";
+import { Route, Routes } from "react-router";
 import { AdminMainLayout } from "../shared/components/AdminMainLayout";
 import SkeletonInstitution  from "../features/Institution/pages/SkeletonInstitution";
 import Institution  from "../features/Institution/pages/Institution";
@@ -12,7 +12,7 @@ import NewsCRUD from "../features/News/pages/NewsCRUD";
 
 export function AdminRouter() {
   return (
-    <>
+    <Routes>
         <Route element={<AdminMainLayout/>}>
             <Route path="/Admin" element={<h1>Hola admin</h1>}/>
             <Route path="/Admin/Novedades" element={<NewsCRUD/>}/>
@@ -27,6 +27,6 @@ export function AdminRouter() {
               </Suspense>
             }/> 
         </Route>
-    </>
+    </Routes>
   );
 }

@@ -18,13 +18,14 @@ interface FormData {
 const SignIn: React.FC<SignInProps> = ({ onSwitchToSignUp, isMobile = false }) => {
   const { login } = useAuth();
   const [open, setOpen] = useState<boolean>(false);
+  const [isVisible, setIsVisible] = useState<boolean>(false);
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
   const {
-    register,           
-    handleSubmit,       
+    register,
+    handleSubmit,
     formState: { errors }
   } = useForm<FormData>();
 
@@ -32,10 +33,10 @@ const SignIn: React.FC<SignInProps> = ({ onSwitchToSignUp, isMobile = false }) =
     const response = await login(data.email, data.password);
     if (response?.success) {
       toast.success("Inicio de sesión exitoso");
+
     } else {
       toast.error("Error al iniciar sesión: " + (response?.error || "Error desconocido"));
     }
-
   };
 
   return (
@@ -66,18 +67,33 @@ const SignIn: React.FC<SignInProps> = ({ onSwitchToSignUp, isMobile = false }) =
               type="email" 
               {...register("email", {
                 required: "El email es obligatorio",
+                pattern: {
+                  value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+                  message: "Ingresa un correo electrónico válido."
+                }
               })}
               placeholder="Email" 
             />
+            {errors.email && <p className="text-sm text-red-500 text-center mt-1">{errors.email.message}</p>}
+
             
             <input 
               className="bg-gray-100 border-2 border-transparent rounded-xl px-4 sm:px-5 py-3 sm:py-4 w-full text-sm transition-all duration-300 outline-none focus:bg-white focus:border-teal-500 focus:shadow-sm focus:shadow-teal-200" 
-              type="password" 
+              type={isVisible ? "text" : "password"} 
               placeholder="Contraseña" 
               {...register("password", {
                 required: "La contraseña es obligatoria",
+                minLength: { value: 6, message: "La contraseña debe tener al menos 6 caracteres." },
+                maxLength: { value: 100, message: "La contraseña no puede tener más de 100 caracteres." },
+                pattern: {
+                    value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{6,}$/,
+                    message: "Debe incluir una mayúscula, una minúscula y un número."
+                }
               })}
             />
+            {errors.password && <p className="text-sm text-red-500 mt-2 text-left">{errors.password.message}</p>}
+
+            <button type="button" onClick={() => setIsVisible(!isVisible)}>VER CONTRASEÑA</button>
           </div>
 
           {/* El componente ForgotPassword se mueve fuera del formulario para funcionar correctamente */}

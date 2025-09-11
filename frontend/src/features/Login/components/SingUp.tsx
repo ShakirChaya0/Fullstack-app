@@ -1,5 +1,10 @@
-import React from "react";
+import { useMutation } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
+import { createUser } from "../services/createUser";
+import { toast } from "react-toastify";
+import dateParser from "../../../shared/utils/dateParser";
+
+type FormType = "signIn" | "signUp";
 
 // Define la estructura de los datos del formulario de un cliente
 interface FormData {
@@ -13,7 +18,7 @@ interface FormData {
 }
 
 interface SignUpProps {
-  onSwitchToSignIn?: () => void;
+  onSwitchToSignIn: (formType: FormType) => void;
   isMobile?: boolean;
 }
 
@@ -24,9 +29,27 @@ const SignUp: React.FC<SignUpProps> = ({ onSwitchToSignIn, isMobile = false }) =
     formState: { errors },
   } = useForm<FormData>();
 
+    const { mutate } = useMutation({
+      mutationFn: createUser,
+      onSuccess: () => {
+        toast.success("¡Listo! ya puedes iniciar sesión con tu nueva cuenta.");
+        onSwitchToSignIn("signIn");
+      },
+      onError: (error) => {
+        toast.error(`Error al crear el usuario: ${error.message}`);
+      }
+    });
+
   const onSubmit = (data: FormData) => {
-    // Aquí se enviaría la data a la API para crear un nuevo usuario Client
-    console.log("Datos del formulario de registro enviados:", data);
+    mutate({ 
+      email: data.email,
+      nombreUsuario: data.userName,
+      contrasenia: data.password,
+      nombre: data.name,
+      apellido: data.lastName,
+      telefono: data.phone,
+      fechaNacimiento: dateParser(data.birthDate) 
+    });
   };
 
   return (
@@ -142,7 +165,7 @@ const SignUp: React.FC<SignUpProps> = ({ onSwitchToSignIn, isMobile = false }) =
         <div className="pb-4 border-t border-gray-200 px-6 sm:px-8 md:px-12 mt-6">
           <p className="text-gray-600 text-sm mb-3">¿Ya tienes una cuenta?</p>
           <button 
-            onClick={onSwitchToSignIn}
+            onClick={() => onSwitchToSignIn("signIn")}
             type="button"
             className="w-full rounded-full border-2 border-teal-600 bg-transparent text-teal-600 text-sm font-semibold py-3 tracking-wide uppercase transition-all duration-300 cursor-pointer hover:bg-teal-600 hover:text-white active:scale-95"
           >

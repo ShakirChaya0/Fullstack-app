@@ -83,7 +83,7 @@ export class ClientController {
         }
     }
 
-    public async createClient(req:Request, res:Response, next: NextFunction) {
+    public async createClient(req: Request, res: Response, next: NextFunction) {
         try {
             const data = req.body;
             const validation = validateClient(data); 

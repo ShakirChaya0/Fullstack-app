@@ -89,7 +89,7 @@ const Login: React.FC<LoginProps> = ({
             <>
               {/* Contenedor de SignUp */}
               <div className="absolute top-0 left-0 w-1/2 h-full z-50 transform translate-x-full">
-                <SignUp />
+                <SignUp onSwitchToSignIn={handleFormSwitch}/>
               </div>
               
               {/* Contenedor de Overlay para SignUp */}

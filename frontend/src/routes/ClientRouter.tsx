@@ -8,9 +8,10 @@ export function ClientRouter() {
   return (
     <Routes>
       <Route element={<ClientMainLayout />}>
-        <Route path="menu" element={<Menu />} />
-        <Route path="menu/comidas" element={<FoodsList />} />
-        <Route path="menu/bebidas" element={<DrinksList />} />
+        <Route path="/Cliente"></Route>
+        <Route path="/Cliente/Menu" element={<Menu />} />
+        <Route path="/Cliente/Menu/Comidas" element={<FoodsList />} />
+        <Route path="/Cliente/Menu/Bebidas" element={<DrinksList />} />
       </Route>
     </Routes>
   );

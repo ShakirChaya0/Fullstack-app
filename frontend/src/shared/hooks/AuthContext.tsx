@@ -25,11 +25,11 @@ export const AuthContext = createContext<AuthContextType | undefined>(undefined)
 export const AuthProvider = ({ children }: { children: ReactElement }) => {
     const [accessToken, setAccessToken] = useState(null);
     const [user, setUser] = useState<JwtPayloadInterface | null>(null);
-    const [isLoading, setIsLoading] = useState(true);
+    const [isLoading, setIsLoading] = useState<boolean>(true);
 
-    // useEffect(() => {
-    //     refreshAccessToken();
-    // }, []);
+    useEffect(() => {
+        refreshAccessToken();
+    }, []);
 
     const refreshAccessToken = async () => {
         try {
@@ -65,18 +65,17 @@ export const AuthProvider = ({ children }: { children: ReactElement }) => {
                 body: JSON.stringify({ email, password })
             });
 
+            const data = await response.json();
             if (response.ok) {
-
-                const data = await response.json();
                 setAccessToken(data.token);
                 
                 const userData: JwtPayloadInterface = jwtDecode(data.token);
                 setUser(userData);
 
-                console.log("Login successful, user data:", userData);
-
-
                 return { success: true };
+            }
+            else {
+                throw new Error(data.message || "Error desconocido");
             }
         } catch (error: any) {
             return { success: false, error: error.message };
@@ -99,21 +98,15 @@ export const AuthProvider = ({ children }: { children: ReactElement }) => {
 
   return (
     <AuthContext.Provider value={{ 
-      user, 
-      accessToken, 
-      login, 
-      logout, 
-      refreshAccessToken,
-      isLoading,
-      isAuthenticated: !!accessToken 
+        user, 
+        accessToken, 
+        login, 
+        logout, 
+        refreshAccessToken,
+        isLoading,
+        isAuthenticated: !!accessToken 
     }}>
-      {children}
+        {children}
     </AuthContext.Provider>
   );
 };
-
-
-
-
-
-

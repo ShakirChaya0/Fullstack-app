@@ -7,25 +7,35 @@ import Login from "../features/Login/pages/Login";
 import ResetPasswordForm from "../features/Login/pages/ResetPasswordForm";
 
 export default function AppRouter() {
-    const { isAuthenticated, user } = useAuth();
+  const { isAuthenticated, user, isLoading } = useAuth();
 
-    return (
-        <>
-            {!isAuthenticated && (  
-                <Routes>
-                    <Route path="/login" element={<Login />} />
-                    <Route path="/reset-password" element={<ResetPasswordForm />} />
-                    <Route path="*" element={<Navigate to="/login" />} />
-                </Routes>
-            )}
-                <p>{user?.tipoUsuario}</p>
-                <p>{user?.tipoUsuario === 'Cliente'? 'Hola' : 'Chau'}</p>
-            <Routes>
-                {user?.tipoUsuario === 'Cliente' && <Route path="/Cliente" element={<ClientRouter />} />}
-                {user?.tipoUsuario === 'Administrador' && <Route path="/Admin" element={<AdminRouter />} />}
-                {user?.tipoUsuario === 'SectorCocina' && <Route path="/Cocina" element={<KitchenRouter />} />}
+  console.log("AppRouter - isAuthenticated:", isAuthenticated);
+  console.log("AppRouter - user:", user);
+
+  return (
+    <Routes>
+        {!isAuthenticated && !isLoading && (
+            <>
+                <Route path="/login" element={<Login />} />
+                <Route path="/reset-password" element={<ResetPasswordForm />} />
+                <Route path="*" element={<Navigate to="/login" />} />
+            </>
+        )}
+
+        {isAuthenticated && user && (
+            <>
+                {user.tipoUsuario === "Cliente" && (
+                    <Route path="/*" element={<ClientRouter />} />
+                )}
+                {user.tipoUsuario === "Administrador" && (
+                    <Route path="/*" element={<AdminRouter />} />
+                )}
+                {user.tipoUsuario === "SectorCocina" && (
+                    <Route path="/*" element={<KitchenRouter />} />
+                )}
                 <Route path="*" element={<h1>No tienes acceso o la página no existe</h1>} />
-            </Routes>
-        </>
-    );
+            </>
+        )}
+    </Routes>
+  );
 }

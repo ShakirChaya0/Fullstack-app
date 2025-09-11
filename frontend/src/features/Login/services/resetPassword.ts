@@ -2,7 +2,7 @@ export async function resetPassword({ newPassword }: { newPassword: string }) {
     const params = new URLSearchParams(window.location.search);
     const token = params.get("token");
 
-    const response = await fetch("http://localhost:3000/auth/resetPassword", {
+    const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/auth/resetPassword`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",

@@ -9,7 +9,7 @@ export function AuthRouter() {
 
     authRouter.post('/refresh', (req, res, next) => { authController.refresh(req, res, next) });
 
-    authRouter.get('/logout', (req, res, next) => { authController.logout(req, res, next) });
+    authRouter.post('/logout', (req, res, next) => { authController.logout(req, res, next) });
 
     authRouter.post('/forgotPassword', (req, res, next) => { authController.forgotPassword(req, res, next) });
 
