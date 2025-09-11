@@ -5,7 +5,6 @@ import { KitchenRouter } from "./KitchenRouter"
 
 
 function AppRouter () {
-    console.log("ASDasdasdasd")
     return(
         <Routes>
             { ClientRouter() }

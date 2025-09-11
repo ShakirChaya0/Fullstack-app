@@ -1,54 +1,32 @@
-import { useQuery } from "@tanstack/react-query";
-import { getScheduleData } from "../../Schedules/shared/sheduleService";
-import useReservationMutation from "../hooks/userReservationMutation";
 import { useForm } from 'react-hook-form';
+import type { BackendSchedule } from "../../Schedules/types/scheduleTypes";
+import useAvailableSchedule from "../hooks/useAvailableSchedule";
 
-type FormData = {
+export type FormData = {
     FechaReserva: string, // Ver si tengo que combertirlo por el backend
     HoraReserva: string // falta cambiarlo 
     CantidadComensales: number
 }
 
 interface ReservetionProps {
-    onClose?: () => void; 
     onError: (message: string | null) => void;
+    onFormSubmit: (data: FormData) => void; 
 }
 
-export default function ReservationForm({ onError}: ReservetionProps ) {
+export default function ReservationForm({ onFormSubmit}: ReservetionProps ) {
 
-        const { data: backendSchedules, isLoading: queryLoading, error: queryError } = useQuery({
-        queryKey: ['schedules'],
-        queryFn: getScheduleData
-    });
-
-    const { register, handleSubmit, reset, watch, formState: { errors, isSubmitting } } = useForm<FormData>()
-
+    const { register, handleSubmit, reset, watch, formState: { errors, isSubmitting } } = useForm<FormData>({
+        mode: "onChange",
+    })
+    
     // Obtenemos la fecha que eligio el cliente
     const selectedDate = watch('FechaReserva');
-
-      // Calculo el día de la semana (0 = domingo, 1 = lunes, etc.)
-    const selectedDay = selectedDate ? new Date(selectedDate).getDay() : null;
-
-    //Filtrar los horarios segun el dia de la fecha seleccionado
-    const filterSchedule = backendSchedules ? backendSchedules.filter( ( s: any ) => s.diaSemana === selectedDay ) : [];
-
-
-    const { mutate } = useReservationMutation({ 
-        handleError:onError, 
-        reservation: undefined
-    });
+    const {availableSchedules, queryLoading, queryError, weekday} = useAvailableSchedule(selectedDate)
 
     const onSubmit = (data: FormData) => {
-        console.log(data)
-        mutate({
-            _reserveDate: new Date(data.FechaReserva), 
-            _reserveTime: data.HoraReserva, 
-            _commensalsNumber: data.CantidadComensales
-        }); 
-
+        onFormSubmit(data)
         reset({FechaReserva: "", HoraReserva: "", CantidadComensales: 1})
     }
-
 
     return (
         <div className="fixed inset-0 flex items-center justify-center bg-gray-50 p-4">
@@ -74,23 +52,51 @@ export default function ReservationForm({ onError}: ReservetionProps ) {
                                 errors.FechaReserva ? 'border-red-500' : 'border-gray-300'
                             }`}
                             />
-                            {
-                                errors.FechaReserva && (
-                                    <p className="text-red-500 text-sm mt-1">{errors.FechaReserva.message}</p>
-                                )
-                            }
+                            {errors.FechaReserva && (
+                              <p
+                                className={`text-red-500 text-sm mt-1 transition-all duration-300 ease-in-out max-h-10 overflow-hidden ${
+                                  errors.FechaReserva ? "opacity-100" : "opacity-0"
+                                }`}
+                              >
+                                {errors.FechaReserva.message}
+                              </p>
+                            )}
                     </div>
                     <div>
                         <label className="block text-gray-700 mb-2 font-medium">
                             Hora
                         </label>
-                        <select {...register('HoraReserva', {
-                            required: "Debe seleccionar una hora"
-                        }
-
-                        )}>
-
-                        </select>
+                        {queryLoading ? (
+                                <p>Cargando horarios...</p>
+                            ) : queryError ? (
+                                <p className="text-red-500">Error al cargar horarios</p>
+                            ) : (
+                                    <select {...register('HoraReserva', {
+                                        required: "Debe seleccionar una hora",
+                                    })}
+                                    className={`border rounded-lg p-3 w-full focus:ring-2 focus:ring-amber-600 focus:border-amber-600 outline-none transition ${
+                                        errors.HoraReserva? 'border-red-500' : 'border-gray-300'
+                                    }`}
+                                    disabled={!weekday}
+                                    >
+                                        <option value="">Seleccione un horario</option>
+                                        {availableSchedules.map((horario: BackendSchedule) => (
+                                          <option key={horario.horaApertura} value={horario.horaApertura}>
+                                            {horario.horaApertura} - {horario.horaCierre}
+                                          </option>
+                                        ))}
+                                    </select>
+                                )}
+                                { 
+                                    errors.HoraReserva && (
+                                    <p
+                                        className={`text-red-500 text-sm mt-1 transition-all duration-300 ease-in-out max-h-10 overflow-hidden ${
+                                        errors.HoraReserva ? "opacity-100" : "opacity-0"
+                                        }`}
+                                    >
+                                        {errors.HoraReserva.message}
+                                    </p>
+                                )}
                     </div>
                     <div>
                         <label className="block text-gray-700 mb-2 font-medium">
@@ -112,16 +118,21 @@ export default function ReservationForm({ onError}: ReservetionProps ) {
                             }`}
                             min="1"
                         />
-                        {
+                        { 
                             errors.CantidadComensales && (
-                                <p className="text-red-500 text-sm mt-1">{errors.CantidadComensales.message}</p>
-                            )
-                        }
+                            <p
+                                className={`text-red-500 text-sm mt-1 transition-all duration-300 ease-in-out max-h-10 overflow-hidden ${
+                                errors.CantidadComensales ? "opacity-100" : "opacity-0"
+                                }`}
+                            >
+                                {errors.CantidadComensales.message}
+                            </p>
+                        )}
                     </div>
                     <button
                         type="submit"
                         disabled= { isSubmitting }
-                        className="bg-amber-600 text-white py-3 px-4 rounded-lg hover:bg-amber-600 focus:ring-2 focus:ring-amber-600 focus:ring-offset-2 transition-colors font-medium mt-2"
+                        className="bg-amber-600 text-white py-3 px-4 rounded-lg hover:bg-amber-600 focus:ring-2 focus:ring-amber-600 focus:ring-offset-2 cursor-pointer transition-colors font-medium mt-2"
                     >
                         Reservar Mesa
                     </button>
