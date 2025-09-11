@@ -35,16 +35,8 @@ export default function ForgotPassword({ open, handleClose }: ForgotPasswordProp
             navigate('/login');
         },
         onError: (error) => {
-            const errorMessage = (error as Error).message;
-            if (errorMessage.includes("User not found")) {
-                setError("El correo electrónico no está registrado. Por favor, verifica que lo escribiste bien o regístrate.");
-            } else if (errorMessage.includes("Invalid email format")) {
-                setError("El formato del correo es inválido. Asegúrate de que tenga el formato: tu-correo@ejemplo.com.");
-            } else {
-                setError("Ocurrió un error inesperado. Inténtalo de nuevo más tarde.");
-            }
-            console.error(error);
-        },
+            setError(error.message);
+        }
     });
 
     const onSubmit = (data: FormData) => {

@@ -1,21 +1,41 @@
 import { Link } from "@mui/material";
 import React, { useState } from "react";
 import ForgotPassword from "./ForgotPassword";
+import useAuth from "../../../shared/hooks/useAuth";
+import { useForm } from "react-hook-form";
+import { toast } from "react-toastify";
 
 interface SignInProps {
   onSwitchToSignUp?: () => void;
   isMobile?: boolean;
 }
 
+interface FormData {
+  email: string;
+  password: string;
+}
+
 const SignIn: React.FC<SignInProps> = ({ onSwitchToSignUp, isMobile = false }) => {
+  const { login } = useAuth();
   const [open, setOpen] = useState<boolean>(false);
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log("Iniciar sesión enviado");
+  const {
+    register,           
+    handleSubmit,       
+    formState: { errors }
+  } = useForm<FormData>();
+
+  const onSubmit = async (data: FormData) => {
+    const response = await login(data.email, data.password);
+    if (response?.success) {
+      toast.success("Inicio de sesión exitoso");
+    } else {
+      toast.error("Error al iniciar sesión: " + (response?.error || "Error desconocido"));
+    }
+
   };
 
   return (
@@ -39,20 +59,24 @@ const SignIn: React.FC<SignInProps> = ({ onSwitchToSignUp, isMobile = false }) =
         <span className="text-sm text-gray-600 my-3 sm:my-4 block">Usa tu cuenta</span>
         
         {/* Formulario de inicio de sesión */}
-        <form onSubmit={handleSubmit} className="w-full">
+        <form onSubmit={handleSubmit(onSubmit)} className="w-full">
           <div className="w-full space-y-3">
             <input 
               className="bg-gray-100 border-2 border-transparent rounded-xl px-4 sm:px-5 py-3 sm:py-4 w-full text-sm transition-all duration-300 outline-none focus:bg-white focus:border-teal-500 focus:shadow-sm focus:shadow-teal-200" 
               type="email" 
+              {...register("email", {
+                required: "El email es obligatorio",
+              })}
               placeholder="Email" 
-              required
             />
             
             <input 
               className="bg-gray-100 border-2 border-transparent rounded-xl px-4 sm:px-5 py-3 sm:py-4 w-full text-sm transition-all duration-300 outline-none focus:bg-white focus:border-teal-500 focus:shadow-sm focus:shadow-teal-200" 
               type="password" 
               placeholder="Contraseña" 
-              required
+              {...register("password", {
+                required: "La contraseña es obligatoria",
+              })}
             />
           </div>
 
@@ -66,7 +90,7 @@ const SignIn: React.FC<SignInProps> = ({ onSwitchToSignUp, isMobile = false }) =
               variant="body2"
               sx={{ alignSelf: 'center' }}
             >
-              Forgot your password?
+              ¿Olvidaste tu contraseña?
             </Link>
           </div>
           
