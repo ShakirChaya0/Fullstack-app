@@ -17,7 +17,7 @@ const ProductsCard: React.FC<Props> = ({product}) => {
   const countStart = productAmount ?? 0
   const { handleAddToCart, hanldeRemoveFromCart} = useOrderActions()
   const handleAdd = () => {
-    handleAddToCart({nombreProducto: product._name})
+    handleAddToCart({nombreProducto: product._name, descripcion: product._description, precio: product._price, })
   }
   const handleRemove = () => {
     hanldeRemoveFromCart({nombreProducto: product._name})
@@ -31,12 +31,12 @@ const ProductsCard: React.FC<Props> = ({product}) => {
               <p className='text-orange-500 font-bold'>${product._price}</p>
               <div 
               className='
-              border group hover:border hover:border-orange-400 py-1.5 px-4 self-start 
+              border group hover:border hover:border-orange-400 self-start 
               rounded-md hover:bg-white transition-all duration-200 bg-orange-500
-            text-white font-medium flex flex-row justify-around items-center gap-4'>
+            text-white font-medium flex flex-row justify-around items-center gap-1'>
               <button
                 onClick={handleAdd}
-                className='cursor-pointer'
+                className='cursor-pointer h-full w-full py-1.5 px-2'
               >
                 <ControlPointIcon className='group-hover:text-orange-500'/>
               </button>
@@ -46,7 +46,7 @@ const ProductsCard: React.FC<Props> = ({product}) => {
                   <p className='group-hover:text-orange-500'>{countStart}</p>
                   <button
                     onClick={handleRemove}
-                    className='cursor-pointer'
+                    className='cursor-pointer h-full w-full py-1.5 px-2'
                   >
                     <RemoveCircleOutlineIcon className='group-hover:text-orange-500'/>
                   </button>

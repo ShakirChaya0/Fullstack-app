@@ -6,16 +6,19 @@ export function ClientFooter() {
   return (
     <Box
       component="footer"
-      sx={{
+      sx={(theme) => ({
         py: 3,
         px: 4,
         mt: "auto",
-        mb: location.pathname.includes("/Menu/") ? { xs: "85px", md: 0 } : 0,
+        mb: location.pathname.includes("/Menu/") ? { xs: "85px"} : 0,
+        [theme.breakpoints.up(768)]: {
+          mb: 0
+        },
         width: "100%",
         backgroundColor: "#333",
         color: "#fff",
         textAlign: "center"
-      }}
+      })}
     >
       <Typography variant="body1" gutterBottom>
         Seguinos en redes:

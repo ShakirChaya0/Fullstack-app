@@ -4,6 +4,7 @@ import { useAppSelector } from "../../../shared/hooks/store"
 import ControlPointIcon from '@mui/icons-material/ControlPoint';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import { useOrderActions } from "../../../shared/hooks/useOrderActions";
+import type { LineaPedido } from "../../../store/slices/orderSlice";
 
 
 export function OrderList () {
@@ -11,8 +12,8 @@ export function OrderList () {
     const order = useAppSelector((state) => state.order)
     const { handleAddToCart, hanldeRemoveFromCart } = useOrderActions()
 
-    const handleAdd = (name: string) => {
-      handleAddToCart({nombreProducto: name})
+    const handleAdd = (lp: LineaPedido) => {
+      handleAddToCart({nombreProducto: lp.nombreProducto, descripcion: lp.descripcion, precio: lp.precio})
     }
     const handleRemove = (name: string) => {
       hanldeRemoveFromCart({nombreProducto: name})
@@ -28,6 +29,7 @@ export function OrderList () {
                 `shadow-2xl border p-4 border-gray-300 rounded-t-2xl md:rounded-2xl
                  bg-white md:col-start-2 md:sticky md:top-0 col-start-1 bottom-0 left-0 w-full 
                  fixed z-10 overflow-hidden transition-all duration-500 md:transition-none md:h-fit
+                 max-h-[874px]
                  ${isOpen ? "h-9/12 z-50" : "h-[85px]"}`}
         >
             <div onClick={handleClick}>
@@ -57,25 +59,29 @@ export function OrderList () {
                           className="
                             flex flex-col gap-3
                             max-h-[400px] overflow-y-auto 
-                            md:max-h-none md:overflow-visible 
+                            md:max-h-[684px] 
                           "
                         >
                           {order.lineasPedido.map((lp) => (
                             <div
                               key={lp.nombreProducto}
-                              className="flex flex-col xl:flex-row justify-between border border-gray-300 shadow-lg py-2 px-4 min-h-[75px] rounded-lg"
+                              className="flex py-0 shadow-none border-0 border-b-2 h-fit flex-col xl:flex-row justify-evenly md:justify-between md:border border-gray-300 md:shadow-lg md:py-2 md:px-4 min-h-[150px] md:rounded-lg"
                             >
-                              <h1 className="self-center">{lp.nombreProducto}</h1>
+                                <div className="md:flex md:flex-col justify-between">
+                                    <h1 className="font-medium md:text-2xl">{lp.nombreProducto}</h1>
+                                    <p className="max-h-[60px] md:max-h-[72px] overflow-y-auto text-sm md:text-lg">{lp.descripcion}</p>
+                                    <p className="text-orange-500 font-bold">${lp.subtotal}</p>
+                                </div>
                               <div
-                                className="self-center border group hover:border-orange-500 py-1.5 px-4 
+                                className="self-center border group hover:border-orange-500 
                                 rounded-md hover:bg-white transition-all duration-200 bg-orange-500
-                                text-white font-medium flex flex-row justify-around items-center gap-4"
+                                text-white font-medium flex flex-row justify-around items-center gap-1"
                               >
-                                <button onClick={() => handleAdd(lp.nombreProducto)} className="cursor-pointer">
+                                <button onClick={() => handleAdd(lp)} className="cursor-pointer h-full w-full py-1.5 px-2">
                                   <ControlPointIcon className="group-hover:text-orange-500" />
                                 </button>
                                 <p className="group-hover:text-orange-500">{lp.cantidad}</p>
-                                <button onClick={() => handleRemove(lp.nombreProducto)} className="cursor-pointer">
+                                <button onClick={() => handleRemove(lp.nombreProducto)} className="cursor-pointer h-full w-full py-1.5 px-2">
                                   <RemoveCircleOutlineIcon className="group-hover:text-orange-500" />
                                 </button>
                               </div>
@@ -84,7 +90,7 @@ export function OrderList () {
                         </div>
                       
                         <div className="p-4">
-                          <button className="w-full py-3 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-lg shadow-md transition">
+                          <button className="w-full py-3 cursor-pointer bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-lg shadow-md transition">
                             Confirmar Pedido
                           </button>
                         </div>

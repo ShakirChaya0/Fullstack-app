@@ -5,8 +5,8 @@ import { useAppDispatch } from "./store"
 export const useOrderActions = () => {
     const dispatch = useAppDispatch()
 
-    const handleAddToCart = ({nombreProducto}: {nombreProducto: string}) => {
-        dispatch(addToCart(nombreProducto))
+    const handleAddToCart = ({nombreProducto, descripcion, precio}: {nombreProducto: string, descripcion: string, precio: number}) => {
+        dispatch(addToCart({nombreProducto, descripcion, precio}))
     }
 
     const hanldeRemoveFromCart = ({nombreProducto}: {nombreProducto: string}) => {
