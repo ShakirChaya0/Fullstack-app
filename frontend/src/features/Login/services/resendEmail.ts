@@ -1,8 +1,8 @@
-export async function verifyEmail() {
+export async function resendEmail() {
     const params = new URLSearchParams(window.location.search);
     const token = params.get("token");
 
-    const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/auth/verifyEmail`, {
+    const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/auth/resendEmail`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",

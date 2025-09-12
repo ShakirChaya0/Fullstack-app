@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import SignIn from "../components/SingIn";
-import SignUp from "../components/SingUp";
+import SignIn from "../components/SignIn";
+import SignUp from "../components/SignUp";
 
 type FormType = "signIn" | "signUp";
 

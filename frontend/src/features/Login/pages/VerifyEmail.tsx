@@ -5,26 +5,54 @@ import RestaurantIcon from '@mui/icons-material/Restaurant';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import CircularProgress from '@mui/material/CircularProgress';
-
+import { verifyEmail } from '../services/verifyEmail';
+import { resendEmail } from '../services/resendEmail';
+import { useMutation } from '@tanstack/react-query';
 type Status = 'verifying' | 'success' | 'error';
-
-async function resendVerificationEmailAPI() {
-
-}
 
 export default function VerifyEmail() {
     const navigate = useNavigate();
     const location = useLocation();
 
-    // Estados: 'verifying', 'success', 'error'
     const [status, setStatus] = useState<Status>('verifying');
     const [isResending, setIsResending] = useState<boolean>(false);
 
+    const verifyMutate  = useMutation({
+        mutationFn: verifyEmail,
+        onSuccess: () => {
+            setStatus('success');
+            toast.success("Cuenta verificada con éxito.");
+        },
+        onError: (error) => {
+            toast.error("No se pudo verificar el correo. Intente de nuevo más tarde");
+            setStatus('error');
+            console.log((error as Error).message);
+        },
+    });
+
+    const resendMutate = useMutation({
+        mutationFn: resendEmail,
+        onSuccess: () => {
+            setStatus('verifying');
+            toast.success("Correo reenviado con éxito.");
+        },
+        onError: (error) => {
+            toast.error("No se pudo verificar el correo. Intente de nuevo más tarde");
+            setStatus('error');
+            console.log((error as Error).message);
+        },
+    });
+
+
     useEffect(() => {
-        // Simula la verificación del token de la URL cuando la página carga
         const params = new URLSearchParams(window.location.search);
         const token = params.get("token");
 
+        if (!token) {
+            setStatus('error');
+            return;
+        }
+        verifyMutate.mutate();
 
     }, [location.search]);
 
@@ -34,14 +62,7 @@ export default function VerifyEmail() {
 
     const handleResendEmail = async () => {
         setIsResending(true);
-        try {
-            await resendVerificationEmailAPI();
-            toast.success("Se ha enviado un nuevo correo de verificación.");
-        } catch (error) {
-            toast.error("No se pudo reenviar el correo. Inténtalo más tarde.");
-        } finally {
-            setIsResending(false);
-        }
+        resendMutate.mutate();
     };
 
     const renderContent = () => {
