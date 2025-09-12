@@ -31,3 +31,19 @@ Content-Type: application/json
     "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIyMTE2OTg2OS0xY2QyLTQ1ZWEtYTk2Mi1kM2I0OGY2NjU1OTkiLCJpYXQiOjE3NTc0NzA4MjcsImV4cCI6MTc1NzQ3MTQyN30.oywSJuOQmqsMhkKrtIgNE33-aRvTDWvc_MQWNoU5dlA",
     "newPassword": "123456"
 }
+
+###
+POST http://localhost:3000/auth/verifyEmail
+Content-Type: application/json
+
+{
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI4MWZhNjNlMi0zZTY3LTQ2ZDgtYmUxNS1jMDA5MjA1ZDE5ZDMiLCJpYXQiOjE3NTc2ODY3NjMsImV4cCI6MTc1NzY5MDM2M30.IFWIvlIT4afppiwRxIGXgmSdSwlUHeQT4926hN0xbBs"
+}
+
+###
+POST http://localhost:3000/auth/resendEmail
+Content-Type: application/json
+
+{
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI4MWZhNjNlMi0zZTY3LTQ2ZDgtYmUxNS1jMDA5MjA1ZDE5ZDMiLCJpYXQiOjE3NTc2ODEzMzQsImV4cCI6MTc1NzY4NDkzNH0.bhUtumW5Fr7oMe0wQdqAZz9vmCXussFCHD_mfSB07H8"
+}

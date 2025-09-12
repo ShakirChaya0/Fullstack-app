@@ -15,5 +15,9 @@ export function AuthRouter() {
 
     authRouter.post('/resetPassword', (req, res, next) => { authController.resetPassword(req, res, next) });
 
+    authRouter.post('/verifyEmail', (req, res, next) => { authController.verifyEmail(req, res, next) });
+
+    authRouter.post('/resendEmail', (req, res, next) => { authController.resendEmail(req, res, next) });
+
     return authRouter
 }

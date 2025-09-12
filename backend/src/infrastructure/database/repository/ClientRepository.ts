@@ -115,6 +115,7 @@ export class ClientRepository implements IClienteRepository {
                     apellido: data.apellido,
                     telefono: data.telefono,
                     fechaNacimiento: data.fechaNacimiento,
+                    emailVerificado: false,
                     Usuarios: {
                         create: {
                             nombreUsuario: data.nombreUsuario,
@@ -175,6 +176,12 @@ export class ClientRepository implements IClienteRepository {
         return this.toDomainEntity(updatedClient);
     }
 
+    public async verifiedClientEmail(clientId: string): Promise<void> {
+        await prisma.clientes.update({
+            where: { idCliente: clientId },
+            data: { emailVerificado: true }
+        });
+    }
 
     public async getClientByOtherDatas(clientPublicInfo: ClientPublicInfo): Promise<Client | null> {
         const client = await prisma.clientes.findFirst({
@@ -242,6 +249,7 @@ export class ClientRepository implements IClienteRepository {
             client.apellido,
             client.telefono, 
             client.fechaNacimiento,
+            client.emailVerificado,
             estados, 
             reservations
         );  

@@ -14,7 +14,7 @@ export class MailerService {
     ) {}
 
     public async sendResetPasswordEmail(userEmail: string, token: string) {
-        const resetLink = `http://localhost:5173/reset-password?token=${token}`;
+        const resetLink = `${process.env.FRONTEND_URL}/reset-password?token=${token}`;
 
         const mailBody = `
             <div style="font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px; color: #333;">
@@ -44,10 +44,50 @@ export class MailerService {
         `;
 
         await this.transporter.sendMail({
-            from: '"Soporte Restaurante" <no-reply@tudominio.com>',
+            from: `"Soporte Restaurante" <${process.env.EMAIL_USER}>`,
             to: userEmail,
             subject: "Restablece tu contraseña",
             html: mailBody,
+        });
+    }
+
+    public async sendVerificationEmail(userEmail: string, token: string) {
+        const verifyUrl = `${process.env.FRONTEND_URL}/verify-email?token=${token}`;
+
+        const emailBody = `
+            <div style="font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px; color: #333;">
+                <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; padding: 30px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+
+                    <h2 style="color: #2c3e50; border-bottom: 2px solid #eeeeee; padding-bottom: 10px;">¡Bienvenido/a! Confirma tu Correo</h2>
+
+                    <p style="font-size: 16px; line-height: 1.6;">Hola,</p>
+
+                    <p style="font-size: 16px; line-height: 1.6;">Gracias por registrarte en <strong>Soporte Restaurante</strong>. Para activar tu cuenta, por favor confirma tu dirección de correo electrónico haciendo clic en el botón de abajo.</p>
+
+                    <div style="text-align: center; margin: 30px 0;">
+                        <a href="${verifyUrl}" style="background-color: #28a745; color: #ffffff; padding: 15px 25px; text-decoration: none; border-radius: 5px; font-size: 16px; font-weight: bold;">Verificar Correo Electrónico</a>
+                    </div>
+
+                    <p style="font-size: 16px; line-height: 1.6;">La verificación de tu correo nos ayuda a mantener tu cuenta segura.</p>
+
+                    <p style="font-size: 14px; color: #7f8c8d; line-height: 1.6;">Si el botón no funciona, copia y pega el siguiente enlace en tu navegador:<br>
+                    <a href="${verifyUrl}" style="color: #3498db; text-decoration: underline;">${verifyUrl}</a></p>
+
+                    <p style="font-size: 16px; line-height: 1.6; margin-top: 30px;">Gracias,<br>El equipo de Soporte Restaurante</p>
+
+                </div>
+                <div style="text-align: center; padding: 20px; font-size: 12px; color: #999999;">
+                    <p>&copy; 2025 Nombre del Restaurante. Todos los derechos reservados.</p>
+                    <p>Has recibido este correo porque te has registrado en nuestro sitio web.</p>
+                </div>
+            </div>
+        `;
+
+        await this.transporter.sendMail({
+            from: `"Soporte Restaurante" <${process.env.EMAIL_USER}>`,
+            to: userEmail,
+            subject: "Verifica tu dirección de correo electrónico",
+            html: emailBody,
         });
     }
 }

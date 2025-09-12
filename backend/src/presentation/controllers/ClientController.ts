@@ -88,18 +88,9 @@ export class ClientController {
             const data = req.body;
             const validation = validateClient(data); 
 
-            const newClient = await this.registerClientUseCase.execute(validation);
+            await this.registerClientUseCase.execute(validation);
             
-            const filteredClient = {
-                nombreUsuario: newClient.userName,
-                email: newClient.email,
-                nombre: newClient.name,
-                apellido: newClient.lastname,
-                telefono: newClient.phone, 
-                fechaNacimiento: newClient.birthDate
-            }
-            
-            res.status(201).json(filteredClient);
+            res.status(201).send();
         } 
         catch(error) {
             next(error);

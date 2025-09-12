@@ -5,6 +5,7 @@ import { KitchenRouter } from "./KitchenRouter";
 import useAuth from "../shared/hooks/useAuth";
 import Login from "../features/Login/pages/Login";
 import ResetPasswordForm from "../features/Login/pages/ResetPasswordForm";
+import VerifyEmail from "../features/Login/pages/VerifyEmail";
 
 export default function AppRouter() {
   const { isAuthenticated, user, isLoading } = useAuth();
@@ -18,6 +19,7 @@ export default function AppRouter() {
             <>
                 <Route path="/login" element={<Login />} />
                 <Route path="/reset-password" element={<ResetPasswordForm />} />
+                <Route path="/verify-email" element={<VerifyEmail />} />
                 <Route path="*" element={<Navigate to="/login" />} />
             </>
         )}
