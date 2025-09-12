@@ -13,6 +13,12 @@ import RestaurantIcon from '@mui/icons-material/Restaurant';
 import IcecreamIcon from '@mui/icons-material/Icecream';
 import SportsBarIcon from '@mui/icons-material/SportsBar';
 import NoDrinksIcon from '@mui/icons-material/NoDrinks';
+import ModeEditIcon from '@mui/icons-material/ModeEdit';
+import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
+import GlutenFreeImg from '../utils/GlutenFree.png';
+import VegetarianImg from '../utils/Vegetarian.png'
+import VeganImg from '../utils/Vegan.png'
+import { NewProductModal } from "../components/NewProductModal";
 
 
 export function MainPanelProduct () {
@@ -25,6 +31,11 @@ export function MainPanelProduct () {
         updateFilter,
         clearFilters 
     } = useProductsWithFilters()
+
+    const handleOpenModal = () => {
+        // Dispatch --> Evento personalizado que abre el modal
+        window.dispatchEvent(new CustomEvent('openNewProductModal'));
+    };
 
     if (isLoading) return <LoadingProductPrice/>
 
@@ -46,7 +57,7 @@ export function MainPanelProduct () {
 
     return(
         <>
-            <div className="flex justify-between flex-col w-[95%] sm:w-[90%] md:w-[80%] mx-auto mt-4 mb-4">
+            <div className="flex justify-between flex-col w-[95%] sm:w-[90%] md:w-[80%] mx-auto mt-4 mb-4 font-sans text-gray-600">
                 <div>
                     <h2 className="text-black-300 font-bold text-3xl">
                         Gestión de Productos
@@ -65,7 +76,7 @@ export function MainPanelProduct () {
                             className="w-full"
                             id="searchTool"
                             freeSolo
-                            onInputChange={(event, newInputValue) => {
+                            onInputChange={(_, newInputValue) => {
                                 updateFilter("search", newInputValue);
                             }}
                             options={allProducts.map((option) => {return `${option.idProducto} - ${option.nombre}`})}
@@ -100,7 +111,8 @@ export function MainPanelProduct () {
                         />
                     </div>
                     <button 
-                        className="flex items-center gap-2 bg-[#009689] hover:bg-[#00bba7] text-white px-4 py-2 
+                        onClick={handleOpenModal}
+                        className="flex items-center gap-2 bg-cyan-600 hover:bg-cyan-500 text-white px-4 py-2 
                         rounded-lg font-medium transition-colors duration-200 whitespace-nowrap h-[40px]"
                     >
                         <span className="text-lg font-bold mb-1"><AddCircleIcon fontSize="small"/></span>
@@ -108,7 +120,7 @@ export function MainPanelProduct () {
                     </button>
                 </div>
                 
-                <div className="flex flex-col justify-around items-start sm:flex-row sm:items-center py-4 border-b border-gray-200 gap-4">
+                <div className="flex flex-col justify-around items-start sm:flex-row sm:items-center py-4 border-b border-gray-200 gap-4 mb-2">
                     <div className="flex items-center gap-2">
                         <FilterAltIcon/>
                         <span className="text-gray-700 font-medium">Filtros:</span>
@@ -167,13 +179,20 @@ export function MainPanelProduct () {
                         </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                {filteredProducts.length === 0 && 
+                    <Alert severity="error">
+                        Ups! No se encontraron resultados para su busqueda
+                    </Alert>
+                }
+
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8 mt-5">
                     {filteredProducts.map((product) => (
-                        <div className="flex flex-col min-w-auto min-h-auto border-1 border-gray-400 px-2 py-2 rounded-2x1
-                         hover:border-red-500 hover:shadow-[0_0_5px_2px_#99a1af]
+                        <div className="flex flex-col min-w-auto min-h-auto bg-white border border-gray-200 px-4 py-4 rounded-xl
+                         shadow-[0_2px_8px_0px_rgba(0,0,0,0.08)] hover:shadow-[0_4px_16px_0px_rgba(0,0,0,0.12)] transition-all duration-300
                         "
                         >
-                            <div className="flex flex-row justify-between">
+                            {/* Header de las tarjetas */}
+                            <div className="flex flex-row justify-between mb-2">
                                 <h4 className="text-black-300 font-bold text-2xl">
                                     {product.nombre}
                                 </h4>
@@ -193,7 +212,7 @@ export function MainPanelProduct () {
                                         icon={<CloseIcon fontSize="small"/>} 
                                         label="No Disponible" 
                                         sx={{ 
-                                            backgroundColor: 'red', 
+                                            backgroundColor: '#fb2c36', 
                                             color: 'white',
                                             '& .MuiChip-icon': {
                                                 color: 'white'
@@ -205,9 +224,9 @@ export function MainPanelProduct () {
                             <p className="text-gray-800">
                                 {product.descripcion}
                             </p>
-                            
-                            <div className="flex flex-row justify-between">
-                                <div className="flex flex-col">
+                            {/* Contenido de las tarjetas */}
+                            <div className="flex flex-row justify-between items-start mt-4">
+                                <div className="flex flex-col justify-between h-24 mt-1">
                                     <h3 className="text-teal-600 font-bold text-3xl">
                                         ${product.precio}
                                     </h3>
@@ -215,15 +234,15 @@ export function MainPanelProduct () {
                                     {
                                         product.tipo !== undefined ?
                                         (
-                                            (product.tipo == "Entrada" || product.tipo == "Plato_Principal") ? 
+                                            (product.tipo === "Entrada" || product.tipo === "Plato_Principal") ? 
                                             (
                                                 <p>
-                                                    <span className="text-gray-800"><RestaurantIcon fontSize="small"/></span>{product.tipo}
+                                                    <span className="text-gray-800"><RestaurantIcon fontSize="small"/></span> {product.tipo.replace("_"," ")}
                                                 </p>
                                             ):
                                             (
                                                 <p>
-                                                    <span className="text-gray-800"><IcecreamIcon fontSize="small"/></span>{product.tipo}
+                                                    <span className="text-gray-800"><IcecreamIcon fontSize="small"/></span> {product.tipo}
                                                 </p>
                                             )
                                         ):
@@ -233,35 +252,96 @@ export function MainPanelProduct () {
 
                                     }
                                 </div>
-                                <div className="flex flex-row">
+                                <div className="flex flex-col gap-2 items-end">
                                     {/* Evaluando caracteristicas del producto */}
                                     {
                                         product.tipo !== undefined ?
-                                        (
-                                            (product.tipo == "Entrada" || product.tipo == "Plato_Principal") ? 
-                                            (
-                                                <p>
-                                                    <span className="text-gray-800"><RestaurantIcon fontSize="small"/></span>{product.tipo}
-                                                </p>
-                                            ):
-                                            (
-                                                <p>
-                                                    <span className="text-gray-800"><IcecreamIcon fontSize="small"/></span>{product.tipo}
-                                                </p>
-                                            )
+                                        (   
+                                            <>
+                                                <div className="flex">
+                                                    {product.esSinGluten && (
+                                                        <Chip 
+                                                            icon={
+                                                                <img
+                                                                    src={GlutenFreeImg}
+                                                                    alt="Gluten Free"
+                                                                    className="w-6 h-6 object-contain"
+                                                                    loading="lazy"
+                                                                />
+                                                            } 
+                                                            label="Sin Gluten" 
+                                                            sx={{ 
+                                                                backgroundColor: '#ffd230',
+                                                                color: '#364153',
+                                                                fontWeight: '600',
+                                                                '& .MuiChip-icon': {
+                                                                    color: '#364153'
+                                                                }
+                                                            }}
+                                                        />
+                                                    )}
+                                                </div>
+                                                <div className="flex">    
+                                                    {product.esVegetariana && (
+                                                        <Chip 
+                                                            icon={
+                                                                <img
+                                                                    src={VegetarianImg}
+                                                                    alt="Vegetariana"
+                                                                    className="w-7 h-7 object-contain"
+                                                                    loading="lazy"
+                                                                />
+                                                            } 
+                                                            label="Vegetariana" 
+                                                            sx={{ 
+                                                                backgroundColor: '#ffd230',
+                                                                color: '#364153',
+                                                                fontWeight: '600',
+                                                                '& .MuiChip-icon': {
+                                                                    color: '#364153'
+                                                                }
+                                                            }}
+                                                        />
+                                                    )}
+                                                </div>
+                                                <div className="flex">  
+                                                    {product.esVegana && (
+                                                        <Chip 
+                                                            icon={
+                                                                <img
+                                                                    src={VeganImg}
+                                                                    alt="Vegana"
+                                                                    className="w-6 h-6 object-contain"
+                                                                    loading="lazy"
+                                                                />
+                                                            } 
+                                                            label="Vegana" 
+                                                            sx={{ 
+                                                                backgroundColor: '#ffd230',
+                                                                color: '#364153',
+                                                                fontWeight: '600',
+                                                                '& .MuiChip-icon': {
+                                                                    color: '#364153'
+                                                                }
+                                                            }}
+                                                        />
+                                                    )}
+                                                </div>
+                                            </>
                                         ):
                                         (
                                             product.esAlcoholica ? 
                                             (
                                                 <Chip 
+                                                    className="bg-gray"
                                                     icon={<SportsBarIcon fontSize="small"/>} 
                                                     label="Alcohólica" 
                                                     sx={{ 
                                                         backgroundColor: '#ffd230',
-                                                        color: 'black',
+                                                        color: '#364153',
                                                         fontWeight: '600',
                                                         '& .MuiChip-icon': {
-                                                            color: 'black'
+                                                            color: '#364153'
                                                         }
                                                     }}
                                                 />
@@ -272,10 +352,10 @@ export function MainPanelProduct () {
                                                     label="Sin Alcohol" 
                                                     sx={{ 
                                                         backgroundColor: '#ffd230',
-                                                        color: 'black',
+                                                        color: '#364153',
                                                         fontWeight: '600',
                                                         '& .MuiChip-icon': {
-                                                            color: 'black'
+                                                            color: '#364153'
                                                         }
                                                     }}
                                                 />
@@ -285,8 +365,23 @@ export function MainPanelProduct () {
 
                                     }
                                 </div>
-                                    
-                                
+                            </div>
+                            {/* Footer de las tarjetas */}
+                            <div className="flex flew-row justify-between mt-3">
+                                <button 
+                                    className="flex justify-center items-center gap-2 bg-gray-50 border-2 hover:bg-[#ffd230] 
+                                    rounded-lg font-medium transition-colors duration-200 h-[40px] w-[55%] px-1"
+                                >
+                                    <span className="text-lg font-bold mb-1"><ModeEditIcon fontSize="small"/></span>
+                                    Modificar Producto
+                                </button>
+                                <button 
+                                    className="flex justify-center items-center gap-2 bg-gray-50 border-2 hover:bg-[#ffd230] 
+                                    rounded-lg font-medium transition-colors duration-200 h-[40px] w-[43%] px-1"
+                                >
+                                    <span className="text-lg font-bold mb-1"><AttachMoneyIcon fontSize="medium"/></span>
+                                    Lista Precio
+                                </button>
                             </div>
 
                         </div>
@@ -330,6 +425,9 @@ export function MainPanelProduct () {
                     )}
                 </div>
             </div>
+
+            {/* El componente escucha el evento personalizado */}
+            <NewProductModal />
         
         </>
     )
