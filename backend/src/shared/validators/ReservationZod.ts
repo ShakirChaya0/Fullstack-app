@@ -2,7 +2,7 @@ import z from "zod";
 import { ValidationError } from "../exceptions/ValidationError.js";
 
 const ReservationSchema = z.object({
-  reservationDate: z.string()    
+  reserveDate: z.string()    
     .refine(str => /^\d{2}\/\d{2}\/\d{4}$/.test(str), {
         message: "Formato inválido. Usa dd/mm/yyyy",
     })
