@@ -1,6 +1,7 @@
 import { useForm } from 'react-hook-form';
 import type { BackendSchedule } from "../../Schedules/types/scheduleTypes";
 import useAvailableSchedule from "../hooks/useAvailableSchedule";
+import ReservationFormSkeleton from '../pages/SkeletonReservationClient';
 
 export type FormData = {
     FechaReserva: string, // Ver si tengo que combertirlo por el backend
@@ -18,10 +19,15 @@ export default function ReservationForm({ onFormSubmit}: ReservetionProps ) {
     const { register, handleSubmit, reset, watch, formState: { errors, isSubmitting } } = useForm<FormData>({
         mode: "onChange",
     })
+
     
     // Obtenemos la fecha que eligio el cliente
     const selectedDate = watch('FechaReserva');
     const {availableSchedules, queryLoading, queryError, weekday} = useAvailableSchedule(selectedDate)
+
+    if(queryLoading) {
+        return <ReservationFormSkeleton></ReservationFormSkeleton>
+    }
 
     const onSubmit = (data: FormData) => {
         onFormSubmit(data)

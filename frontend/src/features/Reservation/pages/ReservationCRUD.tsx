@@ -39,7 +39,7 @@ export default function ReservationCRUD() {
         setPendingData(null);
     };
 
-    const modalMessage = `Confirmar la reserva a las ${pendingData?.HoraReserva}. Podes cancelar las mismas con antelacion de ${data?._horasDeAnticipacionParaCancelar} horas`
+    const modalMessage = `Confirmar la reserva a las ${pendingData?.HoraReserva}. Podes cancelar las mismas con ${data?._horasDeAnticipacionParaCancelar} horas de antelacón`
 
     return (
         <main className="p-4">

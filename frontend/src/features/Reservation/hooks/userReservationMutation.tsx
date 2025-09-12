@@ -1,4 +1,4 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation} from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import CreateReservation  from "../services/CreateReservation";
 import type { IReservation } from "../interfaces/IReservation";
@@ -16,7 +16,7 @@ interface UseResMutationnParams {
 }
 
 export default function useReservationMutation ({handleError, reservation}: UseResMutationnParams) {
-    const queryClient = useQueryClient()
+    // const queryClient = useQueryClient()
     
         return useMutation<IReservation, Error, ReservationPayLoad>({
             mutationFn: (data: ReservationPayLoad) => {
@@ -38,7 +38,7 @@ export default function useReservationMutation ({handleError, reservation}: UseR
             },
             
             onSuccess: async () => {
-                await queryClient.invalidateQueries({ queryKey: ["suggestions"] });
+                // await queryClient.invalidateQueries({ queryKey: ["reservation"] }); Para el listado de reservas mas adelante 
                 toast.success(`Se ${reservation ? "modificó" : "creó"} la reserva con exito`)
                 handleError(null);
                 
