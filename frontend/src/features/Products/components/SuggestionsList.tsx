@@ -14,6 +14,10 @@ export default function SuggestionsList() {
   const { handleAddToCart, hanldeRemoveFromCart } = useOrderActions()
   const order = useAppSelector((state) => state.order)
 
+  const uniqueSuggestions = Array.from(
+    new Map(data?.map((s) => [s._product._name, s])).values()
+  ) 
+
   const handleAdd = (lp: {nombreProducto: string, descripcion: string, precio: number}) => {
     handleAddToCart({nombreProducto: lp.nombreProducto, descripcion: lp.descripcion, precio: lp.precio})
   }
@@ -36,14 +40,15 @@ export default function SuggestionsList() {
                     modules={[Navigation]}
                     navigation
                     spaceBetween={20}        
-                    slidesPerView={1}        
+                    slidesPerView={1}    
+                    loop={true}    
                     breakpoints={{
                       1000: { slidesPerView: 2 },
                       1500: { slidesPerView: 3 }
                     }}
                     className="px-8"
                   >
-                    {data?.map((s) => {
+                    {uniqueSuggestions?.map((s) => {
                       const cantidad = order.lineasPedido?.find((lp) => lp.nombreProducto === s._product._name)?.cantidad ?? 0
                       return(
                         <SwiperSlide key={s._product._description} className="px-8">

@@ -3,6 +3,8 @@ import { useDrinks } from "../hooks/useDrinks"
 import FilterDrinks from "../components/drinks/filterDrinks"
 import SkeletonBody from "./skeletonBody"
 import { OrderList } from "../components/orderList"
+import SuggestionsList from "../components/SuggestionsList"
+import SuggestionSkeleton from "../components/SuggestionSkeleton"
 const FilteredDrinks = lazy(() => import("../components/drinks/FilteredDrinks"))
 
 function DrinksList() {
@@ -26,6 +28,9 @@ function DrinksList() {
       <section className="flex-1 grid md:grid-cols-[minmax(280px,_7fr)_5fr] lg:grid-cols-[5fr_3fr] gap-6 md:p-4 pb-6 w-full">
         <div className="border border-gray-300 rounded-2xl p-4 w-full min-w-2 shadow-2xl">
           {!isError && <FilterDrinks handleChange={handleChange} />}
+          <Suspense fallback={<SuggestionSkeleton/>}>
+            <SuggestionsList/>
+          </Suspense>
           {isError && (
             <h1 className="flex w-full h-full justify-center items-center text-2xl text-red-600">
               Error al cargar los datos del menú

@@ -5,6 +5,7 @@ import ControlPointIcon from '@mui/icons-material/ControlPoint';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import { useOrderActions } from "../../../shared/hooks/useOrderActions";
 import type { LineaPedido } from "../../../store/slices/orderSlice";
+import { NavLink } from "react-router";
 
 
 export function OrderList () {
@@ -24,11 +25,13 @@ export function OrderList () {
     }
 
     return(
+      <>
+        { isOpen && <div className="fixed inset-0 bg-black opacity-70 z-40 md:hidden"></div>}
         <aside 
             className={
                 `shadow-2xl border p-4 border-gray-300 rounded-t-2xl md:rounded-2xl
                  bg-white md:col-start-2 md:sticky md:top-0 col-start-1 bottom-0 left-0 w-full 
-                 fixed z-10 overflow-hidden transition-all duration-500 md:transition-none md:h-fit
+                 fixed z-50 overflow-hidden transition-all duration-500 md:transition-none md:h-fit
                  max-h-[874px]
                  ${isOpen ? "h-9/12 z-50" : "h-[85px]"}`}
         >
@@ -90,13 +93,16 @@ export function OrderList () {
                         </div>
                       
                         <div className="p-4">
-                          <button className="w-full py-3 cursor-pointer bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-lg shadow-md transition">
-                            Confirmar Pedido
-                          </button>
+                          <NavLink to="/Menu/RealizarPedido">
+                            <button className="w-full py-3 cursor-pointer bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-lg shadow-md transition">
+                              Completar  Pedido
+                            </button>
+                          </NavLink>
                         </div>
                     </div>
                 </>
             }
         </aside>
+      </>
     )
 }

@@ -10,7 +10,7 @@ export function ClientFooter() {
         py: 3,
         px: 4,
         mt: "auto",
-        mb: location.pathname.includes("/Menu/") ? { xs: "85px"} : 0,
+        mb: (location.pathname.includes("/Menu/Comida") || location.pathname.includes("/Menu/Bebida")) ? { xs: "85px"} : 0,
         [theme.breakpoints.up(768)]: {
           mb: 0
         },
