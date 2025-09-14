@@ -1,31 +1,99 @@
+import type { ProductPriceWithoutID } from "../interfaces/product&PriceInterfaces"
+
 // Variable de entorno
-const PRODUCTS_URL = import.meta.env.VITE_PRODUCTS_URL;
+const PRODUCTS_URL = import.meta.env.VITE_PRODUCTS_URL
 
 export const getProductsData = async () => {
   const response = await fetch(PRODUCTS_URL, {
     method: 'GET',
     headers: { 'Content-Type': 'application/json' }
-  });
+  })
 
   if (!response.ok) {
     // Si es 404, intentar obtener el mensaje del JSON del backend
     if (response.status === 404) {
       try {
-        const errorData = await response.json();
-        const error = new Error(errorData.message || 'No hay productos cargados');
-        error.name = 'NotFoundError';
-        throw error;
+        const errorData = await response.json()
+        const error = new Error(errorData.message || 'No hay productos cargados')
+        error.name = 'NotFoundError'
+        throw error
       } catch {
         // Si no se puede parsear el JSON, usar mensaje por defecto
-        const error = new Error('No hay productos cargados');
-        error.name = 'NotFoundError';
-        throw error;
+        const error = new Error('No hay productos cargados')
+        error.name = 'NotFoundError'
+        throw error
       }
     }
     // Para otros errores
-    throw new Error(`Error ${response.status}: ${response.statusText}`);
+    throw new Error(`Error ${response.status}: ${response.statusText}`)
   }
 
-  return response.json();
-};
+  return response.json()
+}
 
+export const saveProductToBackend = async (newProduct: ProductPriceWithoutID) => {
+  try {
+    // Paso 1: Crear el producto
+    const productResponse = await fetch(import.meta.env.VITE_NEW_PRODUCTS_URL, {
+      method: 'POST',
+      headers: { 
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzdWFyaW8iOiJlNTM0YjUyMS1iNzEwLTRhNjQtOGUyOC1iMTZkMTY5ZDVlYjQiLCJlbWFpbCI6InBlcGVAZ21haWwuY29tIiwidGlwb1VzdWFyaW8iOiJBZG1pbmlzdHJhZG9yIiwidXNlcm5hbWUiOiJQZXBlUm9kcmlndWV6MTIzIiwiaWF0IjoxNzU3ODIxNTEzLCJleHAiOjE3NTg0MjYzMTN9.lzxHfV1eUrdKXxjgS7GpzitkCyRI2Co7Cg0JEobn1hI'
+        // Hardcodeando el jwt, CAMBIAR
+      },
+      body: JSON.stringify({
+        nombre: newProduct.nombre,
+        descripcion: newProduct.descripcion,
+        estado: newProduct.estado,
+        tipo: newProduct.tipo,
+        esSinGluten: newProduct.esSinGluten,
+        esVegetariana: newProduct.esVegetariana,
+        esVegana: newProduct.esVegana,
+        esAlcoholica: newProduct.esAlcoholica
+      })
+    })
+
+    if (!productResponse.ok) {
+      throw new Error(`Error al crear producto: ${productResponse.status} ${productResponse.statusText}`);
+    }
+
+    const productData = await productResponse.json()
+    
+    const productId = productData._productId
+    
+    if (!productId) {
+      throw new Error('No se pudo obtener el ID del producto creado');
+    }
+
+    // Paso 2: Registrar el precio usando el ID obtenido
+    const priceResponse = await fetch(import.meta.env.VITE_NEW_PRICE_URL, {
+      method: 'POST',
+      headers: { 
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzdWFyaW8iOiJlNTM0YjUyMS1iNzEwLTRhNjQtOGUyOC1iMTZkMTY5ZDVlYjQiLCJlbWFpbCI6InBlcGVAZ21haWwuY29tIiwidGlwb1VzdWFyaW8iOiJBZG1pbmlzdHJhZG9yIiwidXNlcm5hbWUiOiJQZXBlUm9kcmlndWV6MTIzIiwiaWF0IjoxNzU3ODIxNTEzLCJleHAiOjE3NTg0MjYzMTN9.lzxHfV1eUrdKXxjgS7GpzitkCyRI2Co7Cg0JEobn1hI'
+        // Hardcodeando el jwt, CAMBIAR
+      },
+      body: JSON.stringify({
+        idProducto: productId,
+        monto: newProduct.precio
+      })
+    });
+
+    if (!priceResponse.ok) {
+      throw new Error(`Error al registrar precio: ${priceResponse.status} ${priceResponse.statusText}`);
+    }
+
+    const priceData = await priceResponse.json();
+    console.log('Precio registrado:', priceData);
+
+    // Retornar ambos resultados
+    return {
+      product: productData,
+      price: priceData
+    };
+
+  } catch (error) {
+    console.error('Error en saveProductToBackend:', error);
+    throw error;
+  }
+}

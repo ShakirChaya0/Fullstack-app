@@ -1,7 +1,21 @@
-import type { FoodType, ProductStatus } from "../types/product&PriceTypes"
+import type { FoodType, ProductStatus, ProductType } from "../types/product&PriceTypes"
 
 export interface ProductPrice {
   idProducto: string
+  nombre: string
+  descripcion: string
+  estado: ProductStatus
+  precio: number
+  // Propiedades específicas de comida
+  esSinGluten?: boolean
+  esVegetariana?: boolean
+  esVegana?: boolean
+  tipo?: FoodType
+  // Propiedades específicas de bebida
+  esAlcoholica?: boolean
+}
+
+export interface ProductPriceWithoutID {
   nombre: string
   descripcion: string
   estado: ProductStatus
@@ -28,6 +42,14 @@ export interface ProductPriceFromBackend {
   _type?: FoodType
   // Propiedades específicas de bebida
   _isAlcoholic?: boolean
+}
+
+export interface useMutationProductRegistrationProps {
+    newProduct: ProductPriceWithoutID
+    setNewProduct: (value: React.SetStateAction<ProductPriceWithoutID>) => void
+    setProductType: (value: React.SetStateAction<ProductType | undefined>) => void
+    setModalError: (value: React.SetStateAction<string>) => void
+    setIsModalOpen: (value: React.SetStateAction<boolean>) => void
 }
 
 

@@ -1,4 +1,4 @@
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, ToggleButton, ToggleButtonGroup, FormControlLabel, Checkbox, Typography } from "@mui/material";
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, ToggleButton, ToggleButtonGroup, FormControlLabel, Checkbox, Typography, Alert } from "@mui/material";
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import RestaurantIcon from '@mui/icons-material/Restaurant';
 import LocalBarIcon from '@mui/icons-material/LocalBar';
@@ -7,18 +7,34 @@ import GlutenFreeImg from '../utils/GlutenFree.png';
 import VegetarianImg from '../utils/Vegetarian.png'
 import VeganImg from '../utils/Vegan.png'
 import SportsBarIcon from '@mui/icons-material/SportsBar';
+import type { ProductPrice, ProductPriceWithoutID } from "../interfaces/product&PriceInterfaces";
+import { useMutationProductRegistration } from "../hooks/useMutationProducts";
+import { isValidProduct } from "../utils/isValidProduct";
+import { isValidNameProduct } from "../utils/isValidNameProduct";
+import type { ProductType } from "../types/product&PriceTypes";
 
-export function NewProductModal() {
+export function NewProductModal({ existingProducts }: { existingProducts: ProductPrice[]}) {
     // NewProductModal maneja su estado de manera interna
-    const [isModalOpen, setIsModalOpen] = useState(true)
+    const [isModalOpen, setIsModalOpen] = useState(false)
+
+    // Estado para errores del formulario
+    const [modalError, setModalError] = useState('')
     
     // Estados para el formulario
-    const [productType, setProductType] = useState('Comida'); // 'Comida' o 'Bebida'
-    const [foodType, setFoodType] = useState('Entrada'); // 'Entrada', 'Plato_Principal', 'Postre'
-    const [isSinGluten, setIsSinGluten] = useState(false);
-    const [isVegetariana, setIsVegetariana] = useState(false);
-    const [isVegana, setIsVegana] = useState(false);
-    const [isAlcoholica, setIsAlcoholica] = useState(false);
+    const [newProduct, setNewProduct] = useState<ProductPriceWithoutID>({
+        nombre: '',
+        descripcion: '',
+        estado: 'Disponible',
+        precio: 0,
+        esAlcoholica: undefined,
+        tipo: undefined,
+        esSinGluten: undefined,
+        esVegetariana: undefined,
+        esVegana: undefined
+    })
+    const [productType, setProductType] = useState<ProductType | undefined>(undefined)
+
+    const { saveProductMutation } = useMutationProductRegistration({ newProduct, setNewProduct, setProductType, setModalError, setIsModalOpen })
 
     useEffect(() => {
         const handleOpenModal = () => {
@@ -34,7 +50,38 @@ export function NewProductModal() {
         };
     }, []);
 
-    const handleCloseModal = () => setIsModalOpen(false)
+    const handleCloseModal = () => {
+        setNewProduct({
+            nombre: '',
+            descripcion: '',
+            estado: 'Disponible',
+            precio: 0,
+            esAlcoholica: undefined,
+            tipo: undefined,
+            esSinGluten: undefined,
+            esVegetariana: undefined,
+            esVegana: undefined
+        })
+        setProductType(undefined)
+        setModalError('')
+        setIsModalOpen(false)
+    }
+
+    const handleSubmit = () => {
+        if(!isValidProduct(newProduct, productType)) {
+            setModalError('Todos los campos deben ser completados')
+            return
+        }
+        if(newProduct.precio < 0) {
+            setModalError('El precio no puede ser negativo')
+            return
+        }
+        if(!isValidNameProduct(newProduct.nombre, existingProducts)) {
+            setModalError('El nombre del nuevo producto ya existe')
+            return
+        }
+        saveProductMutation.mutate()
+    }
 
     return (
         <Dialog
@@ -63,6 +110,12 @@ export function NewProductModal() {
                 color: 'black',
             }}>
                 <AddCircleIcon sx={{mb: "5px"}}/> Crear Nuevo Producto
+                { modalError && 
+                    (
+                        <Alert severity="error">
+                            { modalError }
+                        </Alert>
+                    )}
             </DialogTitle>
             
             <DialogContent>
@@ -73,11 +126,22 @@ export function NewProductModal() {
 
                     {/* Campos básicos */}
                     <div className="flex flex-col justify-between gap-4 mb-5">
+                        <Typography variant="subtitle1" sx={{ color: '#4a5565', mb:'0.5rem' }}>
+                            Campos básicos <Typography variant="h6" sx={{ color: 'red', display: 'inline'}}>*</Typography>
+                        </Typography>
                         <TextField
                             label="Nombre del Producto"
                             variant="outlined"
                             fullWidth
                             placeholder="Ej: Salmón a la Parrilla"
+                            onChange={(e) => {
+                                setNewProduct(prev => {
+                                    const newProduct = {...prev}
+                                    const newName = e.target.value
+                                    newProduct.nombre = newName
+                                    return newProduct;
+                                });
+                            }}
                         />
                         <TextField
                             label="Descripción"
@@ -86,6 +150,14 @@ export function NewProductModal() {
                             multiline
                             rows={2}
                             placeholder="Describe tu producto..."
+                            onChange={(e) => {
+                                setNewProduct(prev => {
+                                    const newProduct = {...prev}
+                                    const newDescription = e.target.value
+                                    newProduct.descripcion = newDescription
+                                    return newProduct;
+                                });
+                            }}
                         />
                         <TextField
                             label="Precio"
@@ -93,18 +165,85 @@ export function NewProductModal() {
                             type="number"
                             fullWidth
                             placeholder="0.00"
+                            slotProps={{
+                                htmlInput: {
+                                    min: 0
+                                }
+                            }}
+                            onChange={(e) => {
+                                setNewProduct(prev => {
+                                    const newProduct = {...prev}
+                                    const parsedValue = parseFloat(e.target.value);
+                                    const newPrice = !isNaN(parsedValue) ? parsedValue : 0;
+                                    newProduct.precio = newPrice;
+                                    return newProduct;
+                                });
+                            }}
                         />
+                    </div>
+                    
+                    {/* Manejo Disponibilidad */}
+                    <div className="w-full mb-4">
+                        <Typography variant="subtitle1" sx={{ color: '#4a5565', mb:'0.5rem' }}>
+                            Disponiblidad <Typography variant="h6" sx={{ color: 'red', display: 'inline'}}>*</Typography>
+                        </Typography>
+                        <div className="flex flex-row justify-around">
+                            <FormControlLabel
+                                    control={
+                                        <Checkbox
+                                            checked={ newProduct.estado === 'Disponible' }
+                                            onChange={(e) => {
+                                                if (e.target.checked) {
+                                                    setNewProduct(prev => ({
+                                                        ...prev,
+                                                        estado: 'Disponible'
+                                                    }));
+                                                }
+                                            }}
+                                            sx={{
+                                                color: '#6b7280',
+                                                '&.Mui-checked': {
+                                                    color: '#009689',
+                                                }
+                                            }}
+                                        />
+                                    }
+                                    label="Disponible"
+                                />
+                                <FormControlLabel
+                                    control={
+                                        <Checkbox
+                                            checked={newProduct.estado === 'No_Disponible'}
+                                            onChange={(e) => {
+                                                if (e.target.checked) {
+                                                    setNewProduct(prev => ({
+                                                        ...prev,
+                                                        estado: 'No_Disponible'
+                                                    }));
+                                                }
+                                            }}
+                                            sx={{
+                                                color: '#6b7280',
+                                                '&.Mui-checked': {
+                                                    color: '#009689',
+                                                }
+                                            }}
+                                        />
+                                    }
+                                    label="No Disponible"
+                                />
+                        </div>
                     </div>
 
                     {/* Toggle para tipo de producto */}
                     <div className="w-full mb-4">
                         <Typography variant="subtitle1" sx={{ color: '#4a5565', mb:'0.5rem' }}>
-                            Tipo de producto
+                            Tipo de producto <Typography variant="h6" sx={{ color: 'red', display: 'inline'}}>*</Typography>
                         </Typography>
                         <ToggleButtonGroup
-                            value={productType}
                             exclusive
-                            onChange={(_, newValue) => newValue && setProductType(newValue)}
+                            value={ productType }
+                            onChange={(_, newValue) => setProductType(newValue)}
                             fullWidth
                             sx={{
                                 display: 'flex',
@@ -136,150 +275,189 @@ export function NewProductModal() {
                         </ToggleButtonGroup>
                     </div>
 
-                    <div className="flex flex-col w-[98%] border-2 border-gray-300 rounded-2xl m-auto py-2 px-4">
-                        <Typography variant="subtitle1" sx={{ color: '#4a5565', mb:'0.5rem' }}>
-                            Características de la {productType.toLowerCase()}
-                        </Typography>
-
-                        {productType === 'Comida' ? (
-                            <div className="flex flex-col gap-2">
-                                {/* Tipo de plato */}
-                                <div className="flex">
-                                    <ToggleButtonGroup
-                                        value={foodType}
-                                        exclusive
-                                        onChange={(_, newValue) => newValue && setFoodType(newValue)}
-                                        fullWidth
-                                        sx={{
-                                            display: 'flex',
-                                            flexDirection: {
-                                                xs: 'column',
-                                                md: 'row'
-                                            },
-                                            gap: '8px',
-                                            '& .MuiToggleButton-root': {
-                                                border: '1px solid #d1d5db',
-                                                borderRadius: '6px',
-                                                fontSize: '0.875rem',
-                                                '&.Mui-selected': {
-                                                    backgroundColor: '#0BA6DF',
-                                                    color: 'white',
-                                                    '&:hover': {
-                                                        backgroundColor: '#0891b2',
+                    { productType &&
+                        <div className="flex flex-col w-[98%] border-2 border-gray-300 rounded-2xl m-auto py-2 px-4">
+                            
+                            {productType === 'Comida' ? (
+                                <div className="flex flex-col gap-2">
+                                    <Typography variant="subtitle1" sx={{ color: '#4a5565', mb:'0.5rem' }}>
+                                        Características de la {productType.toLowerCase()} <Typography variant="subtitle1" sx={{ color: 'red', display: 'inline'}}>*</Typography> 
+                                    </Typography>
+                                    {/* Tipo de plato */}
+                                    <div className="flex">
+                                        <ToggleButtonGroup
+                                            exclusive
+                                            value={ newProduct.tipo }
+                                            onChange={(_, newValue) => newValue && 
+                                                setNewProduct(prev => {
+                                                    const newProduct = {...prev}
+                                                    const newType = newValue
+                                                    newProduct.tipo = newType
+                                                    return newProduct;
+                                                })
+                                            }
+                                            fullWidth
+                                            sx={{
+                                                display: 'flex',
+                                                flexDirection: {
+                                                    xs: 'column',
+                                                    md: 'row'
+                                                },
+                                                gap: '8px',
+                                                '& .MuiToggleButton-root': {
+                                                    border: '1px solid #d1d5db',
+                                                    borderRadius: '6px',
+                                                    fontSize: '0.875rem',
+                                                    '&.Mui-selected': {
+                                                        backgroundColor: '#0BA6DF',
+                                                        color: 'white',
+                                                        '&:hover': {
+                                                            backgroundColor: '#0891b2',
+                                                        }
                                                     }
                                                 }
-                                            }
-                                        }}
-                                    >
-                                        <ToggleButton value="Entrada">Entrada</ToggleButton>
-                                        <ToggleButton value="Plato_Principal">Plato Principal</ToggleButton>
-                                        <ToggleButton value="Postre">Postre</ToggleButton>
-                                    </ToggleButtonGroup>
-                                </div>
+                                            }}
+                                        >
+                                            <ToggleButton value="Entrada">Entrada</ToggleButton>
+                                            <ToggleButton value="Plato_Principal">Plato Principal</ToggleButton>
+                                            <ToggleButton value="Postre">Postre</ToggleButton>
+                                        </ToggleButtonGroup>
+                                    </div>
 
-                                <div>
-                                    <Typography variant="subtitle2" sx={{ color: '#4a5565', mb:'0.5rem' }}>
-                                        Especificaciones
-                                    </Typography>
-                                    <div className="flex flex-row justify-around">
-                                        <div className="flex flex-row">
-                                            <FormControlLabel
-                                                control={
-                                                    <Checkbox
-                                                        checked={isSinGluten}
-                                                        onChange={(e) => setIsSinGluten(e.target.checked)}
-                                                        sx={{
-                                                            color: '#6b7280',
-                                                            '&.Mui-checked': {
-                                                                color: '#009689',
+                                    <div>
+                                        <Typography variant="subtitle2" sx={{ color: '#4a5565', mb:'0.5rem' }}>
+                                            Especificaciones
+                                        </Typography>
+                                        <div className="flex flex-row justify-around">
+                                            <div className="flex flex-row">
+                                                <FormControlLabel
+                                                    control={
+                                                        <Checkbox
+                                                        onChange={(e) =>
+                                                            setNewProduct(prev => {
+                                                                const newProduct = {...prev}
+                                                                const newGlutenFree = e.target.checked
+                                                                newProduct.esSinGluten = newGlutenFree
+                                                                return newProduct;
+                                                            })
+                                                        }
+                                                            sx={{
+                                                                color: '#6b7280',
+                                                                '&.Mui-checked': {
+                                                                    color: '#009689',
+                                                                }
+                                                            }}
+                                                        />
+                                                    }
+                                                    label="Sin Gluten"
+                                                    className="text-gray-700"
+                                                />
+                                                <img
+                                                    src={GlutenFreeImg}
+                                                    alt="Gluten Free"
+                                                    className="w-10 h-10"
+                                                    loading="lazy"
+                                                />
+                                            </div>
+                                            <div className="flex flex-row">
+                                                <FormControlLabel
+                                                    control={
+                                                        <Checkbox
+                                                            onChange={(e) =>
+                                                                setNewProduct(prev => {
+                                                                    const newProduct = {...prev}
+                                                                    const newVegetarian = e.target.checked
+                                                                    newProduct.esVegetariana = newVegetarian
+                                                                    return newProduct;
+                                                                })
                                                             }
-                                                        }}
-                                                    />
-                                                }
-                                                label="Sin Gluten"
-                                                className="text-gray-700"
-                                            />
-                                            <img
-                                                src={GlutenFreeImg}
-                                                alt="Gluten Free"
-                                                className="w-10 h-10"
-                                                loading="lazy"
-                                            />
-                                        </div>
-                                        <div className="flex flex-row">
-                                            <FormControlLabel
-                                                control={
-                                                    <Checkbox
-                                                        checked={isVegetariana}
-                                                        onChange={(e) => setIsVegetariana(e.target.checked)}
-                                                        sx={{
-                                                            color: '#6b7280',
-                                                            '&.Mui-checked': {
-                                                                color: '#009689',
+                                                            sx={{
+                                                                color: '#6b7280',
+                                                                '&.Mui-checked': {
+                                                                    color: '#009689',
+                                                                }
+                                                            }}
+                                                        />
+                                                    }
+                                                    label="Vegetariana"
+                                                    className="text-gray-700"
+                                                />
+                                                <img
+                                                    src={VegetarianImg}
+                                                    alt="Vegetariana"
+                                                    className="w-10 h-10"
+                                                    loading="lazy"
+                                                />
+                                            </div>
+                                            <div className="flex flex-row">
+                                                <FormControlLabel
+                                                    control={
+                                                        <Checkbox
+                                                            onChange={(e) =>
+                                                                setNewProduct(prev => {
+                                                                    const newProduct = {...prev}
+                                                                    const newVegan = e.target.checked
+                                                                    newProduct.esVegana = newVegan
+                                                                    return newProduct;
+                                                                })
                                                             }
-                                                        }}
-                                                    />
-                                                }
-                                                label="Vegetariana"
-                                                className="text-gray-700"
-                                            />
-                                            <img
-                                                src={VegetarianImg}
-                                                alt="Vegetariana"
-                                                className="w-10 h-10"
-                                                loading="lazy"
-                                            />
-                                        </div>
-                                        <div className="flex flex-row">
-                                            <FormControlLabel
-                                                control={
-                                                    <Checkbox
-                                                        checked={isVegana}
-                                                        onChange={(e) => setIsVegana(e.target.checked)}
-                                                        sx={{
-                                                            color: '#6b7280',
-                                                            '&.Mui-checked': {
-                                                                color: '#009689',
-                                                            }
-                                                        }}
-                                                    />
-                                                }
-                                                label="Vegana"
-                                                className="text-gray-700"
-                                            />
-                                            <img
-                                                src={VeganImg}
-                                                alt="Vegana"
-                                                className="w-10 h-10"
-                                                loading="lazy"
-                                            />
+                                                            sx={{
+                                                                color: '#6b7280',
+                                                                '&.Mui-checked': {
+                                                                    color: '#009689',
+                                                                }
+                                                            }}
+                                                        />
+                                                    }
+                                                    label="Vegana"
+                                                    className="text-gray-700"
+                                                />
+                                                <img
+                                                    src={VeganImg}
+                                                    alt="Vegana"
+                                                    className="w-10 h-10"
+                                                    loading="lazy"
+                                                />
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        ) : (
-                            // Bebida - solo checkbox alcohólica
-                            <div className="flex flex-row">
-                                <FormControlLabel
-                                    control={
-                                        <Checkbox
-                                            checked={isAlcoholica}
-                                            onChange={(e) => setIsAlcoholica(e.target.checked)}
-                                            sx={{
-                                                color: '#6b7280',
-                                                '&.Mui-checked': {
-                                                    color: '#009689',
-                                                }
-                                            }}
+                            ) : (
+                                // Bebida 
+                                <>
+                                    <Typography variant="subtitle1" sx={{ color: '#4a5565', mb:'0.5rem' }}>
+                                        Características de la {productType.toLowerCase()} <Typography variant="subtitle1" sx={{ color: 'red', display: 'inline'}}>*</Typography> 
+                                    </Typography>
+                                    <div className="flex flex-row mt-2">
+                                        <FormControlLabel
+                                            control={
+                                                <Checkbox
+                                                    value={ newProduct.esAlcoholica }
+                                                    onChange={(e) =>
+                                                        setNewProduct(prev => {
+                                                            const newProduct = {...prev}
+                                                            const newIsAlcoholic = e.target.checked
+                                                            newProduct.esAlcoholica = newIsAlcoholic
+                                                            return newProduct;
+                                                        })
+                                                    }
+                                                    sx={{
+                                                        color: '#6b7280',
+                                                        '&.Mui-checked': {
+                                                            color: '#009689',
+                                                        }
+                                                    }}
+                                                />
+                                            }
+                                            label="Bebida Alcohólica"
+                                            className="text-gray-700"
                                         />
-                                    }
-                                    label="Bebida Alcohólica"
-                                    className="text-gray-700"
-                                />
-                                <SportsBarIcon fontSize="large"/>
-                            </div>
-                        )}
-                    </div>
+                                        <SportsBarIcon fontSize="large"/>
+                                    </div>                        
+                                </>
+                            )}                             
+                        </div>
+                    }
                 </div>
             </DialogContent>
             
@@ -300,7 +478,7 @@ export function NewProductModal() {
                     Cancelar
                 </Button>
                 <Button 
-                    onClick={handleCloseModal}
+                    onClick={handleSubmit}
                     variant="contained"
                     sx={{ 
                         backgroundColor: '#059669',

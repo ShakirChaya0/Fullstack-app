@@ -2,6 +2,8 @@ import "tailwindcss"
 import { LoadingProductPrice } from "../components/LoadingProductPrice";
 import { Alert, Autocomplete, Chip, TextField } from "@mui/material";
 import { useProductsWithFilters } from "../hooks/useProducts";
+import type { ProductPrice } from "../interfaces/product&PriceInterfaces";
+import { useState } from 'react';
 import SearchIcon from '@mui/icons-material/Search';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
@@ -19,6 +21,7 @@ import GlutenFreeImg from '../utils/GlutenFree.png';
 import VegetarianImg from '../utils/Vegetarian.png'
 import VeganImg from '../utils/Vegan.png'
 import { NewProductModal } from "../components/NewProductModal";
+import { ModifyProductModal } from "../components/ModifyProductModal";
 
 
 export function MainPanelProduct () {
@@ -32,10 +35,19 @@ export function MainPanelProduct () {
         clearFilters 
     } = useProductsWithFilters()
 
+    const [modifyModal, setModifyModal] = useState<{state: boolean, product: ProductPrice | null}>({state: false, product: null})
+
     const handleOpenModal = () => {
-        // Dispatch --> Evento personalizado que abre el modal
+        // Implementación de modal
+        // Opción 1: Evento personalizado: Dispatch que abre la modal
         window.dispatchEvent(new CustomEvent('openNewProductModal'));
-    };
+    }
+
+    const handleOpenModifyModal = (product: ProductPrice) => {
+        // Implementación de modal
+        // Opción 2: Usando estado local 
+        setModifyModal({ state: true, product });
+    }
 
     if (isLoading) return <LoadingProductPrice/>
 
@@ -371,6 +383,7 @@ export function MainPanelProduct () {
                                 <button 
                                     className="flex justify-center items-center gap-2 bg-gray-50 border-2 hover:bg-[#ffd230] 
                                     rounded-lg font-medium transition-colors duration-200 h-[40px] w-[55%] px-1"
+                                    onClick={ () => handleOpenModifyModal(product) }
                                 >
                                     <span className="text-lg font-bold mb-1"><ModeEditIcon fontSize="small"/></span>
                                     Modificar Producto
@@ -427,7 +440,14 @@ export function MainPanelProduct () {
             </div>
 
             {/* El componente escucha el evento personalizado */}
-            <NewProductModal />
+            <NewProductModal existingProducts={ allProducts }></NewProductModal>
+            {modifyModal.state && modifyModal.product && (
+                <ModifyProductModal 
+                    isOpen={modifyModal.state}
+                    product={modifyModal.product}
+                    onClose={() => setModifyModal({state: false, product: null})}
+                />
+            )}
         
         </>
     )
