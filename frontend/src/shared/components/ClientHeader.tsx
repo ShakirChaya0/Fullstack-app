@@ -67,7 +67,11 @@ export default function ClientHeader() {
                 open={Boolean(anchorEl)}
                 onClose={handleClose}
               >
-                <MenuItem onClick={handleClose}>Profile</MenuItem>
+                <MenuItem onClick={handleClose}>
+                  <NavLink to={"/Cliente/Perfil"} >
+                    Profile
+                  </NavLink>
+                </MenuItem>                
                 <MenuItem onClick={logout}>Logout</MenuItem>
               </Menu>
             </div>

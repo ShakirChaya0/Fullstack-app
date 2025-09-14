@@ -7,6 +7,8 @@ import SkeletonTaleBody from "../features/Tables/pages/SkeletonTableBody";
 import { TableCRUD } from "../features/Tables/pages/TableCRUD";
 import { Suspense } from "react";
 import NewsCRUD from "../features/News/pages/NewsCRUD";
+import UserProfile from "../features/Profile/pages/UserProfile";
+import ProfileCardSkeleton from "../features/Profile/components/ProfileCardSkeleton";
 
 
 
@@ -26,6 +28,11 @@ export function AdminRouter() {
                 <TableCRUD/>
               </Suspense>
             }/> 
+            <Route path="/Admin/Perfil" element={
+              <Suspense fallback = {<ProfileCardSkeleton/>}>
+                <UserProfile />
+              </Suspense>
+            }/>
         </Route>
     </Routes>
   );

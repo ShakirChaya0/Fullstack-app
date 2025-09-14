@@ -39,14 +39,15 @@ export const AuthProvider = ({ children }: { children: ReactElement }) => {
                 credentials: 'include'
             });
 
+            const data = await response.json();
             if (response.ok) {
-                const data = await response.json();
                 setAccessToken(data.token);
                 
                 const userData: JwtPayloadInterface = jwtDecode(data.token);
                 setUser(userData);
             } else {
                 logout();
+                throw new Error(data.message || "Error desconocido");
             }
         } catch (error) {
             console.error('Error refreshing token:', error);
@@ -84,10 +85,14 @@ export const AuthProvider = ({ children }: { children: ReactElement }) => {
 
     const logout = async () => {
         try {
-            await fetch(`${import.meta.env.VITE_BACKEND_URL}/auth/logout`, {
+            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/auth/logout`, {
                 method: 'POST',
                 credentials: 'include'
             });
+            if (!response.ok) {
+                const data = await response.json();
+                throw new Error(data.message || "Error desconocido");
+            }
         } catch (error) {
             console.error('Error during logout:', error);
         } finally {
