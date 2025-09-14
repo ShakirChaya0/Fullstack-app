@@ -5,7 +5,6 @@ export type FieldConfig = {
     label: string;
     rules?: any;
     type?: string;
-    disabled?: boolean;
     show: (profile: UniqueProfileData) => boolean;
     component?: "controller" | "input";
 };
@@ -80,7 +79,6 @@ export function getFieldConfigs(): FieldConfig[] {
                 required: "El Nombre de Usuario es obligatorio",
                 minLength: { value: 4, message: "Debe tener al menos 4 caracteres" },
             },
-            disabled: true,
             show: () => true,
         },
     ];

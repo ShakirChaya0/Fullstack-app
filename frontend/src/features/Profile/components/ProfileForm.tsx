@@ -6,6 +6,9 @@ import { useEffect } from "react";
 import type { ProfileData, UniqueProfileData } from "../types/ProfileSharedTypes";
 import { useProfileMutation } from "../hooks/useProfileMutation";
 import { getFieldConfigs } from "../services/getFieldConfig";
+import useAuth from "../../../shared/hooks/useAuth";
+import type { Client } from "../../Login/interfaces/Client";
+import dateParser from "../../../shared/utils/dateParser";
 
 interface ProfileFormProps {
     profile: UniqueProfileData,
@@ -14,6 +17,7 @@ interface ProfileFormProps {
 }
 
 export default function ProfileForm({ profile, editMode , onEditModeChange }: ProfileFormProps) {
+    const { user } = useAuth();
     const { mutate, isPending } = useProfileMutation(onEditModeChange);
     const fieldConfigs = getFieldConfigs();
 
@@ -21,11 +25,29 @@ export default function ProfileForm({ profile, editMode , onEditModeChange }: Pr
         defaultValues: profile as ProfileData,
     });
 
-    useEffect(() => {
-        if (profile) reset(profile as ProfileData);
-    }, [profile, reset]);
+    const handleReset = () => {
+        if (profile) {
+            const formattedProfile = { ...profile };
+            
+            if ('fechaNacimiento' in profile && profile.fechaNacimiento) {
+                (formattedProfile as Client).fechaNacimiento = new Date(profile.fechaNacimiento).toISOString().split("T")[0];
+            }
+            
+            reset(formattedProfile as ProfileData);
+        }
+    }
 
-    const onSubmit = (data: ProfileData) => mutate(data);
+    useEffect(() => handleReset(), [profile, reset]);
+
+    const onSubmit = (data: ProfileData) => {
+        const formattedData = { ...data };
+
+        if ('fechaNacimiento' in formattedData && formattedData.fechaNacimiento) {
+            (formattedData as Client).fechaNacimiento = dateParser(formattedData.fechaNacimiento);
+        }
+
+        mutate({ userData: formattedData, userType: user!.tipoUsuario });
+    };
 
     return (
         <section className="w-full flex flex-col items-center">
@@ -41,17 +63,21 @@ export default function ProfileForm({ profile, editMode , onEditModeChange }: Pr
                             fullWidth
                             type={field.type || "text"}
                             variant={editMode ? "outlined" : "standard"}
-                            disabled={field.disabled || !editMode || isPending}
+                            disabled={!editMode || isPending}
                             error={!!errors[field.name as keyof ProfileData]}
                             helperText={errors[field.name as keyof ProfileData]?.message}
                             {...register(field.name as keyof ProfileData, field.rules)}
                             name={String(field.name)}
+                            {...(field.type === "date" && {
+                              slotProps: { inputLabel: { shrink: true } },
+                            })}
                         />
-                ))}
+                    ))
+                }
 
                 {editMode && (
                     <div className="flex flex-col-reverse sm:flex-row justify-center gap-5 mb-4 mt-2">
-                        <Button color="inherit" variant="outlined" startIcon={<CancelIcon />} onClick={() => { reset(profile as ProfileData); onEditModeChange(false); }} disabled={isPending}>
+                        <Button color="inherit" variant="outlined" startIcon={<CancelIcon />} onClick={() => { handleReset(); onEditModeChange(false); }} disabled={isPending}>
                             Cancelar
                         </Button>
                         <Button type="submit" color="warning" loading={isPending} loadingPosition="start" startIcon={<SaveIcon />} variant="contained">

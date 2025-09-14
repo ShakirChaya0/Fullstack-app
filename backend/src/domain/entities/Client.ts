@@ -82,7 +82,7 @@ export class Client extends User {
         this._email = email;
     }
 
-    set fechaNacimiento(fechaNacimiento: Date) {
+    set birthDate(fechaNacimiento: Date) {
         this._birthDate = fechaNacimiento;
     }
 

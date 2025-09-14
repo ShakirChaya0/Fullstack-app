@@ -154,26 +154,50 @@ export class ClientRepository implements IClienteRepository {
     }
 
     async updateClient(id: string, data: PartialClientSchema): Promise<Client> {
-        const updatedClient = await prisma.clientes.update ({
-            where: {idCliente : id}, 
-            data: {
-                ...data
-            }, 
-            include: {
-                Usuarios: true,
-                EstadosCliente: true,
-                Reserva: {
-                    include: {
-                        Mesas_Reservas: {
-                            include: {
-                                Mesa:true
+        try {
+            await prisma.usuarios.update({
+                where: { idUsuario: id },
+                data: {
+                    nombreUsuario: data.nombreUsuario,
+                    email: data.email,
+                    contrasenia: data.contrasenia
+                }
+            });
+
+            const updatedClient = await prisma.clientes.update ({
+                where: { idCliente: id }, 
+                data: {
+                    nombre: data.nombre,
+                    apellido: data.apellido,
+                    telefono: data.telefono,
+                    fechaNacimiento: data.fechaNacimiento,
+                }, 
+                include: {
+                    Usuarios: true,
+                    EstadosCliente: true,
+                    Reserva: {
+                        include: {
+                            Mesas_Reservas: {
+                                include: {
+                                    Mesa: true
+                                }
                             }
                         }
                     }
                 }
+            });
+            return this.toDomainEntity(updatedClient);
+        }
+        catch(error: any) {
+            if (error?.code === 'P2002' && error?.meta?.target?.includes('nombreUsuario')) {
+                throw new ConflictError("El nombre de usuario ingresado ya está en uso");
+            } else if (error?.code === 'P2002' && error?.meta?.target?.includes('email')) {
+                throw new ConflictError("El email ingresado ya está en uso");
             }
-        }); 
-        return this.toDomainEntity(updatedClient);
+            else {
+                throw new ServiceError(`Error al actualizar datos del usuario: ${error.message}. Inténtelo de nuevo más tarde`);
+            }
+        }
     }
 
     public async verifiedClientEmail(clientId: string): Promise<void> {

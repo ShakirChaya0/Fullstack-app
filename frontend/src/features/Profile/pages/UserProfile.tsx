@@ -9,7 +9,7 @@ import ProfileCardSkeleton from "../components/ProfileCardSkeleton";
 
 export default function UserProfile() {
     const { user } = useAuth();
-    const { data: profile, isLoading, isError } = useUserProfile(user!.username, user!.tipoUsuario as UserType);
+    const { data: profile, isLoading, isError } = useUserProfile(user!.idUsuario, user!.tipoUsuario as UserType);
     const [editMode, setEditMode] = useState(false);
 
     const handleModeChange = useCallback((editing: boolean) => {

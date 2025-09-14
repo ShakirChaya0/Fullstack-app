@@ -7,6 +7,7 @@ import { GetWaiter } from "../../application/use_cases/WaiterUseCases/GetWaiters
 import { Request, Response, NextFunction } from "express";
 import { ValidateWaiter, ValidateWaiterPartial } from "../../shared/validators/WaiterZod.js";
 import { ValidationError } from "../../shared/exceptions/ValidationError.js";
+import { AuthenticatedRequest } from "../middlewares/AuthMiddleware.js";
 
 export class WaiterController {
     constructor(
@@ -41,12 +42,11 @@ export class WaiterController {
         }
     }
 
-    public async modifyWaiter(req: Request, res: Response, next: NextFunction) {
+    public async modifyWaiter(req: AuthenticatedRequest, res: Response, next: NextFunction) {
         try {
-            const waiterId = req.params.idMozo;
-            if (!waiterId) {
-                throw new ValidationError("Se ingresar un ID válido")
-            }
+            const waiterId = req.user?.idUsuario;
+
+            if(!waiterId) throw new ValidationError('No se ingreso un ID válido');
 
             const data = req.body;
             const validation = ValidateWaiterPartial(data);
