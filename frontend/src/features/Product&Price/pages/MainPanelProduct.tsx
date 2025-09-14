@@ -22,9 +22,12 @@ import VegetarianImg from '../utils/Vegetarian.png'
 import VeganImg from '../utils/Vegan.png'
 import { NewProductModal } from "../components/NewProductModal";
 import { ModifyProductModal } from "../components/ModifyProductModal";
+import { useNavigate } from "react-router";
 
 
 export function MainPanelProduct () {
+    const navigate = useNavigate()
+
     const { 
         allProducts,
         filteredProducts,
@@ -379,72 +382,42 @@ export function MainPanelProduct () {
                                 </div>
                             </div>
                             {/* Footer de las tarjetas */}
-                            <div className="flex flew-row justify-between mt-3">
+                            <div className="flex flex-row justify-between mt-3 gap-2">
                                 <button 
-                                    className="flex justify-center items-center gap-2 bg-gray-50 border-2 hover:bg-[#ffd230] 
-                                    rounded-lg font-medium transition-colors duration-200 h-[40px] w-[55%] px-1"
+                                    className="flex justify-center items-center gap-1 bg-gray-50 border-2 hover:bg-[#ffd230] 
+                                    rounded-lg font-medium transition-colors duration-200 h-[40px] flex-1 px-1 
+                                    whitespace-nowrap text-xs md:text-sm min-w-0 overflow-hidden"
                                     onClick={ () => handleOpenModifyModal(product) }
                                 >
-                                    <span className="text-lg font-bold mb-1"><ModeEditIcon fontSize="small"/></span>
-                                    Modificar Producto
+                                    <span className="flex-shrink-0"><ModeEditIcon fontSize="small"/></span>
+                                    <span className="hidden lg:inline truncate">Modificar Producto</span>
+                                    <span className="hidden md:inline lg:hidden truncate">Modificar</span>
                                 </button>
-                                <button 
-                                    className="flex justify-center items-center gap-2 bg-gray-50 border-2 hover:bg-[#ffd230] 
-                                    rounded-lg font-medium transition-colors duration-200 h-[40px] w-[43%] px-1"
+                                <button
+                                    onClick={() => navigate(`/Admin/Productos/Precio/${product.idProducto}`)}
+                                    className="flex justify-center items-center gap-1 bg-gray-50 border-2 hover:bg-[#ffd230] 
+                                    rounded-lg font-medium transition-colors duration-200 h-[40px] flex-1 px-1 
+                                    whitespace-nowrap text-xs md:text-sm min-w-0 overflow-hidden"
                                 >
-                                    <span className="text-lg font-bold mb-1"><AttachMoneyIcon fontSize="medium"/></span>
-                                    Lista Precio
+                                    <span className="flex-shrink-0"><AttachMoneyIcon fontSize="small"/></span>
+                                    <span className="hidden lg:inline truncate">Lista Precio</span>
+                                    <span className="hidden md:inline lg:hidden truncate">Precio</span>
                                 </button>
                             </div>
 
                         </div>
                     ))}
                 </div>
-
-                {/* Debugger */}
-                <div className="bg-gray-300 p-4 rounded-lg flex flex-col w-auto">
-                    <h3 className="font-bold text-lg mb-3">🐛 Debug useProductsWithFilters</h3>
-                    
-                    {/* Estado del useQuery */}
-                    <div className="mb-4">
-                        <h4 className="font-semibold text-md mb-2">📡 Query State:</h4>
-                        <div className="bg-white p-3 rounded border">
-                            <p><span className="font-semibold">isLoading:</span> {isLoading ? '✅ true' : '❌ false'}</p>
-                            <p><span className="font-semibold">error:</span> {error ? `🔴 ${error.message}` : '✅ null'}</p>
-                            <p><span className="font-semibold">allProducts length:</span> {allProducts?.length || 0}</p>
-                        </div>
-                    </div>
-
-                    {/* Estado de los filtros */}
-                    <div className="mb-4">
-                        <h4 className="font-semibold text-md mb-2">🎛️ Filters State:</h4>
-                        <div className="bg-white p-3 rounded border">
-                            <p><span className="font-semibold">search:</span> "{filters.search}"</p>
-                            <p><span className="font-semibold">type:</span> {filters.type}</p>
-                            <p><span className="font-semibold">state:</span> {filters.state}</p>
-                        </div>
-                    </div>
-
-                    {/* Datos raw (primeros 2 productos) */}
-                    {allProducts && allProducts.length > 0 && (
-                        <div className="mb-4">
-                            <h4 className="font-semibold text-md mb-2">📋 Sample Data (first 2):</h4>
-                            <div className="bg-white p-3 rounded border">
-                                <pre className="text-xs overflow-x-auto">
-                                    {JSON.stringify(allProducts.slice(0, 2), null, 2)}
-                                </pre>
-                            </div>
-                        </div>
-                    )}
-                </div>
             </div>
 
             {/* El componente escucha el evento personalizado */}
             <NewProductModal existingProducts={ allProducts }></NewProductModal>
+            {/* Se maneja su estado desde este página */}
             {modifyModal.state && modifyModal.product && (
                 <ModifyProductModal 
                     isOpen={modifyModal.state}
                     product={modifyModal.product}
+                    existingProducts={ allProducts }
                     onClose={() => setModifyModal({state: false, product: null})}
                 />
             )}

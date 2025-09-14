@@ -1,24 +1,46 @@
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, ToggleButton, ToggleButtonGroup, FormControlLabel, Checkbox, Typography } from "@mui/material";
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, ToggleButton, ToggleButtonGroup, FormControlLabel, Checkbox, Typography, Alert } from "@mui/material";
 import ModeEditIcon from '@mui/icons-material/ModeEdit';
 import RestaurantIcon from '@mui/icons-material/Restaurant';
 import LocalBarIcon from '@mui/icons-material/LocalBar';
-import { useState } from "react";
+import { useRef, useState } from "react";
 import GlutenFreeImg from '../utils/GlutenFree.png';
 import VegetarianImg from '../utils/Vegetarian.png'
 import VeganImg from '../utils/Vegan.png'
 import SportsBarIcon from '@mui/icons-material/SportsBar';
-import type { ProductPrice } from "../interfaces/product&PriceInterfaces";
+import type { ProductPrice, ProductWithoutPrice } from "../interfaces/product&PriceInterfaces";
+import { isValidProduct } from "../utils/isValidProduct";
+import { isValidNameProduct } from "../utils/isValidNameProduct";
+import { useMutationProductModification } from "../hooks/useMutationProducts";
 
 
-export function ModifyProductModal({ isOpen, product, onClose}: { isOpen: boolean, product: ProductPrice, onClose: () => void }) { 
+export function ModifyProductModal({ isOpen, product, existingProducts, onClose}: { isOpen: boolean, product: ProductPrice, existingProducts: ProductPrice[], onClose: () => void }) { 
+    //Guardando el valor original del producto
+    const productBefModification = useRef<ProductWithoutPrice | null>(null);
+
+    // Inicializar el valor original solo la primera vez
+    if (productBefModification.current === null) {
+        productBefModification.current = {
+            idProducto: product.idProducto,
+            nombre: product.nombre,
+            descripcion: product.descripcion,
+            estado: product.estado,
+            esAlcoholica: product.esAlcoholica,
+            tipo: product.tipo,
+            esSinGluten: product.esSinGluten,
+            esVegetariana: product.esVegetariana,
+            esVegana: product.esVegana
+        };
+    }
+    
+    // Estado para manejar el error del formulario
+    const [modalError, setModalError] = useState('')
     
     // Estados para el formulario
-    const [newProduct, setNewProduct] = useState<ProductPrice>({
+    const [newProduct, setNewProduct] = useState<ProductWithoutPrice>({
         idProducto: product.idProducto,
         nombre: product.nombre,
         descripcion: product.descripcion,
         estado: product.estado,
-        precio: product.precio,
         esAlcoholica: product.esAlcoholica,
         tipo: product.tipo,
         esSinGluten: product.esSinGluten,
@@ -26,14 +48,43 @@ export function ModifyProductModal({ isOpen, product, onClose}: { isOpen: boolea
         esVegana: product.esVegana
     })
 
-    const [foodType, setFoodType] = useState(product.tipo ? product.tipo : ''); // 'Entrada', 'Plato_Principal', 'Postre'
-    const [isSinGluten, setIsSinGluten] = useState(product.esSinGluten ? true : false);
-    const [isVegetariana, setIsVegetariana] = useState(product.esVegetariana ? true : false);
-    const [isVegana, setIsVegana] = useState(product.esVegana ? true : false);
-    const [isAlcoholica, setIsAlcoholica] = useState(product.esAlcoholica ? true : false);
+    const { modifyProductMutation } = useMutationProductModification({ newProduct, productBefModification, setModalError, onClose })
 
     const handleCloseModal = () => {
         onClose()
+    }
+
+    const handleSubmit = () => {
+        if(!isValidProduct(newProduct, newProduct.tipo ? 'Comida' : 'Bebida')) {
+            setModalError('Todos los campos deben ser completados')
+            return
+        }
+        if(!isValidNameProduct(newProduct.nombre, existingProducts)) {
+            setModalError('El nombre del nuevo producto ya existe')
+            return
+        }
+        if(newProduct.nombre.length < 3) {
+            setModalError('El nombre debe tener una longitud de más de 2 caracteres')
+            return
+        }
+        if(newProduct.nombre.length > 255) {
+            setModalError('El nombre no puede tener una longitud mayor a 255 caracteres')
+            return
+        }
+        if(newProduct.descripcion.length < 10) {
+            setModalError('La descripcion debe tener una longitud de más de 10 caracteres')
+            return
+        }
+        if(newProduct.descripcion.length > 255) {
+            setModalError('La nombre debe tener una longitud de más de 2 caracteres')
+            return
+        }
+        //Solo ejecuto el mutation si el producto cambio al menos un valor respecto al original  
+        if(JSON.stringify(newProduct) === JSON.stringify(productBefModification.current)) {
+            onClose()
+            return 
+        }
+        modifyProductMutation.mutate()
     }
 
     return (
@@ -63,12 +114,21 @@ export function ModifyProductModal({ isOpen, product, onClose}: { isOpen: boolea
                 color: 'black',
             }}>
                 <ModeEditIcon sx={{mb: "5px"}}/> Modificar Producto
+                { modalError && 
+                    (
+                        <Alert severity="error">
+                            { modalError }
+                        </Alert>
+                    )}
             </DialogTitle>
             
             <DialogContent>
                 <div className="flex flex-col">
                     <Typography variant="h6" sx={{ color: '#4a5565', mb:'1rem' }}>
                         Modifique lo que desee de su producto.
+                    </Typography>
+                    <Typography variant="subtitle1" sx={{ color: '#4a5565', mb:'0.5rem' }}>
+                        Campos básicos <Typography variant="subtitle1" sx={{ color: 'red', display: 'inline'}}>*</Typography>
                     </Typography>
 
                     {/* Campos básicos */}
@@ -105,28 +165,12 @@ export function ModifyProductModal({ isOpen, product, onClose}: { isOpen: boolea
                                 });
                             }}
                         />
-                        <TextField
-                            label="Precio"
-                            variant="outlined"
-                            type="number"
-                            fullWidth
-                            placeholder="0.00"
-                            value={newProduct.precio}
-                            onChange={(e) => {
-                                setNewProduct(prev => {
-                                    const productModify = {...prev}
-                                    const newPrice = parseFloat(e.target.value)
-                                    productModify.precio = newPrice
-                                    return productModify;
-                                });
-                            }}
-                        />
                     </div>
 
                     {/* Manejo Disponibilidad */}
                     <div className="w-full mb-4">
-                        <Typography variant="subtitle2" sx={{ color: '#4a5565', mb:'0.5rem' }}>
-                            Disponiblidad
+                        <Typography variant="subtitle1" sx={{ color: '#4a5565', mb:'0.5rem' }}>
+                            Disponiblidad <Typography variant="subtitle1" sx={{ color: 'red', display: 'inline'}}>*</Typography>
                         </Typography>
                         <div className="flex flex-row justify-around">
                             <FormControlLabel
@@ -179,7 +223,7 @@ export function ModifyProductModal({ isOpen, product, onClose}: { isOpen: boolea
                     {/* Toggle para tipo de producto */}
                     <div className="w-full mb-4">
                         <Typography variant="subtitle1" sx={{ color: '#4a5565', mb:'0.5rem' }}>
-                            Tipo de producto
+                            Tipo de producto <Typography variant="subtitle1" sx={{ color: 'red', display: 'inline'}}>*</Typography>
                         </Typography>
                         <ToggleButtonGroup
                             value={product.tipo ? 'Comida' : 'Bebida'}
@@ -217,7 +261,7 @@ export function ModifyProductModal({ isOpen, product, onClose}: { isOpen: boolea
 
                     <div className="flex flex-col w-[98%] border-2 border-gray-300 rounded-2xl m-auto py-2 px-4">
                         <Typography variant="subtitle1" sx={{ color: '#4a5565', mb:'0.5rem' }}>
-                            Características de la {product.tipo ? 'comida' : 'bebida'}
+                            Características de la {product.tipo ? `comida ${<Typography variant="subtitle1" sx={{ color: 'red', display: 'inline'}}>*</Typography>}` : 'bebida'} 
                         </Typography>
 
                         {product.tipo ? (
@@ -225,9 +269,16 @@ export function ModifyProductModal({ isOpen, product, onClose}: { isOpen: boolea
                                 {/* Tipo de plato */}
                                 <div className="flex">
                                     <ToggleButtonGroup
-                                        value={foodType}
+                                        value={ newProduct.tipo }
                                         exclusive
-                                        onChange={(_, newValue) => newValue && setFoodType(newValue)}
+                                        onChange={(_, newValue) => newValue && 
+                                            setNewProduct(prev => {
+                                                const newProduct = {...prev}
+                                                const newType = newValue
+                                                newProduct.tipo = newType
+                                                return newProduct;
+                                            })
+                                        }
                                         fullWidth
                                         sx={{
                                             display: 'flex',
@@ -265,8 +316,15 @@ export function ModifyProductModal({ isOpen, product, onClose}: { isOpen: boolea
                                             <FormControlLabel
                                                 control={
                                                     <Checkbox
-                                                        checked={isSinGluten}
-                                                        onChange={(e) => setIsSinGluten(e.target.checked)}
+                                                        checked={ newProduct.esSinGluten }
+                                                        onChange={(e) =>
+                                                            setNewProduct(prev => {
+                                                                const newProduct = {...prev}
+                                                                const newGlutenFree = e.target.checked
+                                                                newProduct.esSinGluten = newGlutenFree
+                                                                return newProduct;
+                                                            })
+                                                        }
                                                         sx={{
                                                             color: '#6b7280',
                                                             '&.Mui-checked': {
@@ -289,8 +347,15 @@ export function ModifyProductModal({ isOpen, product, onClose}: { isOpen: boolea
                                             <FormControlLabel
                                                 control={
                                                     <Checkbox
-                                                        checked={isVegetariana}
-                                                        onChange={(e) => setIsVegetariana(e.target.checked)}
+                                                        checked={ newProduct.esVegetariana }
+                                                        onChange={(e) =>
+                                                            setNewProduct(prev => {
+                                                                const newProduct = {...prev}
+                                                                const newVegetarian = e.target.checked
+                                                                newProduct.esVegetariana = newVegetarian
+                                                                return newProduct;
+                                                            })
+                                                        }
                                                         sx={{
                                                             color: '#6b7280',
                                                             '&.Mui-checked': {
@@ -313,8 +378,15 @@ export function ModifyProductModal({ isOpen, product, onClose}: { isOpen: boolea
                                             <FormControlLabel
                                                 control={
                                                     <Checkbox
-                                                        checked={isVegana}
-                                                        onChange={(e) => setIsVegana(e.target.checked)}
+                                                        checked={ newProduct.esVegana }
+                                                        onChange={(e) =>
+                                                            setNewProduct(prev => {
+                                                                const newProduct = {...prev}
+                                                                const newVegan = e.target.checked
+                                                                newProduct.esVegana = newVegan
+                                                                return newProduct;
+                                                            })
+                                                        }
                                                         sx={{
                                                             color: '#6b7280',
                                                             '&.Mui-checked': {
@@ -342,8 +414,15 @@ export function ModifyProductModal({ isOpen, product, onClose}: { isOpen: boolea
                                 <FormControlLabel
                                     control={
                                         <Checkbox
-                                            checked={isAlcoholica}
-                                            onChange={(e) => setIsAlcoholica(e.target.checked)}
+                                            checked={ newProduct.esAlcoholica }
+                                            onChange={(e) =>
+                                                setNewProduct(prev => {
+                                                    const newProduct = {...prev}
+                                                    const newIsAlcoholic = e.target.checked
+                                                    newProduct.esAlcoholica = newIsAlcoholic
+                                                    return newProduct;
+                                                })
+                                            }
                                             sx={{
                                                 color: '#6b7280',
                                                 '&.Mui-checked': {
@@ -379,7 +458,7 @@ export function ModifyProductModal({ isOpen, product, onClose}: { isOpen: boolea
                     Cancelar
                 </Button>
                 <Button 
-                    onClick={handleCloseModal}
+                    onClick={handleSubmit}
                     variant="contained"
                     sx={{ 
                         backgroundColor: '#059669',

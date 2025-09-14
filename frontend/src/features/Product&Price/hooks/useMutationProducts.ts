@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { saveProductToBackend } from "../services/product&PriceService";
-import type { useMutationProductRegistrationProps } from "../interfaces/product&PriceInterfaces";
+import { modifyProductToBackend, saveProductToBackend } from "../services/product&PriceService";
+import type { useMutationProductModificationProps, useMutationProductRegistrationProps } from "../interfaces/product&PriceInterfaces";
 
 export function useMutationProductRegistration ({ newProduct, setNewProduct, setProductType, setModalError, setIsModalOpen }: useMutationProductRegistrationProps ) {
     const queryClient = useQueryClient();
@@ -38,4 +38,27 @@ export function useMutationProductRegistration ({ newProduct, setNewProduct, set
     });
 
     return { saveProductMutation }
+}
+
+export function useMutationProductModification ({ newProduct, productBefModification, setModalError, onClose }: useMutationProductModificationProps ) {
+    const queryClient = useQueryClient();
+    
+    // useMutation para manejar la actualización de horarios (POST)
+    const modifyProductMutation = useMutation({
+        mutationFn: () => modifyProductToBackend(newProduct, productBefModification),
+        onSuccess: () => {
+        // Invalidar query para refrescar datos del backend
+        queryClient.invalidateQueries({ queryKey: ['products'] });
+
+        setModalError('')
+
+        // Cerrando la modal
+        onClose()
+        },
+        onError: (err: Error) => {
+            throw new Error(`Error al registrar el producto: ${err.message}`);
+        }
+    });
+
+    return { modifyProductMutation }
 }

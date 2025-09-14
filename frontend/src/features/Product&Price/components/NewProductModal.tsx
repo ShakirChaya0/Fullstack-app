@@ -9,9 +9,9 @@ import VeganImg from '../utils/Vegan.png'
 import SportsBarIcon from '@mui/icons-material/SportsBar';
 import type { ProductPrice, ProductPriceWithoutID } from "../interfaces/product&PriceInterfaces";
 import { useMutationProductRegistration } from "../hooks/useMutationProducts";
-import { isValidProduct } from "../utils/isValidProduct";
 import { isValidNameProduct } from "../utils/isValidNameProduct";
 import type { ProductType } from "../types/product&PriceTypes";
+import { isValidProduct } from "../utils/isValidProduct";
 
 export function NewProductModal({ existingProducts }: { existingProducts: ProductPrice[]}) {
     // NewProductModal maneja su estado de manera interna
@@ -78,6 +78,26 @@ export function NewProductModal({ existingProducts }: { existingProducts: Produc
         }
         if(!isValidNameProduct(newProduct.nombre, existingProducts)) {
             setModalError('El nombre del nuevo producto ya existe')
+            return
+        }
+        if(newProduct.nombre.length < 3) {
+            setModalError('El nombre debe tener una longitud de más de 2 caracteres')
+            return
+        }
+        if(newProduct.nombre.length > 255) {
+            setModalError('El nombre no puede tener una longitud mayor a 255 caracteres')
+            return
+        }
+        if(newProduct.descripcion.length < 10) {
+            setModalError('La descripcion debe tener una longitud de más de 10 caracteres')
+            return
+        }
+        if(newProduct.descripcion.length > 255) {
+            setModalError('La nombre debe tener una longitud de más de 2 caracteres')
+            return
+        }
+        if(newProduct.precio === 0) {
+            setModalError('El precio debe tener un valor válido')
             return
         }
         saveProductMutation.mutate()
@@ -162,22 +182,32 @@ export function NewProductModal({ existingProducts }: { existingProducts: Produc
                         <TextField
                             label="Precio"
                             variant="outlined"
-                            type="number"
                             fullWidth
-                            placeholder="0.00"
-                            slotProps={{
-                                htmlInput: {
-                                    min: 0
-                                }
-                            }}
+                            placeholder="0,00"
                             onChange={(e) => {
                                 setNewProduct(prev => {
                                     const newProduct = {...prev}
-                                    const parsedValue = parseFloat(e.target.value);
-                                    const newPrice = !isNaN(parsedValue) ? parsedValue : 0;
+                                    if(e.target.value.indexOf(',') !== -1 && e.target.value.indexOf("-") === e.target.value.lastIndexOf("-")) { //Validando que tenga un formato correcto
+                                        const newValue = e.target.value.replace(',','.')
+                                        const newPrice = !isNaN(parseFloat(newValue)) ? parseFloat(newValue) : 0
+                                        newProduct.precio = newPrice
+                                        return newProduct
+                                    }
+                                    const newPrice = !isNaN(parseFloat(e.target.value)) ? parseFloat(e.target.value) : 0
                                     newProduct.precio = newPrice;
                                     return newProduct;
                                 });
+                            }}
+                            onBlur={(e) => {
+                                // Formatear a 2 decimales cuando pierde el foco
+                                const value = parseFloat(e.target.value.indexOf(',') !== -1 ? e.target.value.replace(',','.') : e.target.value) || 0
+                                const formatted = value.toFixed(2)
+                                e.target.value = formatted
+                                
+                                setNewProduct(prev => ({
+                                    ...prev,
+                                    precio: parseFloat(formatted)
+                                }));
                             }}
                         />
                     </div>
@@ -243,7 +273,25 @@ export function NewProductModal({ existingProducts }: { existingProducts: Produc
                         <ToggleButtonGroup
                             exclusive
                             value={ productType }
-                            onChange={(_, newValue) => setProductType(newValue)}
+                            onChange={(_, newValue) => {
+                                if (newValue === 'Comida') {
+                                    setNewProduct(prev => ({
+                                        ...prev,
+                                        esAlcoholica: undefined
+                                    }));
+                                }
+                                if (newValue === 'Bebida') {
+                                    setNewProduct(prev => ({
+                                        ...prev,
+                                        tipo: undefined,
+                                        esSinGluten: undefined,
+                                        esVegetariana: undefined,
+                                        esVegana: undefined
+                                    }));
+                                }
+
+                                setProductType(newValue)
+                            }}
                             fullWidth
                             sx={{
                                 display: 'flex',
@@ -426,7 +474,7 @@ export function NewProductModal({ existingProducts }: { existingProducts: Produc
                                 // Bebida 
                                 <>
                                     <Typography variant="subtitle1" sx={{ color: '#4a5565', mb:'0.5rem' }}>
-                                        Características de la {productType.toLowerCase()} <Typography variant="subtitle1" sx={{ color: 'red', display: 'inline'}}>*</Typography> 
+                                        Características de la {productType.toLowerCase()} 
                                     </Typography>
                                     <div className="flex flex-row mt-2">
                                         <FormControlLabel

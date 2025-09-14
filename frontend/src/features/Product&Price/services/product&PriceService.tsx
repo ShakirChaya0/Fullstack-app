@@ -1,10 +1,8 @@
-import type { ProductPriceWithoutID } from "../interfaces/product&PriceInterfaces"
-
-// Variable de entorno
-const PRODUCTS_URL = import.meta.env.VITE_PRODUCTS_URL
+import type { RefObject } from "react"
+import type { ProductPriceWithoutID, ProductWithoutPrice } from "../interfaces/product&PriceInterfaces"
 
 export const getProductsData = async () => {
-  const response = await fetch(PRODUCTS_URL, {
+  const response = await fetch(import.meta.env.VITE_PRODUCTS_URL, {
     method: 'GET',
     headers: { 'Content-Type': 'application/json' }
   })
@@ -96,4 +94,82 @@ export const saveProductToBackend = async (newProduct: ProductPriceWithoutID) =>
     console.error('Error en saveProductToBackend:', error);
     throw error;
   }
+}
+
+export const modifyProductToBackend = async (newModification: ProductWithoutPrice, productBefModification: RefObject<ProductWithoutPrice | null>) => {
+  if(productBefModification.current === null) throw new Error('Error con el producto original') //No debería dispararse en ninguna situación
+  
+  const valuesToModify = {
+    nombre: newModification.nombre !== productBefModification.current.nombre ? newModification.nombre : undefined,
+    descripcion: newModification.descripcion !== productBefModification.current.descripcion ? newModification.descripcion : undefined,
+    estado: newModification.estado !== productBefModification.current.estado ? newModification.estado : undefined,
+    tipo: newModification.tipo !== productBefModification.current.tipo ? newModification.tipo : undefined,
+    esSinGluten: newModification.esSinGluten !== productBefModification.current.esSinGluten ? newModification.esSinGluten : undefined,
+    esVegetariana: newModification.esVegetariana !== productBefModification.current.esVegetariana ? newModification.esVegetariana : undefined,
+    esVegana: newModification.esVegana !== productBefModification.current.esVegana ? newModification.esVegana : undefined,
+    esAlcoholica: newModification.esAlcoholica !== productBefModification.current.esAlcoholica ? newModification.esAlcoholica : undefined
+  }
+
+  const response = await fetch(`${import.meta.env.VITE_NEW_PRODUCT_MODIFICATION_URL}${newModification.idProducto}`, {
+    method: 'PATCH',
+    headers: { 
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzdWFyaW8iOiJlNTM0YjUyMS1iNzEwLTRhNjQtOGUyOC1iMTZkMTY5ZDVlYjQiLCJlbWFpbCI6InBlcGVAZ21haWwuY29tIiwidGlwb1VzdWFyaW8iOiJBZG1pbmlzdHJhZG9yIiwidXNlcm5hbWUiOiJQZXBlUm9kcmlndWV6MTIzIiwiaWF0IjoxNzU3ODIxNTEzLCJleHAiOjE3NTg0MjYzMTN9.lzxHfV1eUrdKXxjgS7GpzitkCyRI2Co7Cg0JEobn1hI'
+      // Hardcodeando el jwt, CAMBIAR
+    },
+    body: JSON.stringify(valuesToModify)
+  })
+
+  if (!response.ok) {
+    // Si es 404, intentar obtener el mensaje del JSON del backend
+    if (response.status === 404) {
+      try {
+        const errorData = await response.json()
+        const error = new Error(errorData.message || 'Error al registrar el cambio')
+        error.name = 'NotFoundError'
+        throw error
+      } catch {
+        // Si no se puede parsear el JSON, usar mensaje por defecto
+        const error = new Error('Error al registrar el cambio')
+        error.name = 'NotFoundError'
+        throw error
+      }
+    }
+    // Para otros errores
+    throw new Error(`Error ${response.status}: ${response.statusText}`)
+  }
+
+  return response.json()
+}
+
+export const getPriceData = async (productId: string) => {
+  const response = await fetch(`${import.meta.env.VITE_REQUEST_PRICE_LIST_URL}${productId}`, {
+    method: 'GET',
+    headers: { 
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzdWFyaW8iOiJlNTM0YjUyMS1iNzEwLTRhNjQtOGUyOC1iMTZkMTY5ZDVlYjQiLCJlbWFpbCI6InBlcGVAZ21haWwuY29tIiwidGlwb1VzdWFyaW8iOiJBZG1pbmlzdHJhZG9yIiwidXNlcm5hbWUiOiJQZXBlUm9kcmlndWV6MTIzIiwiaWF0IjoxNzU3ODgxNDgyLCJleHAiOjE3NTg0ODYyODJ9.pLHsPrEXrd51Tanw5hCYKsTA3CjQNwEhZ86G_FJMwCU'
+      // Hardcodeando el jwt, CAMBIAR
+    }
+  })
+
+  if (!response.ok) {
+    // Si es 404, intentar obtener el mensaje del JSON del backend
+    if (response.status === 404) {
+      try {
+        const errorData = await response.json()
+        const error = new Error(errorData.message || `No hay precios cargados para el producto ${productId}`)
+        error.name = 'NotFoundError'
+        throw error
+      } catch {
+        // Si no se puede parsear el JSON, usar mensaje por defecto
+        const error = new Error(`No hay precios cargados para el producto ${productId}`)
+        error.name = 'NotFoundError'
+        throw error
+      }
+    }
+    // Para otros errores
+    throw new Error(`Error ${response.status}: ${response.statusText}`)
+  }
+
+  return response.json()
 }
