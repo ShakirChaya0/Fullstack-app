@@ -12,10 +12,11 @@ export type LineaPedido = {
 type Pedido = {
     lineasPedido: LineaPedido[],
     estado: string,
-    observaciones: string
+    observaciones: string,
+    comensales: number
 }
 
-const defaultState = {lineasPedido: [], estado: "", observaciones: ""}
+const defaultState = {lineasPedido: [], estado: "", observaciones: "", comensales: 0}
 
 const initialState: Pedido = (() => {
     const persistedState = localStorage.getItem("order")
@@ -58,10 +59,13 @@ export const orderSlice = createSlice({
                 }
                 state.lineasPedido[index] = newLp
             }
+        },
+        confirmOrder: (state, action: PayloadAction<{comensales: number, observaciones: string}>) => {
+            console.log(action)
         }
     }
 })
 
 export default orderSlice.reducer
 
-export const { addToCart, removeFromCart } = orderSlice.actions
+export const { addToCart, removeFromCart, confirmOrder } = orderSlice.actions

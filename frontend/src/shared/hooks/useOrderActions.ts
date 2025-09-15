@@ -1,4 +1,4 @@
-import { addToCart, removeFromCart } from "../../store/slices/orderSlice"
+import { addToCart, confirmOrder, removeFromCart } from "../../store/slices/orderSlice"
 import { useAppDispatch } from "./store"
 
 
@@ -13,5 +13,9 @@ export const useOrderActions = () => {
         dispatch(removeFromCart(nombreProducto))
     }
 
-    return { handleAddToCart, hanldeRemoveFromCart }
+    const handleConfirmOrder = ({comensales, observaciones}: {comensales: number, observaciones: string}) => {
+        dispatch(confirmOrder({comensales: comensales, observaciones: observaciones}))
+    }
+
+    return { handleAddToCart, hanldeRemoveFromCart, handleConfirmOrder }
 }

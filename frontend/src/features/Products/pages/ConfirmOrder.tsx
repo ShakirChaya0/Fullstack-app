@@ -16,7 +16,7 @@ import type { FormEvent } from "react"
 
 export default function ConfirmOrder() {
   const order = useAppSelector((state) => state.order)
-  const { handleAddToCart, hanldeRemoveFromCart } = useOrderActions()
+  const { handleAddToCart, hanldeRemoveFromCart, handleConfirmOrder } = useOrderActions()
 
   const handleAdd = (lp: LineaPedido) => {
     handleAddToCart({
@@ -33,19 +33,20 @@ export default function ConfirmOrder() {
     const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault()
         const formData = new FormData(event.currentTarget)
-        console.log(Object.fromEntries(formData.entries()))
+        const data = Object.fromEntries(formData.entries())
+        handleConfirmOrder({comensales: +data.cantidad, observaciones: data.observaciones.toString()})
     }
 
   return (
     <section className="p-4 flex w-full items-center justify-center">
-      <div className="md:border py-4 md:border-gray-300 md:shadow-2xl min-h-[500px] w-full max-w-3xl md:rounded-2xl">
-        <h1 className="text-2xl font-bold text-center mb-4">Mi Pedido</h1>
+      <div className="md:border flex flex-col justify-between py-4 md:border-gray-300 md:shadow-2xl min-h-[500px] w-full max-w-3xl md:rounded-2xl">
+        <h1 className="text-2xl font-bold text-center">Mi Pedido</h1>
 
         <div className="md:hidden flex flex-col gap-4">
           {order.lineasPedido.map((lp) => (
             <div
               key={lp.nombreProducto}
-              className="flex flex-col gap-2 border rounded-xl shadow-sm p-3"
+              className="flex flex-col gap-2 border border-gray-300 rounded-xl shadow-sm p-3"
             >
               <div className="flex justify-between items-center">
                 <div className="flex flex-col max-w-[200px]">
@@ -72,22 +73,27 @@ export default function ConfirmOrder() {
               </div>
 
               <div
-                className="self-center border group hover:border-orange-500 
-                rounded-md hover:bg-white transition-all duration-200 bg-orange-500
-                text-white font-medium flex flex-row justify-around items-center gap-1 w-full"
+                className="self-center border rounded-md 
+                transition-all duration-200 bg-orange-500
+                text-white font-medium flex flex-row justify-around 
+                items-center gap-1 w-fit"
               >
                 <button
                   onClick={() => handleAdd(lp)}
-                  className="cursor-pointer h-full w-full py-1.5 px-2"
+                  className="cursor-pointer h-full w-full py-1.5 px-2 bg-orange-500 hover:scale-105
+                   hover:bg-orange-600 rounded-l-md transition-all ease-linear duration-150 
+                   active:bg-orange-700 active:scale-100"
                 >
-                  <ControlPointIcon className="group-hover:text-orange-500" />
+                  <ControlPointIcon/>
                 </button>
-                <p className="group-hover:text-orange-500">{lp.cantidad}</p>
+                <p>{lp.cantidad}</p>
                 <button
                   onClick={() => handleRemove(lp.nombreProducto)}
-                  className="cursor-pointer h-full w-full py-1.5 px-2"
+                  className="cursor-pointer h-full w-full py-1.5 px-2 bg-orange-500 hover:scale-105
+                   hover:bg-orange-600 rounded-r-md transition-all ease-linear duration-150
+                   active:bg-orange-700 active:scale-100"
                 >
-                  <RemoveCircleOutlineIcon className="group-hover:text-orange-500" />
+                  <RemoveCircleOutlineIcon/>
                 </button>
               </div>
             </div>
@@ -97,65 +103,97 @@ export default function ConfirmOrder() {
               <label htmlFor="cantComensales">
                 Cantidad de comensales: 
               </label>
-                <input required name="cantidad" type="number" placeholder="ej:12" id="cantComensales" className="py-0.5 px-1 w-12 outline-0 rounded-lg bg-gray-300"/>
+                <input required name="cantidad" type="number" placeholder="ej:12" id="cantComensales" 
+                className="py-0.5 px-1 w-12 outline-0 rounded-lg bg-gray-300"
+                onInput={(e) => {
+                  if (e.currentTarget.valueAsNumber < 1) e.currentTarget.value = "1";
+                }}
+                />
             </div>
             <div className="flex flex-col">
               <label htmlFor="">Observaciones: </label>
               <textarea name="observaciones" className="bg-gray-300 rounded-2xl py-2 px-4" placeholder="ej: sacale el chorizo al choripan" rows={4} id=""/>
             </div>
-            <div className="flex justify-center">
-              <button className="py-2 px-4 bg-orange-500 rounded-lg shadow-lg text-white font-bold">Confirmar Pedido</button>
-            </div>
+              <button className="active:bg-orange-700 hover:scale-105 transition-all 
+              ease-linear duration-100 active:scale-95 m-auto py-2 px-4 bg-orange-500 
+              rounded-lg shadow-lg text-white font-bold cursor-pointer hover:bg-orange-600">Confirmar Pedido</button>
           </form>
         </div>
 
-        <TableContainer component={Paper} className="hidden md:block">
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell>Producto</TableCell>
-                <TableCell>Descripción</TableCell>
-                <TableCell align="right">Cantidad</TableCell>
-                <TableCell align="right">Precio</TableCell>
-                <TableCell align="right">Subtotal</TableCell>
-                <TableCell align="center">Acciones</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {order.lineasPedido.map((lp) => (
-                <TableRow key={lp.nombreProducto}>
-                  <TableCell>{lp.nombreProducto}</TableCell>
-                  <TableCell>{lp.descripcion}</TableCell>
-                  <TableCell align="right">{lp.cantidad}</TableCell>
-                  <TableCell align="right">${lp.precio}</TableCell>
-                  <TableCell align="right">${lp.subtotal}</TableCell>
-                  <TableCell align="center">
-                    <div
-                      className="self-center border group hover:border-orange-500 
-                      rounded-md hover:bg-white transition-all duration-200 bg-orange-500
-                      text-white font-medium flex flex-row justify-around items-center gap-1 w-fit"
-                    >
-                      <button
-                        onClick={() => handleAdd(lp)}
-                        className="cursor-pointer h-full w-full py-1.5 px-2"
-                      >
-                        <ControlPointIcon className="group-hover:text-orange-500" />
-                      </button>
-                      <p className="group-hover:text-orange-500">{lp.cantidad}</p>
-                      <button
-                        onClick={() => handleRemove(lp.nombreProducto)}
-                        className="cursor-pointer h-full w-full py-1.5 px-2"
-                      >
-                        <RemoveCircleOutlineIcon className="group-hover:text-orange-500" />
-                      </button>
+            <TableContainer component={Paper} className="hidden md:block">
+                <Table>
+                    <TableHead>
+                        <TableRow sx={{bgcolor: "black"}}>
+                          <TableCell sx={{ color: "white"}}>Producto</TableCell>
+                          <TableCell sx={{ color: "white"}}>Descripción</TableCell>
+                          <TableCell align="right" sx={{ color: "white"}}>Cantidad</TableCell>
+                          <TableCell align="right" sx={{ color: "white"}}>Precio</TableCell>
+                          <TableCell align="right" sx={{ color: "white"}}>Subtotal</TableCell>
+                          <TableCell align="center" sx={{ color: "white"}}>Acciones</TableCell>
+                        </TableRow>
+                    </TableHead>
+                    <TableBody> 
+                    {order.lineasPedido.map((lp) => (
+                        <TableRow key={lp.nombreProducto}>
+                            <TableCell>{lp.nombreProducto}</TableCell>
+                            <TableCell>{lp.descripcion}</TableCell>
+                            <TableCell align="right">{lp.cantidad}</TableCell>
+                            <TableCell align="right">${lp.precio}</TableCell>
+                            <TableCell align="right">${lp.subtotal}</TableCell>
+                            <TableCell align="center">
+                                <div
+                                  className="self-center border rounded-md 
+                                  transition-all duration-200 bg-orange-500
+                                  text-white font-medium flex flex-row justify-around 
+                                  items-center gap-1 w-fit"
+                                >
+                                    <button
+                                      onClick={() => handleAdd(lp)}
+                                      className="cursor-pointer h-full w-full py-1.5 px-2 bg-orange-500 hover:scale-105
+                                       hover:bg-orange-600 rounded-l-md transition-all ease-linear duration-150 
+                                       active:bg-orange-700 active:scale-100"
+                                    >
+                                      <ControlPointIcon/>
+                                    </button>
+                                    <p>{lp.cantidad}</p>
+                                    <button
+                                      onClick={() => handleRemove(lp.nombreProducto)}
+                                      className="cursor-pointer h-full w-full py-1.5 px-2 bg-orange-500 hover:scale-105
+                                       hover:bg-orange-600 rounded-r-md transition-all ease-linear duration-150
+                                       active:bg-orange-700 active:scale-100"
+                                    >
+                                      <RemoveCircleOutlineIcon/>
+                                    </button>
+                                </div>
+                            </TableCell>
+                        </TableRow>
+                        ))}
+                    </TableBody>
+                </Table>
+            </TableContainer>
+            <div className="hidden md:block p-2">
+                <form className="flex flex-col gap-3" onSubmit={handleSubmit}>
+                    <div className="flex flex-row gap-3">
+                      <label htmlFor="cantComensales">
+                        Cantidad de comensales: 
+                      </label>
+                        <input required name="cantidad" type="number" min={1} id="cantComensales" placeholder="ej:1" 
+                        className="py-0.5 px-1 w-12 outline-0 rounded-lg bg-gray-300"
+                        onInput={(e) => {
+                          if (e.currentTarget.valueAsNumber < 1) e.currentTarget.value = "1";
+                        }}
+                        />
                     </div>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
-      </div>
+                    <div className="flex flex-col">
+                      <label htmlFor="">Observaciones: </label>
+                      <textarea name="observaciones" className="bg-gray-300 rounded-2xl py-2 px-4 outline-0" placeholder="ej: sacale el chorizo al choripan" rows={4} id=""/>
+                    </div>
+                    <button className="active:bg-orange-700 hover:scale-105 transition-all 
+                    ease-linear duration-100 active:scale-95 m-auto py-2 px-4 bg-orange-500 
+                    rounded-lg shadow-lg text-white font-bold cursor-pointer hover:bg-orange-600">Confirmar Pedido</button>
+                </form>
+            </div>
+        </div>
     </section>
   );
 }

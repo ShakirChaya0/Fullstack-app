@@ -31,29 +31,32 @@ const ProductsCard: React.FC<Props> = ({product}) => {
               <p className='text-orange-500 font-bold'>${product._price}</p>
               <div 
               className='
-              border group hover:border hover:border-orange-400 self-start 
-              rounded-md hover:bg-white transition-all duration-200 bg-orange-500
-            text-white font-medium flex flex-row justify-around items-center gap-1'>
+              self-start border rounded-md 
+              transition-all duration-200 bg-orange-500
+              text-white font-medium flex flex-row justify-around 
+              items-center gap-1 w-fit'>
               <button
                 onClick={handleAdd}
-                className='cursor-pointer h-full w-full py-1.5 px-2'
+                className={`cursor-pointer h-full w-full py-1.5 px-2 bg-orange-500 hover:scale-105 hover:bg-orange-600 transition-all ease-linear duration-150 active:bg-orange-700 active:scale-100 ${countStart === 0 ? "rounded-md" : "rounded-l-md"}`}
               >
-                <ControlPointIcon className='group-hover:text-orange-500'/>
+                <ControlPointIcon/>
               </button>
               {
                 countStart !== 0 && 
                 <>
-                  <p className='group-hover:text-orange-500'>{countStart}</p>
+                  <p>{countStart}</p>
                   <button
                     onClick={handleRemove}
-                    className='cursor-pointer h-full w-full py-1.5 px-2'
+                    className='cursor-pointer h-full w-full py-1.5 px-2 bg-orange-500 hover:scale-105
+                     hover:bg-orange-600 rounded-r-md transition-all ease-linear duration-150
+                     active:bg-orange-700 active:scale-100'
                   >
-                    <RemoveCircleOutlineIcon className='group-hover:text-orange-500'/>
+                    <RemoveCircleOutlineIcon/>
                   </button>
                 </>
               }
-              </div>
             </div>
+        </div>
             <div className='w-full h-full max-w-[82px] max-h-[82px] self-center'>
                 <img src={DefaultProduct} alt="" className='w-full h-full'/>
             </div>

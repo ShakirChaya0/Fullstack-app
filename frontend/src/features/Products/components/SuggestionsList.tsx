@@ -62,18 +62,27 @@ export default function SuggestionsList() {
                             <h1 className="self-center lg:text-2xl">{s._product._name}</h1>
                             <p className="self-center md:text-md">{s._product._description}</p>
                             <p className="self-center text-orange-500 md:text-md">${s._product._price}</p>
-                            <div className="self-center border group hover:border-orange-500 
-                                            rounded-md hover:bg-white transition-all duration-200 bg-orange-500
-                                            text-white font-medium flex flex-row justify-around items-center gap-1">
-                              <button onClick={() => handleAdd({nombreProducto: s._product._name, descripcion: s._product._description, precio: s._product._price})} className="cursor-pointer h-full w-full py-1.5 px-2">
-                                <ControlPointIcon className="group-hover:text-orange-500" />
+                            <div className="self-center border rounded-md 
+                              transition-all duration-200 bg-orange-500
+                              text-white font-medium flex flex-row justify-around 
+                              items-center gap-1 w-fit">
+                              <button onClick={() => handleAdd({nombreProducto: s._product._name, descripcion: s._product._description, precio: s._product._price})} 
+                                className={`cursor-pointer h-full 
+                                w-full py-1.5 px-2 bg-orange-500 hover:scale-105
+                                 hover:bg-orange-600 transition-all ease-linear duration-150
+                                  active:bg-orange-700 active:scale-100 ${cantidad === 0 ? "rounded-md" : "rounded-l-md"}`}>
+                                <ControlPointIcon/>
                               </button>
                               {
                                 cantidad > 0 &&
                                 <>
-                                  <p className="group-hover:text-orange-500">{cantidad}</p>
-                                  <button onClick={() => handleRemove(s._product._name)} className="cursor-pointer h-full w-full py-1.5 px-2">
-                                    <RemoveCircleOutlineIcon className="group-hover:text-orange-500" />
+                                  <p>{cantidad}</p>
+                                  <button onClick={() => handleRemove(s._product._name)} 
+                                    className={`cursor-pointer h-full w-full py-1.5 px-2 bg-orange-500 
+                                    hover:scale-105 hover:bg-orange-600 transition-all ease-linear duration-150 
+                                    active:bg-orange-700 active:scale-100 ${cantidad === 0 ? "rounded-md" : "rounded-r-md"}`}>
+
+                                    <RemoveCircleOutlineIcon/>
                                   </button>
                                 </>
                               }

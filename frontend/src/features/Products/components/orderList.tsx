@@ -76,16 +76,27 @@ export function OrderList () {
                                     <p className="text-orange-500 font-bold">${lp.subtotal}</p>
                                 </div>
                               <div
-                                className="self-center border group hover:border-orange-500 
-                                rounded-md hover:bg-white transition-all duration-200 bg-orange-500
-                                text-white font-medium flex flex-row justify-around items-center gap-1"
+                                className="self-center border rounded-md 
+                                transition-all duration-200 bg-orange-500
+                                text-white font-medium flex flex-row justify-around 
+                                items-center gap-1 w-fit"
                               >
-                                <button onClick={() => handleAdd(lp)} className="cursor-pointer h-full w-full py-1.5 px-2">
-                                  <ControlPointIcon className="group-hover:text-orange-500" />
+                                <button
+                                  onClick={() => handleAdd(lp)}
+                                  className="cursor-pointer h-full w-full py-1.5 px-2 bg-orange-500 hover:scale-105
+                                   hover:bg-orange-600 rounded-l-md transition-all ease-linear duration-150 
+                                   active:bg-orange-700 active:scale-100"
+                                >
+                                  <ControlPointIcon/>
                                 </button>
-                                <p className="group-hover:text-orange-500">{lp.cantidad}</p>
-                                <button onClick={() => handleRemove(lp.nombreProducto)} className="cursor-pointer h-full w-full py-1.5 px-2">
-                                  <RemoveCircleOutlineIcon className="group-hover:text-orange-500" />
+                                <p>{lp.cantidad}</p>
+                                <button
+                                  onClick={() => handleRemove(lp.nombreProducto)}
+                                  className="cursor-pointer h-full w-full py-1.5 px-2 bg-orange-500 hover:scale-105
+                                   hover:bg-orange-600 rounded-r-md transition-all ease-linear duration-150
+                                   active:bg-orange-700 active:scale-100"
+                                >
+                                  <RemoveCircleOutlineIcon/>
                                 </button>
                               </div>
                             </div>
@@ -94,7 +105,9 @@ export function OrderList () {
                       
                         <div className="p-4">
                           <NavLink to="/Menu/RealizarPedido">
-                            <button className="w-full py-3 cursor-pointer bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-lg shadow-md transition">
+                            <button className="w-full py-3 cursor-pointer bg-orange-500
+                             hover:bg-orange-600 hover:scale-105 text-white font-bold rounded-lg shadow-md 
+                             transition-all ease-linear duration-150 active:bg-orange-700 active:scale-95">
                               Completar  Pedido
                             </button>
                           </NavLink>

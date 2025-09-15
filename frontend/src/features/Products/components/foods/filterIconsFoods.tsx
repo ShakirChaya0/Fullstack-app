@@ -53,6 +53,10 @@ export default function FilterIconsFoods() {
                 width: 56,
                 height: 56,
                 margin: "0 auto",
+                transition: "transform 0.2s ease-in-out",
+                "&:hover": {
+                  transform: "scale(1.25)",
+                },
               }}
             >
               <Icon fontSize="small" />
