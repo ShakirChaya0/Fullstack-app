@@ -52,7 +52,7 @@ export const saveProductToBackend = async (newProduct: ProductPriceWithoutID) =>
     })
 
     if (!productResponse.ok) {
-      throw new Error(`Error al crear producto: ${productResponse.status} ${productResponse.statusText}`);
+      throw new Error(`Error al crear producto: ${productResponse.status} ${productResponse.statusText}`)
     }
 
     const productData = await productResponse.json()
@@ -60,7 +60,7 @@ export const saveProductToBackend = async (newProduct: ProductPriceWithoutID) =>
     const productId = productData._productId
     
     if (!productId) {
-      throw new Error('No se pudo obtener el ID del producto creado');
+      throw new Error('No se pudo obtener el ID del producto creado')
     }
 
     // Paso 2: Registrar el precio usando el ID obtenido
@@ -75,24 +75,23 @@ export const saveProductToBackend = async (newProduct: ProductPriceWithoutID) =>
         idProducto: productId,
         monto: newProduct.precio
       })
-    });
+    })
 
     if (!priceResponse.ok) {
-      throw new Error(`Error al registrar precio: ${priceResponse.status} ${priceResponse.statusText}`);
+      throw new Error(`Error al registrar precio: ${priceResponse.status} ${priceResponse.statusText}`)
     }
 
-    const priceData = await priceResponse.json();
-    console.log('Precio registrado:', priceData);
+    const priceData = await priceResponse.json()
 
     // Retornar ambos resultados
     return {
       product: productData,
       price: priceData
-    };
+    }
 
   } catch (error) {
-    console.error('Error en saveProductToBackend:', error);
-    throw error;
+    console.error('Error en saveProductToBackend:', error)
+    throw error
   }
 }
 
@@ -172,4 +171,69 @@ export const getPriceData = async (productId: string) => {
   }
 
   return response.json()
+}
+
+export const savePriceToBackend = async (newPrice: {idProducto: string, monto: number}) => {
+  const requestBody = {
+    idProducto: parseInt(newPrice.idProducto),
+    monto: newPrice.monto
+  }
+
+  const response = await fetch(import.meta.env.VITE_NEW_PRICE_REGISTRATION_URL, {
+  method: 'POST',
+  headers: { 
+    'Content-Type': 'application/json',
+    'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzdWFyaW8iOiJlNTM0YjUyMS1iNzEwLTRhNjQtOGUyOC1iMTZkMTY5ZDVlYjQiLCJlbWFpbCI6InBlcGVAZ21haWwuY29tIiwidGlwb1VzdWFyaW8iOiJBZG1pbmlzdHJhZG9yIiwidXNlcm5hbWUiOiJQZXBlUm9kcmlndWV6MTIzIiwiaWF0IjoxNzU3ODgxNDgyLCJleHAiOjE3NTg0ODYyODJ9.pLHsPrEXrd51Tanw5hCYKsTA3CjQNwEhZ86G_FJMwCU'
+    // Hardcodeando el jwt, CAMBIAR
+  },
+  body: JSON.stringify(requestBody)
+  })
+  
+  if (!response.ok) {
+    // Intentar obtener más información del error
+    try {
+      const errorData = await response.json()
+      throw new Error(`Error al registrar precio: ${response.status} - ${JSON.stringify(errorData)}`)
+    } catch {
+      throw new Error(`Error al registrar precio: ${response.status} ${response.statusText}`)
+    }
+  }
+  return response.json()
+}
+
+export const deletePrice = async (idProducto: string, fechaActual: string) => {
+  const response = await fetch(`${import.meta.env.VITE_NEW_PRICE_REGISTRATION_URL}?idProducto=${idProducto}&fechaActual=${fechaActual}`, {
+  method: 'DELETE',
+  headers: { 
+    'Content-Type': 'application/json',
+    'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzdWFyaW8iOiJlNTM0YjUyMS1iNzEwLTRhNjQtOGUyOC1iMTZkMTY5ZDVlYjQiLCJlbWFpbCI6InBlcGVAZ21haWwuY29tIiwidGlwb1VzdWFyaW8iOiJBZG1pbmlzdHJhZG9yIiwidXNlcm5hbWUiOiJQZXBlUm9kcmlndWV6MTIzIiwiaWF0IjoxNzU3ODgxNDgyLCJleHAiOjE3NTg0ODYyODJ9.pLHsPrEXrd51Tanw5hCYKsTA3CjQNwEhZ86G_FJMwCU'
+    // Hardcodeando el jwt, CAMBIAR
+  }
+  })
+  
+  if (!response.ok) {
+    // Intentar obtener más información del error
+    try {
+      const errorData = await response.json()
+      throw new Error(`Error al eliminar precio: ${response.status} - ${JSON.stringify(errorData)}`)
+    } catch {
+      throw new Error(`Error al eliminar precio: ${response.status} ${response.statusText}`)
+    }
+  }
+
+  // Verificar si hay contenido en la respuesta antes de intentar parsear JSON
+  const contentType = response.headers.get('content-type')
+  const hasContent = contentType && contentType.includes('application/json')
+  
+  if (hasContent) {
+    try {
+      return await response.json()
+    } catch {
+      // Si no se puede parsear JSON, retornar un objeto de éxito por defecto
+      return { success: true, message: 'Precio eliminado correctamente' }
+    }
+  } else {
+    // No hay contenido JSON, pero la eliminación fue exitosa
+    return { success: true, message: 'Precio eliminado correctamente' }
+  }
 }

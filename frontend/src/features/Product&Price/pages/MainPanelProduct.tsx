@@ -91,6 +91,7 @@ export function MainPanelProduct () {
                             className="w-full"
                             id="searchTool"
                             freeSolo
+                            value={ filters.search }
                             onInputChange={(_, newInputValue) => {
                                 updateFilter("search", newInputValue);
                             }}
@@ -202,7 +203,7 @@ export function MainPanelProduct () {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8 mt-5">
                     {filteredProducts.map((product) => (
-                        <div className="flex flex-col min-w-auto min-h-auto bg-white border border-gray-200 px-4 py-4 rounded-xl
+                        <div className="flex flex-col justify-between min-w-auto min-h-auto bg-white border border-gray-200 px-4 py-4 rounded-xl
                          shadow-[0_2px_8px_0px_rgba(0,0,0,0.08)] hover:shadow-[0_4px_16px_0px_rgba(0,0,0,0.12)] transition-all duration-300
                         "
                         >

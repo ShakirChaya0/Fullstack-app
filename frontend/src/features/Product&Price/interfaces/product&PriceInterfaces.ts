@@ -98,18 +98,37 @@ export interface PriceList {
 }
 
 export interface useMutationProductRegistrationProps {
-    newProduct: ProductPriceWithoutID
-    setNewProduct: (value: React.SetStateAction<ProductPriceWithoutID>) => void
-    setProductType: (value: React.SetStateAction<ProductType | undefined>) => void
-    setModalError: (value: React.SetStateAction<string>) => void
-    setIsModalOpen: (value: React.SetStateAction<boolean>) => void
+  newProduct: ProductPriceWithoutID
+  setNewProduct: (value: React.SetStateAction<ProductPriceWithoutID>) => void
+  setProductType: (value: React.SetStateAction<ProductType | undefined>) => void
+  setModalError: (value: React.SetStateAction<string>) => void
+  setIsModalOpen: (value: React.SetStateAction<boolean>) => void
 }
 
 export interface useMutationProductModificationProps {
-    newProduct: ProductWithoutPrice
-    productBefModification: RefObject<ProductWithoutPrice | null>
-    setModalError: (value: React.SetStateAction<string>) => void
-    onClose: () => void
+  newProduct: ProductWithoutPrice
+  productBefModification: RefObject<ProductWithoutPrice | null>
+  setModalError: (value: React.SetStateAction<string>) => void
+  onClose: () => void
+}
+
+export interface useMutationPriceRegistrationProps {
+  newPrice: {
+    idProducto: string
+    monto: number
+  }
+  setNewPrice: (value: React.SetStateAction<{
+    idProducto: string
+    monto: number
+  }>) => void
+  setModalError: (value: React.SetStateAction<string>) => void
+  setIsModalOpen: (value: React.SetStateAction<boolean>) => void
+}
+
+export interface useMutationDeletePriceProps {
+  idProducto: string
+  selectedPrice: PriceList | null
+  setIsModalOpen: (value: React.SetStateAction<boolean>) => void
 }
 
 

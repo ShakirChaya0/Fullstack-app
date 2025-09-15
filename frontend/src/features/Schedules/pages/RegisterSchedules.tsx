@@ -4,12 +4,12 @@ import {
   Typography,
   Alert,
   CircularProgress
-} from "@mui/material";
-import { useScheduleStateRegister } from "../hooks/useScheduleState";
-import { BackButton } from "../components/BackButton";
-import { SuccessNotification } from "../components/SuccessNotification";
-import { RegisterAndModifierTable } from "../components/RegisterAndModifierTable";
-import { useMutationRegistration } from "../hooks/useMutationRegistration";
+} from "@mui/material"
+import { useScheduleStateRegister } from "../hooks/useScheduleState"
+import { BackButton } from "../../../shared/components/BackButton"
+import { SuccessNotification } from "../components/SuccessNotification"
+import { RegisterAndModifierTable } from "../components/RegisterAndModifierTable"
+import { useMutationRegistration } from "../hooks/useMutationRegistration"
 
 export function RegisterSchedule () {
   // Custom hook para manejar el estado local de horarios
