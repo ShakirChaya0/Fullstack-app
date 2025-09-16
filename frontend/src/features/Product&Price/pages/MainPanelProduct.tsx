@@ -22,6 +22,7 @@ import VegetarianImg from '../utils/Vegetarian.png'
 import VeganImg from '../utils/Vegan.png'
 import { NewProductModal } from "../components/NewProductModal";
 import { ModifyProductModal } from "../components/ModifyProductModal";
+import { PaginationControls } from "../components/PaginationControls";
 import { useNavigate } from "react-router";
 
 
@@ -30,12 +31,17 @@ export function MainPanelProduct () {
 
     const { 
         allProducts,
+        pagination,
         filteredProducts,
         isLoading,
         error,
         filters,
         updateFilter,
-        clearFilters 
+        clearFilters,
+        nextPage,
+        previousPage,
+        goToPage,
+        changeLimit
     } = useProductsWithFilters()
 
     const [modifyModal, setModifyModal] = useState<{state: boolean, product: ProductPrice | null}>({state: false, product: null})
@@ -409,6 +415,20 @@ export function MainPanelProduct () {
                         </div>
                     ))}
                 </div>
+                {pagination && (
+                    <PaginationControls
+                        currentPage={pagination.paginaActual}
+                        totalPages={pagination.paginaTotales}
+                        totalItems={pagination.itemsTotales}
+                        itemsPerPage={pagination.itemsPorPagina}
+                        hasNextPage={pagination.proxPagina}
+                        hasPreviousPage={pagination.antePagina}
+                        onPreviousPage={previousPage}
+                        onNextPage={nextPage}
+                        onGoToPage={goToPage}
+                        onChangeLimit={changeLimit}
+                    />
+                )}
             </div>
 
             {/* El componente escucha el evento personalizado */}
@@ -420,6 +440,8 @@ export function MainPanelProduct () {
                     product={modifyModal.product}
                     existingProducts={ allProducts }
                     onClose={() => setModifyModal({state: false, product: null})}
+                    currentPage={pagination?.paginaActual}
+                    limit={pagination?.itemsPorPagina}
                 />
             )}
         

@@ -13,7 +13,21 @@ import { isValidNameProduct } from "../utils/isValidNameProduct";
 import { useMutationProductModification } from "../hooks/useMutationProducts";
 
 
-export function ModifyProductModal({ isOpen, product, existingProducts, onClose}: { isOpen: boolean, product: ProductPrice, existingProducts: ProductPrice[], onClose: () => void }) { 
+export function ModifyProductModal({ 
+    isOpen, 
+    product, 
+    existingProducts, 
+    onClose,
+    currentPage,
+    limit
+}: { 
+    isOpen: boolean, 
+    product: ProductPrice, 
+    existingProducts: ProductPrice[], 
+    onClose: () => void,
+    currentPage?: number,
+    limit?: number
+}) { 
     //Guardando el valor original del producto
     const productBefModification = useRef<ProductWithoutPrice | null>(null);
 
@@ -48,7 +62,14 @@ export function ModifyProductModal({ isOpen, product, existingProducts, onClose}
         esVegana: product.esVegana
     })
 
-    const { modifyProductMutation } = useMutationProductModification({ newProduct, productBefModification, setModalError, onClose })
+    const { modifyProductMutation } = useMutationProductModification({ 
+        newProduct, 
+        productBefModification, 
+        setModalError, 
+        onClose,
+        currentPage,
+        limit
+    })
 
     const handleCloseModal = () => {
         onClose()

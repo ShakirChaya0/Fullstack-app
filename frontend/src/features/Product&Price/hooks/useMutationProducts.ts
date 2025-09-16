@@ -10,7 +10,10 @@ export function useMutationProductRegistration ({ newProduct, setNewProduct, set
         mutationFn: () => saveProductToBackend(newProduct),
         onSuccess: () => {
         // Invalidar query para refrescar datos del backend
-        queryClient.invalidateQueries({ queryKey: ['products'] });
+        queryClient.invalidateQueries({ 
+            queryKey: ['products'],
+            exact: false // Esto invalida ['products', 1, 10], ['products', 2, 10], etc. Es decir todas las variaciones para que todas las páginas esten correctamente actualizadas
+        });
         
         // Limpiando los estados
         setNewProduct({
@@ -40,15 +43,26 @@ export function useMutationProductRegistration ({ newProduct, setNewProduct, set
     return { saveProductMutation }
 }
 
-export function useMutationProductModification ({ newProduct, productBefModification, setModalError, onClose }: useMutationProductModificationProps ) {
+export function useMutationProductModification ({ newProduct, productBefModification, setModalError, onClose, currentPage, limit }: useMutationProductModificationProps ) {
     const queryClient = useQueryClient();
     
     // useMutation para manejar la actualización de horarios (POST)
     const modifyProductMutation = useMutation({
         mutationFn: () => modifyProductToBackend(newProduct, productBefModification),
         onSuccess: () => {
-        // Invalidar query para refrescar datos del backend
-        queryClient.invalidateQueries({ queryKey: ['products'] });
+        // Si tenemos la página específica, invalidamos solo esa página
+        // Si no, todas
+        if (currentPage !== undefined && limit !== undefined) {
+            queryClient.invalidateQueries({ 
+                queryKey: ['products', currentPage, limit],
+                exact: true // Invalida solo esta página
+            });
+        } else {
+            queryClient.invalidateQueries({ 
+                queryKey: ['products'],
+                exact: false 
+            });
+        }
 
         setModalError('')
 

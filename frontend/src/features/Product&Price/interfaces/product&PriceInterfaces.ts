@@ -44,6 +44,7 @@ export interface ProductWithoutPrice { //Para la modificación
   esAlcoholica?: boolean
 }
 
+// Interfaz para el get all sin paginar
 export interface ProductPriceFromBackend {
   _productId: string
   _name: string
@@ -57,6 +58,57 @@ export interface ProductPriceFromBackend {
   _type?: FoodType
   // Propiedades específicas de bebida
   _isAlcoholic?: boolean
+}
+
+// interfaz para el get all paginado
+export interface ProductPriceFromBackendPaginated {
+  data: {
+    _productId: string
+    _name: string
+    _description: string
+    _state: ProductStatus
+    _price: number
+    // Propiedades específicas de comida
+    _isGlutenFree?: boolean
+    _isVegetarian?: boolean
+    _isVegan?: boolean
+    _type?: FoodType
+    // Propiedades específicas de bebida
+    _isAlcoholic?: boolean
+  }[],
+  pagination: {
+    currentPage: number,
+    totalPages: number,
+    totalItems: number,
+    ItemsPerPage: number,
+    hasNextPage: boolean,
+    hasPreviousPage: boolean
+  }
+}
+
+export interface ProductPricePaginated {
+  productos: {
+    idProducto: string
+    nombre: string
+    descripcion: string
+    estado: ProductStatus
+    precio: number
+    // Propiedades específicas de comida
+    esSinGluten?: boolean
+    esVegetariana?: boolean
+    esVegana?: boolean
+    tipo?: FoodType
+    // Propiedades específicas de bebida
+    esAlcoholica?: boolean
+  }[],
+  paginacion: {
+    paginaActual: number,
+    paginaTotales: number,
+    itemsTotales: number,
+    itemsPorPagina: number,
+    proxPagina: boolean,
+    antePagina: boolean
+  }
 }
 
 export interface PriceFromBackend {
@@ -110,6 +162,8 @@ export interface useMutationProductModificationProps {
   productBefModification: RefObject<ProductWithoutPrice | null>
   setModalError: (value: React.SetStateAction<string>) => void
   onClose: () => void
+  currentPage?: number
+  limit?: number
 }
 
 export interface useMutationPriceRegistrationProps {
@@ -131,17 +185,15 @@ export interface useMutationDeletePriceProps {
   setIsModalOpen: (value: React.SetStateAction<boolean>) => void
 }
 
-
-/* 
-{
-  "_productId": 5,
-  "_name": "Pan con TACC real",
-  "_description": "Pan con TACC y harina",
-  "_state": "Disponible",
-  "_price": 0,
-  "_isVegetarian": true,
-  "_isVegan": true,
-  "_isGlutenFree": false,
-  "_type": "Plato_Principal"
-} 
-  */
+export interface PaginationControlsProps {
+  currentPage: number;
+  totalPages: number;
+  totalItems: number;
+  itemsPerPage: number;
+  hasNextPage: boolean;
+  hasPreviousPage: boolean;
+  onPreviousPage: () => void;
+  onNextPage: () => void;
+  onGoToPage: (page: number) => void;
+  onChangeLimit: (limit: number) => void;
+}
