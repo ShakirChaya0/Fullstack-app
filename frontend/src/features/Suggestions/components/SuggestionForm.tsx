@@ -74,7 +74,7 @@ export default function SuggestionForm({ handleClose, suggestion }: SuggestionFo
                     {selectedProduct && <p className="text-sm text-gray-500">{selectedProduct._description}</p>}
                 </div>
 
-                <div className="flex flex-row justify-between gap-6">
+                <div className="flex flex-col sm:flex-row justify-between gap-6">
                     <div className="flex flex-col gap-2 w-full">
                         <label className="font-semibold text-gray-800">Fecha Desde</label>
                         <input 

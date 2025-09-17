@@ -39,15 +39,14 @@ export class UpdateClientUseCase {
             email: updatedData.email
         };
 
-        const updateClient = await this.clientRepository.updateClient(idCliente, draft);
-
         if (data.email && data.email !== existingClient.email) {
             await this.clientRepository.unverifyClientEmail(idCliente);
             
             const token = this.jwtService.generateConfirmEmailToken({ userId: idCliente });
             await this.mailerService.sendVerificationEmail(data.email, token);
         }
-        
+
+        const updateClient = await this.clientRepository.updateClient(idCliente, draft);
         return updateClient;
     }
 }
