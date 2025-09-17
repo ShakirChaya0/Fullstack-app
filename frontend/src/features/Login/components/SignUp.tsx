@@ -5,7 +5,6 @@ import { toast } from "react-toastify";
 import dateParser from "../../../shared/utils/dateParser";
 import { useState } from "react";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
-import { TextField } from "@mui/material";
 
 type FormType = "signIn" | "signUp";
 
@@ -33,16 +32,16 @@ const SignUp: React.FC<SignUpProps> = ({ onSwitchToSignIn, isMobile = false }) =
     formState: { errors },
   } = useForm<FormData>();
 
-    const { mutate } = useMutation({
-      mutationFn: createUser,
-      onSuccess: () => {
-        toast.success("Se ha enviado el mail de verificación. Por favor, revisa tu bandeja de entrada.");
-        onSwitchToSignIn("signIn");
-      },
-      onError: (error) => {
-        toast.error(`Error al crear el usuario: ${error.message}`);
-      }
-    });
+  const { mutate, isPending } = useMutation({
+    mutationFn: createUser,
+    onSuccess: () => {
+      toast.success("Se ha enviado el mail de verificación. Por favor, revisa tu bandeja de entrada.");
+      onSwitchToSignIn("signIn");
+    },
+    onError: (error) => {
+      toast.error(`Error al crear el usuario: ${error.message}`);
+    }
+  });
 
   const onSubmit = (data: FormData) => {
     mutate({ 
@@ -73,7 +72,8 @@ const SignUp: React.FC<SignUpProps> = ({ onSwitchToSignIn, isMobile = false }) =
                 <input 
                   className="bg-gray-100 border-2 border-transparent rounded-xl px-4 sm:px-5 py-3 sm:py-4 w-full text-sm transition-all duration-300 outline-none focus:bg-white focus:border-teal-500 focus:shadow-sm focus:shadow-teal-200" 
                   type="text" 
-                  placeholder="Nombre de Usuario" 
+                  placeholder="Nombre de Usuario"
+                  disabled={isPending}
                   {...register("userName", { 
                     required: "El nombre de usuario es obligatorio" ,
                     minLength: { value: 4, message: "Debe tener al menos 4 caracteres" },
@@ -86,7 +86,8 @@ const SignUp: React.FC<SignUpProps> = ({ onSwitchToSignIn, isMobile = false }) =
                 <input 
                   className="bg-gray-100 border-2 border-transparent rounded-xl px-4 sm:px-5 py-3 sm:py-4 w-full text-sm transition-all duration-300 outline-none focus:bg-white focus:border-teal-500 focus:shadow-sm focus:shadow-teal-200" 
                   type="text" 
-                  placeholder="Nombre" 
+                  placeholder="Nombre"
+                  disabled={isPending}
                   {...register("name", { 
                     required: "El nombre es obligatorio",
                     minLength: { value: 2, message: "Debe tener al menos 2 caracteres" },
@@ -99,7 +100,8 @@ const SignUp: React.FC<SignUpProps> = ({ onSwitchToSignIn, isMobile = false }) =
                 <input 
                   className="bg-gray-100 border-2 border-transparent rounded-xl px-4 sm:px-5 py-3 sm:py-4 w-full text-sm transition-all duration-300 outline-none focus:bg-white focus:border-teal-500 focus:shadow-sm focus:shadow-teal-200" 
                   type="text" 
-                  placeholder="Apellido" 
+                  placeholder="Apellido"
+                  disabled={isPending}
                   {...register("lastName", { 
                     required: "El apellido es obligatorio", 
                     minLength: { value: 2, message: "Debe tener al menos 2 caracteres" },
@@ -112,7 +114,8 @@ const SignUp: React.FC<SignUpProps> = ({ onSwitchToSignIn, isMobile = false }) =
                 <input 
                   className="bg-gray-100 border-2 border-transparent rounded-xl px-4 sm:px-5 py-3 sm:py-4 w-full text-sm transition-all duration-300 outline-none focus:bg-white focus:border-teal-500 focus:shadow-sm focus:shadow-teal-200" 
                   type="email" 
-                  placeholder="Email" 
+                  placeholder="Email"
+                  disabled={isPending}
                   {...register("email", { 
                     required: "El email es obligatorio",
                     pattern: {
@@ -128,7 +131,8 @@ const SignUp: React.FC<SignUpProps> = ({ onSwitchToSignIn, isMobile = false }) =
                 <input 
                   className="bg-gray-100 border-2 border-transparent rounded-xl px-4 sm:px-5 py-3 sm:py-4 w-full text-sm transition-all duration-300 outline-none focus:bg-white focus:border-teal-500 focus:shadow-sm focus:shadow-teal-200" 
                   type="tel" 
-                  placeholder="Teléfono" 
+                  placeholder="Teléfono"
+                  disabled={isPending}
                   {...register("phone", { 
                     required: "El teléfono es obligatorio",
                     minLength: { value: 5, message: "Debe tener al menos 5 caracteres" },
@@ -151,6 +155,7 @@ const SignUp: React.FC<SignUpProps> = ({ onSwitchToSignIn, isMobile = false }) =
                       className="bg-gray-100 border-2 border-transparent rounded-xl px-4 sm:px-5 py-3 sm:py-4 w-full text-sm transition-all duration-300 outline-none focus:bg-white focus:border-teal-500 focus:shadow-sm focus:shadow-teal-200" 
                       type="date" 
                       placeholder="dd/mm/aaaa"
+                      disabled={isPending}
                       {...register("birthDate", { required: "La fecha de nacimiento es obligatoria" })}
                   />
                   {errors.birthDate && <p className="text-xs text-red-500 text-left mt-1">{errors.birthDate.message}</p>}
@@ -161,7 +166,8 @@ const SignUp: React.FC<SignUpProps> = ({ onSwitchToSignIn, isMobile = false }) =
                   <input 
                     className="bg-gray-100 border-2 border-transparent rounded-xl pl-4 pr-12 sm:pl-5 sm:pr-12 py-3 sm:py-4 w-full text-sm transition-all duration-300 outline-none focus:bg-white focus:border-teal-500 focus:shadow-sm focus:shadow-teal-200" 
                     type={isVisible ? "text" : "password"} 
-                    placeholder="Contraseña" 
+                    placeholder="Contraseña"
+                    disabled={isPending}
                     {...register("password", {
                       required: "La contraseña es obligatoria",
                       minLength: { value: 6, message: "La contraseña debe tener al menos 6 caracteres." },
@@ -188,9 +194,10 @@ const SignUp: React.FC<SignUpProps> = ({ onSwitchToSignIn, isMobile = false }) =
             
             <button 
               type="submit"
-              className="w-full sm:w-auto rounded-full border-none bg-gradient-to-r from-teal-700 to-teal-800 text-white text-sm font-semibold py-3 sm:py-4 px-8 sm:px-11 tracking-wide uppercase transition-all duration-300 cursor-pointer mt-4 sm:mt-5 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-teal-300 active:scale-95"
+              className="w-full sm:w-auto rounded-full border-none bg-gradient-to-r from-teal-700 to-teal-800 text-white text-sm font-semibold py-3 sm:py-4 px-8 sm:px-11 tracking-wide uppercase transition-all duration-300 cursor-pointer mt-4 sm:mt-5 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-teal-300 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+              disabled={isPending}
             >
-              Registrarse
+              {isPending ? 'Cargando...' : 'Registrarse'}
             </button>
           </form>
         </div>
