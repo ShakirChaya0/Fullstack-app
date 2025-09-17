@@ -1,7 +1,7 @@
 import type { RefObject } from "react"
 import type { ProductPriceWithoutID, ProductWithoutPrice } from "../interfaces/product&PriceInterfaces"
 
-// Se implementa paginación
+// Se implementa paginación desde backend
 export const getProductsData = async (page: number, limit: number) => {
   const response = await fetch(`${import.meta.env.VITE_PRODUCTS_URL}?page=${page}&limit=${limit}`, {
     method: 'GET',

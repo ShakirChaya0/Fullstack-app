@@ -197,3 +197,58 @@ export interface PaginationControlsProps {
   onGoToPage: (page: number) => void;
   onChangeLimit: (limit: number) => void;
 }
+
+export interface SearchProductsProps {
+  filtersToSearch: string;
+  updateFilter: (key: string, value: string) => void;
+  allProducts: ProductPrice[] 
+}
+
+export interface FiltersProductsProps {
+  filterType: string;
+  filterState: string;
+  updateFilter: (key: string, value: string) => void;
+  clearFilters: () => void
+}
+
+export interface ProductCardsProps {
+  filteredProducts: ProductPrice[];
+  handleOpenModifyModal: (product: ProductPrice) => void
+}
+
+export interface ModifyProductModalProps {
+  isOpen: boolean; 
+  product: ProductPrice; 
+  onClose: () => void;
+  currentPage?: number;
+  limit?: number;
+}
+
+export interface TablePriceProps {
+  priceList: PriceList[]; 
+  onDeletePrice: (price: PriceList) => void;
+}
+
+export interface NewPriceModalProps {
+  idProducto: string;
+  preciosRegistrados: PriceList[]
+}
+
+export interface DeleteConfirmationModalProps {
+  idProducto: string;
+  selectedPrice: PriceList | null;
+  amountPrices: number
+}
+
+export interface ProductTogglerModificationProps {
+  product: ProductPrice; 
+  newProduct: ProductWithoutPrice;
+  setNewProduct: (value: React.SetStateAction<ProductWithoutPrice>) => void;
+}
+
+export interface ProductTogglerRegistrationProps {
+  productType: ProductType | undefined; 
+  setProductType: (value: React.SetStateAction<ProductType | undefined>) => void; 
+  newProduct: ProductPriceWithoutID; 
+  setNewProduct: (value: React.SetStateAction<ProductPriceWithoutID>) => void;
+}

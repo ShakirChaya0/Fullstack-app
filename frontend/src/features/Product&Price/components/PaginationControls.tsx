@@ -81,7 +81,7 @@ export function PaginationControls({
                             p-2 rounded-lg border transition-all duration-200
                             ${currentPage === 1 
                                 ? 'border-gray-200 text-gray-400 cursor-not-allowed' 
-                                : 'border-gray-300 text-gray-700 hover:border-cyan-500 hover:text-cyan-600 hover:bg-cyan-50'
+                                : 'border-gray-300 text-gray-700 hover:border-cyan-500 hover:text-cyan-600 hover:bg-cyan-50 hover:cursor-pointer'
                             }
                         `}
                     >
@@ -95,7 +95,7 @@ export function PaginationControls({
                                 flex items-center gap-1 px-3 py-2 rounded-lg border transition-all duration-200
                                 ${!hasPreviousPage 
                                     ? 'border-gray-200 text-gray-400 cursor-not-allowed' 
-                                    : 'border-gray-300 text-gray-700 hover:border-cyan-500 hover:text-cyan-600 hover:bg-cyan-50'
+                                    : 'border-gray-300 text-gray-700 hover:border-cyan-500 hover:text-cyan-600 hover:bg-cyan-50 hover:cursor-pointer'
                                 }
                             `}
                         >
@@ -116,8 +116,8 @@ export function PaginationControls({
                                     ${typeof page === 'string'
                                         ? 'text-gray-400 cursor-default'
                                         : page === currentPage
-                                        ? 'bg-cyan-600 text-white shadow-sm'
-                                        : 'text-gray-700 hover:bg-cyan-50 hover:text-cyan-600 border border-gray-300 hover:border-cyan-500'
+                                        ? 'bg-cyan-600 text-white shadow-sm hover:cursor-pointer'
+                                        : 'text-gray-700 hover:bg-cyan-50 hover:text-cyan-600 border border-gray-300 hover:border-cyan-500 hover:cursor-pointer'
                                     }
                                 `}
                             >
@@ -135,7 +135,7 @@ export function PaginationControls({
                                 flex items-center gap-1 px-3 py-2 rounded-lg border transition-all duration-200
                                 ${!hasNextPage 
                                     ? 'border-gray-200 text-gray-400 cursor-not-allowed' 
-                                    : 'border-gray-300 text-gray-700 hover:border-cyan-500 hover:text-cyan-600 hover:bg-cyan-50'
+                                    : 'border-gray-300 text-gray-700 hover:border-cyan-500 hover:text-cyan-600 hover:bg-cyan-50 hover:cursor-pointer'
                                 }
                             `}
                         >
@@ -152,7 +152,7 @@ export function PaginationControls({
                             p-2 rounded-lg border transition-all duration-200
                             ${currentPage === totalPages 
                                 ? 'border-gray-200 text-gray-400 cursor-not-allowed' 
-                                : 'border-gray-300 text-gray-700 hover:border-cyan-500 hover:text-cyan-600 hover:bg-cyan-50'
+                                : 'border-gray-300 text-gray-700 hover:border-cyan-500 hover:text-cyan-600 hover:bg-cyan-50 hover:cursor-pointer'
                             }
                         `}
                     >

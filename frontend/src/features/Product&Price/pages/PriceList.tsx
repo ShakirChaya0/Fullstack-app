@@ -1,13 +1,18 @@
+import "tailwindcss"
 import { useParams } from "react-router"
 import { usePrice } from "../hooks/usePrice"
 import { Alert, Box, Typography } from "@mui/material"
 import { LoadingPriceList } from "../components/LoadingPriceList"
-import { TablePrice } from "../components/TablePrice"
 import { BackButton } from "../../../shared/components/BackButton"
 import { NewPriceModal } from "../components/NewPriceModal"
 import { DeleteConfirmationModal } from "../components/DeleteConfirmationModal"
-import { useState } from "react"
+import { lazy, Suspense, useState } from "react"
 import type { PriceList } from "../interfaces/product&PriceInterfaces"
+import { SkeletonPriceList } from "./SkeletonPriceList"
+
+const LazyTablePrice = lazy(() => import('../components/TablePrice').then(module => ({
+    default: module.TablePrice
+})));
 
 export function PriceList() {
     const { idProducto } = useParams()
@@ -43,17 +48,12 @@ export function PriceList() {
     }
 
     return (
-        <Box sx={{ 
-            width: { xs: "95%", sm: "90%", md: "80%" }, 
-            mx: "auto", 
-            mt: 4,
-            mb: 4
-        }}>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-                <Typography variant="h4" sx={{ color: "#561d03", fontWeight: 'bold' }}>
-                    Lista de precios 
-                </Typography>
-            </Box>
+        <div className="flex flex-col w-[80%] mx-auto my-4">
+            <div className="flex justify-between items-center mb-2">
+                <h2 className="text-gray-600 font-bold text-3xl">
+                    Gestión de Precios
+                </h2>
+            </div>
             {
                 priceList.length === 0 ? 
                 (
@@ -63,36 +63,31 @@ export function PriceList() {
                 ) :
                 (
                     <>
-                        <Typography variant="h5" sx={{ color: "#561d03", fontWeight: 'bold' }}>
+                        <p className="text-gray-800 mb-2">
                             Producto: {priceList[0].producto.idProducto} - {priceList[0].producto.nombre}
-                        </Typography>
+                        </p>
                         {/* Tabla de precios */}
-                        <TablePrice 
-                            priceList={priceList} 
-                            onDeletePrice={handleDeletePrice}
-                        />
+                        <Suspense fallback={<SkeletonPriceList priceList={priceList}></SkeletonPriceList>}>
+                            <LazyTablePrice 
+                                priceList={priceList} 
+                                onDeletePrice={handleDeletePrice}
+                            />
+                        </Suspense>
                     
                     </>
                 )
             }
-            <Box
-                display="flex"
-                justifyContent="space-between"
-                alignItems="center"
-                marginTop="1rem"
-                marginX="1rem"
-                gap={2}
-            >
+            <div className="flex justify-between items-center mt-5 mx-1 gap-2">
                 {/* Botones */}
                 <BackButton url="/Admin/Productos/"></BackButton>
                 <button 
                     onClick={handleOpenPriceRegistration}
-                    className="flex items-center gap-2 bg-[#059669] hover:bg-[#047857] text-white px-4 py-2 
-                    rounded-lg font-medium transition-colors duration-200 whitespace-nowrap h-[40px]"
+                    className="flex items-center gap-2 bg-gray-50 hover:bg-[#0891b2] hover:text-white border-2 hover:border-black text-gray-600 px-4 py-2 
+                    rounded-lg font-medium transition-colors duration-200 whitespace-nowrap h-[40px] hover:cursor-pointer"
                 >
                     Nuevo Precio
                 </button>
-            </Box>
+            </div>
 
             {/* Modal Nuevo precio */}
             { idProducto ? 
@@ -102,6 +97,7 @@ export function PriceList() {
                     <DeleteConfirmationModal 
                         idProducto={idProducto}
                         selectedPrice={selectedPrice}
+                        amountPrices={priceList.length}
                     />
                 </>
             ):
@@ -110,35 +106,6 @@ export function PriceList() {
                     No se pudo determinar el producto seleccionado
                 </Alert>
             )}
-        </Box>
+        </div>
     )
 }
-
-/*
-[
-  {
-    "_product": {
-      "_productId": 3,
-      "_name": "Coca-cola",
-      "_description": "Bebida de cola",
-      "_state": "No_Disponible",
-      "_price": 5000,
-      "_isAlcoholic": false
-    },
-    "_dateFrom": "2025-09-10T09:09:19.000Z",
-    "_amount": 5000
-  },
-  {
-    "_product": {
-      "_productId": 3,
-      "_name": "Coca-cola",
-      "_description": "Bebida de cola",
-      "_state": "No_Disponible",
-      "_price": 6000.5,
-      "_isAlcoholic": false
-    },
-    "_dateFrom": "2025-09-10T09:11:14.000Z",
-    "_amount": 6000.5
-  }
-]
-*/

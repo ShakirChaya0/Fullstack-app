@@ -1,11 +1,12 @@
 import { Alert, Button, Dialog, DialogActions, DialogContent, DialogTitle, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useMutationDeletePrice } from "../hooks/useMutationPrice";
-import type { PriceList } from "../interfaces/product&PriceInterfaces";
+import type { DeleteConfirmationModalProps } from "../interfaces/product&PriceInterfaces";
 
 
-export function DeleteConfirmationModal({ idProducto, selectedPrice }: { idProducto: string, selectedPrice: PriceList | null}) {
+export function DeleteConfirmationModal({ idProducto, selectedPrice, amountPrices}: DeleteConfirmationModalProps ) {
     const [isModalOpen, setIsModalOpen] = useState(false)
+    const [modalError, setModalError] = useState('')
 
     const { deletePriceMutation } = useMutationDeletePrice({ idProducto, selectedPrice, setIsModalOpen })
 
@@ -24,11 +25,16 @@ export function DeleteConfirmationModal({ idProducto, selectedPrice }: { idProdu
     }, []);
 
     const handleCloseModal = () => {
+        setModalError('')
         setIsModalOpen(false)
     }
 
     const handleDeletePrice = () => {
         if (!selectedPrice) return
+        if (amountPrices === 1) {
+            setModalError('No se puede eliminar el único precio del producto')
+            return
+        }
         deletePriceMutation.mutate()
     }
 
@@ -59,6 +65,11 @@ export function DeleteConfirmationModal({ idProducto, selectedPrice }: { idProdu
                 color: 'black',
             }}>
                 Confirmar eliminación de precio
+                { modalError && 
+                    <Alert severity="error">
+                        { modalError }
+                    </Alert>
+                }
             </DialogTitle>
             
             <DialogContent>

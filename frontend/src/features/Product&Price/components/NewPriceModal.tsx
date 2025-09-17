@@ -2,11 +2,11 @@ import { Alert, Button, Dialog, DialogActions, DialogContent, DialogTitle, TextF
 import { useEffect, useState } from "react";
 import { useMutationPriceRegistration } from "../hooks/useMutationPrice";
 import { getCurrentDate } from "../utils/getCurrentDate";
-import type { PriceList } from "../interfaces/product&PriceInterfaces";
+import type { NewPriceModalProps } from "../interfaces/product&PriceInterfaces";
 import { isValidPrice } from "../utils/isValidPrice";
 
 
-export function NewPriceModal({ idProducto, preciosRegistrados }: { idProducto: string, preciosRegistrados: PriceList[]}) {
+export function NewPriceModal({ idProducto, preciosRegistrados }: NewPriceModalProps) {
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [modalError, setModalError] = useState('')
     const [newPrice, setNewPrice] = useState({

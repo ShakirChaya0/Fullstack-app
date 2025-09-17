@@ -1,19 +1,13 @@
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, ToggleButton, ToggleButtonGroup, FormControlLabel, Checkbox, Typography, Alert } from "@mui/material";
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, FormControlLabel, Checkbox, Typography, Alert } from "@mui/material";
 import AddCircleIcon from '@mui/icons-material/AddCircle';
-import RestaurantIcon from '@mui/icons-material/Restaurant';
-import LocalBarIcon from '@mui/icons-material/LocalBar';
 import { useEffect, useState } from "react";
-import GlutenFreeImg from '../utils/GlutenFree.png';
-import VegetarianImg from '../utils/Vegetarian.png'
-import VeganImg from '../utils/Vegan.png'
-import SportsBarIcon from '@mui/icons-material/SportsBar';
-import type { ProductPrice, ProductPriceWithoutID } from "../interfaces/product&PriceInterfaces";
+import type { ProductPriceWithoutID } from "../interfaces/product&PriceInterfaces";
 import { useMutationProductRegistration } from "../hooks/useMutationProducts";
-import { isValidNameProduct } from "../utils/isValidNameProduct";
 import type { ProductType } from "../types/product&PriceTypes";
 import { isValidProduct } from "../utils/isValidProduct";
+import { ProductTogglerRegistration } from "./ProductTogglerRegistration";
 
-export function NewProductModal({ existingProducts }: { existingProducts: ProductPrice[]}) {
+export function NewProductModal() {
     // NewProductModal maneja su estado de manera interna
     const [isModalOpen, setIsModalOpen] = useState(false)
 
@@ -76,16 +70,12 @@ export function NewProductModal({ existingProducts }: { existingProducts: Produc
             setModalError('El precio no puede ser negativo')
             return
         }
-        if(!isValidNameProduct(newProduct.nombre, existingProducts)) {
-            setModalError('El nombre del nuevo producto ya existe')
-            return
-        }
         if(newProduct.nombre.length < 3) {
             setModalError('El nombre debe tener una longitud de más de 2 caracteres')
             return
         }
-        if(newProduct.nombre.length > 255) {
-            setModalError('El nombre no puede tener una longitud mayor a 255 caracteres')
+        if(newProduct.nombre.length > 30) {
+            setModalError('El nombre no puede tener una longitud mayor a 30 caracteres')
             return
         }
         if(newProduct.descripcion.length < 10) {
@@ -155,6 +145,7 @@ export function NewProductModal({ existingProducts }: { existingProducts: Produc
                             fullWidth
                             placeholder="Ej: Salmón a la Parrilla"
                             onChange={(e) => {
+                                if(modalError) setModalError('')
                                 setNewProduct(prev => {
                                     const newProduct = {...prev}
                                     const newName = e.target.value
@@ -171,6 +162,7 @@ export function NewProductModal({ existingProducts }: { existingProducts: Produc
                             rows={2}
                             placeholder="Describe tu producto..."
                             onChange={(e) => {
+                                if(modalError) setModalError('')
                                 setNewProduct(prev => {
                                     const newProduct = {...prev}
                                     const newDescription = e.target.value
@@ -185,6 +177,7 @@ export function NewProductModal({ existingProducts }: { existingProducts: Produc
                             fullWidth
                             placeholder="0,00"
                             onChange={(e) => {
+                                if(modalError) setModalError('')
                                 setNewProduct(prev => {
                                     const newProduct = {...prev}
                                     if(e.target.value.indexOf(',') !== -1 && e.target.value.indexOf("-") === e.target.value.lastIndexOf("-")) { //Validando que tenga un formato correcto
@@ -264,248 +257,12 @@ export function NewProductModal({ existingProducts }: { existingProducts: Produc
                                 />
                         </div>
                     </div>
-
-                    {/* Toggle para tipo de producto */}
-                    <div className="w-full mb-4">
-                        <Typography variant="subtitle1" sx={{ color: '#4a5565', mb:'0.5rem' }}>
-                            Tipo de producto <Typography variant="h6" sx={{ color: 'red', display: 'inline'}}>*</Typography>
-                        </Typography>
-                        <ToggleButtonGroup
-                            exclusive
-                            value={ productType }
-                            onChange={(_, newValue) => {
-                                if (newValue === 'Comida') {
-                                    setNewProduct(prev => ({
-                                        ...prev,
-                                        esAlcoholica: undefined
-                                    }));
-                                }
-                                if (newValue === 'Bebida') {
-                                    setNewProduct(prev => ({
-                                        ...prev,
-                                        tipo: undefined,
-                                        esSinGluten: undefined,
-                                        esVegetariana: undefined,
-                                        esVegana: undefined
-                                    }));
-                                }
-
-                                setProductType(newValue)
-                            }}
-                            fullWidth
-                            sx={{
-                                display: 'flex',
-                                '& .MuiToggleButton-root': {
-                                    flex: 1,
-                                    border: '2px solid #e5e7eb',
-                                    borderRadius: '8px',
-                                    '&:first-of-type': {
-                                        marginRight: '8px',
-                                    },
-                                    '&.Mui-selected': {
-                                        backgroundColor: '#009689',
-                                        color: 'white',
-                                        '&:hover': {
-                                            backgroundColor: '#007b70',
-                                        }
-                                    }
-                                }
-                            }}
-                        >
-                            <ToggleButton value="Comida" className="flex items-center">
-                                <RestaurantIcon />
-                                <span className="ml-1">Comida</span>
-                            </ToggleButton>
-                            <ToggleButton value="Bebida" className="flex items-center">
-                                <LocalBarIcon />
-                                <span className="ml-1">Bebida</span>
-                            </ToggleButton>
-                        </ToggleButtonGroup>
-                    </div>
-
-                    { productType &&
-                        <div className="flex flex-col w-[98%] border-2 border-gray-300 rounded-2xl m-auto py-2 px-4">
-                            
-                            {productType === 'Comida' ? (
-                                <div className="flex flex-col gap-2">
-                                    <Typography variant="subtitle1" sx={{ color: '#4a5565', mb:'0.5rem' }}>
-                                        Características de la {productType.toLowerCase()} <Typography variant="subtitle1" sx={{ color: 'red', display: 'inline'}}>*</Typography> 
-                                    </Typography>
-                                    {/* Tipo de plato */}
-                                    <div className="flex">
-                                        <ToggleButtonGroup
-                                            exclusive
-                                            value={ newProduct.tipo }
-                                            onChange={(_, newValue) => newValue && 
-                                                setNewProduct(prev => {
-                                                    const newProduct = {...prev}
-                                                    const newType = newValue
-                                                    newProduct.tipo = newType
-                                                    return newProduct;
-                                                })
-                                            }
-                                            fullWidth
-                                            sx={{
-                                                display: 'flex',
-                                                flexDirection: {
-                                                    xs: 'column',
-                                                    md: 'row'
-                                                },
-                                                gap: '8px',
-                                                '& .MuiToggleButton-root': {
-                                                    border: '1px solid #d1d5db',
-                                                    borderRadius: '6px',
-                                                    fontSize: '0.875rem',
-                                                    '&.Mui-selected': {
-                                                        backgroundColor: '#0BA6DF',
-                                                        color: 'white',
-                                                        '&:hover': {
-                                                            backgroundColor: '#0891b2',
-                                                        }
-                                                    }
-                                                }
-                                            }}
-                                        >
-                                            <ToggleButton value="Entrada">Entrada</ToggleButton>
-                                            <ToggleButton value="Plato_Principal">Plato Principal</ToggleButton>
-                                            <ToggleButton value="Postre">Postre</ToggleButton>
-                                        </ToggleButtonGroup>
-                                    </div>
-
-                                    <div>
-                                        <Typography variant="subtitle2" sx={{ color: '#4a5565', mb:'0.5rem' }}>
-                                            Especificaciones
-                                        </Typography>
-                                        <div className="flex flex-row justify-around">
-                                            <div className="flex flex-row">
-                                                <FormControlLabel
-                                                    control={
-                                                        <Checkbox
-                                                        onChange={(e) =>
-                                                            setNewProduct(prev => {
-                                                                const newProduct = {...prev}
-                                                                const newGlutenFree = e.target.checked
-                                                                newProduct.esSinGluten = newGlutenFree
-                                                                return newProduct;
-                                                            })
-                                                        }
-                                                            sx={{
-                                                                color: '#6b7280',
-                                                                '&.Mui-checked': {
-                                                                    color: '#009689',
-                                                                }
-                                                            }}
-                                                        />
-                                                    }
-                                                    label="Sin Gluten"
-                                                    className="text-gray-700"
-                                                />
-                                                <img
-                                                    src={GlutenFreeImg}
-                                                    alt="Gluten Free"
-                                                    className="w-10 h-10"
-                                                    loading="lazy"
-                                                />
-                                            </div>
-                                            <div className="flex flex-row">
-                                                <FormControlLabel
-                                                    control={
-                                                        <Checkbox
-                                                            onChange={(e) =>
-                                                                setNewProduct(prev => {
-                                                                    const newProduct = {...prev}
-                                                                    const newVegetarian = e.target.checked
-                                                                    newProduct.esVegetariana = newVegetarian
-                                                                    return newProduct;
-                                                                })
-                                                            }
-                                                            sx={{
-                                                                color: '#6b7280',
-                                                                '&.Mui-checked': {
-                                                                    color: '#009689',
-                                                                }
-                                                            }}
-                                                        />
-                                                    }
-                                                    label="Vegetariana"
-                                                    className="text-gray-700"
-                                                />
-                                                <img
-                                                    src={VegetarianImg}
-                                                    alt="Vegetariana"
-                                                    className="w-10 h-10"
-                                                    loading="lazy"
-                                                />
-                                            </div>
-                                            <div className="flex flex-row">
-                                                <FormControlLabel
-                                                    control={
-                                                        <Checkbox
-                                                            onChange={(e) =>
-                                                                setNewProduct(prev => {
-                                                                    const newProduct = {...prev}
-                                                                    const newVegan = e.target.checked
-                                                                    newProduct.esVegana = newVegan
-                                                                    return newProduct;
-                                                                })
-                                                            }
-                                                            sx={{
-                                                                color: '#6b7280',
-                                                                '&.Mui-checked': {
-                                                                    color: '#009689',
-                                                                }
-                                                            }}
-                                                        />
-                                                    }
-                                                    label="Vegana"
-                                                    className="text-gray-700"
-                                                />
-                                                <img
-                                                    src={VeganImg}
-                                                    alt="Vegana"
-                                                    className="w-10 h-10"
-                                                    loading="lazy"
-                                                />
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            ) : (
-                                // Bebida 
-                                <>
-                                    <Typography variant="subtitle1" sx={{ color: '#4a5565', mb:'0.5rem' }}>
-                                        Características de la {productType.toLowerCase()} 
-                                    </Typography>
-                                    <div className="flex flex-row mt-2">
-                                        <FormControlLabel
-                                            control={
-                                                <Checkbox
-                                                    value={ newProduct.esAlcoholica }
-                                                    onChange={(e) =>
-                                                        setNewProduct(prev => {
-                                                            const newProduct = {...prev}
-                                                            const newIsAlcoholic = e.target.checked
-                                                            newProduct.esAlcoholica = newIsAlcoholic
-                                                            return newProduct;
-                                                        })
-                                                    }
-                                                    sx={{
-                                                        color: '#6b7280',
-                                                        '&.Mui-checked': {
-                                                            color: '#009689',
-                                                        }
-                                                    }}
-                                                />
-                                            }
-                                            label="Bebida Alcohólica"
-                                            className="text-gray-700"
-                                        />
-                                        <SportsBarIcon fontSize="large"/>
-                                    </div>                        
-                                </>
-                            )}                             
-                        </div>
-                    }
+                    
+                    <ProductTogglerRegistration 
+                        productType={productType} setProductType={setProductType} 
+                        newProduct={newProduct} setNewProduct={setNewProduct}
+                    ></ProductTogglerRegistration>
+                    
                 </div>
             </DialogContent>
             

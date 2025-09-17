@@ -19,18 +19,20 @@ export function sortAndNormalizeProductPrice (productsPrice: ProductPriceFromBac
     }
     
     return {
-        productos: productsPrice.data.map(oneProductPrice => ({
-            idProducto: oneProductPrice._productId,
-            nombre: oneProductPrice._name,
-            descripcion: oneProductPrice._description,
-            estado: oneProductPrice._state,
-            precio: oneProductPrice._price,
-            esSinGluten: oneProductPrice?._isGlutenFree,
-            esVegetariana: oneProductPrice?._isVegetarian,
-            esVegana: oneProductPrice?._isVegan,
-            tipo: oneProductPrice?._type,
-            esAlcoholica: oneProductPrice?._isAlcoholic
-        })),
+        productos: productsPrice.data
+            .map(oneProductPrice => ({
+                idProducto: oneProductPrice._productId,
+                nombre: oneProductPrice._name,
+                descripcion: oneProductPrice._description,
+                estado: oneProductPrice._state,
+                precio: oneProductPrice._price,
+                esSinGluten: oneProductPrice?._isGlutenFree,
+                esVegetariana: oneProductPrice?._isVegetarian,
+                esVegana: oneProductPrice?._isVegan,
+                tipo: oneProductPrice?._type,
+                esAlcoholica: oneProductPrice?._isAlcoholic
+            }))
+            .sort((a, b) => a.nombre.localeCompare(b.nombre)),
         paginacion: {
             paginaActual: productsPrice.pagination.currentPage,
             paginaTotales: productsPrice.pagination.totalPages,

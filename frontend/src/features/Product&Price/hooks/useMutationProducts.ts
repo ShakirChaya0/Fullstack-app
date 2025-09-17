@@ -36,7 +36,7 @@ export function useMutationProductRegistration ({ newProduct, setNewProduct, set
         setIsModalOpen(false)
         },
         onError: (err: Error) => {
-            throw new Error(`Error al registrar el producto: ${err.message}`);
+            if(err.message.indexOf('409') !== -1) setModalError('El nombre del producto ya existe')
         }
     });
 
@@ -70,7 +70,7 @@ export function useMutationProductModification ({ newProduct, productBefModifica
         onClose()
         },
         onError: (err: Error) => {
-            throw new Error(`Error al registrar el producto: ${err.message}`);
+            if(err.message.indexOf('409') !== -1) setModalError('El nombre del producto ya existe')
         }
     });
 

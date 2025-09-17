@@ -1,28 +1,18 @@
-import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
-import type { PriceList, TablePriceProps } from "../interfaces/product&PriceInterfaces";
-import DeleteIcon from '@mui/icons-material/Delete';
+import { Paper, Skeleton, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
+import type { PriceList } from "../interfaces/product&PriceInterfaces";
 
-export function TablePrice({ priceList, onDeletePrice }: TablePriceProps) {
-    const handleOpenPriceDelete = (price: PriceList) => {
-        onDeletePrice(price);
-        window.dispatchEvent(new CustomEvent('openPriceDeleteModal'));
-    }
-
+export function SkeletonPriceList({priceList}: {priceList: PriceList[]}) {
     return (
         <TableContainer 
             component={Paper} 
             sx={{ 
-                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.08)',
-                borderRadius: '12px',
-                overflow: 'auto', 
                 maxWidth: '100%'
             }}
         >
-            <Table 
+            <Table
                 sx={{ 
                     width: '100%'
                 }} 
-                aria-label="price table"
             >
                 <TableHead
                     sx={{
@@ -40,7 +30,11 @@ export function TablePrice({ priceList, onDeletePrice }: TablePriceProps) {
                                 borderBottom: "none"
                             }}
                         >
-                            Fecha Vigencia
+                            <Skeleton 
+                                variant="text" 
+                                height={24}
+                                sx={{ bgcolor: 'grey.400' }}
+                            />
                         </TableCell>
                         <TableCell 
                             align="center" 
@@ -52,7 +46,11 @@ export function TablePrice({ priceList, onDeletePrice }: TablePriceProps) {
                                 borderBottom: "none"
                             }}
                         >
-                            Monto unitario
+                            <Skeleton 
+                                variant="text" 
+                                height={24}
+                                sx={{ bgcolor: 'grey.400' }}
+                            />
                         </TableCell>
                         <TableCell 
                             align="center" 
@@ -64,15 +62,17 @@ export function TablePrice({ priceList, onDeletePrice }: TablePriceProps) {
                                 borderBottom: "none"
                             }}
                         >
-                            Acciones
+                            <Skeleton 
+                                variant="text" 
+                                height={24}
+                                sx={{ bgcolor: 'grey.400' }}
+                            />
                         </TableCell>
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {priceList.map((price) => (
-                        <TableRow 
-                            key={price.fechaVigencia}
-                        >
+                    {priceList.map(() => (
+                        <TableRow>
                             <TableCell 
                                 component="th" 
                                 scope="row"
@@ -84,7 +84,11 @@ export function TablePrice({ priceList, onDeletePrice }: TablePriceProps) {
                                 }}
                             >   
                                 <p className="ml-4">
-                                    {price.fechaVigencia.slice(0,10)}
+                                    <Skeleton 
+                                        variant="text" 
+                                        height={24}
+                                        sx={{ bgcolor: 'grey.400' }}
+                                    />
                                 </p>
                             </TableCell>
                             <TableCell 
@@ -97,7 +101,11 @@ export function TablePrice({ priceList, onDeletePrice }: TablePriceProps) {
                                     borderBottom: 'none'
                                 }}
                             >
-                                ${price.monto.toLocaleString()}
+                                <Skeleton 
+                                    variant="text" 
+                                    height={24}
+                                    sx={{ bgcolor: 'grey.400' }}
+                                />
                             </TableCell>
                             <TableCell 
                                 align="center"
@@ -105,16 +113,11 @@ export function TablePrice({ priceList, onDeletePrice }: TablePriceProps) {
                                     borderBottom: 'none'
                                 }}
                             >
-                                <button 
-                                    onClick={() => handleOpenPriceDelete(price)}
-                                    className="inline-flex gap-2 bg-red-50 border border-red-200 
-                                    hover:bg-red-100 hover:border-red-300 text-red-700 hover:text-red-800 px-4 py-2 
-                                    rounded-lg font-medium transition-all duration-200 whitespace-nowrap h-[36px] 
-                                    hover:cursor-pointer hover:shadow-sm"
-                                >
-                                    <DeleteIcon fontSize="small"/>
-                                    <span className="text-sm">Eliminar</span>
-                                </button>
+                                <Skeleton 
+                                    variant="rounded" 
+                                    height={30}
+                                    sx={{ bgcolor: 'grey.400' }}
+                                />
                             </TableCell>
                         </TableRow>
                     ))}
