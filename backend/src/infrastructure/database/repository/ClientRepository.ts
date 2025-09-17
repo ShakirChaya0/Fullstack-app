@@ -200,11 +200,18 @@ export class ClientRepository implements IClienteRepository {
         }
     }
 
-    public async verifiedClientEmail(clientId: string): Promise<void> {
+    public async verifyClientEmail(clientId: string): Promise<void> {
         await prisma.clientes.update({
             where: { idCliente: clientId },
             data: { emailVerificado: true }
         });
+    }
+
+    public async unverifyClientEmail(clientId: string): Promise<void> {
+        await prisma.clientes.update({
+            where: { idCliente: clientId },
+            data: { emailVerificado: false }
+        })
     }
 
     public async getClientByOtherDatas(clientPublicInfo: ClientPublicInfo): Promise<Client | null> {

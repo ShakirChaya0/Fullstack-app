@@ -101,7 +101,7 @@ export class ClientController {
         try {
             const id = req.user?.idUsuario;
 
-            if(!id) throw new ValidationError('No se ingreso un ID válido');
+            if (!id) throw new ValidationError('No se ingreso un ID válido');
 
             const newData = req.body
             const validation = validateClientPartial(newData);
@@ -114,7 +114,8 @@ export class ClientController {
                 nombre: updateClient.name,
                 apellido: updateClient.lastname,
                 fechaNacimiento: updateClient.birthDate,
-                telefono: updateClient.phone
+                telefono: updateClient.phone,
+                emailVerificado: updateClient.emailVerified
             }
             
             res.status(201).json(filteredClient);

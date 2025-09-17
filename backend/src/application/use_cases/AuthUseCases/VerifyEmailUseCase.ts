@@ -25,6 +25,6 @@ export class VerifyEmailUseCase {
 
         if (client.emailVerified) throw new ConflictError("El correo ya fue verificado");
 
-        await this.clientRepository.verifiedClientEmail(client.userId);
+        await this.clientRepository.verifyClientEmail(client.userId);
     }
 }

@@ -1,6 +1,6 @@
 import type { UniqueProfileData, UserType } from "../types/ProfileSharedTypes";
 
-export async function updateUser(userData: UniqueProfileData, userType: UserType, token: string): Promise<void> {
+export async function updateUser(userData: UniqueProfileData, userType: UserType, token: string): Promise<{ verifiedEmail: boolean }> {
     let endpoint = userType === "Administrador" ? "administradores" :
         userType === "Cliente" ? "clientes" :
         userType === "Mozo" ? "mozos" :
@@ -20,5 +20,5 @@ export async function updateUser(userData: UniqueProfileData, userType: UserType
     const data = await response.json();
     if (!response.ok) throw new Error(data.message);
     
-    return
+    return { verifiedEmail: data.emailVerificado }
 }

@@ -15,7 +15,7 @@ export class CheckClientStatusUseCase {
         const client = await this.clientRepository.getClientByidUser(userId);
         if (!client) throw new NotFoundError("Cliente no encontrado");
 
-        if (!client.emailVerified) throw new UnauthorizedError("El cliente no verificó su cuenta a través del correo aún");
+        if (!client.emailVerified) throw new UnauthorizedError("No ha verificado aún su correo electrónico. Por favor, verifique su correo para iniciar sesión.");
 
         const actualState = client.getActualState();
         if (actualState.state === "Habilitado") return;
