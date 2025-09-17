@@ -8,5 +8,7 @@ export interface IClienteRepository {
     getClientByidUser (id: string): Promise <Client | null>;
     createClient (data:SchemaCliente) :Promise <Client>;
     updateClient(id: string, data: PartialClientSchema): Promise<Client>;
+    verifyClientEmail(clientId: string): Promise<void>;
+    unverifyClientEmail(clientId: string): Promise<void>;
     getClientByOtherDatas(clientPublicInfo: ClientPublicInfo) : Promise<Client | null>;
 }

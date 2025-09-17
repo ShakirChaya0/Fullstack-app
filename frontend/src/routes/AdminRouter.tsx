@@ -1,4 +1,4 @@
-import { Route } from "react-router";
+import { Route, Routes } from "react-router";
 import { AdminMainLayout } from "../shared/components/AdminMainLayout";
 import SkeletonInstitution  from "../features/Institution/pages/SkeletonInstitution";
 import Institution  from "../features/Institution/pages/Institution";
@@ -13,13 +13,15 @@ import NewsCRUD from "../features/News/pages/NewsCRUD";
 import { RegisterSchedule } from "../features/Schedules/pages/RegisterSchedules";
 import { MainPanelProduct } from "../features/Product&Price/pages/MainPanelProduct";
 import { PriceList } from "../features/Product&Price/pages/PriceList";
+import UserProfile from "../features/Profile/pages/UserProfile";
+import ProfileCardSkeleton from "../features/Profile/components/ProfileCardSkeleton";
 
 
 const queryClient = new QueryClient()
 
 export function AdminRouter() {
   return (
-    <>
+    <Routes>
         <Route element={<AdminMainLayout/>}>
             <Route path="/Admin" element={<h1>Hola admin</h1>}/>
             <Route path="/Admin/Novedades" element={ <NewsCRUD/>}/>
@@ -59,7 +61,12 @@ export function AdminRouter() {
                 <PriceList/>
               </QueryClientProvider>
               }/>
+            <Route path="/Admin/Perfil" element={
+              <Suspense fallback = {<ProfileCardSkeleton/>}>
+                <UserProfile />
+              </Suspense>
+            }/>
         </Route>
-    </>
+    </Routes>
   );
 }

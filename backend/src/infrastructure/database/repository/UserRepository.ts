@@ -21,6 +21,13 @@ export class UserRepository implements IUserRepository {
         return user ? this.toDomainEntity(user) : null;
     }
 
+    async updatePassword(userId: string, passwordHash: string): Promise<void> {
+        await prisma.usuarios.update({
+            where: { idUsuario: userId },
+            data: { contrasenia: passwordHash }
+        });
+    }
+
     private toDomainEntity(user: Usuarios): User {
         return new User(
             user.idUsuario as UUID,

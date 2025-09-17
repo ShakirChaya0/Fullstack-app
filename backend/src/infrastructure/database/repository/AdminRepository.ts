@@ -36,16 +36,16 @@ export class AdminRepository implements IAdminRepository {
     public async update(idAdmin: string, admin: PartialSchemaAdmin): Promise<Admin> {
         try {
             const adminActualizar = await prisma.usuarios.update({
-            where: {idUsuario: idAdmin},
-            data: {
-                nombreUsuario: admin.nombreUsuario,
-                email: admin.email,
-                contrasenia: admin.contrasenia
-            }
+                where: {idUsuario: idAdmin},
+                data: {
+                    nombreUsuario: admin.nombreUsuario,
+                    email: admin.email,
+                    contrasenia: admin.contrasenia
+                }
             });
 
             const adminActualizarDetalle = await prisma.administrador.update({
-                where : { idAdmin: idAdmin},
+                where : { idAdmin: idAdmin },
                 data: {
                     nombre: admin.nombre,
                     apellido: admin.apellido,
@@ -68,16 +68,15 @@ export class AdminRepository implements IAdminRepository {
 
         } catch(error: any) {
             if (error?.code === 'P2002' && error?.meta?.target?.includes('nombreUsuario')) {
-                throw new ConflictError("El nombreUsuario ingresado ya esta registrado");
+                throw new ConflictError("El nombre de usuario ingresado ya esta en uso");
             } else if(error?.code === 'P2002' && error?.meta?.target?.includes('email')){
                 throw new ConflictError("El email ingresado ya esta en uso");
             } else if(error?.code === 'P2002' && error?.meta?.target?.includes('dni')){
                 throw new ConflictError("El DNI ingresado ya esta registrado");
             }
             else{
-                throw new ServiceError(`Error al crear el Adminisitrador: ${error.message}`);
+                throw new ServiceError(`Error al actualizar datos del usuario: ${error.message}. Inténtelo de nuevo más tarde`);
             }
         }
     }
 }
-

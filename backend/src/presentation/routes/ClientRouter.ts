@@ -9,7 +9,7 @@ export function ClientRouter () {
 
     clientRouter.get('/', AuthMiddleware, RoleMiddleware(["Administrador"]), (req,res,next) => { clientController.getAll(req,res,next) }); 
 
-    clientRouter.get('/id/:idUsuario', AuthMiddleware, RoleMiddleware(["Administrador"]), (req,res,next) => { clientController.getClientById(req,res,next) });
+    clientRouter.get('/id/:idUsuario', AuthMiddleware, RoleMiddleware(["Administrador", "Cliente"]), (req,res,next) => { clientController.getClientById(req,res,next) });
 
     clientRouter.get('/nombreUsuario/:nombreUsuario', AuthMiddleware, RoleMiddleware(["Administrador", "Cliente"]), (req,res,next) => { clientController.getClientByUsername(req,res,next) }); 
 
@@ -18,5 +18,4 @@ export function ClientRouter () {
     clientRouter.patch('/update', AuthMiddleware, RoleMiddleware(["Cliente"]), (req,res,next) => { clientController.updateClient(req,res,next) });
     
     return clientRouter;
-
 }

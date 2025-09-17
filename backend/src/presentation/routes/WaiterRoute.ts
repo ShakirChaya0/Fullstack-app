@@ -8,7 +8,7 @@ export function WaiterRouter () {
     
     waiterRouter.get("/", (req, res, next) => { waiterController.getWaiters(req, res, next) }); // RoleMiddleware(["Administrador"])
 
-    waiterRouter.get("/id/:idMozo", (req, res, next) => { waiterController.getWaiterById(req, res, next) }); // RoleMiddleware(["Administrador"])
+    waiterRouter.get("/id/:idMozo", (req, res, next) => { waiterController.getWaiterById(req, res, next) }); // RoleMiddleware(["Administrador", "Mozo"])
     
     waiterRouter.get("/nombre/:nombreUsuario", (req, res, next) => { waiterController.getWaiterByUserName(req, res, next) }); // RoleMiddleware(["Administrador", "Mozo"])
 
@@ -16,7 +16,7 @@ export function WaiterRouter () {
 
     waiterRouter.post("/", (req, res, next) => { waiterController.createWaiter(req, res, next) }); // RoleMiddleware(["Administrador"])
 
-    waiterRouter.patch("/id/:idMozo", (req, res, next) => { waiterController.modifyWaiter(req, res, next) }); // RoleMiddleware(["Administrador", "Mozo"])
+    waiterRouter.patch("/update", (req, res, next) => { waiterController.modifyWaiter(req, res, next) }); // RoleMiddleware(["Administrador", "Mozo"])
 
     return waiterRouter;
 }

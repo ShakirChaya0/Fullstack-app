@@ -45,18 +45,17 @@ export class ClientController {
                 throw new ValidationError("Se ingreso un ID válido")
             }
 
-
             const client = await this.getClientByIdUser.execute(idUser);
             const filteredClient = {
                 nombreUsuario:client.userName, 
                 email: client.email, 
                 nombre: client.name, 
-                apellido: client.lastname, 
+                apellido: client.lastname,
+                fechaNacimiento: client.birthDate,
                 telefono: client.phone
             }
 
             res.status(201).json(filteredClient);
-
         } catch (error) {
             next(error)
         }
@@ -74,7 +73,8 @@ export class ClientController {
                 nombreUsuario:  clientByUserName.userName, 
                 email: clientByUserName.email, 
                 nombre: clientByUserName.name, 
-                apellido: clientByUserName.lastname, 
+                apellido: clientByUserName.lastname,
+                fechaNacimiento: clientByUserName.birthDate,
                 telefono: clientByUserName.phone
             }
             res.status(201).json(filteredClient);
@@ -83,23 +83,14 @@ export class ClientController {
         }
     }
 
-    public async createClient(req:Request, res:Response, next: NextFunction) {
+    public async createClient(req: Request, res: Response, next: NextFunction) {
         try {
             const data = req.body;
             const validation = validateClient(data); 
 
-            const newClient = await this.registerClientUseCase.execute(validation);
+            await this.registerClientUseCase.execute(validation);
             
-            const filteredClient = {
-                nombreUsuario: newClient.userName,
-                email: newClient.email,
-                nombre: newClient.name,
-                apellido: newClient.lastname,
-                telefono: newClient.phone, 
-                fechaNacimiento: newClient.birthDate
-            }
-            
-            res.status(201).json(filteredClient);
+            res.status(201).send();
         } 
         catch(error) {
             next(error);
@@ -110,7 +101,7 @@ export class ClientController {
         try {
             const id = req.user?.idUsuario;
 
-            if(!id) throw new ValidationError('Se ingreso un ID válido');
+            if (!id) throw new ValidationError('No se ingreso un ID válido');
 
             const newData = req.body
             const validation = validateClientPartial(newData);
@@ -123,7 +114,8 @@ export class ClientController {
                 nombre: updateClient.name,
                 apellido: updateClient.lastname,
                 fechaNacimiento: updateClient.birthDate,
-                telefono: updateClient.phone
+                telefono: updateClient.phone,
+                emailVerificado: updateClient.emailVerified
             }
             
             res.status(201).json(filteredClient);

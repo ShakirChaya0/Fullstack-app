@@ -3,11 +3,15 @@ import { Client } from "../../../domain/entities/Client.js";
 import { PasswordHashingService } from '../../services/PasswordHashing.js';
 import { PartialClientSchema } from "../../../shared/validators/ClientZod.js";
 import { NotFoundError } from '../../../shared/exceptions/NotFoundError.js';
+import { MailerService } from "../../services/MailerService.js";
+import { JWTService } from "../../services/JWTService.js";
 
 export class UpdateClientUseCase {
     constructor(
-        private readonly clientRepository = new ClientRepository,
-        private readonly passwordHashingService = new PasswordHashingService()
+        private readonly clientRepository = new ClientRepository(),
+        private readonly passwordHashingService = new PasswordHashingService(),
+        private readonly mailerService = new MailerService(),
+        private readonly jwtService = new JWTService()
     ){}
 
     public async execute(idCliente: string, data:PartialClientSchema) : Promise<Client> {
@@ -34,6 +38,13 @@ export class UpdateClientUseCase {
             telefono: updatedData.telefono,
             email: updatedData.email
         };
+
+        if (data.email && data.email !== existingClient.email) {
+            await this.clientRepository.unverifyClientEmail(idCliente);
+            
+            const token = this.jwtService.generateConfirmEmailToken({ userId: idCliente });
+            await this.mailerService.sendVerificationEmail(data.email, token);
+        }
 
         const updateClient = await this.clientRepository.updateClient(idCliente, draft);
         return updateClient;

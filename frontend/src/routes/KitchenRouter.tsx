@@ -1,12 +1,14 @@
-import { Route } from "react-router";
+import { Route, Routes } from "react-router";
 import { lazy, Suspense } from "react";
 import KitchenMainLayout from "../shared/components/KitchenMainLayout";
 import SuggestionSkeletonBody from "../features/Suggestions/pages/SuggestionSkeletonBody";
+import ProfileCardSkeleton from "../features/Profile/components/ProfileCardSkeleton";
+import UserProfile from "../features/Profile/pages/UserProfile";
 const SuggestionsPage = lazy(() => import("../features/Suggestions/pages/SuggestionsPage"))
 
 export function KitchenRouter() {
   return (
-    <>
+    <Routes>
       <Route element={<KitchenMainLayout/>}>
         <Route path="/Cocina" element={<h1>Hola cocina</h1>}/>
         <Route path="/Cocina/Sugerencias" element={
@@ -14,8 +16,13 @@ export function KitchenRouter() {
             <SuggestionsPage/>
           </Suspense>}
         />
+        <Route path="/Cocina/Perfil" element={
+          <Suspense fallback = {<ProfileCardSkeleton/>}>
+            <UserProfile />
+          </Suspense>
+        }/>
         <Route path="/Cocina/Pedidos"/>
       </Route>
-    </>
+    </Routes>
   );
 }
