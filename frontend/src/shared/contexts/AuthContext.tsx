@@ -1,5 +1,6 @@
 import { createContext, useState, useEffect, type ReactElement } from 'react';
 import { jwtDecode }from 'jwt-decode';
+import { useNavigate } from 'react-router';
 
 export interface JwtPayloadInterface {
     idUsuario: string;
@@ -23,6 +24,7 @@ interface AuthContextType {
 export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactElement }) => {
+    const navigate = useNavigate();
     const [accessToken, setAccessToken] = useState(null);
     const [user, setUser] = useState<JwtPayloadInterface | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -72,6 +74,11 @@ export const AuthProvider = ({ children }: { children: ReactElement }) => {
                 
                 const userData: JwtPayloadInterface = jwtDecode(data.token);
                 setUser(userData);
+
+                if (userData?.tipoUsuario === "Cliente") navigate("/Cliente");
+                else if (userData?.tipoUsuario === "Administrador") navigate("/Admin");
+                else if (userData?.tipoUsuario === "SectorCocina") navigate("/Cocina");
+                else if (userData?.tipoUsuario === "Mozo") navigate("/Mozo");
 
                 return { success: true };
             }

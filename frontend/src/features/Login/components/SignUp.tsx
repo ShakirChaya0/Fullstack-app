@@ -3,6 +3,9 @@ import { useForm } from "react-hook-form";
 import { createUser } from "../services/createUser";
 import { toast } from "react-toastify";
 import dateParser from "../../../shared/utils/dateParser";
+import { useState } from "react";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { TextField } from "@mui/material";
 
 type FormType = "signIn" | "signUp";
 
@@ -23,6 +26,7 @@ interface SignUpProps {
 }
 
 const SignUp: React.FC<SignUpProps> = ({ onSwitchToSignIn, isMobile = false }) => {
+  const [isVisible, setIsVisible] = useState<boolean>(false);
   const {
     register,
     handleSubmit,
@@ -32,7 +36,7 @@ const SignUp: React.FC<SignUpProps> = ({ onSwitchToSignIn, isMobile = false }) =
     const { mutate } = useMutation({
       mutationFn: createUser,
       onSuccess: () => {
-        toast.success("¡Listo! ya puedes iniciar sesión con tu nueva cuenta.");
+        toast.success("Se ha enviado el mail de verificación. Por favor, revisa tu bandeja de entrada.");
         onSwitchToSignIn("signIn");
       },
       onError: (error) => {
@@ -59,95 +63,127 @@ const SignUp: React.FC<SignUpProps> = ({ onSwitchToSignIn, isMobile = false }) =
         <div className="w-full max-w-sm px-6 sm:px-8 md:px-12">
           <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-4 sm:mb-6">Crear una cuenta</h1>
           
-          {/* Social Login Buttons */}
-          <div className="flex justify-center gap-3 sm:gap-4 my-2 sm:my-3">
-            <button className="border border-gray-300 rounded-full inline-flex justify-center items-center w-10 h-10 text-gray-600 hover:bg-blue-500 hover:text-white transition-all duration-300 cursor-pointer hover:-translate-y-0.5 flex-shrink-0">
-              <span className="text-sm font-semibold">f</span>
-            </button>
-            <button className="border border-gray-300 rounded-full inline-flex justify-center items-center w-10 h-10 text-gray-600 hover:bg-red-500 hover:text-white transition-all duration-300 cursor-pointer hover:-translate-y-0.5 flex-shrink-0">
-              <span className="text-sm font-semibold">G</span>
-            </button>
-            <button className="border border-gray-300 rounded-full inline-flex justify-center items-center w-10 h-10 text-gray-600 hover:bg-blue-600 hover:text-white transition-all duration-300 cursor-pointer hover:-translate-y-0.5 flex-shrink-0">
-              <span className="text-xs font-semibold">in</span>
-            </button>
-          </div>
-          
           <span className="text-sm text-gray-600 my-2 sm:my-3 block">Utiliza tu correo electrónico para registrarte</span>
           
           {/* Form */}
           <form onSubmit={handleSubmit(onSubmit)} className="w-full mb-6">
-            <div className="w-full space-y-3">
-              {/* Campo: Nombre de Usuario */}
-              <input 
-                className="bg-gray-100 border-2 border-transparent rounded-xl px-4 sm:px-5 py-3 sm:py-4 w-full text-sm transition-all duration-300 outline-none focus:bg-white focus:border-teal-500 focus:shadow-sm focus:shadow-teal-200" 
-                type="text" 
-                placeholder="Nombre de Usuario" 
-                {...register("userName", { required: "El nombre de usuario es obligatorio" })}
-              />
-              {errors.userName && <p className="text-xs text-red-500 text-left mt-1">{errors.userName.message}</p>}
-              
-              {/* Campo: Nombre */}
-              <input 
-                className="bg-gray-100 border-2 border-transparent rounded-xl px-4 sm:px-5 py-3 sm:py-4 w-full text-sm transition-all duration-300 outline-none focus:bg-white focus:border-teal-500 focus:shadow-sm focus:shadow-teal-200" 
-                type="text" 
-                placeholder="Nombre" 
-                {...register("name", { required: "El nombre es obligatorio" })}
-              />
-              {errors.name && <p className="text-xs text-red-500 text-left mt-1">{errors.name.message}</p>}
-              
-              {/* Campo: Apellido */}
-              <input 
-                className="bg-gray-100 border-2 border-transparent rounded-xl px-4 sm:px-5 py-3 sm:py-4 w-full text-sm transition-all duration-300 outline-none focus:bg-white focus:border-teal-500 focus:shadow-sm focus:shadow-teal-200" 
-                type="text" 
-                placeholder="Apellido" 
-                {...register("lastName", { required: "El apellido es obligatorio" })}
-              />
-              {errors.lastName && <p className="text-xs text-red-500 text-left mt-1">{errors.lastName.message}</p>}
+            <div className="w-full flex-col gap-3 sm:gap-4 flex">
 
-              {/* Campo: Email */}
-              <input 
-                className="bg-gray-100 border-2 border-transparent rounded-xl px-4 sm:px-5 py-3 sm:py-4 w-full text-sm transition-all duration-300 outline-none focus:bg-white focus:border-teal-500 focus:shadow-sm focus:shadow-teal-200" 
-                type="email" 
-                placeholder="Email" 
-                {...register("email", { 
-                  required: "El email es obligatorio",
-                  pattern: {
-                    value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-                    message: "Debe ingresar un email válido"
-                  }
-                })}
-              />
-              {errors.email && <p className="text-xs text-red-500 text-left mt-1">{errors.email.message}</p>}
+              <div>
+                <input 
+                  className="bg-gray-100 border-2 border-transparent rounded-xl px-4 sm:px-5 py-3 sm:py-4 w-full text-sm transition-all duration-300 outline-none focus:bg-white focus:border-teal-500 focus:shadow-sm focus:shadow-teal-200" 
+                  type="text" 
+                  placeholder="Nombre de Usuario" 
+                  {...register("userName", { 
+                    required: "El nombre de usuario es obligatorio" ,
+                    minLength: { value: 4, message: "Debe tener al menos 4 caracteres" },
+                  })}
+                />
+                {errors.userName && <p className="text-xs text-red-500 text-left mt-1">{errors.userName.message}</p>}
+              </div>
 
-              {/* Campo: Teléfono */}
-              <input 
-                className="bg-gray-100 border-2 border-transparent rounded-xl px-4 sm:px-5 py-3 sm:py-4 w-full text-sm transition-all duration-300 outline-none focus:bg-white focus:border-teal-500 focus:shadow-sm focus:shadow-teal-200" 
-                type="tel" 
-                placeholder="Teléfono" 
-                {...register("phone", { required: "El teléfono es obligatorio" })}
-              />
-              {errors.phone && <p className="text-xs text-red-500 text-left mt-1">{errors.phone.message}</p>}
-              
-              {/* Campo: Fecha de Nacimiento */}
-              <input 
-                className="bg-gray-100 border-2 border-transparent rounded-xl px-4 sm:px-5 py-3 sm:py-4 w-full text-sm transition-all duration-300 outline-none focus:bg-white focus:border-teal-500 focus:shadow-sm focus:shadow-teal-200" 
-                type="date" 
-                placeholder="Fecha de Nacimiento" 
-                {...register("birthDate", { required: "La fecha de nacimiento es obligatoria" })}
-              />
-              {errors.birthDate && <p className="text-xs text-red-500 text-left mt-1">{errors.birthDate.message}</p>}
+              <div>
+                <input 
+                  className="bg-gray-100 border-2 border-transparent rounded-xl px-4 sm:px-5 py-3 sm:py-4 w-full text-sm transition-all duration-300 outline-none focus:bg-white focus:border-teal-500 focus:shadow-sm focus:shadow-teal-200" 
+                  type="text" 
+                  placeholder="Nombre" 
+                  {...register("name", { 
+                    required: "El nombre es obligatorio",
+                    minLength: { value: 2, message: "Debe tener al menos 2 caracteres" },
+                  })}
+                />
+                {errors.name && <p className="text-xs text-red-500 text-left mt-1">{errors.name.message}</p>}
+              </div>
 
-              {/* Campo: Contraseña */}
-              <input 
-                className="bg-gray-100 border-2 border-transparent rounded-xl px-4 sm:px-5 py-3 sm:py-4 w-full text-sm transition-all duration-300 outline-none focus:bg-white focus:border-teal-500 focus:shadow-sm focus:shadow-teal-200" 
-                type="password" 
-                placeholder="Contraseña" 
-                {...register("password", { 
-                  required: "La contraseña es obligatoria",
-                  minLength: { value: 6, message: "La contraseña debe tener al menos 6 caracteres" } 
-                })}
-              />
-              {errors.password && <p className="text-xs text-red-500 text-left mt-1">{errors.password.message}</p>}
+              <div>
+                <input 
+                  className="bg-gray-100 border-2 border-transparent rounded-xl px-4 sm:px-5 py-3 sm:py-4 w-full text-sm transition-all duration-300 outline-none focus:bg-white focus:border-teal-500 focus:shadow-sm focus:shadow-teal-200" 
+                  type="text" 
+                  placeholder="Apellido" 
+                  {...register("lastName", { 
+                    required: "El apellido es obligatorio", 
+                    minLength: { value: 2, message: "Debe tener al menos 2 caracteres" },
+                  })}
+                />
+                {errors.lastName && <p className="text-xs text-red-500 text-left mt-1">{errors.lastName.message}</p>}
+              </div>
+
+              <div>
+                <input 
+                  className="bg-gray-100 border-2 border-transparent rounded-xl px-4 sm:px-5 py-3 sm:py-4 w-full text-sm transition-all duration-300 outline-none focus:bg-white focus:border-teal-500 focus:shadow-sm focus:shadow-teal-200" 
+                  type="email" 
+                  placeholder="Email" 
+                  {...register("email", { 
+                    required: "El email es obligatorio",
+                    pattern: {
+                      value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+                      message: "Debe ingresar un email válido"
+                    }
+                  })}
+                />
+                {errors.email && <p className="text-xs text-red-500 text-left mt-1">{errors.email.message}</p>}
+              </div>
+
+              <div>
+                <input 
+                  className="bg-gray-100 border-2 border-transparent rounded-xl px-4 sm:px-5 py-3 sm:py-4 w-full text-sm transition-all duration-300 outline-none focus:bg-white focus:border-teal-500 focus:shadow-sm focus:shadow-teal-200" 
+                  type="tel" 
+                  placeholder="Teléfono" 
+                  {...register("phone", { 
+                    required: "El teléfono es obligatorio",
+                    minLength: { value: 5, message: "Debe tener al menos 5 caracteres" },
+                    maxLength: { value: 15, message: "No puede exceder los 15 caracteres" },
+                    pattern: {
+                      value: /^\+?\d+$/,
+                      message: "Solo números y puede incluir un + al inicio",
+                    },
+                  })}
+                />
+                {errors.phone && <p className="text-xs text-red-500 text-left mt-1">{errors.phone.message}</p>}
+              </div>
+                           
+              <div className="relative">
+                  <label htmlFor="birthDate" className="absolute -top-1 left-3 px-1 text-xs text-gray-500 bg-white">
+                      Fecha de Nacimiento
+                  </label>
+                  <input 
+                      id="birthDate"
+                      className="bg-gray-100 border-2 border-transparent rounded-xl px-4 sm:px-5 py-3 sm:py-4 w-full text-sm transition-all duration-300 outline-none focus:bg-white focus:border-teal-500 focus:shadow-sm focus:shadow-teal-200" 
+                      type="date" 
+                      placeholder="dd/mm/aaaa"
+                      {...register("birthDate", { required: "La fecha de nacimiento es obligatoria" })}
+                  />
+                  {errors.birthDate && <p className="text-xs text-red-500 text-left mt-1">{errors.birthDate.message}</p>}
+              </div>
+
+              <div>
+                <div className="relative w-full">
+                  <input 
+                    className="bg-gray-100 border-2 border-transparent rounded-xl pl-4 pr-12 sm:pl-5 sm:pr-12 py-3 sm:py-4 w-full text-sm transition-all duration-300 outline-none focus:bg-white focus:border-teal-500 focus:shadow-sm focus:shadow-teal-200" 
+                    type={isVisible ? "text" : "password"} 
+                    placeholder="Contraseña" 
+                    {...register("password", {
+                      required: "La contraseña es obligatoria",
+                      minLength: { value: 6, message: "La contraseña debe tener al menos 6 caracteres." },
+                      maxLength: { value: 100, message: "La contraseña no puede tener más de 100 caracteres." },
+                      pattern: {
+                          value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{6,}$/,
+                          message: "Debe incluir una mayúscula, una minúscula y un número."
+                      }
+                    })}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setIsVisible(!isVisible)}
+                    className="absolute top-1/2 right-4 -translate-y-1/2 text-gray-500 hover:text-gray-700 transition-colors"
+                    aria-label={isVisible ? 'Ocultar contraseña' : 'Mostrar contraseña'}
+                  >
+                    {isVisible ? <VisibilityOff /> : <Visibility />}
+                  </button>
+                </div>
+                {errors.password && <p className="text-xs text-red-500 mt-1 text-left">{errors.password.message}</p>}
+              </div>
+          
             </div>
             
             <button 

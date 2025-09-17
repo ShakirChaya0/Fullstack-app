@@ -1,9 +1,10 @@
-import { Link } from "@mui/material";
-import React, { useState } from "react";
+import { IconButton, InputAdornment, Link, OutlinedInput } from "@mui/material";
+import { useState } from "react";
 import ForgotPassword from "./ForgotPassword";
 import useAuth from "../../../shared/hooks/useAuth";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 
 interface SignInProps {
   onSwitchToSignUp?: () => void;
@@ -33,7 +34,6 @@ const SignIn: React.FC<SignInProps> = ({ onSwitchToSignUp, isMobile = false }) =
     const response = await login(data.email, data.password);
     if (response?.success) {
       toast.success("Inicio de sesión exitoso");
-
     } else {
       toast.error("Error al iniciar sesión: " + (response?.error || "Error desconocido"));
     }
@@ -44,70 +44,55 @@ const SignIn: React.FC<SignInProps> = ({ onSwitchToSignUp, isMobile = false }) =
       <div className="w-full max-w-sm">
         <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 mb-4 sm:mb-6">Iniciar Sesión</h1>
         
-        {/* Botones de inicio de sesión social */}
-        <div className="flex justify-center gap-3 sm:gap-4 my-4 sm:my-5">
-          <button className="border border-gray-300 rounded-full inline-flex justify-center items-center w-10 h-10 text-gray-600 hover:bg-blue-500 hover:text-white transition-all duration-300 cursor-pointer hover:-translate-y-0.5 flex-shrink-0">
-            <span className="text-sm font-semibold">f</span>
-          </button>
-          <button className="border border-gray-300 rounded-full inline-flex justify-center items-center w-10 h-10 text-gray-600 hover:bg-red-500 hover:text-white transition-all duration-300 cursor-pointer hover:-translate-y-0.5 flex-shrink-0">
-            <span className="text-sm font-semibold">G</span>
-          </button>
-          <button className="border border-gray-300 rounded-full inline-flex justify-center items-center w-10 h-10 text-gray-600 hover:bg-blue-600 hover:text-white transition-all duration-300 cursor-pointer hover:-translate-y-0.5 flex-shrink-0">
-            <span className="text-xs font-semibold">in</span>
-          </button>
-        </div>
-        
         <span className="text-sm text-gray-600 my-3 sm:my-4 block">Usa tu cuenta</span>
         
         {/* Formulario de inicio de sesión */}
         <form onSubmit={handleSubmit(onSubmit)} className="w-full">
-          <div className="w-full space-y-3">
-            <input 
-              className="bg-gray-100 border-2 border-transparent rounded-xl px-4 sm:px-5 py-3 sm:py-4 w-full text-sm transition-all duration-300 outline-none focus:bg-white focus:border-teal-500 focus:shadow-sm focus:shadow-teal-200" 
-              type="email" 
-              {...register("email", {
-                required: "El email es obligatorio",
-                pattern: {
-                  value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
-                  message: "Ingresa un correo electrónico válido."
-                }
-              })}
-              placeholder="Email" 
-            />
-            {errors.email && <p className="text-sm text-red-500 text-center mt-1">{errors.email.message}</p>}
-
+          <div className="w-full flex-col gap-3 sm:gap-4 flex">
+            <div>
+              <input 
+                className="bg-gray-100 border-2 border-transparent rounded-xl px-4 sm:px-5 py-3 sm:py-4 w-full text-sm transition-all duration-300 outline-none focus:bg-white focus:border-teal-500 focus:shadow-sm focus:shadow-teal-200" 
+                type="email" 
+                {...register("email", {
+                  required: "El email es obligatorio",
+                  pattern: {
+                    value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+                    message: "Ingresa un correo electrónico válido."
+                  }
+                })}
+                placeholder="Email" 
+              />
+              {errors.email && <p className="text-sm text-red-500 text-left mt-1">{errors.email.message}</p>}
+            </div>
             
-            <input 
-              className="bg-gray-100 border-2 border-transparent rounded-xl px-4 sm:px-5 py-3 sm:py-4 w-full text-sm transition-all duration-300 outline-none focus:bg-white focus:border-teal-500 focus:shadow-sm focus:shadow-teal-200" 
-              type={isVisible ? "text" : "password"} 
-              placeholder="Contraseña" 
-              {...register("password", {
-                required: "La contraseña es obligatoria",
-                minLength: { value: 6, message: "La contraseña debe tener al menos 6 caracteres." },
-                maxLength: { value: 100, message: "La contraseña no puede tener más de 100 caracteres." },
-                pattern: {
-                    value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{6,}$/,
-                    message: "Debe incluir una mayúscula, una minúscula y un número."
-                }
-              })}
-            />
-            {errors.password && <p className="text-sm text-red-500 mt-2 text-left">{errors.password.message}</p>}
-
-            <button type="button" onClick={() => setIsVisible(!isVisible)}>VER CONTRASEÑA</button>
-          </div>
-
-          {/* El componente ForgotPassword se mueve fuera del formulario para funcionar correctamente */}
-          <ForgotPassword open={open} handleClose={handleClose} />
-          <div className="flex justify-center mt-5">
-            <Link
-              component="button"
-              type="button"
-              onClick={handleOpen}
-              variant="body2"
-              sx={{ alignSelf: 'center' }}
-            >
-              ¿Olvidaste tu contraseña?
-            </Link>
+            <div>
+              <div className="relative w-full">
+                <input 
+                  className="bg-gray-100 border-2 border-transparent rounded-xl pl-4 pr-12 sm:pl-5 sm:pr-12 py-3 sm:py-4 w-full text-sm transition-all duration-300 outline-none focus:bg-white focus:border-teal-500 focus:shadow-sm focus:shadow-teal-200" 
+                  type={isVisible ? "text" : "password"} 
+                  placeholder="Contraseña" 
+                  {...register("password", {
+                    required: "La contraseña es obligatoria",
+                    minLength: { value: 6, message: "La contraseña debe tener al menos 6 caracteres." },
+                    maxLength: { value: 100, message: "La contraseña no puede tener más de 100 caracteres." },
+                    pattern: {
+                        value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{6,}$/,
+                        message: "Debe incluir una mayúscula, una minúscula y un número."
+                    }
+                  })}
+                />
+                <button
+                  type="button"
+                  onClick={() => setIsVisible(!isVisible)}
+                  className="absolute top-1/2 right-4 -translate-y-1/2 text-gray-500 hover:text-gray-700 transition-colors"
+                  aria-label={isVisible ? 'Ocultar contraseña' : 'Mostrar contraseña'}
+                >
+                  {isVisible ? <VisibilityOff /> : <Visibility />}
+                </button>
+              </div>
+              {errors.password && <p className="text-sm text-red-500 mt-1 text-left">{errors.password.message}</p>}
+            </div>              
+                          
           </div>
           
           <button 
@@ -117,6 +102,20 @@ const SignIn: React.FC<SignInProps> = ({ onSwitchToSignUp, isMobile = false }) =
             Iniciar Sesión
           </button>
         </form>
+
+        {/* El componente ForgotPassword se mueve fuera del formulario para funcionar correctamente */}
+        <ForgotPassword open={open} handleClose={handleClose} />
+        <div className="flex justify-center mt-5">
+          <Link
+            component="button"
+            type="button"
+            onClick={handleOpen}
+            variant="body2"
+            sx={{ alignSelf: 'center' }}
+          >
+            ¿Olvidaste tu contraseña?
+          </Link>
+        </div>
     
 
 

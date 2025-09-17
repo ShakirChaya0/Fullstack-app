@@ -21,9 +21,9 @@ export class RegisterClientUseCase {
             ...data,
             contrasenia: hashedPassword,
         };
-
+        
         const newClient = await this.clientRepository.createClient(newClientData);
-
+        
         await this.clientStateRepository.create(newClient.userId, "Habilitado");
         
         const token = this.jwtService.generateConfirmEmailToken({ userId: newClient.userId });
