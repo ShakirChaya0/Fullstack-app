@@ -1,7 +1,7 @@
 import z from 'zod'
 
 const ProductosSchema = z.object({
-    nombre: z.string().nonempty({message: "El nombre es requerido"}).min(3).max(255),
+    nombre: z.string().nonempty({message: "El nombre es requerido"}).min(3).max(30),
     descripcion: z.string().nonempty({message: "La descripcion es requerida"}).min(10).max(255),
     estado: z.enum(["Disponible", "No_Disponible"]),
     tipo: z.enum(["Entrada", "Plato_Principal", "Postre"]).optional(),

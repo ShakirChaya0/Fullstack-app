@@ -7,7 +7,14 @@ export function ProductosRouter () {
     const productRouter = Router();
     const productController = new ProductController();
     
-    productRouter.get("/", (req, res, next) => { productController.getAll(req, res, next) });
+    productRouter.get("/", (req, res, next) => { 
+        // Si hay query parameters, usar paginación
+        if (req.query.page || req.query.limit) {
+            productController.getAllPaginated(req, res, next)
+        } else {
+            productController.getAll(req, res, next)
+        }
+     });
 
     productRouter.get("/id/:idProducto", (req, res, next) => { productController.getById(req, res, next) });
     

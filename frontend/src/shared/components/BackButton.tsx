@@ -11,7 +11,6 @@ export function BackButton ({ url }: { url: string}) {
             component={Link}
             to={url}
             variant="contained"
-            onClick={() => window.history.back()}
             sx={{
                 bgcolor: "#8f8888ff",
                 "&:hover": { 
