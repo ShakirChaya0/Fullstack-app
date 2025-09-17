@@ -28,6 +28,31 @@ export class ProductController {
         }
     }
 
+    public getAllPaginated = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            // Extrayendo parametros para paginación
+            const page = parseInt(req.query.page as string) || 1
+            const limit = parseInt(req.query.limit as string) || 10
+
+            // Ejecutando el getAll paginado
+            const productsPaginated = await this.getProductsUseCase.executePaginated(page, limit)
+            
+            res.status(200).json({
+                data: productsPaginated.products,
+                pagination: {
+                    currentPage: productsPaginated.currentPage,
+                    totalPages: productsPaginated.totalPages,
+                    totalItems: productsPaginated.totalItems,
+                    ItemsPerPage: limit,
+                    hasNextPage: productsPaginated.hasNextPage,
+                    hasPreviousPage: productsPaginated.hasPreviousPage
+                }
+            });
+        } catch (error) {
+            next(error);
+        }
+    }
+
     public getById = async (req: Request, res: Response, next: NextFunction) => {
         try {
             const idProducto = req.params.idProducto;
