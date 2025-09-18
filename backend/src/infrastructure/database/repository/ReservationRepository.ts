@@ -35,8 +35,9 @@ export class ReservationRepository implements IReservationRepository {
     const existingReservation = await prisma.reserva.findFirst({
       where: {
         idCliente: clientId, 
-        fechaReserva : reservation.reservationDate, 
-        horarioReserva: timeAsDate
+        fechaReserva : reservation.reserveDate, 
+        horarioReserva: timeAsDate, 
+        estado: "Realizada"
       }, 
       include: {
         Clientes: {
@@ -66,7 +67,7 @@ export class ReservationRepository implements IReservationRepository {
 
     const createdReservation = await prisma.reserva.create({
       data: {
-        fechaReserva: reservation.reservationDate,
+        fechaReserva: reservation.reserveDate,
         horarioReserva: timeAsDate,
         fechaCancelacion: reservation.cancelationDate,
         cantidadComensales: reservation.commensalsNumber, 
@@ -206,6 +207,9 @@ export class ReservationRepository implements IReservationRepository {
           },
         },
       },
+      orderBy: {
+        fechaReserva: 'desc'
+      }
     });
 
     return reservations.map((reservation) => this.toDomainEntity(reservation));

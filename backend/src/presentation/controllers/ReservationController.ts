@@ -23,9 +23,10 @@ export class ReservationController {
   public createReservation = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
     try {
       const user = req.user
-
       const data = validateReservation(req.body);
+      
       const newReservation = await this.registerReservation.execute(data, user!.idUsuario);
+      
       res.status(201).json(newReservation);
     } catch (error) {
       next(error);
@@ -35,7 +36,7 @@ export class ReservationController {
   public updateReservationStatus = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const { idReserva } = req.params;
-      const { estado } = req.query;
+      const estado  = req.body.estado;
       if (isNaN(+idReserva)) {
         throw new ValidationError("El ID ingresado debe ser un número");
       }
@@ -77,14 +78,15 @@ export class ReservationController {
     }
   };
 
-  public getByClientId = async (req: Request, res: Response, next: NextFunction) => {
+  public getByClientId = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
     try {
-      const { clientId } = req.params;
-      if (!clientId) {
+      const user = req.user
+      
+      if (!user) {
         throw new ValidationError("Se ingreso un ID válido")
       }
 
-      const reservations = await this.getByClientIdUseCase.execute(clientId);
+      const reservations = await this.getByClientIdUseCase.execute(user.idUsuario);
       res.status(200).json(reservations);
     } catch (error) {
       next(error);

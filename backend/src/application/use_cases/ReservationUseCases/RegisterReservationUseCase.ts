@@ -59,7 +59,7 @@ export class RegisterReservation {
   public async execute(data: SchemaReservation, clientId: string): Promise<Reservation | null> {
     const policy = await this.policyRepository.getPolicy();
     const now = new Date();
-    const reservaDateTime = this.combineDateTime(data.reservationDate, data.reserveTime);
+    const reservaDateTime = this.combineDateTime(data.reserveDate, data.reserveTime);
     const diffMs = reservaDateTime.getTime() - (now.getTime() - 1000 * 60 * 60 * 3);
 
     if (diffMs < (policy.horasDeAnticipacionParaReservar * 60 * 60 * 1000)) throw new BusinessError(`Las reservas deben realizarse con al menos ${policy.horasDeAnticipacionParaReservar} horas de anticipación.`);
@@ -78,8 +78,7 @@ export class RegisterReservation {
     if (existingReservation) throw new BusinessError('Usted ya tiene una reserva para esa fecha y ese horario');
 
     // Se valida que el horario de la Reserva sea entre los Horarios del Restaurante
-    const dayReservation = data.reservationDate.getDay();
-
+    const dayReservation = data.reserveDate.getUTCDay();
     const schedule = await this.schedulelRepository.getById(dayReservation); 
 
     if (!schedule) throw new NotFoundError('No hay horarios disponibles para ese dia'); 
@@ -96,7 +95,7 @@ export class RegisterReservation {
     if (timeAsDate < aperturaDate || timeAsDate > cierreDate) throw new BusinessError('Horario fuera del rango de atención');
     
     //Validacion de Mesas disponibles y su asignacion
-    const mesasDisponibles = await this.tableRepository.getAvailableTables(data.reservationDate, data.reserveTime);
+    const mesasDisponibles = await this.tableRepository.getAvailableTables(data.reserveDate, data.reserveTime);
     
     if (mesasDisponibles.length === 0) throw new BusinessError('No hay mesas disponibles para esta fecha y hora');
     
