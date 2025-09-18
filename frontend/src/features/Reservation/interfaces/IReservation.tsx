@@ -10,7 +10,7 @@ export interface ClientPublicInfo {
 
 export interface IReservation {
     readonly _reserveId: number,
-    _reservationDate : Date, 
+    _reserveDate : Date, 
     _reserveTime : string,
     _cancelationDate: Date | null,
     _commensalsNumber: number,

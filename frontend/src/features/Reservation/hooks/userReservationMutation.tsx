@@ -1,29 +1,31 @@
-import { useMutation} from "@tanstack/react-query";
+import { useMutation, useQueryClient} from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import CreateReservation  from "../services/CreateReservation";
-import type { IReservation } from "../interfaces/IReservation";
+import type { IReservation, StateReservation } from "../interfaces/IReservation";
 import UpdateReservation from "../services/UpdateReservation";
 
 interface ReservationPayLoad {
-    _reserveDate : Date, 
-    _reserveTime : string,
-    _commensalsNumber: number
+    _reservationId?: number,
+    _reserveDate: Date, 
+    _reserveTime: string,
+    _commensalsNumber: number,
+    _status?: StateReservation,
 }
 
 interface UseResMutationnParams {
     handleError: (message: string | null) => void;
-    reservation: IReservation | undefined;
+    reservation?: IReservation;
 }
 
 export default function useReservationMutation ({handleError, reservation}: UseResMutationnParams) {
-    // const queryClient = useQueryClient()
+    const queryClient = useQueryClient()
     
         return useMutation<IReservation, Error, ReservationPayLoad>({
             mutationFn: (data: ReservationPayLoad) => {
-                if (reservation) {
+                if (data._status && data._reservationId) {
                     return UpdateReservation({
-                        _reservationId: reservation._reserveId, 
-                        _status: reservation._status, 
+                        _reservationId: data._reservationId, 
+                        _status: data._status, 
                         _reserveDate: data._reserveDate, 
                         _reserveTime: data._reserveTime, 
                         _commensalsNumber: data._commensalsNumber
@@ -38,10 +40,10 @@ export default function useReservationMutation ({handleError, reservation}: UseR
             },
             
             onSuccess: async () => {
-                // await queryClient.invalidateQueries({ queryKey: ["reservation"] }); Para el listado de reservas mas adelante 
-                toast.success(`Se ${reservation ? "modificó" : "creó"} la reserva con exito`)
+                //no se ve el modificar y si el crear
+                await queryClient.invalidateQueries({ queryKey: ["reservation"] });
+                toast.success(`Se ${reservation?._status ? "modificó" : "creó"} la reserva con exito`)
                 handleError(null);
-                
             },
             onError: (err) => {
                 toast.error(`Error al ${reservation ? "modificar" : "crear"} la reserva`);
