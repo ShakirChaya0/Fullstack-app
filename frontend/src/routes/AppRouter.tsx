@@ -6,6 +6,7 @@ import useAuth from "../shared/hooks/useAuth";
 import Login from "../features/Login/pages/Login";
 import ResetPasswordForm from "../features/Login/pages/ResetPasswordForm";
 import VerifyEmail from "../features/Login/pages/VerifyEmail";
+import NotFoundPage from "../shared/components/NotFoundPage"
 
 export default function AppRouter() {
   const { isAuthenticated, user, isLoading } = useAuth();
@@ -35,7 +36,7 @@ export default function AppRouter() {
                 {user.tipoUsuario === "SectorCocina" && (
                     <Route path="/*" element={<KitchenRouter />} />
                 )}
-                <Route path="*" element={<h1>No tienes acceso o la página no existe</h1>} />
+                <Route path="*" element={<NotFoundPage />}/>
             </>
         )}
     </Routes>
