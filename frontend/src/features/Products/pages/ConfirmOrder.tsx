@@ -30,12 +30,12 @@ export default function ConfirmOrder() {
     hanldeRemoveFromCart({ nombreProducto: name })
   };
 
-    const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
-        event.preventDefault()
-        const formData = new FormData(event.currentTarget)
-        const data = Object.fromEntries(formData.entries())
-        handleConfirmOrder({comensales: +data.cantidad, observaciones: data.observaciones.toString()})
-    }
+  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+      event.preventDefault()
+      const formData = new FormData(event.currentTarget)
+      const data = Object.fromEntries(formData.entries())
+      handleConfirmOrder({comensales: +data.cantidad, observaciones: data.observaciones.toString()})
+  }
 
   return (
     <section className="p-4 flex w-full items-center justify-center">
@@ -188,9 +188,10 @@ export default function ConfirmOrder() {
                       <label htmlFor="">Observaciones: </label>
                       <textarea name="observaciones" className="bg-gray-300 rounded-2xl py-2 px-4 outline-0" placeholder="ej: sacale el chorizo al choripan" rows={4} id=""/>
                     </div>
-                    <button className="active:bg-orange-700 hover:scale-105 transition-all 
+                    <button className="active:bg-orange-700 hover:scale-105 relative transition-all 
                     ease-linear duration-100 active:scale-95 m-auto py-2 px-4 bg-orange-500 
-                    rounded-lg shadow-lg text-white font-bold cursor-pointer hover:bg-orange-600">Confirmar Pedido</button>
+                    rounded-lg shadow-lg text-white font-bold cursor-pointer hover:bg-orange-600"
+                     >Confirmar Pedido</button>
                 </form>
             </div>
         </div>

@@ -3,6 +3,7 @@ import { usePage } from "../hooks/usePage";
 import { useMutationNews } from "../hooks/useMutationNews";
 import { useModalProvider } from "../hooks/useModalProvider";
 import { CircularProgress } from "@mui/material";
+import { motion, AnimatePresence } from "framer-motion";
 
 type FormData = {
   Titulo: string,
@@ -32,7 +33,20 @@ export default function ActionForm() {
 
     return (
       <>
-        <p className="text-base text-red-500">{failureReason?.message}</p>
+        <AnimatePresence>
+          {
+            failureReason?.message ? (
+            <motion.div className="w-full rounded-md min-h-8 flex items-center pl-3 border border-red-600 bg-rose-200"
+            initial={{opacity: 0}}
+            animate={{opacity: 1}}
+            exit={{opacity: 0}}
+            transition={{ duration: 0.3 }}
+            >
+              <p className="text-base text-red-600">{failureReason?.message}</p>
+            </motion.div>
+            ): (<></>)
+          }
+        </AnimatePresence>
         <form
           onSubmit={handleSubmit(onSubmit)}
           className="flex flex-col gap-6 w-full"

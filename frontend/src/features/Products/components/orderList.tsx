@@ -6,6 +6,7 @@ import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import { useOrderActions } from "../../../shared/hooks/useOrderActions";
 import type { LineaPedido } from "../../../store/slices/orderSlice";
 import { NavLink } from "react-router";
+import { AnimatePresence, motion } from "framer-motion";
 
 
 export function OrderList () {
@@ -65,42 +66,51 @@ export function OrderList () {
                             md:max-h-[684px] 
                           "
                         >
-                          {order.lineasPedido.map((lp) => (
-                            <div
-                              key={lp.nombreProducto}
-                              className="flex py-0 shadow-none border-0 border-b-2 h-fit flex-col xl:flex-row justify-evenly md:justify-between md:border border-gray-300 md:shadow-lg md:py-2 md:px-4 min-h-[150px] md:rounded-lg"
-                            >
-                                <div className="md:flex md:flex-col justify-between">
-                                    <h1 className="font-medium md:text-2xl">{lp.nombreProducto}</h1>
-                                    <p className="max-h-[60px] md:max-h-[72px] overflow-y-auto text-sm md:text-lg">{lp.descripcion}</p>
-                                    <p className="text-orange-500 font-bold">${lp.subtotal}</p>
-                                </div>
-                              <div
-                                className="self-center border rounded-md 
-                                transition-all duration-200 bg-orange-500
-                                text-white font-medium flex flex-row justify-around 
-                                items-center gap-1 w-fit"
+                          <AnimatePresence>
+                            {order.lineasPedido.map((lp) => (
+                              <motion.div
+                                key={lp.nombreProducto}
+                                layout
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: -20 }}
+                                transition={{ type: "spring", stiffness: 300, damping: 25 }}
+                                className="flex py-0 shadow-none border-0 border-b-2 h-fit flex-col xl:flex-row
+                                           justify-evenly md:justify-between md:border border-gray-300 md:shadow-lg
+                                           md:py-2 md:px-4 min-h-[150px] md:rounded-lg"
                               >
-                                <button
-                                  onClick={() => handleAdd(lp)}
-                                  className="cursor-pointer h-full w-full py-1.5 px-2 bg-orange-500 hover:scale-105
-                                   hover:bg-orange-600 rounded-l-md transition-all ease-linear duration-150 
-                                   active:bg-orange-700 active:scale-100"
+                                  <div className="md:flex md:flex-col justify-between">
+                                      <h1 className="font-medium md:text-2xl">{lp.nombreProducto}</h1>
+                                      <p className="max-h-[60px] md:max-h-[72px] overflow-y-auto text-sm md:text-lg">{lp.descripcion}</p>
+                                      <p className="text-orange-500 font-bold">${lp.subtotal}</p>
+                                  </div>
+                                <div
+                                  className="self-center border rounded-md 
+                                  transition-all duration-200 bg-orange-500
+                                  text-white font-medium flex flex-row justify-around 
+                                  items-center gap-1 w-fit"
                                 >
-                                  <ControlPointIcon/>
-                                </button>
-                                <p>{lp.cantidad}</p>
-                                <button
-                                  onClick={() => handleRemove(lp.nombreProducto)}
-                                  className="cursor-pointer h-full w-full py-1.5 px-2 bg-orange-500 hover:scale-105
-                                   hover:bg-orange-600 rounded-r-md transition-all ease-linear duration-150
-                                   active:bg-orange-700 active:scale-100"
-                                >
-                                  <RemoveCircleOutlineIcon/>
-                                </button>
-                              </div>
-                            </div>
-                          ))}
+                                  <button
+                                    onClick={() => handleAdd(lp)}
+                                    className="cursor-pointer h-full w-full py-1.5 px-2 bg-orange-500 hover:scale-105
+                                     hover:bg-orange-600 rounded-l-md transition-all ease-linear duration-150 
+                                     active:bg-orange-700 active:scale-100"
+                                  >
+                                    <ControlPointIcon/>
+                                  </button>
+                                  <p>{lp.cantidad}</p>
+                                  <button
+                                    onClick={() => handleRemove(lp.nombreProducto)}
+                                    className="cursor-pointer h-full w-full py-1.5 px-2 bg-orange-500 hover:scale-105
+                                     hover:bg-orange-600 rounded-r-md transition-all ease-linear duration-150
+                                     active:bg-orange-700 active:scale-100"
+                                  >
+                                    <RemoveCircleOutlineIcon/>
+                                  </button>
+                                </div>
+                              </motion.div>
+                            ))}
+                          </AnimatePresence>
                         </div>
                       
                         <div className="p-4">

@@ -55,7 +55,11 @@ export default function NewsCRUD () {
                             </Suspense>
                         
                         }
-                        { (debouncedValue.length !== 0) && (data?.News.length === 0) && <h1 className="text-center font-medium">No se encontraron los datos buscados</h1>}
+                        { (debouncedValue.length !== 0) && (data?.News.length === 0) && 
+                            <div className="flex items-center w-full h-full justify-center">
+                                <h1 className="font-medium">No se encontraron los datos buscados</h1>
+                            </div>
+                        }
                         { isError && <p>Error</p> }
                         {
                             !isError && data?.totalItems !== 0 &&

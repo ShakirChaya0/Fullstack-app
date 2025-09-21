@@ -11,7 +11,7 @@ export function useMutationNews ({fn, currentPage, SuccessMsg, ErrorMsg, query, 
       onMutate: async (newData) => {
         await queryClient.cancelQueries({ queryKey: ["News", currentPage, query, filter]})
         
-        const previousState = queryClient.getQueryData(["News", currentPage, query, filter])
+        const previousState: BackResults | undefined = queryClient.getQueryData(["News", currentPage, query, filter])
 
         queryClient.setQueryData(["News", currentPage, query, filter], (oldData?: BackResults) => {
           if (!oldData) return { News: [newData], totalItems: 1, pages: 1 }
@@ -22,6 +22,8 @@ export function useMutationNews ({fn, currentPage, SuccessMsg, ErrorMsg, query, 
             totalItems: oldData.totalItems + 1
           }
           
+          if (previousState?.News && previousState.News.length >= 5) return previousState
+
           return NewData
         })
       

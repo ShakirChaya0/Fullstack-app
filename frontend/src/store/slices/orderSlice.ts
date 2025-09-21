@@ -6,7 +6,7 @@ export type LineaPedido = {
     precio: number,
     cantidad: number,
     estado: string,
-    subtotal: number,
+    subtotal: number
 }
 
 type Pedido = {
