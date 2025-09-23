@@ -86,7 +86,11 @@ export class ReservationController {
         throw new ValidationError("Se ingreso un ID válido")
       }
 
-      const reservations = await this.getByClientIdUseCase.execute(user.idUsuario);
+      const page = parseInt(req.query.page as string) || 1;
+      const pageSize = parseInt(req.query.pageSize as string) || 10;
+
+      const reservations = await this.getByClientIdUseCase.execute(user.idUsuario, page, pageSize);
+
       res.status(200).json(reservations);
     } catch (error) {
       next(error);

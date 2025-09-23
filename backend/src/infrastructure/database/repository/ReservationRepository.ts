@@ -190,8 +190,16 @@ export class ReservationRepository implements IReservationRepository {
     return this.toDomainEntity(updatedReservation);
   }
   
-  public async getByClientId(clientId: string): Promise<Reservation[]> {
-    const reservations = await prisma.reserva.findMany({
+  public async getByClientId(clientId: string, page: number, pageSize: number): Promise<{ data: Reservation[];
+  meta: {
+      page: number;
+      pageSize: number;
+      total: number;
+      totalPages: number;
+    };
+  }> {
+
+      const reservations = await prisma.reserva.findMany({
       where: { idCliente: clientId },
       include: { 
         Clientes: {
@@ -209,10 +217,24 @@ export class ReservationRepository implements IReservationRepository {
       },
       orderBy: {
         fechaReserva: 'desc'
-      }
+      }, 
+      skip: (page - 1) * pageSize, 
+      take: pageSize
+    });
+    
+    const total = await prisma.reserva.count({
+      where: { idCliente: clientId },
     });
 
-    return reservations.map((reservation) => this.toDomainEntity(reservation));
+    return {
+      data: reservations.map((reservation) => this.toDomainEntity(reservation)),
+      meta: {
+        page,
+        pageSize,
+        total,
+        totalPages: Math.ceil(total / pageSize),
+      },
+    };
   }
 
   public async getReservationByNameAndLastnameClient(name: string, lastname:string): Promise<Reservation[]> {
