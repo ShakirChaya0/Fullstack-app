@@ -2,6 +2,7 @@ import { ClientRepository } from "../../../infrastructure/database/repository/Cl
 import { ClientStateRepository } from "../../../infrastructure/database/repository/ClientStateRepository.js";
 import { PolicyRepository } from "../../../infrastructure/database/repository/PolicyRepository.js";
 import { NotFoundError } from "../../../shared/exceptions/NotFoundError.js";
+import { UnauthorizedError } from "../../../shared/exceptions/UnauthorizedError.js";
 
 export class CheckClientStatusUseCase {
     constructor(
@@ -14,12 +15,14 @@ export class CheckClientStatusUseCase {
         const client = await this.clientRepository.getClientByidUser(userId);
         if (!client) throw new NotFoundError("Cliente no encontrado");
 
+        if (!client.emailVerified) throw new UnauthorizedError("No ha verificado aún su correo electrónico. Por favor, verifique su correo para iniciar sesión.");
+
         const actualState = client.getActualState();
         if (actualState.state === "Habilitado") return;
 
         const policy = await this.policyRepository.getPolicy();
         if (this.getDaysDiff(actualState.modifyDate) <= policy.cantDiasDeshabilitacion) return;
-
+        
         await this.clientStateRepository.create(client.userId, "Habilitado");
     }
 

@@ -15,6 +15,7 @@ export class Client extends User {
         private _lastName: string,
         private _phone: string,
         private _birthDate: Date,
+        private _emailVerified: boolean,
         private _states: ClientState[], 
         private _reservation: Reservation[]
     ) { 
@@ -23,6 +24,10 @@ export class Client extends User {
 
     get email(): string {
         return this._email;
+    }
+
+    get emailVerified(): boolean {
+        return this._emailVerified;
     }
     
     get name(): string {
@@ -61,6 +66,10 @@ export class Client extends User {
         this._name = nombre;
     }
 
+    set emailVerified(bool: boolean) {
+        this._emailVerified = bool;
+    }
+
     set apellido(apellido: string) {
         this._lastName = apellido;
     }
@@ -73,7 +82,7 @@ export class Client extends User {
         this._email = email;
     }
 
-    set fechaNacimiento(fechaNacimiento: Date) {
+    set birthDate(fechaNacimiento: Date) {
         this._birthDate = fechaNacimiento;
     }
 

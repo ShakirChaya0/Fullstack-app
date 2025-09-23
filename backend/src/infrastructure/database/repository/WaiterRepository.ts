@@ -122,14 +122,14 @@ export class WaiterRepository implements IWaiterRepository {
         }
         catch(error: any){
             if (error?.code === 'P2002' && error?.meta?.target?.includes('nombreUsuario')) {
-                throw new ConflictError("Ya existe un Mozo con ese nombre de usuario");
+                throw new ConflictError("El nombre de usuario ingresado ya está en uso");
             } else if (error?.code === 'P2002' && error?.meta?.target?.includes('email')) {
-                throw new ConflictError("Ya existe un Mozo con ese email");
+                throw new ConflictError("El email ingresado ya está en uso");
             } else if (error?.code === 'P2002' && error?.meta?.target?.includes('dni')) {
-                throw new ConflictError("Ya existe un Mozo con ese dni");
+                throw new ConflictError("El DNI ingresado ya está en uso");
             }
             else {
-                throw new ServiceError(`Error al crear el Mozo: ${error.message}`);
+                throw new ServiceError(`Error al actualizar datos del usuario: ${error.message}. Inténtelo de nuevo más tarde`);
             }
         }
     }

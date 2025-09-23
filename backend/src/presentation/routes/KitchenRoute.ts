@@ -8,7 +8,7 @@ export function KitchenRouter() {
 
     kitchenRouter.get('/', (req, res, next) => { kitchenController.getKitchen(req, res, next) });
     
-    kitchenRouter.patch('/', (req, res, next) => { kitchenController.updateKitchen(req, res, next) });
+    kitchenRouter.patch('/update', (req, res, next) => { kitchenController.updateKitchen(req, res, next) });
 
     return kitchenRouter;
 }

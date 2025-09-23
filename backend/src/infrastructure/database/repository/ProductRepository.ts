@@ -5,6 +5,7 @@ import { IProductoRepository } from '../../../domain/repositories/IProductReposi
 import { Product } from '../../../domain/entities/Product.js';
 import { Drink } from "../../../domain/entities/Drink.js";
 import { Food } from "../../../domain/entities/Food.js";
+import { ProductsPaginated } from "../../../domain/interfaces/ProductsPaginated.interface.js";
 
 type ProductWithPrice = Prisma.ProductoGetPayload<{
     include: { Precios: true };
@@ -26,6 +27,41 @@ export class ProductRepository implements IProductoRepository {
         
         return products.map((product) => { return this.toDomainEntity(product) })
     }
+
+    public async getAllPaginated(page: number, limit: number): Promise<ProductsPaginated> {
+        const offset = (page - 1) * limit
+
+        // Implementación paginación:
+        // Se ejecutan 2 consultas: Una que consulta la cantidad de productos y el get all de los productos
+        const [products, totalItems] = await Promise.all([
+            prisma.producto.findMany({
+                skip: offset,
+                take: limit,
+                include: { 
+                    Precios: {
+                        orderBy: {
+                            fechaActual: 'desc' 
+                        },
+                        take: 1 
+                    } 
+                }
+            }),
+            prisma.producto.count()
+        ])
+        
+        const productsPostDomain = products.map((product) => { return this.toDomainEntity(product) })
+        const totalPages = Math.ceil(totalItems / limit)
+
+        return {
+            products: productsPostDomain,
+            totalItems,
+            totalPages,
+            currentPage: page,
+            hasNextPage: page < totalPages,
+            hasPreviousPage: page > 1
+        }
+    } 
+    
 
     public async getById(idProducto: number): Promise<Product | null> {
         const product = await prisma.producto.findUnique({
