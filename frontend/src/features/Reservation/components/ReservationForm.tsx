@@ -19,7 +19,6 @@ export default function ReservationForm({ onFormSubmit}: ReservetionProps ) {
     const { register, handleSubmit, reset, watch, formState: { errors, isSubmitting } } = useForm<FormData>({
         mode: "onChange",
     })
-
     
     // Obtenemos la fecha que eligio el cliente
     const selectedDate = watch('FechaReserva');

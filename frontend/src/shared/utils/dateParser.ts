@@ -1,4 +1,7 @@
-export default function dateParser(date: Date | string): string {
+export default function dateParser(date: Date | string | null): string {
+
+  if(!date) return "La fecha debe ser definida"
+
   const d = typeof date === "string" ? new Date(date) : date;
 
 

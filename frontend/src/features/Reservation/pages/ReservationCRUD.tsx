@@ -15,8 +15,7 @@ export default function ReservationCRUD() {
     const [pendingData, setPendingData] = useState<FormData | null>(null); 
 
     const { mutate } = useReservationMutation({
-        handleError,
-        reservation: undefined
+        handleError
   });
 
     const handleFormSubmit = (data: FormData) => {
@@ -50,6 +49,7 @@ export default function ReservationCRUD() {
             isOpen={showModal}
             title="Confirmar Reserva"
             message={modalMessage}
+            confirmLabel="Confirmar Reserva"
             onConfirm={handleConfirm}
             onCancel={handleCancel}
           />

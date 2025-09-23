@@ -21,12 +21,12 @@ export function ReservationCard({reservationDate, reserveTime, commensalsNumber,
               <p className="mb-1"><strong>Comensales:</strong> {commensalsNumber}</p>
               <p className="mb-1"><strong>Estado:</strong> {status}</p>
               { status === "Cancelada" && (
-                  <p className="mb-1"><strong>Fecha Cancelacion:</strong> {dateParser(String(cancelationDate))}</p>
+                  <p className="mb-1"><strong>Fecha Cancelacion:</strong> {dateParser(cancelationDate)}</p>
                 )
               }
               { status === "Realizada" && onCancel && (
                 <button
-                  className="w-full border-4 border-red-600 bg-red-600 text-white text-sm py-1.5 rounded   hover:shadow-lg shadow-red-200 transition-colors"
+                  className="w-full border-4 cursor-pointer border-red-600 bg-red-600 text-white text-sm py-1.5 rounded   hover:shadow-lg shadow-red-200 transition-colors"
                   onClick={onCancel}
                 >
                   Cancelar
