@@ -24,7 +24,7 @@ const Login: React.FC<LoginProps> = ({
   };
 
   return (
-    <div className={`min-h-screen flex flex-col justify-center items-center bg-gradient-to-br from-amber-100 via-yellow-100 to-amber-200 font-sans p-3 sm:p-5 ${className}`}>
+    <div className={`min-h-screen flex flex-col justify-center items-center bg-[var(--primary-300)] font-sans p-3 sm:p-5 ${className}`}>
       {/* Header */}
       <div className="text-center mb-6 sm:mb-8 text-gray-800 px-4">
         <h2 className="text-3xl sm:text-4xl font-bold mb-2 sm:mb-3 drop-shadow-sm">

@@ -5,6 +5,7 @@ import { toast } from "react-toastify";
 import { useState } from "react";
 import { useNavigate } from 'react-router';
 import RestaurantIcon from '@mui/icons-material/Restaurant'; 
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 
 interface FormData {
     newPassword: string;
@@ -12,6 +13,7 @@ interface FormData {
 
 export default function ResetPasswordForm() {
     const [error, setError] = useState<string>("");
+    const [isVisible, setIsVisible] = useState<boolean>(false);
     const navigate = useNavigate();
 
     const {
@@ -57,34 +59,42 @@ export default function ResetPasswordForm() {
                 </p>
                 
                 <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col items-center gap-6 w-full">
-                    <div className="w-full">
-                        <label className="sr-only" htmlFor="newPassword">Nueva Contraseña</label>
-                        <input
-                            id="newPassword"
-                            type="password"
+                    <div>
+                        <div className="relative w-full">
+                          <input 
+                            className="bg-gray-100 border-2 border-transparent rounded-xl pl-4 pr-12 sm:pl-5 sm:pr-12 py-3 sm:py-4 w-full text-sm transition-all duration-300 outline-none focus:bg-white focus:border-teal-500 focus:shadow-sm focus:shadow-teal-200" 
+                            type={isVisible ? "text" : "password"} 
+                            placeholder="Contraseña" 
                             {...register("newPassword", {
-                                required: "La nueva contraseña es obligatoria.",
-                                minLength: { value: 6, message: "La contraseña debe tener al menos 6 caracteres." },
-                                maxLength: { value: 100, message: "La contraseña no puede tener más de 100 caracteres." },
-                                pattern: {
-                                    value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{6,}$/,
-                                    message: "Debe incluir una mayúscula, una minúscula y un número."
-                                }
+                              required: "La contraseña es obligatoria",
+                              minLength: { value: 6, message: "La contraseña debe tener al menos 6 caracteres." },
+                              maxLength: { value: 100, message: "La contraseña no puede tener más de 100 caracteres." },
+                              pattern: {
+                                  value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{6,}$/,
+                                  message: "Debe incluir una mayúscula, una minúscula y un número."
+                              }
                             })}
-                            placeholder="Nueva contraseña"
-                            className="bg-gray-100 border-2 border-transparent rounded-xl px-4 sm:px-5 py-3 sm:py-4 w-full text-sm transition-all duration-300 outline-none focus:bg-white focus:border-teal-500 focus:shadow-sm focus:shadow-teal-200"
-                        />
-                        {errors.newPassword && <p className="text-sm text-red-500 mt-2 text-left">{errors.newPassword.message}</p>}
-                    </div>
-                    {error && <p className="text-sm text-red-500 mt-2 text-center">{error}</p>}
+                          />
+                          <button
+                            type="button"
+                            onClick={() => setIsVisible(!isVisible)}
+                            className="absolute top-1/2 right-4 -translate-y-1/2 text-gray-500 hover:text-gray-700 transition-colors"
+                            aria-label={isVisible ? 'Ocultar contraseña' : 'Mostrar contraseña'}
+                          >
+                            {isVisible ? <VisibilityOff /> : <Visibility />}
+                          </button>
+                        </div>
+                        {errors.newPassword && <p className="text-sm text-red-500 mt-1 text-left">{errors.newPassword.message}</p>}
+                 </div>
 
-                    <button 
-                        type="submit" 
-                        className="w-full rounded-full border-none bg-gradient-to-r from-teal-700 to-teal-800 text-white text-sm font-semibold py-3 sm:py-4 px-8 sm:px-11 tracking-wide uppercase transition-all duration-300 cursor-pointer hover:-translate-y-0.5 hover:shadow-lg hover:shadow-teal-300 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
-                        disabled={isPending}
-                    >
-                        {isPending ? 'Confirmando...' : 'Confirmar'}
-                    </button>
+                <button 
+                    type="submit" 
+                    className="w-full rounded-full border-none bg-gradient-to-r from-teal-700 to-teal-800 text-white text-sm font-semibold py-3 sm:py-4 px-8 sm:px-11 tracking-wide uppercase transition-all duration-300 cursor-pointer hover:-translate-y-0.5 hover:shadow-lg hover:shadow-teal-300 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+                    disabled={isPending}
+                >
+                    {isPending ? 'Confirmando...' : 'Confirmar'}
+                </button>
+
                 </form>
             </div>
         </main>

@@ -11,11 +11,11 @@ export function ClientRouter() {
   return (
     <Routes>
       <Route element={<ClientMainLayout />}>
-        <Route path="/Cliente"></Route>
-        <Route path="/Cliente/Menu" element={<Menu />} />
-        <Route path="/Cliente/Menu/Comidas" element={<FoodsList />} />
-        <Route path="/Cliente/Menu/Bebidas" element={<DrinksList />} />
-        <Route path="/Cliente/Perfil" element={
+        <Route path="/"></Route>
+        <Route path="/Menu" element={<Menu />} />
+        <Route path="/Menu/Comidas" element={<FoodsList />} />
+        <Route path="/Menu/Bebidas" element={<DrinksList />} />
+        <Route path="/Perfil" element={
           <Suspense fallback = {<ProfileCardSkeleton/>}>
             <UserProfile />
           </Suspense>

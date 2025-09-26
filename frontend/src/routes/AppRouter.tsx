@@ -7,6 +7,7 @@ import Login from "../features/Login/pages/Login";
 import ResetPasswordForm from "../features/Login/pages/ResetPasswordForm";
 import VerifyEmail from "../features/Login/pages/VerifyEmail";
 import NotFoundPage from "../shared/components/NotFoundPage"
+import ProtectedRoute from "../shared/components/ProtectedRoute";
 
 export default function AppRouter() {
   const { isAuthenticated, user, isLoading } = useAuth();
@@ -16,29 +17,32 @@ export default function AppRouter() {
 
   return (
     <Routes>
-        {!isAuthenticated && !isLoading && (
-            <>
-                <Route path="/login" element={<Login />} />
-                <Route path="/reset-password" element={<ResetPasswordForm />} />
-                <Route path="/verify-email" element={<VerifyEmail />} />
-                <Route path="*" element={<Navigate to="/login" />} />
-            </>
-        )}
+        <Route path="/login" element={<Login />} />
+        <Route path="/reset-password" element={<ResetPasswordForm />} />
+        <Route path="/verify-email" element={<VerifyEmail />} />
 
-        {isAuthenticated && user && (
+        {!isLoading &&  
             <>
-                {user.tipoUsuario === "Cliente" && (
-                    <Route path="/*" element={<ClientRouter />} />
-                )}
-                {user.tipoUsuario === "Administrador" && (
-                    <Route path="/*" element={<AdminRouter />} />
-                )}
-                {user.tipoUsuario === "SectorCocina" && (
-                    <Route path="/*" element={<KitchenRouter />} />
-                )}
+                <Route path="/Cliente/*" element={
+                    <ProtectedRoute userType={"Cliente"}>
+                        <ClientRouter />
+                    </ProtectedRoute>
+                    }
+                />
+                <Route path="/Admin/*" element={
+                    <ProtectedRoute userType={"Administrador"}>
+                        <AdminRouter />
+                    </ProtectedRoute>
+                } />
+                <Route path="/Cocina/*" element={
+                    <ProtectedRoute userType={"SectorCocina"}>
+                        <KitchenRouter />
+                    </ProtectedRoute>
+                } />
                 <Route path="*" element={<NotFoundPage />}/>
-            </>
-        )}
+        </>}
+        
+
     </Routes>
   );
 }
