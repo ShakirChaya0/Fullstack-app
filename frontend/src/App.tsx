@@ -4,7 +4,7 @@ import { AuthProvider } from "./shared/contexts/AuthContext"
 function App() {
   return (
     <AuthProvider>
-      <AppRouter/>
+        <AppRouter/>
     </AuthProvider>
   )
 }
