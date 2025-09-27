@@ -1,16 +1,31 @@
 import "tailwindcss"
-import { Autocomplete, TextField } from "@mui/material";
+import { TextField } from "@mui/material";
 import type { SearchProductsProps } from "../interfaces/product&PriceInterfaces";
 import SearchIcon from '@mui/icons-material/Search';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
+import debounce from 'just-debounce-it'
+import { useCallback, useState } from "react";
 
 
-export function SearchProducts({ filtersToSearch, updateFilter, allProducts }: SearchProductsProps) {
+export function SearchProducts({ filtersToSearch, updateFilter }: SearchProductsProps) {
+    const [inputValue, setInputValue] = useState(filtersToSearch);
     
     const handleOpenModal = () => {
         // Implementación de modal
         // Opción 1: Evento personalizado: Dispatch que abre la modal
         window.dispatchEvent(new CustomEvent('openNewProductModal'));
+    }
+
+    const debounceSearch = useCallback( 
+        debounce((newInputValue: string) => {
+            updateFilter("search", newInputValue)
+        }, 750)    
+    , [updateFilter])
+
+    const handleChange = (newInputValue: string) => {
+        if(newInputValue.startsWith(' ')) return
+        setInputValue(newInputValue)
+        debounceSearch(newInputValue)
     }
 
     return (
@@ -19,43 +34,26 @@ export function SearchProducts({ filtersToSearch, updateFilter, allProducts }: S
             hover:border-cyan-500 hover:shadow-[0_0_5px_2px_rgba(14,116,144,0.5)]
             focus-within:border-cyan-500 focus-within:shadow-[0_0_5px_2px_rgba(14,116,144,0.5)] h-[40px]">
                 <SearchIcon className="text-gray-400 mx-2 text-[20px]"/>
-                <Autocomplete
+                <TextField
+                    placeholder="Buscador"
                     className="w-full"
                     id="searchTool"
-                    freeSolo
-                    value={ filtersToSearch }
-                    onInputChange={(_, newInputValue) => {
-                        updateFilter("search", newInputValue);
+                    value={ inputValue }
+                    onChange={(e) => handleChange(e.target.value)}
+                    autoComplete="off"
+                    sx={{
+                        '& .MuiOutlinedInput-root': {
+                            '& fieldset': {
+                                border: 'none',
+                            },
+                            '&:hover fieldset': {
+                                border: 'none',
+                            },
+                            '&.Mui-focused fieldset': {
+                                border: 'none',
+                            },
+                        },
                     }}
-                    options={allProducts.map((option) => {return `${option.idProducto} - ${option.nombre}`})}
-                    filterOptions={(options, params) => {
-                        // Mostrar opciones si hay al menos 1 carácter
-                        if (params.inputValue.length === 0) {
-                            return [];
-                        }
-                        return options.filter((option) =>
-                            option.toLowerCase().includes(params.inputValue.toLowerCase())
-                        );
-                    }}
-                    renderInput={(params) => (
-                        <TextField 
-                            {...params} 
-                            placeholder="Buscador"
-                            slotProps={
-                                {
-                                    inputLabel: {shrink: false, style: { display: 'none' }},
-                                    input: {
-                                        ...params.InputProps,
-                                        disableUnderline: true,
-                                        sx: {
-                                            '& fieldset': { border: 'none' },
-                                            '& .MuiOutlinedInput-notchedOutline': { border: 'none' },
-                                        }
-                                    }
-                                }
-                            }
-                        />
-                    )}
                 />
             </div>
             <button 

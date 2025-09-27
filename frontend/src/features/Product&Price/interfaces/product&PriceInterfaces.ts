@@ -162,8 +162,6 @@ export interface useMutationProductModificationProps {
   productBefModification: RefObject<ProductWithoutPrice | null>
   setModalError: (value: React.SetStateAction<string>) => void
   onClose: () => void
-  currentPage?: number
-  limit?: number
 }
 
 export interface useMutationPriceRegistrationProps {
@@ -201,14 +199,16 @@ export interface PaginationControlsProps {
 export interface SearchProductsProps {
   filtersToSearch: string;
   updateFilter: (key: string, value: string) => void;
-  allProducts: ProductPrice[] 
 }
 
 export interface FiltersProductsProps {
   filterType: string;
   filterState: string;
+  filtersFoodType: string; 
+  filtersFoodSpec: string;
+  filtersDrinkSpec: string;
   updateFilter: (key: string, value: string) => void;
-  clearFilters: () => void
+  clearFilters: () => void;
 }
 
 export interface ProductCardsProps {
@@ -222,6 +222,7 @@ export interface ModifyProductModalProps {
   onClose: () => void;
   currentPage?: number;
   limit?: number;
+  search?: string;
 }
 
 export interface TablePriceProps {

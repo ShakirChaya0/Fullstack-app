@@ -88,6 +88,39 @@ export class ProductController {
         }
     }
 
+    public getByNamePaginated = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const draft = req.params.nombreProducto;
+            if (!draft) {
+                throw new ValidationError("El nombre del producto es requerido");
+            }
+            const page = parseInt(req.query.page as string) || 1
+            const limit = parseInt(req.query.limit as string) || 10
+
+            const nombreProducto = draft.replace(/_/g, ' ');
+            const productsPaginated = await this.getProductByNameUseCase.executePaginated(page, limit, nombreProducto);
+            if (productsPaginated.products.length == 0) {
+                throw new NotFoundError("Producto no encontrado");
+            }
+            
+            
+            res.status(200).json({
+                data: productsPaginated.products,
+                pagination: {
+                    currentPage: productsPaginated.currentPage,
+                    totalPages: productsPaginated.totalPages,
+                    totalItems: productsPaginated.totalItems,
+                    ItemsPerPage: limit,
+                    hasNextPage: productsPaginated.hasNextPage,
+                    hasPreviousPage: productsPaginated.hasPreviousPage
+                }
+            });
+
+        } catch (error) {
+            next(error);
+        }
+    }
+
     public getByType = async (req: Request, res: Response, next: NextFunction) => {
         try {
             const tipoProducto = req.params.tipoProducto;

@@ -2,11 +2,37 @@ import type { RefObject } from "react"
 import type { ProductPriceWithoutID, ProductWithoutPrice } from "../interfaces/product&PriceInterfaces"
 
 // Se implementa paginación desde backend
-export const getProductsData = async (page: number, limit: number) => {
-  const response = await fetch(`${import.meta.env.VITE_PRODUCTS_URL}?page=${page}&limit=${limit}`, {
-    method: 'GET',
-    headers: { 'Content-Type': 'application/json' }
-  })
+export const getProductsData = async (page: number, limit: number, search: string) => {
+  let response
+  let isNumeric = false // Bandera para manejar respuestas sin formato de paginación (Endpoint busqueda por id)
+
+  console.log('Busqueda:', search)
+  
+  if (search && search.trim() !== '') {
+    if (/^\d+$/.test(search.trim())) { 
+      // Es numérico - buscar por ID
+      isNumeric = true
+      response = await fetch(`${import.meta.env.VITE_PRODUCTS_URL}/id/${search.trim()}`, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' }
+      })
+    } else {
+      // Es texto - buscar por nombre
+      
+      console.log('Búsqueda por nombre:', search.trim())
+      response = await fetch(`${import.meta.env.VITE_PRODUCTS_URL}/nombre/${search.trim()}?page=${page}&limit=${limit}`, {
+        method: 'GET',
+        headers: { 'Content-Type': 'application/json' }
+      })
+    }
+  } else {
+    // No hay búsqueda, usar paginación normal
+    console.log('Modo paginación:', { page, limit })
+    response = await fetch(`${import.meta.env.VITE_PRODUCTS_URL}?page=${page}&limit=${limit}`, {
+      method: 'GET',
+      headers: { 'Content-Type': 'application/json' }
+    })
+  }
 
   if (!response.ok) {
     // Si es 404, intentar obtener el mensaje del JSON del backend
@@ -27,7 +53,28 @@ export const getProductsData = async (page: number, limit: number) => {
     throw new Error(`Error ${response.status}: ${response.statusText}`)
   }
 
-  return response.json()
+  const data = await response.json()
+  
+  // Convertimos la búsqueda individual a formato paginado
+  if (isNumeric) {
+    // Si es búsqueda por id, convertir a formato paginado
+    const products = Array.isArray(data) ? data : [data] // Manejar tanto array como objeto único
+    
+    return {
+      data: products,
+      pagination: {
+        currentPage: 1,
+        totalPages: 1,
+        totalItems: products.length,
+        ItemsPerPage: products.length,
+        hasNextPage: false,
+        hasPreviousPage: false
+      }
+    }
+  }
+  
+  // Si no es búsqueda por id, ya esta paginado
+  return data
 }
 
 export const saveProductToBackend = async (newProduct: ProductPriceWithoutID) => {
@@ -37,7 +84,7 @@ export const saveProductToBackend = async (newProduct: ProductPriceWithoutID) =>
       method: 'POST',
       headers: { 
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzdWFyaW8iOiJlNTM0YjUyMS1iNzEwLTRhNjQtOGUyOC1iMTZkMTY5ZDVlYjQiLCJlbWFpbCI6InBlcGVAZ21haWwuY29tIiwidGlwb1VzdWFyaW8iOiJBZG1pbmlzdHJhZG9yIiwidXNlcm5hbWUiOiJQZXBlUm9kcmlndWV6MTIzIiwiaWF0IjoxNzU3ODIxNTEzLCJleHAiOjE3NTg0MjYzMTN9.lzxHfV1eUrdKXxjgS7GpzitkCyRI2Co7Cg0JEobn1hI'
+        'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzdWFyaW8iOiJlNTM0YjUyMS1iNzEwLTRhNjQtOGUyOC1iMTZkMTY5ZDVlYjQiLCJlbWFpbCI6InBlcGVAZ21haWwuY29tIiwidGlwb1VzdWFyaW8iOiJBZG1pbmlzdHJhZG9yIiwidXNlcm5hbWUiOiJQZXBlUm9kcmlndWV6MTIzIiwiaWF0IjoxNzU4NTg0NTAyLCJleHAiOjE3NTkxODkzMDJ9.N7aNy0-gnTosCt6yRXJaiJY2OX_MI5z1T26o8KeKhuU'
         // Hardcodeando el jwt, CAMBIAR
       },
       body: JSON.stringify({
@@ -69,7 +116,7 @@ export const saveProductToBackend = async (newProduct: ProductPriceWithoutID) =>
       method: 'POST',
       headers: { 
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzdWFyaW8iOiJlNTM0YjUyMS1iNzEwLTRhNjQtOGUyOC1iMTZkMTY5ZDVlYjQiLCJlbWFpbCI6InBlcGVAZ21haWwuY29tIiwidGlwb1VzdWFyaW8iOiJBZG1pbmlzdHJhZG9yIiwidXNlcm5hbWUiOiJQZXBlUm9kcmlndWV6MTIzIiwiaWF0IjoxNzU3ODIxNTEzLCJleHAiOjE3NTg0MjYzMTN9.lzxHfV1eUrdKXxjgS7GpzitkCyRI2Co7Cg0JEobn1hI'
+        'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzdWFyaW8iOiJlNTM0YjUyMS1iNzEwLTRhNjQtOGUyOC1iMTZkMTY5ZDVlYjQiLCJlbWFpbCI6InBlcGVAZ21haWwuY29tIiwidGlwb1VzdWFyaW8iOiJBZG1pbmlzdHJhZG9yIiwidXNlcm5hbWUiOiJQZXBlUm9kcmlndWV6MTIzIiwiaWF0IjoxNzU4NTg0NTAyLCJleHAiOjE3NTkxODkzMDJ9.N7aNy0-gnTosCt6yRXJaiJY2OX_MI5z1T26o8KeKhuU'
         // Hardcodeando el jwt, CAMBIAR
       },
       body: JSON.stringify({
@@ -114,7 +161,7 @@ export const modifyProductToBackend = async (newModification: ProductWithoutPric
     method: 'PATCH',
     headers: { 
       'Content-Type': 'application/json',
-      'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzdWFyaW8iOiJlNTM0YjUyMS1iNzEwLTRhNjQtOGUyOC1iMTZkMTY5ZDVlYjQiLCJlbWFpbCI6InBlcGVAZ21haWwuY29tIiwidGlwb1VzdWFyaW8iOiJBZG1pbmlzdHJhZG9yIiwidXNlcm5hbWUiOiJQZXBlUm9kcmlndWV6MTIzIiwiaWF0IjoxNzU3ODIxNTEzLCJleHAiOjE3NTg0MjYzMTN9.lzxHfV1eUrdKXxjgS7GpzitkCyRI2Co7Cg0JEobn1hI'
+      'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzdWFyaW8iOiJlNTM0YjUyMS1iNzEwLTRhNjQtOGUyOC1iMTZkMTY5ZDVlYjQiLCJlbWFpbCI6InBlcGVAZ21haWwuY29tIiwidGlwb1VzdWFyaW8iOiJBZG1pbmlzdHJhZG9yIiwidXNlcm5hbWUiOiJQZXBlUm9kcmlndWV6MTIzIiwiaWF0IjoxNzU4NTg0NTAyLCJleHAiOjE3NTkxODkzMDJ9.N7aNy0-gnTosCt6yRXJaiJY2OX_MI5z1T26o8KeKhuU'
       // Hardcodeando el jwt, CAMBIAR
     },
     body: JSON.stringify(valuesToModify)
@@ -147,7 +194,7 @@ export const getPriceData = async (productId: string) => {
     method: 'GET',
     headers: { 
       'Content-Type': 'application/json',
-      'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzdWFyaW8iOiJlNTM0YjUyMS1iNzEwLTRhNjQtOGUyOC1iMTZkMTY5ZDVlYjQiLCJlbWFpbCI6InBlcGVAZ21haWwuY29tIiwidGlwb1VzdWFyaW8iOiJBZG1pbmlzdHJhZG9yIiwidXNlcm5hbWUiOiJQZXBlUm9kcmlndWV6MTIzIiwiaWF0IjoxNzU3ODgxNDgyLCJleHAiOjE3NTg0ODYyODJ9.pLHsPrEXrd51Tanw5hCYKsTA3CjQNwEhZ86G_FJMwCU'
+      'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzdWFyaW8iOiJlNTM0YjUyMS1iNzEwLTRhNjQtOGUyOC1iMTZkMTY5ZDVlYjQiLCJlbWFpbCI6InBlcGVAZ21haWwuY29tIiwidGlwb1VzdWFyaW8iOiJBZG1pbmlzdHJhZG9yIiwidXNlcm5hbWUiOiJQZXBlUm9kcmlndWV6MTIzIiwiaWF0IjoxNzU4NTg0NTAyLCJleHAiOjE3NTkxODkzMDJ9.N7aNy0-gnTosCt6yRXJaiJY2OX_MI5z1T26o8KeKhuU'
       // Hardcodeando el jwt, CAMBIAR
     }
   })
@@ -184,7 +231,7 @@ export const savePriceToBackend = async (newPrice: {idProducto: string, monto: n
   method: 'POST',
   headers: { 
     'Content-Type': 'application/json',
-    'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzdWFyaW8iOiJlNTM0YjUyMS1iNzEwLTRhNjQtOGUyOC1iMTZkMTY5ZDVlYjQiLCJlbWFpbCI6InBlcGVAZ21haWwuY29tIiwidGlwb1VzdWFyaW8iOiJBZG1pbmlzdHJhZG9yIiwidXNlcm5hbWUiOiJQZXBlUm9kcmlndWV6MTIzIiwiaWF0IjoxNzU3ODgxNDgyLCJleHAiOjE3NTg0ODYyODJ9.pLHsPrEXrd51Tanw5hCYKsTA3CjQNwEhZ86G_FJMwCU'
+    'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzdWFyaW8iOiJlNTM0YjUyMS1iNzEwLTRhNjQtOGUyOC1iMTZkMTY5ZDVlYjQiLCJlbWFpbCI6InBlcGVAZ21haWwuY29tIiwidGlwb1VzdWFyaW8iOiJBZG1pbmlzdHJhZG9yIiwidXNlcm5hbWUiOiJQZXBlUm9kcmlndWV6MTIzIiwiaWF0IjoxNzU4NTg0NTAyLCJleHAiOjE3NTkxODkzMDJ9.N7aNy0-gnTosCt6yRXJaiJY2OX_MI5z1T26o8KeKhuU'
     // Hardcodeando el jwt, CAMBIAR
   },
   body: JSON.stringify(requestBody)
@@ -207,7 +254,7 @@ export const deletePrice = async (idProducto: string, fechaActual: string) => {
   method: 'DELETE',
   headers: { 
     'Content-Type': 'application/json',
-    'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzdWFyaW8iOiJlNTM0YjUyMS1iNzEwLTRhNjQtOGUyOC1iMTZkMTY5ZDVlYjQiLCJlbWFpbCI6InBlcGVAZ21haWwuY29tIiwidGlwb1VzdWFyaW8iOiJBZG1pbmlzdHJhZG9yIiwidXNlcm5hbWUiOiJQZXBlUm9kcmlndWV6MTIzIiwiaWF0IjoxNzU3ODgxNDgyLCJleHAiOjE3NTg0ODYyODJ9.pLHsPrEXrd51Tanw5hCYKsTA3CjQNwEhZ86G_FJMwCU'
+    'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzdWFyaW8iOiJlNTM0YjUyMS1iNzEwLTRhNjQtOGUyOC1iMTZkMTY5ZDVlYjQiLCJlbWFpbCI6InBlcGVAZ21haWwuY29tIiwidGlwb1VzdWFyaW8iOiJBZG1pbmlzdHJhZG9yIiwidXNlcm5hbWUiOiJQZXBlUm9kcmlndWV6MTIzIiwiaWF0IjoxNzU4NTg0NTAyLCJleHAiOjE3NTkxODkzMDJ9.N7aNy0-gnTosCt6yRXJaiJY2OX_MI5z1T26o8KeKhuU'
     // Hardcodeando el jwt, CAMBIAR
   }
   })

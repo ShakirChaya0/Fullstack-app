@@ -15,6 +15,9 @@ export class ProductRepository implements IProductoRepository {
 
     public async getAll(): Promise<Product[]> {
         const products = await prisma.producto.findMany({
+            orderBy: {
+                nombre: 'asc'
+            },
             include: { 
                 Precios: {
                     orderBy: {
@@ -37,6 +40,9 @@ export class ProductRepository implements IProductoRepository {
             prisma.producto.findMany({
                 skip: offset,
                 take: limit,
+                orderBy: {
+                    nombre: 'asc'
+                },
                 include: { 
                     Precios: {
                         orderBy: {
@@ -83,6 +89,9 @@ export class ProductRepository implements IProductoRepository {
 
     public async getByName(nombreProducto: string): Promise<Product[]> {
         const product = await prisma.producto.findMany({
+            orderBy: {
+                nombre: 'asc'
+            },
             where: { 
                 nombre: {
                     contains: nombreProducto,
@@ -100,6 +109,54 @@ export class ProductRepository implements IProductoRepository {
         });
 
         return product.map((prod) => { return this.toDomainEntity(prod) })
+    }
+
+    public async getByNamePaginated(page: number, limit: number, nombreProducto: string): Promise<ProductsPaginated> {
+        const offset = (page - 1) * limit
+
+        const [products, totalItems] = await Promise.all([
+            prisma.producto.findMany({
+                skip: offset,
+                take: limit,
+                orderBy: {
+                    nombre: 'asc'
+                },
+                where: { 
+                    nombre: {
+                        contains: nombreProducto,
+                        mode: 'insensitive'
+                    }
+                },
+                include: { 
+                    Precios: {
+                        orderBy: {
+                            fechaActual: 'desc' 
+                        },
+                        take: 1 
+                    } 
+                }        
+            }),
+            prisma.producto.count({
+                where: { 
+                    nombre: {
+                        contains: nombreProducto,
+                        mode: 'insensitive'
+                    }
+                },
+            })
+        ])
+        
+        const productsPostDomain = products.map((product) => { return this.toDomainEntity(product) })
+        const totalPages = Math.ceil(totalItems / limit)
+
+        return {
+            products: productsPostDomain,
+            totalItems,
+            totalPages,
+            currentPage: page,
+            hasNextPage: page < totalPages,
+            hasPreviousPage: page > 1
+        }
     }
 
     public async getByUniqueName(nombreProducto: string): Promise<Product | null> {

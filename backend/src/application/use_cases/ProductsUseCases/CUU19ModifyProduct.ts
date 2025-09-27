@@ -13,13 +13,14 @@ export class CUU19ModifyProduct {
 
   public async execute(idProducto: number, partialProduct: PartialSchemaProductos): Promise<Product> {
     const existingProduct = await this.productRepository.getById(idProducto);
+
     if (!existingProduct) {
       throw new NotFoundError("Producto no encontrado");
     }
-    // REVISAR ESTA VALIDACION, porque la busqueda está hecha con un LIKE.
+    
     if (partialProduct?.nombre) {
-      const existingProductByName = await this.productRepository.getByName(partialProduct.nombre);
-      if (existingProductByName.length > 0) {
+      const existingProductByName = await this.productRepository.getByUniqueName(partialProduct.nombre);
+      if (existingProductByName) {
         throw new ConflictError(`Ya existe un producto con el nombre: ${partialProduct.nombre}`);
       }
     }

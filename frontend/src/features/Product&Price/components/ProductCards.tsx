@@ -65,11 +65,11 @@ export function ProductCards({ filteredProducts, handleOpenModifyModal }: Produc
                     <div className="flex flex-row justify-between items-start mt-4">
                         <div className="flex flex-col justify-between h-24 mt-1">
                             <h3 className="text-teal-600 font-bold text-3xl">
-                                ${product.precio}
+                                ${product.precio.toLocaleString()}
                             </h3>
                             {/* Evaluando si es un comida o una bebida */}
                             {
-                                product.tipo !== undefined ?
+                                product.tipo !== undefined &&
                                 (
                                     (product.tipo === "Entrada" || product.tipo === "Plato_Principal") ? 
                                     (
@@ -82,9 +82,6 @@ export function ProductCards({ filteredProducts, handleOpenModifyModal }: Produc
                                             <span className="text-gray-800"><IcecreamIcon fontSize="small"/></span> {product.tipo}
                                         </p>
                                     )
-                                ):
-                                (
-                                    <p></p> // No se imprime nada
                                 )
 
                             }

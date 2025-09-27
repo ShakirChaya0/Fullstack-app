@@ -2,6 +2,7 @@ import { Alert, Button, Dialog, DialogActions, DialogContent, DialogTitle, Typog
 import { useEffect, useState } from "react";
 import { useMutationDeletePrice } from "../hooks/useMutationPrice";
 import type { DeleteConfirmationModalProps } from "../interfaces/product&PriceInterfaces";
+import { toast } from "react-toastify";
 
 
 export function DeleteConfirmationModal({ idProducto, selectedPrice, amountPrices}: DeleteConfirmationModalProps ) {
@@ -32,7 +33,7 @@ export function DeleteConfirmationModal({ idProducto, selectedPrice, amountPrice
     const handleDeletePrice = () => {
         if (!selectedPrice) return
         if (amountPrices === 1) {
-            setModalError('No se puede eliminar el único precio del producto')
+            toast.error('No se puede eliminar el único precio del producto')
             return
         }
         deletePriceMutation.mutate()

@@ -5,9 +5,11 @@ import { ProductsPaginated } from "../interfaces/ProductsPaginated.interface.js"
 export interface IProductoRepository {
     getAll(): Promise<Product[]>;
 
-    getAllPaginated(page: number, limit: number): Promise<ProductsPaginated>
+    getAllPaginated(page: number, limit: number): Promise<ProductsPaginated>;
 
     getByName(nombreProducto: string): Promise<Product[] | null>;
+    
+    getByNamePaginated(page: number, limit: number, nombreProducto: string): Promise<ProductsPaginated>;
 
     getByType(tipoProducto: string): Promise<Product[] | null>;
 

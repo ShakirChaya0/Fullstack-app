@@ -15,5 +15,6 @@ export function priceNormilizer(prices: PriceFromBackend[]) {
         },
         fechaVigencia: price._dateFrom,
         monto: price._amount
-    }));
+    }))
+    .sort((a, b) => new Date(b.fechaVigencia).getTime() - new Date(a.fechaVigencia).getTime()); 
 }

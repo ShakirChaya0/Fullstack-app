@@ -144,6 +144,9 @@ export function NewProductModal() {
                             variant="outlined"
                             fullWidth
                             placeholder="Ej: Salmón a la Parrilla"
+                            slotProps={{
+                                htmlInput: { maxLength: 30}
+                            }}
                             onChange={(e) => {
                                 if(modalError) setModalError('')
                                 setNewProduct(prev => {

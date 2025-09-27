@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { useMutationDeletePriceProps, useMutationPriceRegistrationProps } from "../interfaces/product&PriceInterfaces";
 import { deletePrice, savePriceToBackend } from "../services/product&PriceService";
+import { toast } from "react-toastify";
 
 export function useMutationPriceRegistration ({ newPrice, setNewPrice, setModalError, setIsModalOpen }: useMutationPriceRegistrationProps) {
     const queryClient = useQueryClient();
@@ -9,6 +10,11 @@ export function useMutationPriceRegistration ({ newPrice, setNewPrice, setModalE
         mutationFn: () => savePriceToBackend(newPrice),
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['priceList', newPrice.idProducto]})
+            // Invalidamos la query de productos para actualizar los precios
+            queryClient.invalidateQueries({ 
+                queryKey: ['products'],
+                exact: false 
+            })
 
             // Solo reseteamos el monto, mantenemos el idProducto
             setNewPrice(prev => ({
@@ -17,6 +23,7 @@ export function useMutationPriceRegistration ({ newPrice, setNewPrice, setModalE
             }))
 
             setModalError('')
+            toast.success('Precio registrado con exito')
             setIsModalOpen(false)
         },
         onError: (err: Error) => {
@@ -39,6 +46,12 @@ export function useMutationDeletePrice ({ idProducto, selectedPrice, setIsModalO
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['priceList', idProducto]})
+            // Invalidamos la query de productos para actualizar los precios
+            queryClient.invalidateQueries({ 
+                queryKey: ['products'],
+                exact: false 
+            })
+            toast.success('Precio eliminado con exito')
             setIsModalOpen(false)
         }
     })

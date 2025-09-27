@@ -13,6 +13,7 @@ import { SuccessNotification } from "../components/SuccessNotification";
 import { LoadingSchedule } from "../components/LoadingSchedule";
 import { RegisterAndModifierTable } from "../components/RegisterAndModifierTable";
 import { useMutationModification } from "../hooks/useMutationModification";
+import { incompleteDays } from "../utils/incompleteDays";
 
 export function ModifySchedule () {  
   // React Query para obtener datos del backend
@@ -72,7 +73,7 @@ export function ModifySchedule () {
 
       {error && (
           <Alert severity="error" sx={{ mb: 3, border: "1px solid black" }}>
-              {error}
+              {error} {incompleteDays(schedules) && `- ${incompleteDays(schedules)}`} 
           </Alert>
       )}
 

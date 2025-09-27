@@ -62,7 +62,7 @@ export function MainPanelProduct () {
 
     return(
         <>  
-            <div className="flex justify-between flex-col w-[95%] sm:w-[90%] md:w-[80%] mx-auto mt-4 mb-4 font-sans text-gray-600">
+            <div className="flex flex-col w-[95%] sm:w-[90%] md:w-[80%] mx-auto mt-4 mb-4 font-sans text-gray-600">
                 <div>
                     <h2 className="font-bold text-3xl">
                         Gestión de Productos
@@ -72,35 +72,51 @@ export function MainPanelProduct () {
                     </p>
                 </div>
 
-                <SearchProducts filtersToSearch={filters.search} updateFilter={updateFilter} allProducts={allProducts}></SearchProducts>
+                <SearchProducts filtersToSearch={filters.search} updateFilter={updateFilter}></SearchProducts>
                 
-                <FilterProducts filterState={filters.state} filterType={filters.type} updateFilter={updateFilter} clearFilters={clearFilters}></FilterProducts>
+                <FilterProducts 
+                    filterState={filters.state} 
+                    filterType={filters.type}
+                    filtersFoodType={filters.foodType}
+                    filtersFoodSpec={filters.foodSpecification}
+                    filtersDrinkSpec={filters.drinkSpecification}
+                    updateFilter={updateFilter} 
+                    clearFilters={clearFilters}
+                ></FilterProducts>
 
                 {allProducts.length === 0 ? 
                     (
                         <Alert severity="info">
-                            No hay productos registrados.
+                            No hay productos registrados con esas características.
                         </Alert>
                     ) :
                     (
-                        <Suspense fallback={<SkelentonProductCards filteredProducts={filteredProducts}></SkelentonProductCards>}>
-                            <LazyProductCards filteredProducts={filteredProducts} handleOpenModifyModal={handleOpenModifyModal}></LazyProductCards>
-            
-                            {pagination && (
-                                <LazyPaginationControls
-                                    currentPage={pagination.paginaActual}
-                                    totalPages={pagination.paginaTotales}
-                                    totalItems={pagination.itemsTotales}
-                                    itemsPerPage={pagination.itemsPorPagina}
-                                    hasNextPage={pagination.proxPagina}
-                                    hasPreviousPage={pagination.antePagina}
-                                    onPreviousPage={previousPage}
-                                    onNextPage={nextPage}
-                                    onGoToPage={goToPage}
-                                    onChangeLimit={changeLimit}
-                                />
+                        <>
+                            {filteredProducts.length == 0 && (
+                                <Alert severity="info">
+                                    No hay productos con esas características en esta página.
+                                </Alert>
                             )}
-                        </Suspense>
+
+                            <Suspense fallback={<SkelentonProductCards filteredProducts={filteredProducts}></SkelentonProductCards>}>
+                                <LazyProductCards filteredProducts={filteredProducts} handleOpenModifyModal={handleOpenModifyModal}></LazyProductCards>
+                
+                                {pagination && (
+                                    <LazyPaginationControls
+                                        currentPage={pagination.paginaActual}
+                                        totalPages={pagination.paginaTotales}
+                                        totalItems={pagination.itemsTotales}
+                                        itemsPerPage={pagination.itemsPorPagina}
+                                        hasNextPage={pagination.proxPagina}
+                                        hasPreviousPage={pagination.antePagina}
+                                        onPreviousPage={previousPage}
+                                        onNextPage={nextPage}
+                                        onGoToPage={goToPage}
+                                        onChangeLimit={changeLimit}
+                                    />
+                                )}
+                            </Suspense>
+                        </>
                     )
                 }
 
@@ -114,8 +130,6 @@ export function MainPanelProduct () {
                     isOpen={modifyModal.state}
                     product={modifyModal.product}
                     onClose={() => setModifyModal({state: false, product: null})}
-                    currentPage={pagination?.paginaActual}
-                    limit={pagination?.itemsPorPagina}
                 />
             )}
         
