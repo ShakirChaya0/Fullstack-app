@@ -1,10 +1,10 @@
 import { Route, Routes } from "react-router";
-import { Menu } from "../features/Products/pages/Menu";
+import { lazy, Suspense } from "react";
+const Menu = lazy(() => import("../features/Products/pages/Menu"))
 import { ClientMainLayout } from "../shared/components/ClientMainLayout";
-import DrinksList from "../features/Products/pages/DrinksList";
-import FoodsList from "../features/Products/pages/FoodsList";
-import ConfirmOrder from "../features/Products/pages/ConfirmOrder";
-import { Suspense } from "react";
+const DrinksList = lazy(() => import("../features/Products/pages/DrinksList"))
+const FoodsList = lazy(() => import("../features/Products/pages/FoodsList"))
+const ConfirmOrder = lazy(() => import("../features/Products/pages/ConfirmOrder"))
 import ProfileCardSkeleton from "../features/Profile/components/ProfileCardSkeleton";
 import UserProfile from "../features/Profile/pages/UserProfile";
 

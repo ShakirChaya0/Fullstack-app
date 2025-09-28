@@ -13,11 +13,11 @@ type Props = {
 
 const ProductsCard: React.FC<Props> = ({product}) => {
   const order = useAppSelector((state) => state.order)
-  const productAmount = order.lineasPedido.find((lp) => lp.nombreProducto === product._name)?.cantidad
+  const productAmount = order.lineasPedido.find((lp) => lp.producto._name === product._name)?.cantidad
   const countStart = productAmount ?? 0
   const { handleAddToCart, hanldeRemoveFromCart} = useOrderActions()
   const handleAdd = () => {
-    handleAddToCart({nombreProducto: product._name, descripcion: product._description, precio: product._price, })
+    handleAddToCart(product)
   }
   const handleRemove = () => {
     hanldeRemoveFromCart({nombreProducto: product._name})

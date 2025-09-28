@@ -11,19 +11,18 @@ import { useAppSelector } from "../../../shared/hooks/store"
 import ControlPointIcon from "@mui/icons-material/ControlPoint"
 import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline"
 import { useOrderActions } from "../../../shared/hooks/useOrderActions"
-import type { LineaPedido } from "../../../store/slices/orderSlice"
 import type { FormEvent } from "react"
+import { createOrder } from "../../Order/services/createOrder"
+import type { LineaPedido } from "../../Order/interfaces/Order"
+import useAuth from "../../../shared/hooks/useAuth"
 
 export default function ConfirmOrder() {
+  const { accessToken } = useAuth()
   const order = useAppSelector((state) => state.order)
   const { handleAddToCart, hanldeRemoveFromCart, handleConfirmOrder } = useOrderActions()
 
   const handleAdd = (lp: LineaPedido) => {
-    handleAddToCart({
-      nombreProducto: lp.nombreProducto,
-      descripcion: lp.descripcion,
-      precio: lp.precio,
-    })
+    handleAddToCart(lp.producto)
   }
 
   const handleRemove = (name: string) => {
@@ -35,6 +34,7 @@ export default function ConfirmOrder() {
       const formData = new FormData(event.currentTarget)
       const data = Object.fromEntries(formData.entries())
       handleConfirmOrder({comensales: +data.cantidad, observaciones: data.observaciones.toString()})
+      createOrder({comensales: +data.cantidad, observaciones: data.observaciones.toString(), lineasPedido: order.lineasPedido, estado: "Solicitado"}, accessToken ?? "")
   }
 
   return (
@@ -45,12 +45,12 @@ export default function ConfirmOrder() {
         <div className="md:hidden flex flex-col gap-4">
           {order.lineasPedido.map((lp) => (
             <div
-              key={lp.nombreProducto}
+              key={lp.producto._name}
               className="flex flex-col gap-2 border border-gray-300 rounded-xl shadow-sm p-3"
             >
               <div className="flex justify-between items-center">
                 <div className="flex flex-col max-w-[200px]">
-                  <span className="font-semibold">{lp.nombreProducto}</span>
+                  <span className="font-semibold">{lp.producto._name}</span>
                   <span
                     className="
                       text-sm text-gray-600
@@ -59,7 +59,7 @@ export default function ConfirmOrder() {
                       pr-1
                     "
                   >
-                    {lp.descripcion}
+                    {lp.producto._name}
                   </span>
                   <span className="text-orange-600 font-bold">
                     ${lp.subtotal}
@@ -68,7 +68,7 @@ export default function ConfirmOrder() {
 
                 <div className="text-right">
                   <p className="text-sm font-bold">Cant: {lp.cantidad}</p>
-                  <p className="text-sm font-bold">Precio: ${lp.precio}</p>
+                  <p className="text-sm font-bold">Precio: ${lp.producto._price * lp.cantidad}</p>
                 </div>
               </div>
 
@@ -88,7 +88,7 @@ export default function ConfirmOrder() {
                 </button>
                 <p>{lp.cantidad}</p>
                 <button
-                  onClick={() => handleRemove(lp.nombreProducto)}
+                  onClick={() => handleRemove(lp.producto._name)}
                   className="cursor-pointer h-full w-full py-1.5 px-2 bg-orange-500 hover:scale-105
                    hover:bg-orange-600 rounded-r-md transition-all ease-linear duration-150
                    active:bg-orange-700 active:scale-100"
@@ -134,11 +134,11 @@ export default function ConfirmOrder() {
                     </TableHead>
                     <TableBody> 
                     {order.lineasPedido.map((lp) => (
-                        <TableRow key={lp.nombreProducto}>
-                            <TableCell>{lp.nombreProducto}</TableCell>
-                            <TableCell>{lp.descripcion}</TableCell>
+                        <TableRow key={lp.producto._name}>
+                            <TableCell>{lp.producto._name}</TableCell>
+                            <TableCell>{lp.producto._description}</TableCell>
                             <TableCell align="right">{lp.cantidad}</TableCell>
-                            <TableCell align="right">${lp.precio}</TableCell>
+                            <TableCell align="right">${lp.producto._price}</TableCell>
                             <TableCell align="right">${lp.subtotal}</TableCell>
                             <TableCell align="center">
                                 <div
@@ -157,7 +157,7 @@ export default function ConfirmOrder() {
                                     </button>
                                     <p>{lp.cantidad}</p>
                                     <button
-                                      onClick={() => handleRemove(lp.nombreProducto)}
+                                      onClick={() => handleRemove(lp.producto._name)}
                                       className="cursor-pointer h-full w-full py-1.5 px-2 bg-orange-500 hover:scale-105
                                        hover:bg-orange-600 rounded-r-md transition-all ease-linear duration-150
                                        active:bg-orange-700 active:scale-100"

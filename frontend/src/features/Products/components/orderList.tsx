@@ -4,9 +4,9 @@ import { useAppSelector } from "../../../shared/hooks/store"
 import ControlPointIcon from '@mui/icons-material/ControlPoint';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import { useOrderActions } from "../../../shared/hooks/useOrderActions";
-import type { LineaPedido } from "../../../store/slices/orderSlice";
 import { NavLink } from "react-router";
 import { AnimatePresence, motion } from "framer-motion";
+import type { LineaPedido } from "../../Order/interfaces/Order";
 
 
 export function OrderList () {
@@ -15,7 +15,7 @@ export function OrderList () {
     const { handleAddToCart, hanldeRemoveFromCart } = useOrderActions()
 
     const handleAdd = (lp: LineaPedido) => {
-      handleAddToCart({nombreProducto: lp.nombreProducto, descripcion: lp.descripcion, precio: lp.precio})
+      handleAddToCart(lp.producto)
     }
     const handleRemove = (name: string) => {
       hanldeRemoveFromCart({nombreProducto: name})
@@ -69,7 +69,7 @@ export function OrderList () {
                           <AnimatePresence>
                             {order.lineasPedido.map((lp) => (
                               <motion.div
-                                key={lp.nombreProducto}
+                                key={lp.producto._name}
                                 layout
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
@@ -80,8 +80,8 @@ export function OrderList () {
                                            md:py-2 md:px-4 min-h-[150px] md:rounded-lg"
                               >
                                   <div className="md:flex md:flex-col justify-between">
-                                      <h1 className="font-medium md:text-2xl">{lp.nombreProducto}</h1>
-                                      <p className="max-h-[60px] md:max-h-[72px] overflow-y-auto text-sm md:text-lg">{lp.descripcion}</p>
+                                      <h1 className="font-medium md:text-2xl">{lp.producto._name}</h1>
+                                      <p className="max-h-[60px] md:max-h-[72px] overflow-y-auto text-sm md:text-lg">{lp.producto._description}</p>
                                       <p className="text-orange-500 font-bold">${lp.subtotal}</p>
                                   </div>
                                 <div
@@ -100,7 +100,7 @@ export function OrderList () {
                                   </button>
                                   <p>{lp.cantidad}</p>
                                   <button
-                                    onClick={() => handleRemove(lp.nombreProducto)}
+                                    onClick={() => handleRemove(lp.producto._name)}
                                     className="cursor-pointer h-full w-full py-1.5 px-2 bg-orange-500 hover:scale-105
                                      hover:bg-orange-600 rounded-r-md transition-all ease-linear duration-150
                                      active:bg-orange-700 active:scale-100"
@@ -114,7 +114,7 @@ export function OrderList () {
                         </div>
                       
                         <div className="p-4">
-                          <NavLink to="/Menu/RealizarPedido">
+                          <NavLink to="/Cliente/Menu/RealizarPedido">
                             <button className="w-full py-3 cursor-pointer bg-orange-500
                              hover:bg-orange-600 hover:scale-105 text-white font-bold rounded-lg shadow-md 
                              transition-all ease-linear duration-150 active:bg-orange-700 active:scale-95">
