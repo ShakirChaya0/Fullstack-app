@@ -13,11 +13,11 @@ export const ReservationRouter = () => {
   
   router.get("/", AuthMiddleware, RoleMiddleware(["Mozo"]), controller.getByDate);
   
-  router.get("/cliente/:clientId", controller.getByClientId);
+  router.get("/cliente/historial", AuthMiddleware, RoleMiddleware(["Cliente"]), controller.getByClientId);
 
   router.post("/", AuthMiddleware, RoleMiddleware(["Cliente"]), controller.createReservation);
 
-  router.patch("/estado", AuthMiddleware, RoleMiddleware(["Mozo"]), controller.updateReservationStatus);
+  router.patch("/estado/:idReserva", AuthMiddleware, RoleMiddleware(["Mozo", "Cliente"]), controller.updateReservationStatus);
   
   return router;
 };

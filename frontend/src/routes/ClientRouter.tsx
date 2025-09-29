@@ -6,6 +6,8 @@ import FoodsList from "../features/Products/pages/FoodsList";
 import { Suspense } from "react";
 import ProfileCardSkeleton from "../features/Profile/components/ProfileCardSkeleton";
 import UserProfile from "../features/Profile/pages/UserProfile";
+import  ReservationCRUD  from "../features/Reservation/pages/ReservationCRUD";
+import ReservationHistorial from "../features/Reservation/pages/ReservationList";
 
 export function ClientRouter() {
   return (
@@ -15,6 +17,8 @@ export function ClientRouter() {
         <Route path="/Menu" element={<Menu />} />
         <Route path="/Menu/Comidas" element={<FoodsList />} />
         <Route path="/Menu/Bebidas" element={<DrinksList />} />
+        <Route path="/Reserva" element={<ReservationCRUD/>}/>
+        <Route path="/Reserva/Historial" element={<ReservationHistorial/>}></Route>
         <Route path="/Perfil" element={
           <Suspense fallback = {<ProfileCardSkeleton/>}>
             <UserProfile />
@@ -22,5 +26,6 @@ export function ClientRouter() {
         }/>
       </Route>
     </Routes>
-  );
+  )
 }
+
