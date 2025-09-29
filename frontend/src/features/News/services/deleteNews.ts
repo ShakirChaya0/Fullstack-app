@@ -1,5 +1,5 @@
-export async function deleteNews(id: number): Promise<void> {
-  const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/novedades/${id}`, { method: "DELETE" })
+export async function deleteNews(apiCall: (url: string, options?: RequestInit) => Promise<Response>, id: number): Promise<void> {
+  const response = await apiCall(`novedades/${id}`, { method: "DELETE" })
   
   if (!response.ok) throw new Error("Error al eliminar noticia")
   

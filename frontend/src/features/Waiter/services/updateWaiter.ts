@@ -1,13 +1,12 @@
 import type { Waiter } from "../interfaces/Waiters"
 
-export default async function updateWaiter (datas: Waiter): Promise<Waiter> {
+export default async function updateWaiter (apiCall: (url: string, options?: RequestInit) => Promise<Response>, datas: Waiter): Promise<Waiter> {
     const body = Object.fromEntries(
       Object.entries(datas).filter(([, value]) => value !== "")
     );
 
-    const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/mozos/id/${datas.idMozo}`, {
+    const response = await apiCall(`mozos/id/${datas.idMozo}`, {
         method: "PATCH",
-        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body)
     })
     

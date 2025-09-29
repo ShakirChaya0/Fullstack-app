@@ -1,12 +1,9 @@
-export async function resendEmail() {
+export async function resendEmail(apiCall: (url: string, options?: RequestInit) => Promise<Response>) {
     const params = new URLSearchParams(window.location.search);
     const token = params.get("token");
 
-    const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/auth/resendEmail`, {
+    const response = await apiCall("auth/resendEmail", {
         method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
         body: JSON.stringify({ 
             token: token
         })

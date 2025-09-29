@@ -6,11 +6,10 @@ interface SuggToUpdate {
     _dateTo: string
 }
 
-export default async function updateSuggestion(sugg: SuggToUpdate) {
+export default async function updateSuggestion(sugg: SuggToUpdate, apiCall: (url: string, options?: RequestInit) => Promise<Response>) {
     const query = `idProducto=${sugg._previousProductId}&fechaDesde=${sugg._previousDateFrom}`;
-    const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/sugerencias?${query}`, {
+    const response = await apiCall(`sugerencias?${query}`, {
         method: "PATCH",
-        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
             idProducto: sugg._product._productId,
             fechaDesde: sugg._dateFrom,

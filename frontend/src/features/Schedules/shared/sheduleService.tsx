@@ -1,11 +1,10 @@
 import type { BackendSchedule } from "../types/scheduleTypes";
 import { completeSchedule } from "../utils/completeSchedule";
 
-export const getScheduleData = async () => {
-  const response = await fetch('http://localhost:3000/horarios/', {
-    method: 'GET',
-    headers: { 'Content-Type': 'application/json' }
-  });
+export const getScheduleData = async (
+  apiCall: (url: string, options?: RequestInit) => Promise<Response>
+) => {
+  const response = await apiCall('horarios/');
 
   if (!response.ok) {
     // Si es 404, intentar obtener el mensaje del JSON del backend
@@ -30,7 +29,11 @@ export const getScheduleData = async () => {
 };
 
 // Función para actualizar los horarios en el backend
-export const modifySchedulesToBackend = async (schedules: BackendSchedule[], originalSchedules: BackendSchedule[]) => {
+export const modifySchedulesToBackend = async (
+  apiCall: (url: string, options?: RequestInit) => Promise<Response>,
+  schedules: BackendSchedule[], 
+  originalSchedules: BackendSchedule[]
+) => {
 
   if(!completeSchedule(schedules)) throw new Error("Horarios incompletos");
 
@@ -47,13 +50,8 @@ export const modifySchedulesToBackend = async (schedules: BackendSchedule[], ori
 
   // Requests paralelos usando Promise.all
   const promises = modifiedSchedules.map(schedule => 
-    fetch(`http://localhost:3000/horarios/update/${schedule.diaSemana}`, {
+    apiCall(`horarios/update/${schedule.diaSemana}`, {
       method: 'PATCH',
-      headers: { 
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzdWFyaW8iOiJlNTM0YjUyMS1iNzEwLTRhNjQtOGUyOC1iMTZkMTY5ZDVlYjQiLCJlbWFpbCI6InBlcGVAZ21haWwuY29tIiwidGlwb1VzdWFyaW8iOiJBZG1pbmlzdHJhZG9yIiwidXNlcm5hbWUiOiJQZXBlUm9kcmlndWV6MTIzIiwiaWF0IjoxNzU3MjA3Mzc5LCJleHAiOjE3NTc4MTIxNzl9.VxPW6Jkjg4Nm7CeVj-6PD8g6-JJCg3b8T3d8eK_E_dY' 
-        // Hardcodeando el jwt, CAMBIAR
-      },
       body: JSON.stringify({
         horaApertura: schedule.horaApertura,
         horaCierre: schedule.horaCierre
@@ -71,7 +69,10 @@ export const modifySchedulesToBackend = async (schedules: BackendSchedule[], ori
 };
 
 // Función para guardar los horarios en el backend
-export const saveSchedulesToBackend = async (schedules: BackendSchedule[]) => {
+export const saveSchedulesToBackend = async (
+  apiCall: (url: string, options?: RequestInit) => Promise<Response>,
+  schedules: BackendSchedule[]
+) => {
     // Validar todos los horarios completados
     let validSchedule = true
     schedules.forEach(oneSchedule => {
@@ -84,13 +85,8 @@ export const saveSchedulesToBackend = async (schedules: BackendSchedule[]) => {
 
     // Requests paralelos usando Promise.all
     const promises = schedules.map(schedule => 
-      fetch('http://localhost:3000/horarios/', {
+      apiCall('horarios/', {
         method: 'POST',
-        headers: { 
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzdWFyaW8iOiJlNTM0YjUyMS1iNzEwLTRhNjQtOGUyOC1iMTZkMTY5ZDVlYjQiLCJlbWFpbCI6InBlcGVAZ21haWwuY29tIiwidGlwb1VzdWFyaW8iOiJBZG1pbmlzdHJhZG9yIiwidXNlcm5hbWUiOiJQZXBlUm9kcmlndWV6MTIzIiwiaWF0IjoxNzU3MjA3Mzc5LCJleHAiOjE3NTc4MTIxNzl9.VxPW6Jkjg4Nm7CeVj-6PD8g6-JJCg3b8T3d8eK_E_dY' 
-          // Hardcodeando el jwt, CAMBIAR
-        },
         body: JSON.stringify(schedule)
       }).then(response => {
         if (!response.ok) {

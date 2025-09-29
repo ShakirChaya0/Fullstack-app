@@ -1,9 +1,6 @@
-export async function forgotPassword({ email }: { email: string }) {
-    const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/auth/forgotPassword`, {
+export async function forgotPassword({ email, apiCall }: { email: string, apiCall: (url: string, options?: RequestInit) => Promise<Response> }) {
+    const response = await apiCall("auth/forgotPassword", {
         method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
         body: JSON.stringify({
             email: email 
         })

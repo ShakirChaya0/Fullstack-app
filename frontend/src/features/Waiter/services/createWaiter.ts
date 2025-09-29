@@ -1,9 +1,8 @@
 import type { Waiter } from "../interfaces/Waiters"
 
-export default async function createWaiter (datas: Waiter): Promise<Waiter> {
-    const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/mozos`, {
+export default async function createWaiter (apiCall: (url: string, options?: RequestInit) => Promise<Response>, datas: Waiter): Promise<Waiter> {
+    const response = await apiCall(`mozos`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           nombreUsuario: datas.nombreUsuario,
           contrasenia: datas.contrasenia,

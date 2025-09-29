@@ -2,8 +2,10 @@ import { useQuery } from "@tanstack/react-query";
 import { getProductsData } from "../services/product&PriceService";
 import { useMemo, useState } from "react";
 import { sortAndNormalizeProductPrice } from "../utils/sortAndNormilizeProductPrice";
+import useApiClient from "../../../shared/hooks/useApiClient";
 
 export const useProductsWithFilters = (initialPage = 1, initialLimit = 9) => {
+    const { apiCall } = useApiClient();   
     const [page, setPage] = useState(initialPage)
     const [limit, setLimit] = useState(initialLimit)
     const [filters, setFilters] = useState({
@@ -17,7 +19,7 @@ export const useProductsWithFilters = (initialPage = 1, initialLimit = 9) => {
     
     const { data: backendProducts, isLoading, error } = useQuery({
         queryKey: ['products', page, limit, filters.search],
-        queryFn: () => getProductsData(page, limit, filters.search),
+        queryFn: () => getProductsData(apiCall, page, limit, filters.search),
         staleTime: 5 * 60 * 1000, // Los datos son válidos por 5 minutos
         gcTime: 10 * 60 * 1000, // Cache se mantiene 10 minutos (antes cacheTime)
         retry: (failureCount, error) => {

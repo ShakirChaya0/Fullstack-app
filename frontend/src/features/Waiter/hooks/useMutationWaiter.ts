@@ -1,12 +1,15 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import type { BackResults, Waiter } from "../interfaces/Waiters";
+import useApiClient from "../../../shared/hooks/useApiClient";
 
 
-export function useMutationWaiter ({fn, currentPage, SuccessMsg, ErrorMsg, query}: {fn: (data: Waiter) => Promise<Waiter>, currentPage: number, SuccessMsg: string, ErrorMsg: string, query: string}) {
+export function useMutationWaiter ({fn, currentPage, SuccessMsg, ErrorMsg, query}: {fn: (apiCall: (url: string, options?: RequestInit) => Promise<Response>, data: Waiter) => Promise<Waiter>, currentPage: number, SuccessMsg: string, ErrorMsg: string, query: string}) {
     const queryClient = useQueryClient()
+    const { apiCall } = useApiClient()
+
     const { mutate, isPending: isLoading, failureReason } = useMutation({
-      mutationFn: fn,
+      mutationFn: (data: Waiter) => fn(apiCall, data),
       onMutate: async (newData) => {
         await queryClient.cancelQueries({ queryKey: ["Waiters", currentPage, query]})
 

@@ -14,12 +14,15 @@ import { LoadingSchedule } from "../components/LoadingSchedule";
 import { RegisterAndModifierTable } from "../components/RegisterAndModifierTable";
 import { useMutationModification } from "../hooks/useMutationModification";
 import { incompleteDays } from "../utils/incompleteDays";
+import useApiClient from "../../../shared/hooks/useApiClient";
 
 export function ModifySchedule () {  
   // React Query para obtener datos del backend
+  const { apiCall } = useApiClient()
+
   const { data: backendSchedules, isLoading: queryLoading, error: queryError } = useQuery({
     queryKey: ['schedules'],
-    queryFn: getScheduleData
+    queryFn: () => getScheduleData(apiCall)
   });
 
   // Custom hook para manejar el estado local de horarios

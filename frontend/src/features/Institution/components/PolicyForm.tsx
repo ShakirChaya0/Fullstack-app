@@ -4,12 +4,14 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import type Policy from "../interfaces/Policy";
 import updatePolicy from "../services/updatePolicy";
+import useApiClient from "../../../shared/hooks/useApiClient";
 
 export default function PolicyForm({ data }: {data: Policy}) {
   const queryClient = useQueryClient();
+  const { apiCall } = useApiClient();
 
   const { mutate, isPending } = useMutation({
-    mutationFn: updatePolicy,
+    mutationFn: (policy: Policy) => updatePolicy(policy, apiCall),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ["Policy"] });
       toast.success("Políticas actualizadas con éxito");

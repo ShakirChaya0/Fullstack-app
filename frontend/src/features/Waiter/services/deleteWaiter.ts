@@ -1,5 +1,5 @@
-export default async function deleteWaiter (id: string): Promise<void> {
-    const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/mozos/id/${id}`, {
+export default async function deleteWaiter (apiCall: (url: string, options?: RequestInit) => Promise<Response>, id: string): Promise<void> {
+    const response = await apiCall(`mozos/id/${id}`, {
         method: "DELETE"
     })
     

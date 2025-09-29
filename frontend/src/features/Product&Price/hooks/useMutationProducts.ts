@@ -2,13 +2,15 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { modifyProductToBackend, saveProductToBackend } from "../services/product&PriceService";
 import type { useMutationProductModificationProps, useMutationProductRegistrationProps } from "../interfaces/product&PriceInterfaces";
 import { toast } from "react-toastify";
+import useApiClient from "../../../shared/hooks/useApiClient";
 
 export function useMutationProductRegistration ({ newProduct, setNewProduct, setProductType, setModalError, setIsModalOpen }: useMutationProductRegistrationProps ) {
     const queryClient = useQueryClient();
+    const { apiCall } = useApiClient();
     
     // useMutation para manejar el registro de productos (POST)
     const saveProductMutation = useMutation({
-        mutationFn: () => saveProductToBackend(newProduct),
+        mutationFn: () => saveProductToBackend(apiCall, newProduct),
         onSuccess: () => {
         // Invalidar query para refrescar datos del backend
         queryClient.invalidateQueries({ 
@@ -48,10 +50,11 @@ export function useMutationProductRegistration ({ newProduct, setNewProduct, set
 
 export function useMutationProductModification ({ newProduct, productBefModification, setModalError, onClose}: useMutationProductModificationProps ) {
     const queryClient = useQueryClient();
+    const { apiCall } = useApiClient();
     
     // useMutation para manejar la actualización de horarios (POST)
     const modifyProductMutation = useMutation({
-        mutationFn: () => modifyProductToBackend(newProduct, productBefModification),
+        mutationFn: () => modifyProductToBackend(apiCall, newProduct, productBefModification),
         onSuccess: () => {
         // Al modificar un producto, debemos invalidar todas las queries relacionadas
         // porque el producto modificado puede aparecer/desaparecer de diferentes búsquedas/páginas

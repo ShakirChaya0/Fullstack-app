@@ -2,12 +2,15 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import type News from "../interfaces/News";
 import type { BackResults } from "../interfaces/News";
+import useApiClient from "../../../shared/hooks/useApiClient";
 
 
-export function useMutationNews ({fn, currentPage, SuccessMsg, ErrorMsg, query, filter}: {fn: (data: News) => Promise<News>, currentPage: number, SuccessMsg: string, ErrorMsg: string, query: string, filter: string}) {
+export function useMutationNews ({fn, currentPage, SuccessMsg, ErrorMsg, query, filter}: {fn: (apiCall: (url: string, options?: RequestInit) => Promise<Response>, data: News) => Promise<News>, currentPage: number, SuccessMsg: string, ErrorMsg: string, query: string, filter: string}) {
     const queryClient = useQueryClient()
+    const { apiCall } = useApiClient()
+
     const { mutate, isPending: isLoading, failureReason } = useMutation({
-      mutationFn: fn,
+      mutationFn: (data: News) => fn(apiCall, data),
       onMutate: async (newData) => {
         await queryClient.cancelQueries({ queryKey: ["News", currentPage, query, filter]})
         

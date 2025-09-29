@@ -2,15 +2,15 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import type { UniqueProfileData, UserType } from "../types/ProfileSharedTypes";
 import { updateUser } from "../services/updateUser";
-import useAuth from "../../../shared/hooks/useAuth";
+import { useApiClient } from "../../../shared/hooks/useApiClient";
 
 export function useProfileMutation(onEditModeChange: (editing: boolean) => void) {
-    const { accessToken } = useAuth();
+    const { apiCall } = useApiClient();
     const queryClient = useQueryClient();
 
     return useMutation({
         mutationFn: async ({ userData, userType }: { userData: UniqueProfileData; userType: UserType }) => 
-            updateUser(userData, userType, accessToken!),
+            updateUser(userData, userType, apiCall),
         onSuccess: async ({ verifiedEmail }: { verifiedEmail: boolean }) => {
             await queryClient.invalidateQueries({ queryKey: ["User"] });
             toast.success("Perfil actualizado con éxito.");

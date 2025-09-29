@@ -2,7 +2,12 @@ import type { RefObject } from "react"
 import type { ProductPriceWithoutID, ProductWithoutPrice } from "../interfaces/product&PriceInterfaces"
 
 // Se implementa paginación desde backend
-export const getProductsData = async (page: number, limit: number, search: string) => {
+export const getProductsData = async (
+  apiCall: (url: string, options?: RequestInit) => Promise<Response>,
+  page: number, 
+  limit: number, 
+  search: string
+) => {
   let response
   let isNumeric = false // Bandera para manejar respuestas sin formato de paginación (Endpoint busqueda por id)
 
@@ -12,26 +17,16 @@ export const getProductsData = async (page: number, limit: number, search: strin
     if (/^\d+$/.test(search.trim())) { 
       // Es numérico - buscar por ID
       isNumeric = true
-      response = await fetch(`${import.meta.env.VITE_PRODUCTS_URL}/id/${search.trim()}`, {
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json' }
-      })
+      response = await apiCall(`productos/id/${search.trim()}`)
     } else {
       // Es texto - buscar por nombre
-      
       console.log('Búsqueda por nombre:', search.trim())
-      response = await fetch(`${import.meta.env.VITE_PRODUCTS_URL}/nombre/${search.trim()}?page=${page}&limit=${limit}`, {
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json' }
-      })
+      response = await apiCall(`productos/nombre/${search.trim()}?page=${page}&limit=${limit}`)
     }
   } else {
     // No hay búsqueda, usar paginación normal
     console.log('Modo paginación:', { page, limit })
-    response = await fetch(`${import.meta.env.VITE_PRODUCTS_URL}?page=${page}&limit=${limit}`, {
-      method: 'GET',
-      headers: { 'Content-Type': 'application/json' }
-    })
+    response = await apiCall(`productos?page=${page}&limit=${limit}`)
   }
 
   if (!response.ok) {
@@ -77,16 +72,14 @@ export const getProductsData = async (page: number, limit: number, search: strin
   return data
 }
 
-export const saveProductToBackend = async (newProduct: ProductPriceWithoutID) => {
+export const saveProductToBackend = async (
+  apiCall: (url: string, options?: RequestInit) => Promise<Response>,
+  newProduct: ProductPriceWithoutID
+) => {
   try {
     // Paso 1: Crear el producto
-    const productResponse = await fetch(import.meta.env.VITE_NEW_PRODUCTS_URL, {
+    const productResponse = await apiCall('productos', {
       method: 'POST',
-      headers: { 
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzdWFyaW8iOiJlNTM0YjUyMS1iNzEwLTRhNjQtOGUyOC1iMTZkMTY5ZDVlYjQiLCJlbWFpbCI6InBlcGVAZ21haWwuY29tIiwidGlwb1VzdWFyaW8iOiJBZG1pbmlzdHJhZG9yIiwidXNlcm5hbWUiOiJQZXBlUm9kcmlndWV6MTIzIiwiaWF0IjoxNzU4NTg0NTAyLCJleHAiOjE3NTkxODkzMDJ9.N7aNy0-gnTosCt6yRXJaiJY2OX_MI5z1T26o8KeKhuU'
-        // Hardcodeando el jwt, CAMBIAR
-      },
       body: JSON.stringify({
         nombre: newProduct.nombre,
         descripcion: newProduct.descripcion,
@@ -112,13 +105,8 @@ export const saveProductToBackend = async (newProduct: ProductPriceWithoutID) =>
     }
 
     // Paso 2: Registrar el precio usando el ID obtenido
-    const priceResponse = await fetch(import.meta.env.VITE_NEW_PRICE_URL, {
+    const priceResponse = await apiCall('precios', {
       method: 'POST',
-      headers: { 
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzdWFyaW8iOiJlNTM0YjUyMS1iNzEwLTRhNjQtOGUyOC1iMTZkMTY5ZDVlYjQiLCJlbWFpbCI6InBlcGVAZ21haWwuY29tIiwidGlwb1VzdWFyaW8iOiJBZG1pbmlzdHJhZG9yIiwidXNlcm5hbWUiOiJQZXBlUm9kcmlndWV6MTIzIiwiaWF0IjoxNzU4NTg0NTAyLCJleHAiOjE3NTkxODkzMDJ9.N7aNy0-gnTosCt6yRXJaiJY2OX_MI5z1T26o8KeKhuU'
-        // Hardcodeando el jwt, CAMBIAR
-      },
       body: JSON.stringify({
         idProducto: productId,
         monto: newProduct.precio
@@ -143,7 +131,11 @@ export const saveProductToBackend = async (newProduct: ProductPriceWithoutID) =>
   }
 }
 
-export const modifyProductToBackend = async (newModification: ProductWithoutPrice, productBefModification: RefObject<ProductWithoutPrice | null>) => {
+export const modifyProductToBackend = async (
+  apiCall: (url: string, options?: RequestInit) => Promise<Response>,
+  newModification: ProductWithoutPrice, 
+  productBefModification: RefObject<ProductWithoutPrice | null>
+) => {
   if(productBefModification.current === null) throw new Error('Error con el producto original') //No debería dispararse en ninguna situación
   
   const valuesToModify = {
@@ -157,13 +149,8 @@ export const modifyProductToBackend = async (newModification: ProductWithoutPric
     esAlcoholica: newModification.esAlcoholica !== productBefModification.current.esAlcoholica ? newModification.esAlcoholica : undefined
   }
 
-  const response = await fetch(`${import.meta.env.VITE_NEW_PRODUCT_MODIFICATION_URL}${newModification.idProducto}`, {
+  const response = await apiCall(`productos/${newModification.idProducto}`, {
     method: 'PATCH',
-    headers: { 
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzdWFyaW8iOiJlNTM0YjUyMS1iNzEwLTRhNjQtOGUyOC1iMTZkMTY5ZDVlYjQiLCJlbWFpbCI6InBlcGVAZ21haWwuY29tIiwidGlwb1VzdWFyaW8iOiJBZG1pbmlzdHJhZG9yIiwidXNlcm5hbWUiOiJQZXBlUm9kcmlndWV6MTIzIiwiaWF0IjoxNzU4NTg0NTAyLCJleHAiOjE3NTkxODkzMDJ9.N7aNy0-gnTosCt6yRXJaiJY2OX_MI5z1T26o8KeKhuU'
-      // Hardcodeando el jwt, CAMBIAR
-    },
     body: JSON.stringify(valuesToModify)
   })
 
@@ -189,15 +176,11 @@ export const modifyProductToBackend = async (newModification: ProductWithoutPric
   return response.json()
 }
 
-export const getPriceData = async (productId: string) => {
-  const response = await fetch(`${import.meta.env.VITE_REQUEST_PRICE_LIST_URL}${productId}`, {
-    method: 'GET',
-    headers: { 
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzdWFyaW8iOiJlNTM0YjUyMS1iNzEwLTRhNjQtOGUyOC1iMTZkMTY5ZDVlYjQiLCJlbWFpbCI6InBlcGVAZ21haWwuY29tIiwidGlwb1VzdWFyaW8iOiJBZG1pbmlzdHJhZG9yIiwidXNlcm5hbWUiOiJQZXBlUm9kcmlndWV6MTIzIiwiaWF0IjoxNzU4NTg0NTAyLCJleHAiOjE3NTkxODkzMDJ9.N7aNy0-gnTosCt6yRXJaiJY2OX_MI5z1T26o8KeKhuU'
-      // Hardcodeando el jwt, CAMBIAR
-    }
-  })
+export const getPriceData = async (
+  apiCall: (url: string, options?: RequestInit) => Promise<Response>,
+  productId: string
+) => {
+  const response = await apiCall(`precios/producto/${productId}`)
 
   if (!response.ok) {
     // Si es 404, intentar obtener el mensaje del JSON del backend
@@ -221,20 +204,18 @@ export const getPriceData = async (productId: string) => {
   return response.json()
 }
 
-export const savePriceToBackend = async (newPrice: {idProducto: string, monto: number}) => {
+export const savePriceToBackend = async (
+  apiCall: (url: string, options?: RequestInit) => Promise<Response>,
+  newPrice: {idProducto: string, monto: number}
+) => {
   const requestBody = {
     idProducto: parseInt(newPrice.idProducto),
     monto: newPrice.monto
   }
 
-  const response = await fetch(import.meta.env.VITE_NEW_PRICE_REGISTRATION_URL, {
-  method: 'POST',
-  headers: { 
-    'Content-Type': 'application/json',
-    'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzdWFyaW8iOiJlNTM0YjUyMS1iNzEwLTRhNjQtOGUyOC1iMTZkMTY5ZDVlYjQiLCJlbWFpbCI6InBlcGVAZ21haWwuY29tIiwidGlwb1VzdWFyaW8iOiJBZG1pbmlzdHJhZG9yIiwidXNlcm5hbWUiOiJQZXBlUm9kcmlndWV6MTIzIiwiaWF0IjoxNzU4NTg0NTAyLCJleHAiOjE3NTkxODkzMDJ9.N7aNy0-gnTosCt6yRXJaiJY2OX_MI5z1T26o8KeKhuU'
-    // Hardcodeando el jwt, CAMBIAR
-  },
-  body: JSON.stringify(requestBody)
+  const response = await apiCall('precios', {
+    method: 'POST',
+    body: JSON.stringify(requestBody)
   })
   
   if (!response.ok) {
@@ -249,14 +230,13 @@ export const savePriceToBackend = async (newPrice: {idProducto: string, monto: n
   return response.json()
 }
 
-export const deletePrice = async (idProducto: string, fechaActual: string) => {
-  const response = await fetch(`${import.meta.env.VITE_NEW_PRICE_REGISTRATION_URL}?idProducto=${idProducto}&fechaActual=${fechaActual}`, {
-  method: 'DELETE',
-  headers: { 
-    'Content-Type': 'application/json',
-    'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzdWFyaW8iOiJlNTM0YjUyMS1iNzEwLTRhNjQtOGUyOC1iMTZkMTY5ZDVlYjQiLCJlbWFpbCI6InBlcGVAZ21haWwuY29tIiwidGlwb1VzdWFyaW8iOiJBZG1pbmlzdHJhZG9yIiwidXNlcm5hbWUiOiJQZXBlUm9kcmlndWV6MTIzIiwiaWF0IjoxNzU4NTg0NTAyLCJleHAiOjE3NTkxODkzMDJ9.N7aNy0-gnTosCt6yRXJaiJY2OX_MI5z1T26o8KeKhuU'
-    // Hardcodeando el jwt, CAMBIAR
-  }
+export const deletePrice = async (
+  apiCall: (url: string, options?: RequestInit) => Promise<Response>,
+  idProducto: string, 
+  fechaActual: string
+) => {
+  const response = await apiCall(`precios?idProducto=${idProducto}&fechaActual=${fechaActual}`, {
+    method: 'DELETE'
   })
   
   if (!response.ok) {

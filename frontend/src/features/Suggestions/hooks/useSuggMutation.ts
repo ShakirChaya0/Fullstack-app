@@ -3,6 +3,7 @@ import { toast } from "react-toastify";
 import updateSuggestion from "../services/updateSuggestion";
 import createSuggestion from "../services/createSuggestion";
 import type { Suggestion } from "../interfaces/Suggestion";
+import { useApiClient } from "../../../shared/hooks/useApiClient";
 
 interface SuggestionPayload {
     _product: { _productId: number; _name: string; _description: string };
@@ -17,7 +18,8 @@ interface UseSuggMutationParams {
 }
 
 export function useSuggMutation({ handleClose, handleError, suggestion }: UseSuggMutationParams) {
-    const queryClient = useQueryClient()
+    const queryClient = useQueryClient();
+    const { apiCall } = useApiClient();
 
     return useMutation({
         mutationFn: (data: SuggestionPayload) => {
@@ -28,13 +30,13 @@ export function useSuggMutation({ handleClose, handleError, suggestion }: UseSug
                     _product: data._product,
                     _dateFrom: data._dateFrom,
                     _dateTo: data._dateTo
-                });
+                }, apiCall);
             } else {
                 return createSuggestion({
                     _product: data._product!,
                     _dateFrom: data._dateFrom,
                     _dateTo: data._dateTo
-                });
+                }, apiCall);
             }
         },        
         onSuccess: async () => {

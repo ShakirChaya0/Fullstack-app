@@ -22,7 +22,7 @@ export default function ActionForm() {
 
     const { fn, msgs, news, ButtonName } = useModalProvider()
 
-    const { mutate, isLoading, failureReason } = useMutationNews({fn: fn, currentPage: currentPage, SuccessMsg: msgs.SuccessMsg, ErrorMsg: msgs.ErrorMsg, query: query, filter: filter})
+    const { mutate, isLoading, failureReason } = useMutationNews({fn, currentPage, SuccessMsg: msgs.SuccessMsg, ErrorMsg: msgs.ErrorMsg, query, filter})
 
     const onSubmit =  (data: FormData) => {
         mutate({_newsId: news?._newsId, _title: data.Titulo, _description: data.Descripcion, _startDate: data.FechaInicio, _endDate: data.FechaFin})

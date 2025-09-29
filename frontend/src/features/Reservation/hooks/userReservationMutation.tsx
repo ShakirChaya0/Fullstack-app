@@ -3,6 +3,7 @@ import { toast } from "react-toastify";
 import CreateReservation from "../services/CreateReservation";
 import UpdateReservation from "../services/UpdateReservation";
 import type { IReservation, StateReservation } from "../interfaces/IReservation";
+import { useApiClient } from "../../../shared/hooks/useApiClient";
 
 interface ReservationPayLoad {
   _reservationId?: number;
@@ -18,6 +19,7 @@ interface UseResMutationParams {
 
 export default function useReservationMutation({ handleError }: UseResMutationParams) {
   const queryClient = useQueryClient();
+  const { apiCall } = useApiClient();
 
   return useMutation<IReservation, Error, ReservationPayLoad>({
     mutationFn: (data: ReservationPayLoad) => {
@@ -28,13 +30,13 @@ export default function useReservationMutation({ handleError }: UseResMutationPa
           _reserveDate: data._reserveDate,
           _reserveTime: data._reserveTime,
           _commensalsNumber: data._commensalsNumber,
-        });
+        }, apiCall);
       } else {
         return CreateReservation({
           _reserveDate: data._reserveDate,
           _reserveTime: data._reserveTime,
           _commensalsNumber: data._commensalsNumber,
-        });
+        }, apiCall);
       }
     },
 
