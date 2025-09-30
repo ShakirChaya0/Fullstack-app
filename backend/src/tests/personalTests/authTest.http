@@ -3,7 +3,11 @@ POST http://localhost:3000/auth/login
 Content-Type: application/json
 
 {
+<<<<<<< HEAD
     "email": "fns@gmail.com",
+=======
+    "email": "test4@gmail.com",
+>>>>>>> feature/RealizarPedido
     "password": "123456"
 }
 

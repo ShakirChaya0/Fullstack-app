@@ -1,9 +1,9 @@
 import { Route, Routes } from "react-router";
 import { lazy, Suspense } from "react";
 import KitchenMainLayout from "../shared/components/KitchenMainLayout";
-import SuggestionSkeletonBody from "../features/Suggestions/pages/SuggestionSkeletonBody";
-import ProfileCardSkeleton from "../features/Profile/components/ProfileCardSkeleton";
-import UserProfile from "../features/Profile/pages/UserProfile";
+const SuggestionSkeletonBody = lazy(() => import("../features/Suggestions/pages/SuggestionSkeletonBody"));
+const ProfileCardSkeleton = lazy(() => import("../features/Profile/components/ProfileCardSkeleton"));
+const UserProfile = lazy(() => import("../features/Profile/pages/UserProfile"));
 const SuggestionsPage = lazy(() => import("../features/Suggestions/pages/SuggestionsPage"))
 
 export function KitchenRouter() {

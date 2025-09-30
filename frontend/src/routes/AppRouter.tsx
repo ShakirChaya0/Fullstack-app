@@ -1,4 +1,4 @@
-import { Route, Routes, Navigate } from "react-router";
+import { Route, Routes } from "react-router";
 import { ClientRouter } from "./ClientRouter";
 import { AdminRouter } from "./AdminRouter";
 import { KitchenRouter } from "./KitchenRouter";

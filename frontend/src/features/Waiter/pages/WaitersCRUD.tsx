@@ -42,7 +42,11 @@ export default function WaitersCRUD () {
                                             <WaitersTable waiters={data} handleResetPage={handleResetPage}/>
                                         </Suspense> 
                                     }
-                                    { (debouncedValue.length !== 0) && (data?.Waiters.length === 0) && <h1 className="text-center font-medium">No se encontraron los datos buscados</h1>}
+                                    { (debouncedValue.length !== 0) && (data?.Waiters.length === 0) && 
+                                        <div className="flex justify-center items-center h-full w-full">
+                                            <h1 className="font-medium">No se encontraron los datos buscados</h1>
+                                        </div>
+                                    }
                                     { isError && <p>Error al cargar los datos</p>}
                                     {
                                         !isError && data?.totalItems !== 0 &&

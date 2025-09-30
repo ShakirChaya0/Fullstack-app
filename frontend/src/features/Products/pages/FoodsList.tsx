@@ -3,12 +3,15 @@ import { useFoods } from "../hooks/useFoods";
 import FilterProducts from "../components/foods/filterFoods";
 import SkeletonBody from "./skeletonBody";
 import { OrderList } from "../components/orderList";
+import SuggestionsList from "../components/SuggestionsList";
+import SuggestionSkeleton from "../components/SuggestionSkeleton";
 const FoodsTypesFilter = lazy(() => import("../components/foods/FoodsTypesFilter"))
 const FoodsSpecialFilter = lazy(() => import("../components/foods/FoodsSpecialFilter"))
 
 function FoodsList () {
-    const {isLoading, isError, foods} = useFoods();
+    const {isLoading, isError, foods} = useFoods()
     const [query, setQuery] = useState<string>("")
+
 
     const handleChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
         const query = event.currentTarget.value
@@ -21,9 +24,12 @@ function FoodsList () {
 
     return(
         <>
-            <section className="flex-1 grid md:grid-cols-[minmax(280px,_7fr)_4fr] lg:grid-cols-[3fr_1fr] gap-6 md:p-4 pb-6 w-full">
+            <section className="flex-1 grid md:grid-cols-[minmax(280px,_7fr)_5fr] lg:grid-cols-[5fr_3fr] gap-6 md:p-4 pb-6 w-full">
               <div className="border border-gray-300 rounded-2xl p-4 w-full min-w-2 shadow-2xl">
                 { !isError && <FilterProducts handleChange={handleChange} /> }
+                <Suspense fallback={<SuggestionSkeleton/>}>
+                  <SuggestionsList/>
+                </Suspense>
                 {
                   !isLoading ? (
                     <>

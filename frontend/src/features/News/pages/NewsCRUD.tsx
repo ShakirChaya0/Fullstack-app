@@ -41,7 +41,7 @@ export default function NewsCRUD () {
     return (
         <>
             <section className="flex flex-col items-center justify-center w-full p-4 min-h-[600px]">
-                <div className="flex flex-col gap-5 sm:p-16 sm:rounded-2xl sm:shadow-2xl sm:border sm:border-gray-300 w-full max-w-[1600px] min-h-[600px]">
+                <div className="flex flex-col bg-[var(--admin-bg-200)] gap-5 sm:p-16 sm:rounded-2xl sm:shadow-2xl sm:border sm:border-gray-300 w-full max-w-[1600px] min-h-[600px]">
                     <PageContext.Provider value={{currentPage: currentPage, query: debouncedValue, filter: filter}}>
                         <FilterContext.Provider value={{filter: filter, handleSearch: handleSearch, isDebouncing: isDebouncing, query: query, handleChangeFilter: handleChangeFilter}}>
                             <TableHeader/>
@@ -55,7 +55,11 @@ export default function NewsCRUD () {
                             </Suspense>
                         
                         }
-                        { (debouncedValue.length !== 0) && (data?.News.length === 0) && <h1 className="text-center font-medium">No se encontraron los datos buscados</h1>}
+                        { (debouncedValue.length !== 0) && (data?.News.length === 0) && 
+                            <div className="flex items-center w-full h-full justify-center">
+                                <h1 className="font-medium">No se encontraron los datos buscados</h1>
+                            </div>
+                        }
                         { isError && <p>Error</p> }
                         {
                             !isError && data?.totalItems !== 0 &&

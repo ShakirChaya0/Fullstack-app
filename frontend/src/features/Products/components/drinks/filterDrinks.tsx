@@ -7,7 +7,7 @@ type Props = {
 
 const FilterDrinks: React.FC<Props> = ({handleChange}) => {
     return(
-        <form className="flex flex-col items-center space-y-4 z-50">
+        <form className="flex flex-col items-center space-y-4 z-20">
             <Box sx={{ width: 500, maxWidth: '100%'}}>
                 <TextField fullWidth label="Ingrese el nombre del Producto" id="fullWidth" onChange={handleChange}/>
             </Box>

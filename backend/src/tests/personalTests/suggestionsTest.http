@@ -1,5 +1,5 @@
 ### GET ALL
-GET http://localhost:3000/sugerencias?page=1&filter=ALL&sorted=DATE_DESC
+GET http://localhost:3000/sugerencias?filter=ACTIVES
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzdWFyaW8iOiJlMTBjNmRmYS0xYjUxLTRhZGItOGI1MC1iYTIzMjgzNmU3YWMiLCJlbWFpbCI6ImNvY2luYUBnbWFpbC5jb20iLCJ0aXBvVXN1YXJpbyI6IlNlY3RvckNvY2luYSIsInVzZXJuYW1lIjoiY29jaW5hIiwiaWF0IjoxNzU1Nzc3NjIwLCJleHAiOjE3NTYzODI0MjB9.svoj3XAHVJBSSO5QNCH1iWMlio8V2NytfszPeb7Euxg
 
 ### GET ACTIVES
@@ -12,7 +12,7 @@ Content-Type: application/json
 
 {
     "idProducto": 1,
-    "fechaDesde": "17/09/2025",
+    "fechaDesde": "11/09/2025",
     "fechaHasta": "20/09/2025"
 }
 
