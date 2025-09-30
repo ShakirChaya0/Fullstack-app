@@ -15,11 +15,8 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import deleteWaiter from '../services/deleteWaiter';
 import { usePage } from '../hooks/usePage';
 import { toast } from 'react-toastify';
-<<<<<<< HEAD
 import useApiClient from '../../../shared/hooks/useApiClient';
-=======
 import DeleteWaiterModal from './DeleteWaiterModal';
->>>>>>> feature/RealizarPedido
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {

@@ -1,8 +1,8 @@
 ###
 POST http://localhost:3000/qr/
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzdWFyaW8iOiI4ZTA2ZTRiOS1jYzU4LTRmZWEtOWQ2ZS04MThjZmQ1Zjg2ZjciLCJlbWFpbCI6Im1vem9AZ21haWwuY29tIiwidGlwb1VzdWFyaW8iOiJNb3pvIiwidXNlcm5hbWUiOiJtb3pvIiwiaWF0IjoxNzU1OTI0ODgyLCJleHAiOjE3NTY1Mjk2ODJ9.ujBJOtAx6C4tjPKxi6C6XVQ4vBpOfSrukbMjShgAYUU
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzdWFyaW8iOiI4ZTA2ZTRiOS1jYzU4LTRmZWEtOWQ2ZS04MThjZmQ1Zjg2ZjciLCJlbWFpbCI6InNoYWtpcmNoYXlhMjAwNUBnbWFpbC5jb20iLCJ0aXBvVXN1YXJpbyI6Ik1vem8iLCJ1c2VybmFtZSI6Im1vem8iLCJpYXQiOjE3NTkyNDQ5MDksImV4cCI6MTc1OTI0NTA4OX0.S-8kx0tdzg-Xyf5PL6eHC4wMSTF34GWssdbL2C-ZP2c
 
 {
-    "tableNumber": 1
+    "tableNumber": 5
 }

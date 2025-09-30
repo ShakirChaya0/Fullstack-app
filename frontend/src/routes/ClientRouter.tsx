@@ -9,6 +9,8 @@ const ProfileCardSkeleton = lazy(() => import("../features/Profile/components/Pr
 const UserProfile = lazy(() => import("../features/Profile/pages/UserProfile"));
 import  ReservationCRUD  from "../features/Reservation/pages/ReservationCRUD";
 import ReservationHistorial from "../features/Reservation/pages/ReservationList";
+import CheckPage from "../features/Payment/pages/CheckPage";
+import CheckSkeleton from "../features/Payment/pages/CheckSkeleton";
 
 export function ClientRouter() {
   return (
@@ -24,6 +26,11 @@ export function ClientRouter() {
         <Route path="/Perfil" element={
           <Suspense fallback = {<ProfileCardSkeleton/>}>
             <UserProfile />
+          </Suspense>
+        }/>
+        <Route path="/Pedido/Cuenta" element={
+          <Suspense fallback = {<CheckSkeleton />}>
+            <CheckPage />
           </Suspense>
         }/>
       </Route>

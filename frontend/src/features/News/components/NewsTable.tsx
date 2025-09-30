@@ -16,11 +16,8 @@ import { usePage } from '../hooks/usePage';
 import updateNews from '../services/updateNews';
 import type News from '../interfaces/News';
 import { ModalContext } from '../hooks/useModalProvider';
-<<<<<<< HEAD
 import useApiClient from '../../../shared/hooks/useApiClient';
-=======
 import DeleteNewsModal from './DeleteNewsModal';
->>>>>>> feature/RealizarPedido
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {

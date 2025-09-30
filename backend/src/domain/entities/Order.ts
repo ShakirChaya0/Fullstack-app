@@ -118,7 +118,8 @@ export class Order {
     }
 
     public toClientInfo(): OrderClientInfo {
-        return { 
+        return {
+            idPedido: this._orderId,
             lineasPedido: this._orderLines.map(ol => {
                 return {
                     nombreProducto: ol.productoVO.productName,

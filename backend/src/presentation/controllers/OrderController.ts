@@ -60,7 +60,7 @@ export class OrderController {
                 console.log(error)
             }
 
-            res.status(201).send({ message: "Orden creada correctamente" });
+            res.status(201).send(createdOrder.toClientInfo());
         } 
         catch(error) {
             next(error);
