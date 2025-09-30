@@ -17,7 +17,7 @@ export default function NewsCRUD () {
     const [query, setQuery] = useState("")
     const [filter, setFilter] = useState<FilterProps>("Todas")
     const {debouncedValue, isDebouncing} = useDebounce(query, 400);
-    const {isError, isLoading, data} = useNews(debouncedValue, filter, currentPage)
+    const {isError, isLoading, data} = useNews(debouncedValue.trim(), filter, currentPage)
     const queryClient = useQueryClient()
 
     const handleSearch = useCallback((event: ChangeEvent<HTMLInputElement>) => {

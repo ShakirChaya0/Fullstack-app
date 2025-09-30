@@ -24,7 +24,7 @@ function FoodsList () {
 
     return(
         <>
-            <section className="flex-1 grid md:grid-cols-[minmax(280px,_7fr)_5fr] lg:grid-cols-[5fr_3fr] gap-6 md:p-4 pb-6 w-full">
+            <section className="flex-1 md:p-4 pb-6 w-full h-full">
               <div className="border border-gray-300 rounded-2xl p-4 w-full min-w-2 shadow-2xl">
                 { !isError && <FilterProducts handleChange={handleChange} /> }
                 <Suspense fallback={<SuggestionSkeleton/>}>

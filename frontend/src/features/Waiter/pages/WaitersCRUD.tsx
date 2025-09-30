@@ -12,7 +12,7 @@ export default function WaitersCRUD () {
     const [currentPage, setPage] = useState(1)
     const [query, setQuery] = useState("")
     const {debouncedValue, isDebouncing} = useDebounce(query, 400);
-    const { isLoading, isError, data } = useWaiters(debouncedValue, currentPage)
+    const { isLoading, isError, data } = useWaiters(debouncedValue.trim(), currentPage)
     
     const handleChangePage = (event: React.ChangeEvent<unknown>, value: number) => {
         setPage(value)
@@ -23,7 +23,7 @@ export default function WaitersCRUD () {
     }, [setPage])
 
     const handleSearch = useCallback((event: ChangeEvent<HTMLInputElement>) => {
-            setQuery(event.target.value)
+        setQuery(event.target.value)
     },[setQuery])
     
     return(

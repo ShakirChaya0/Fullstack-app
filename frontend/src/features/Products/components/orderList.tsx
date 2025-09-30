@@ -7,6 +7,7 @@ import { useOrderActions } from "../../../shared/hooks/useOrderActions";
 import { NavLink } from "react-router";
 import { AnimatePresence, motion } from "framer-motion";
 import type { LineaPedido } from "../../Order/interfaces/Order";
+import LocalGroceryStoreIcon from '@mui/icons-material/LocalGroceryStore';
 
 
 export function OrderList () {
@@ -27,14 +28,42 @@ export function OrderList () {
 
     return(
       <>
-        { isOpen && <div className="fixed inset-0 bg-black opacity-70 z-40 md:hidden"></div>}
+        <button 
+          onClick={handleClick}
+          className={
+            `group hidden md:flex fixed top-20 -right-18 
+             bg-orange-500 text-white rounded-l-full h-14 w-[140px]
+             shadow-lg items-center pl-4 hover:w-[250px]
+             hover:bg-orange-600 active:bg-orange-700 
+              z-50 cursor-pointer gap-3 transition-all duration-300 delay-100
+              ease-in-out ${isOpen ? "-translate-x-96" : ""}`}
+        >
+          <LocalGroceryStoreIcon />
+
+          <span
+            className="opacity-0 translate-x-4 group-hover:opacity-100 
+              group-hover:translate-x-0
+             text-white font-semibold text-base 
+             transition-all duration-300 ease-in-out"
+          >
+            Mi Pedido
+          </span>
+        </button>
+
+        { isOpen && <div className="fixed inset-0 bg-black opacity-70 z-40" onClick={() => setOpen(false)}></div>}
         <aside 
             className={
-                `shadow-2xl border p-4 border-gray-300 rounded-t-2xl md:rounded-2xl
-                 bg-white md:col-start-2 md:sticky md:top-0 col-start-1 bottom-0 left-0 w-full 
-                 fixed z-50 overflow-hidden transition-all duration-500 md:transition-none md:h-fit
-                 max-h-[874px]
-                 ${isOpen ? "h-9/12 z-50" : "h-[85px]"}`}
+                `
+                /* Mobile */
+                shadow-2xl border p-4 border-gray-300 rounded-t-2xl md:rounded-2xl
+                 bg-white bottom-0 left-0 w-full 
+                fixed z-50 overflow-auto transition-all md:transition-transform duration-500
+                ${isOpen ? "h-9/12 z-50" : "h-[85px]"}
+
+                /* Desktop */
+                md:fixed md:top-0 md:w-96 md:block md:left-12/12 md:h-full md:rounded-none
+                ${isOpen ? "md:-translate-x-2/2" : ""}
+                 `}
         >
             <div onClick={handleClick}>
                 <div className="flex justify-center">

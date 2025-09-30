@@ -30,12 +30,12 @@ export default function FilteredDrinks({filteredDrinks}: {filteredDrinks: Bebida
         return (
           <div key={filtro} id={filtro} className="scroll-mt-55">
             <span className="w-full h-0.5 bg-gray-300 block my-4"></span>
-            <h2 className="max-w-4xl mx-auto text-black text-2xl">
+            <h2 className="w-full text-center font-semibold text-black text-2xl">
               {filtro.replace("_", " ").toUpperCase()}
             </h2>
             <motion.ul
               layout
-              className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto"
+              className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-7xl mx-auto"
               initial={false}
             >
               <AnimatePresence>
