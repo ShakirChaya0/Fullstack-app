@@ -3,7 +3,7 @@ import type { Waiter } from "../interfaces/Waiters"
 
 type Props = { 
     waiters?: Waiter, 
-    fn: (data: Waiter) => Promise<Waiter>, 
+    fn: (apiCall: (url: string, options?: RequestInit) => Promise<Response>, data: Waiter) => Promise<Waiter>, 
     msgs: {SuccessMsg: string, ErrorMsg: string}, 
     ButtonName: string
 }
@@ -19,7 +19,7 @@ export const ModalContext = createContext<Props>({
     email: "",
     contrasenia: ""
   },
-  fn: async (data: Waiter) => {
+  fn: async (apiCall: (url: string, options?: RequestInit) => Promise<Response>, data: Waiter) => {
     return {
         idMozo: data.idMozo ?? "",
         nombreUsuario: data.nombreUsuario ?? "",

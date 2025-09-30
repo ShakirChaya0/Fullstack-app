@@ -2,9 +2,9 @@ import {type BackResults}  from "../interfaces/News"
 import type { FilterProps } from "../pages/NewsCRUD";
 
 
-export const fetchNews = async (query: string, filter: FilterProps, page?: number): Promise<BackResults> => {
+export const fetchNews = async (apiCall: (url: string, options?: RequestInit) => Promise<Response>, query: string, filter: FilterProps, page?: number): Promise<BackResults> => {
     if (query === ""){
-        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/novedades?page=${page}&status=${filter}`);
+        const response = await apiCall(`novedades?page=${page}&status=${filter}`);
         
         if(!response.ok) throw new Error("Error al conseguir los datos")
     
@@ -13,7 +13,7 @@ export const fetchNews = async (query: string, filter: FilterProps, page?: numbe
         return data
     }
     else{
-        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/novedades/title/${query}?page=${page}&status=${filter}`);
+        const response = await apiCall(`novedades/title/${query}?page=${page}&status=${filter}`);
     
         if(!response.ok) throw new Error("Error al conseguir los datos")
         

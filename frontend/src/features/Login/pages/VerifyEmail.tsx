@@ -8,17 +8,19 @@ import CircularProgress from '@mui/material/CircularProgress';
 import { verifyEmail } from '../services/verifyEmail';
 import { resendEmail } from '../services/resendEmail';
 import { useMutation } from '@tanstack/react-query';
+import { useApiClient } from '../../../shared/hooks/useApiClient';
 type Status = 'verifying' | 'success' | 'error';
 
 export default function VerifyEmail() {
     const navigate = useNavigate();
     const location = useLocation();
+    const { apiCall } = useApiClient();
 
     const [status, setStatus] = useState<Status>('verifying');
     const [isResending, setIsResending] = useState<boolean>(false);
 
     const verifyMutate  = useMutation({
-        mutationFn: verifyEmail,
+        mutationFn: () => verifyEmail(apiCall),
         onSuccess: () => {
             setStatus('success');
             toast.success("Cuenta verificada con éxito.");
@@ -31,7 +33,7 @@ export default function VerifyEmail() {
     });
 
     const resendMutate = useMutation({
-        mutationFn: resendEmail,
+        mutationFn: () => resendEmail(apiCall),
         onSuccess: () => {
             setStatus('verifying');
             toast.success("Correo reenviado con éxito.");

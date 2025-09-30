@@ -6,7 +6,8 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 import { forgotPassword } from '../services/forgotPassword';
-import { useNavigate } from 'react-router'; 
+import { useNavigate } from 'react-router';
+import { useApiClient } from '../../../shared/hooks/useApiClient';
 
 interface ForgotPasswordProps {
     open: boolean;
@@ -20,6 +21,7 @@ interface FormData {
 export default function ForgotPassword({ open, handleClose }: ForgotPasswordProps) {
     const [error, setError] = useState<string>("");
     const navigate = useNavigate();
+    const { apiCall } = useApiClient();
 
     const {
         register,
@@ -28,7 +30,7 @@ export default function ForgotPassword({ open, handleClose }: ForgotPasswordProp
     } = useForm<FormData>();
 
     const { mutate, isPending } = useMutation({
-        mutationFn: forgotPassword,
+        mutationFn: (data: FormData) => forgotPassword({ email: data.email, apiCall }),
         onSuccess: () => {
             toast.success("¡Listo! Revisa tu correo electrónico para restablecer tu contraseña.");
             handleClose();

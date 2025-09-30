@@ -3,6 +3,7 @@ import { Autocomplete, TextField } from "@mui/material";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { searchProducts } from "../services/searchProducts";
+import useApiClient from "../../../shared/hooks/useApiClient";
 
 interface Product {
     _productId: number;
@@ -19,9 +20,11 @@ interface ProductAutocompleteProps {
 
 export default function ProductAutocomplete({ control, name, onSelect, product }: ProductAutocompleteProps) {
     const [inputValue, setInputValue] = useState("");
+    const { apiCall } = useApiClient()
+
     const { data: options = [], isLoading } = useQuery({
         queryKey: ["products", inputValue],
-        queryFn: () => searchProducts(inputValue),
+        queryFn: () => searchProducts(apiCall, inputValue),
         enabled: inputValue.length > 1,
     });
 

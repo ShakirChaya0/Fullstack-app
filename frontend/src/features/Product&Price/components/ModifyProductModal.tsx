@@ -10,9 +10,7 @@ import { ProductTogglerModification } from "./ProductTogglerModification";
 export function ModifyProductModal({ 
     isOpen, 
     product, 
-    onClose,
-    currentPage,
-    limit
+    onClose
 }: ModifyProductModalProps) { 
     //Guardando el valor original del producto
     const productBefModification = useRef<ProductWithoutPrice | null>(null);
@@ -52,9 +50,7 @@ export function ModifyProductModal({
         newProduct, 
         productBefModification, 
         setModalError, 
-        onClose,
-        currentPage,
-        limit
+        onClose
     })
 
     const handleCloseModal = () => {
@@ -141,6 +137,9 @@ export function ModifyProductModal({
                             variant="outlined"
                             fullWidth
                             placeholder="Nombre de tu producto"
+                            slotProps={{
+                                htmlInput: { maxLength: 30}
+                            }}
                             value={ newProduct.nombre }
                             onChange={(e) => {
                                 if(modalError) setModalError('')

@@ -1,51 +1,35 @@
 import z from "zod";
 import { ValidationError } from "../exceptions/ValidationError.js";
 
-const ReservationSchema = z.object({
-  fechaReserva: z.string()    
-    .refine(str => /^\d{2}\/\d{2}\/\d{4}$/.test(str), {
-        message: "Formato inválido. Usa dd/mm/yyyy",
-    })
-    .transform(str => {
-        const [day, month, year] = str.split("/").map(Number);
-        return new Date(year, month - 1, day);
-    })
-    .refine(date => !isNaN(date.getTime()), {
-        message: "Fecha inválida",
-    })
-    .refine(date => date >= new Date(new Date().setHours(0,0,0,0)), {
-        message: "La fecha de la reserva no puede ser en el pasado",
-    }),
+export const ReservationSchema = z.object({
+  reserveDate: z.preprocess((val) => {
+      if (typeof val === "string" || val instanceof Date) return new Date(val);
+  }, z.date().refine(date => date >= new Date(new Date().setHours(0,0,0,0)), {
+      message: "La fecha de la reserva no puede ser en el pasado"
+  })),
 
-  horarioReserva: z.string()
-    .regex(/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/, "Formato de hora inválido. Use HH:MM (24 horas)")
-    .refine(time => {
-        const [hour] = time.split(":").map(Number);
-        return hour >= 9 && hour <= 23; // Horario permitido: 09:00 - 23:59
-    }, {
-        message: "La hora debe estar entre 09:00 y 23:59",
-    }),
+  reserveTime: z.string()
+      .regex(/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/, "Formato de hora inválido. Use HH:mm")
+      .refine(time => {
+          const [hour] = time.split(":").map(Number);
+          return hour >= 9 && hour <= 23;
+      }, { message: "La hora debe estar entre 09:00 y 23:59" }),
 
-  fechaCancelacion: z.string()
-    .refine(str => /^\d{2}\/\d{2}\/\d{4}$/.test(str), {
-        message: "Formato inválido. Usa dd/mm/yyyy",
-    })
-    .transform(str => {
-        const [day, month, year] = str.split("/").map(Number);
-        return new Date(year, month - 1, day);
-    })
-    .refine(date => !isNaN(date.getTime()), {
-        message: "Fecha inválida",
-    })
-    .optional(),
-
-  cantidadComensales: z.number()
+  commensalsNumber: z.preprocess((val) => {
+    if (typeof val === "string") return parseInt(val, 10);
+    return val;
+  }, z.number()
     .int("Debe ser un número entero")
-    .min(1, "El número de comensales debe ser al menos 1")
-    .max(50, "El número de comensales no puede superar 50"),
+    .min(1, "Debe ser al menos 1 comensal")
+    .max(50, "No puede superar 50 comensales")
+  ),
 
-  // estado: z.enum(["Realizada", "Asistida", "No_Asistida", "Cancelada"])
-});
+  cancelationDate: z.preprocess((val) => {
+      if (!val) return undefined;
+      if (typeof val === "string" || val instanceof Date) return new Date(val);
+  }, z.date().optional())
+}); 
+
 
 export type SchemaReservation = z.infer<typeof ReservationSchema>;
 

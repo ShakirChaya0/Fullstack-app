@@ -18,7 +18,13 @@ export function ProductosRouter () {
 
     productRouter.get("/id/:idProducto", (req, res, next) => { productController.getById(req, res, next) });
     
-    productRouter.get("/nombre/:nombreProducto", (req, res, next) => { productController.getByName(req, res, next) });
+    productRouter.get("/nombre/:nombreProducto", (req, res, next) => { 
+        if (req.query.page || req.query.limit) {
+            productController.getByNamePaginated(req, res, next)
+        } else {
+            productController.getByName(req, res, next)
+        }
+    });
 
     productRouter.get("/tipoProducto/:tipoProducto", (req, res, next) => { productController.getByType(req, res, next) });
 

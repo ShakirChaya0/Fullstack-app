@@ -1,7 +1,7 @@
 import type Policy from "../interfaces/Policy";
 
-export const fetchPolicy = async (): Promise<Policy> => {
-    const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/politicas`);
+export const fetchPolicy = async (apiCall: (url: string, options?: RequestInit) => Promise<Response>): Promise<Policy> => {
+    const response = await apiCall(`politicas`);
     
     if(!response.ok) throw new Error("Error al conseguir los datos")
 

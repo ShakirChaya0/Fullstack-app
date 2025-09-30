@@ -3,7 +3,7 @@ import type News from "../interfaces/News"
 
 type Props = { 
     news?: News, 
-    fn: (data: News) => Promise<News>, 
+    fn: (apiCall: (url: string, options?: RequestInit) => Promise<Response>, data: News) => Promise<News>, 
     msgs: {SuccessMsg: string, ErrorMsg: string}, 
     ButtonName: string
 }
@@ -16,7 +16,7 @@ export const ModalContext = createContext<Props>({
     _startDate: "",
     _endDate: ""
   },
-  fn: async (data: News) => {
+  fn: async (apiCall: (url: string, options?: RequestInit) => Promise<Response>, data: News) => {
     return {
       _newsId: data._newsId ?? 0,
       _title: data._title ?? "",

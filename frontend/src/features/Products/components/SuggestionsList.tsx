@@ -32,33 +32,35 @@ export default function SuggestionsList() {
     <>
       {
         !isLoading ? (
-          <>
-            <h1 className="max-w-4xl mx-auto text-black text-2xl">SUGERENCIAS</h1>
-            {
-              !isError ? (
-                <div className="min-h-[260px] flex items-center justify-center py-4 w-full relative">
-                  <Swiper
-                    modules={[Navigation]}
-                    navigation
-                    spaceBetween={20}        
-                    slidesPerView={1}    
-                    loop={true}    
-                    breakpoints={{
-                      1000: { slidesPerView: 2 },
-                      1500: { slidesPerView: 3 }
-                    }}
-                    className="px-8"
-                  >
-                    {uniqueSuggestions?.map((s) => (
-                      <SwiperSlide key={s._product._description} className="px-8">
-                        <SuggestionCard s={s} handleAdd={handleAdd} handleRemove={handleRemove}/>
-                      </SwiperSlide>
-                    ))}
-                  </Swiper>
-                </div>
-              ) : (<p>Error</p>)
-            }
-          </>
+          uniqueSuggestions.length > 0 ? (
+            <>
+              <h1 className="max-w-4xl mx-auto text-black text-2xl">SUGERENCIAS</h1>
+              {
+                !isError ? (
+                  <div className="min-h-[260px] flex items-center justify-center py-4 w-full relative">
+                    <Swiper
+                      modules={[Navigation]}
+                      navigation
+                      spaceBetween={20}        
+                      slidesPerView={1}    
+                      loop={true}    
+                      breakpoints={{
+                        1000: { slidesPerView: 2 },
+                        1500: { slidesPerView: 3 }
+                      }}
+                      className="px-8"
+                    >
+                      {uniqueSuggestions?.map((s) => (
+                        <SwiperSlide key={s._product._description} className="px-8">
+                          <SuggestionCard s={s} handleAdd={handleAdd} handleRemove={handleRemove}/>
+                        </SwiperSlide>
+                      ))}
+                    </Swiper>
+                  </div>
+                ) : (<p>Error</p>)
+              }
+            </>
+            ) : (null)
         ) : (<SuggestionSkeleton/>)
       }
     </>

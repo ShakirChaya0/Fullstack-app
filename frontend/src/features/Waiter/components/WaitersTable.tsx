@@ -16,6 +16,7 @@ import deleteWaiter from '../services/deleteWaiter';
 import { usePage } from '../hooks/usePage';
 import { toast } from 'react-toastify';
 import DeleteWaiterModal from './DeleteWaiterModal';
+import useApiClient from '../../../shared/hooks/useApiClient';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -44,10 +45,11 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 export default function WaitersTable ({waiters, handleResetPage}: {waiters: BackResults | undefined, handleResetPage: (page: number) => void}) {
     const queryClient = useQueryClient()
     const { currentPage, query } = usePage()
+    const { apiCall } = useApiClient()
 
 
     const { mutate } = useMutation({
-        mutationFn: deleteWaiter,
+        mutationFn: (id: string) => deleteWaiter(apiCall, id),
         onMutate: async (idToDelete) => {
           await queryClient.cancelQueries({ queryKey: ["Waiters", currentPage, query]})
     
@@ -127,7 +129,7 @@ export default function WaitersTable ({waiters, handleResetPage}: {waiters: Back
     );
 }   
 
-export function ModalProvider ({children, waiters, fn, msgs, ButtonName}: {children: React.ReactNode, waiters?: Waiter, fn: (data: Waiter) => Promise<Waiter>, msgs: {SuccessMsg: string, ErrorMsg: string}, ButtonName: string}) {
+export function ModalProvider ({children, waiters, fn, msgs, ButtonName}: {children: React.ReactNode, waiters?: Waiter, fn: (apiCall: (url: string, options?: RequestInit) => Promise<Response>, data: Waiter) => Promise<Waiter>, msgs: {SuccessMsg: string, ErrorMsg: string}, ButtonName: string}) {
   return(
     <ModalContext.Provider value={{waiters, fn, msgs, ButtonName}}>
       {children}

@@ -4,10 +4,9 @@ interface SuggToCreate {
     _dateTo: string
 }
 
-export default async function createSuggestion(sugg: SuggToCreate) {
-    const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/sugerencias`, {
+export default async function createSuggestion(sugg: SuggToCreate, apiCall: (url: string, options?: RequestInit) => Promise<Response>) {
+    const response = await apiCall("sugerencias", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
             idProducto: sugg._product._productId,
             fechaDesde: sugg._dateFrom,

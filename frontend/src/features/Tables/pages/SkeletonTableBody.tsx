@@ -1,6 +1,6 @@
 import { Skeleton } from "@mui/material";
 
-export default function SkeletonTaleBody () {
+export default function SkeletonTableBody () {
     return(
         <section className="flex-1 flex flex-col items-center justify-center w-full p-4">
             <div className="flex flex-col w-full max-w-7xl h-full">

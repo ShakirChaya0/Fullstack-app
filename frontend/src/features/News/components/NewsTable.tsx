@@ -17,6 +17,7 @@ import updateNews from '../services/updateNews';
 import type News from '../interfaces/News';
 import { ModalContext } from '../hooks/useModalProvider';
 import DeleteNewsModal from './DeleteNewsModal';
+import useApiClient from '../../../shared/hooks/useApiClient';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -45,9 +46,10 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 export default function NewsTable ({data, handleResetPage}: {data: BackResults | undefined, handleResetPage: (id: number) => void}) {
   const { currentPage, query, filter } = usePage()
   const queryClient = useQueryClient()
+  const { apiCall } = useApiClient()
 
   const { mutate } = useMutation({
-    mutationFn: deleteNews,
+    mutationFn: (id: number) => deleteNews(apiCall, id),
     onMutate: async (newData) => {
       await queryClient.cancelQueries({ queryKey: ["News", currentPage, query, filter]})
 
@@ -128,7 +130,7 @@ export default function NewsTable ({data, handleResetPage}: {data: BackResults |
   );
 }
 
-export function ModalProvider ({children, news, fn, msgs, ButtonName}: {children: React.ReactNode, news?: News, fn: (data: News) => Promise<News>, msgs: {SuccessMsg: string, ErrorMsg: string}, ButtonName: string}) {
+export function ModalProvider ({children, news, fn, msgs, ButtonName}: {children: React.ReactNode, news?: News, fn: (apiCall: (url: string, options?: RequestInit) => Promise<Response>, data: News) => Promise<News>, msgs: {SuccessMsg: string, ErrorMsg: string}, ButtonName: string}) {
   return(
     <ModalContext.Provider value={{news, fn, msgs, ButtonName}}>
       {children}

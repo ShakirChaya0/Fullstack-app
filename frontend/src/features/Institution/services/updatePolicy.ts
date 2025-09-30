@@ -1,11 +1,10 @@
 import type Policy from "../interfaces/Policy";
 
-export default async function updatePolicy(policy: Policy): Promise<Policy> {
-  const response = await fetch(
-    `${import.meta.env.VITE_BACKEND_URL}/politicas/id/${policy._policyId}`,
+export default async function updatePolicy(policy: Policy, apiCall: (url: string, options?: RequestInit) => Promise<Response>): Promise<Policy> {
+  const response = await apiCall(
+    `politicas/id/${policy._policyId}`,
     {
       method: "PATCH",
-      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         minutosTolerancia: policy._minutosTolerancia,
         horarioMaximoDeReserva: policy._horarioMaximoDeReserva,

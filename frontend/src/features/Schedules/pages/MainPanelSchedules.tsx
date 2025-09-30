@@ -11,15 +11,17 @@ import { LoadingSchedule } from "../components/LoadingSchedule";
 import { SkeletonScheduleTable } from "./SkeletonScheduleTable";
 import { ModifySchedulesButton } from "../components/ModifySchedulesButton";
 import { RegisterSchedulesButton } from "../components/RegisterSchedulesButton";
+import useApiClient from "../../../shared/hooks/useApiClient";
 
 // Lazy load del componente ScheduleTable
 const ScheduleTable = lazy(() => import("../components/ScheduleTable").then(module => ({ default: module.ScheduleTable })));
 
 export function MainPanelSchedules() {
+    const { apiCall } = useApiClient()
 
     const { data: backendSchedules, isLoading: queryLoading, error: queryError } = useQuery({
         queryKey: ['schedules'],
-        queryFn: getScheduleData
+        queryFn: () => getScheduleData(apiCall)
     });
 
     if (queryLoading) return <LoadingSchedule/>

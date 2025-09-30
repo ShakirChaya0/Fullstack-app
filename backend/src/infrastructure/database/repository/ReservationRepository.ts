@@ -28,15 +28,16 @@ type ReservationWithClient = Prisma.ReservaGetPayload<{
 export class ReservationRepository implements IReservationRepository {
   
   public async getExistingReservation(clientId: string, reservation: SchemaReservation): Promise<Reservation | null> {
-    const [hours, minutes] = reservation.horarioReserva.split(':').map(Number);
+    const [hours, minutes] = reservation.reserveTime.split(':').map(Number);
 
     const timeAsDate = new Date(Date.UTC(1970, 0, 1, hours, minutes, 0, 0));
 
     const existingReservation = await prisma.reserva.findFirst({
       where: {
         idCliente: clientId, 
-        fechaReserva : reservation.fechaReserva, 
-        horarioReserva: timeAsDate
+        fechaReserva : reservation.reserveDate, 
+        horarioReserva: timeAsDate, 
+        estado: "Realizada"
       }, 
       include: {
         Clientes: {
@@ -60,16 +61,16 @@ export class ReservationRepository implements IReservationRepository {
   }
 
   public async create(reservation: SchemaReservation, clientId: string, tables: Table[]): Promise<Reservation | null> {
-    const [hours, minutes] = reservation.horarioReserva.split(':').map(Number);
+    const [hours, minutes] = reservation.reserveTime.split(':').map(Number);
 
     const timeAsDate = new Date(Date.UTC(1970, 0, 1, hours, minutes, 0, 0));
 
     const createdReservation = await prisma.reserva.create({
       data: {
-        fechaReserva: reservation.fechaReserva,
+        fechaReserva: reservation.reserveDate,
         horarioReserva: timeAsDate,
-        fechaCancelacion: reservation.fechaCancelacion,
-        cantidadComensales: reservation.cantidadComensales, 
+        fechaCancelacion: reservation.cancelationDate,
+        cantidadComensales: reservation.commensalsNumber, 
         estado: "Realizada", 
         Clientes: { connect: { idCliente: clientId } }
       }, 
@@ -189,8 +190,16 @@ export class ReservationRepository implements IReservationRepository {
     return this.toDomainEntity(updatedReservation);
   }
   
-  public async getByClientId(clientId: string): Promise<Reservation[]> {
-    const reservations = await prisma.reserva.findMany({
+  public async getByClientId(clientId: string, page: number, pageSize: number): Promise<{ data: Reservation[];
+  meta: {
+      page: number;
+      pageSize: number;
+      total: number;
+      totalPages: number;
+    };
+  }> {
+
+      const reservations = await prisma.reserva.findMany({
       where: { idCliente: clientId },
       include: { 
         Clientes: {
@@ -206,9 +215,26 @@ export class ReservationRepository implements IReservationRepository {
           },
         },
       },
+      orderBy: {
+        fechaReserva: 'desc'
+      }, 
+      skip: (page - 1) * pageSize, 
+      take: pageSize
+    });
+    
+    const total = await prisma.reserva.count({
+      where: { idCliente: clientId },
     });
 
-    return reservations.map((reservation) => this.toDomainEntity(reservation));
+    return {
+      data: reservations.map((reservation) => this.toDomainEntity(reservation)),
+      meta: {
+        page,
+        pageSize,
+        total,
+        totalPages: Math.ceil(total / pageSize),
+      },
+    };
   }
 
   public async getReservationByNameAndLastnameClient(name: string, lastname:string): Promise<Reservation[]> {

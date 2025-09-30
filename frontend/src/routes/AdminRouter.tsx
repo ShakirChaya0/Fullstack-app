@@ -1,7 +1,7 @@
 import { Route, Routes } from "react-router";
 import { lazy, Suspense } from "react";
 import { AdminMainLayout } from "../shared/components/AdminMainLayout";
-import SkeletonTaleBody from "../features/Tables/pages/SkeletonTableBody";
+import SkeletonTableBody from "../features/Tables/pages/SkeletonTableBody";
 import { TableCRUD } from "../features/Tables/pages/TableCRUD";
 import { MainPanelSchedules } from "../features/Schedules/pages/MainPanelSchedules";
 import { ModifySchedule } from "../features/Schedules/pages/ModifySchedule";
@@ -24,7 +24,7 @@ export function AdminRouter() {
         <Route path="/DatosRestaurantes" element={<DatosRestaurantes/>}/>
         <Route path="/Mozos" element={<WaitersCRUD/>}/>
         <Route path="/Mesas" element={
-          <Suspense fallback = {<SkeletonTaleBody/>}>
+          <Suspense fallback = {<SkeletonTableBody/>}>
             <TableCRUD/>
           </Suspense>
         }/> 

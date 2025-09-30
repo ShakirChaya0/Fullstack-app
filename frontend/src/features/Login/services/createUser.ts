@@ -1,11 +1,8 @@
 import type { Client } from "../interfaces/Client";
 
-export async function createUser(client: Client): Promise<void> {
-    const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/clientes`, {
+export async function createUser(client: Client, apiCall: (url: string, options?: RequestInit) => Promise<Response>): Promise<void> {
+    const response = await apiCall("clientes", {
         method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
         body: JSON.stringify({
             ...client
         })

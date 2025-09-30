@@ -1,6 +1,6 @@
 import type { UniqueProfileData, UserType } from "../types/ProfileSharedTypes";
 
-export async function updateUser(userData: UniqueProfileData, userType: UserType, token: string): Promise<{ verifiedEmail: boolean }> {
+export async function updateUser(userData: UniqueProfileData, userType: UserType, apiCall: (url: string, options?: RequestInit) => Promise<Response>): Promise<{ verifiedEmail: boolean }> {
     let endpoint = userType === "Administrador" ? "administradores" :
         userType === "Cliente" ? "clientes" :
         userType === "Mozo" ? "mozos" :
@@ -8,12 +8,8 @@ export async function updateUser(userData: UniqueProfileData, userType: UserType
 
     endpoint += '/update';
 
-    const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/${endpoint}`, {
+    const response = await apiCall(endpoint, {
         method: "PATCH",
-        headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`
-        },
         body: JSON.stringify(userData),
     });
     

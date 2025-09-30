@@ -5,6 +5,8 @@ import { toast } from "react-toastify";
 import dateParser from "../../../shared/utils/dateParser";
 import { useState } from "react";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { useApiClient } from "../../../shared/hooks/useApiClient";
+import { type Client } from "../interfaces/Client";
 
 type FormType = "signIn" | "signUp";
 
@@ -26,6 +28,7 @@ interface SignUpProps {
 
 const SignUp: React.FC<SignUpProps> = ({ onSwitchToSignIn, isMobile = false }) => {
   const [isVisible, setIsVisible] = useState<boolean>(false);
+  const { apiCall } = useApiClient();
   const {
     register,
     handleSubmit,
@@ -33,7 +36,7 @@ const SignUp: React.FC<SignUpProps> = ({ onSwitchToSignIn, isMobile = false }) =
   } = useForm<FormData>();
 
   const { mutate, isPending } = useMutation({
-    mutationFn: createUser,
+    mutationFn: (client: Client) => createUser(client, apiCall),
     onSuccess: () => {
       toast.success("Se ha enviado el mail de verificación. Por favor, revisa tu bandeja de entrada.");
       onSwitchToSignIn("signIn");

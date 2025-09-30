@@ -4,12 +4,14 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import type Information from "../interfaces/Information";
 import updateInformation from "../services/updateInformation";
+import useApiClient from "../../../shared/hooks/useApiClient";
 
 export default function InformationForm({ data }: { data: Information }) {
   const queryClient = useQueryClient();
+  const { apiCall } = useApiClient();
 
   const { mutate, isPending } = useMutation({
-    mutationFn: updateInformation,
+    mutationFn: (information: Information) => updateInformation(information, apiCall),
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ["Information"] });
       toast.success("Información actualizada con éxito");

@@ -1,9 +1,8 @@
 import type News from "../interfaces/News";
 
-export default async function createNews (dataNews: News): Promise<News> {
-    const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/novedades`, {
+export default async function createNews (apiCall: (url: string, options?: RequestInit) => Promise<Response>, dataNews: News): Promise<News> {
+    const response = await apiCall(`novedades`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         titulo: dataNews._title,
         descripcion: dataNews._description,

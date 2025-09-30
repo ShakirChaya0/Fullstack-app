@@ -7,10 +7,10 @@ export class GetByClientId {
         private readonly reservationRepository = new ReservationRepository(),
     ){}
 
-    async execute(clientId: string): Promise<Reservation[]> {
-        const reservations = await this.reservationRepository.getByClientId(clientId);
-        if (reservations.length === 0) throw new NotFoundError(`No se encontraron reservas para el cliente con ID ${clientId}.`);
+    async execute(clientId: string, page: number, pageSize: number): Promise<{ data: Reservation[]; meta: { page: number; pageSize: number; total: number; totalPages: number } }>  {
+        const {data, meta} = await this.reservationRepository.getByClientId(clientId, page, pageSize);
+        if (data.length === 0 && page === 1) throw new NotFoundError(`No se encontraron reservas para el cliente con ID ${clientId}.`);
         
-        return reservations;
+        return {data, meta};
     }
 }

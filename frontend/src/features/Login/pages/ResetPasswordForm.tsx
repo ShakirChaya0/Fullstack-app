@@ -6,6 +6,7 @@ import { useState } from "react";
 import { useNavigate } from 'react-router';
 import RestaurantIcon from '@mui/icons-material/Restaurant'; 
 import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { useApiClient } from '../../../shared/hooks/useApiClient';
 
 interface FormData {
     newPassword: string;
@@ -15,6 +16,7 @@ export default function ResetPasswordForm() {
     const [error, setError] = useState<string>("");
     const [isVisible, setIsVisible] = useState<boolean>(false);
     const navigate = useNavigate();
+    const { apiCall } = useApiClient();
 
     const {
         register,
@@ -23,7 +25,7 @@ export default function ResetPasswordForm() {
     } = useForm<FormData>();
 
     const { mutate, isPending } = useMutation({
-        mutationFn: resetPassword,
+        mutationFn: (data: FormData) => resetPassword({ newPassword: data.newPassword, apiCall}),
         onSuccess: () => {
             toast.success("Contraseña restablecida con éxito.");
             navigate('/login');

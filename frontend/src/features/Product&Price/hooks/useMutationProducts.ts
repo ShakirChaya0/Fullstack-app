@@ -1,13 +1,16 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { modifyProductToBackend, saveProductToBackend } from "../services/product&PriceService";
 import type { useMutationProductModificationProps, useMutationProductRegistrationProps } from "../interfaces/product&PriceInterfaces";
+import { toast } from "react-toastify";
+import useApiClient from "../../../shared/hooks/useApiClient";
 
 export function useMutationProductRegistration ({ newProduct, setNewProduct, setProductType, setModalError, setIsModalOpen }: useMutationProductRegistrationProps ) {
     const queryClient = useQueryClient();
+    const { apiCall } = useApiClient();
     
-    // useMutation para manejar la actualización de horarios (POST)
+    // useMutation para manejar el registro de productos (POST)
     const saveProductMutation = useMutation({
-        mutationFn: () => saveProductToBackend(newProduct),
+        mutationFn: () => saveProductToBackend(apiCall, newProduct),
         onSuccess: () => {
         // Invalidar query para refrescar datos del backend
         queryClient.invalidateQueries({ 
@@ -32,6 +35,8 @@ export function useMutationProductRegistration ({ newProduct, setNewProduct, set
 
         setModalError('')
 
+        toast.success('Producto registrado con exito')
+
         // Cerrando la modal
         setIsModalOpen(false)
         },
@@ -43,28 +48,24 @@ export function useMutationProductRegistration ({ newProduct, setNewProduct, set
     return { saveProductMutation }
 }
 
-export function useMutationProductModification ({ newProduct, productBefModification, setModalError, onClose, currentPage, limit }: useMutationProductModificationProps ) {
+export function useMutationProductModification ({ newProduct, productBefModification, setModalError, onClose}: useMutationProductModificationProps ) {
     const queryClient = useQueryClient();
+    const { apiCall } = useApiClient();
     
     // useMutation para manejar la actualización de horarios (POST)
     const modifyProductMutation = useMutation({
-        mutationFn: () => modifyProductToBackend(newProduct, productBefModification),
+        mutationFn: () => modifyProductToBackend(apiCall, newProduct, productBefModification),
         onSuccess: () => {
-        // Si tenemos la página específica, invalidamos solo esa página
-        // Si no, todas
-        if (currentPage !== undefined && limit !== undefined) {
-            queryClient.invalidateQueries({ 
-                queryKey: ['products', currentPage, limit],
-                exact: true // Invalida solo esta página
-            });
-        } else {
-            queryClient.invalidateQueries({ 
-                queryKey: ['products'],
-                exact: false 
-            });
-        }
+        // Al modificar un producto, debemos invalidar todas las queries relacionadas
+        // porque el producto modificado puede aparecer/desaparecer de diferentes búsquedas/páginas
+        queryClient.invalidateQueries({ 
+            queryKey: ['products'],
+            exact: false // Invalida todas las variaciones: ['products'], ['products', page, limit], ['products', page, limit, search]
+        });
 
         setModalError('')
+
+        toast.success('Producto modificado con exito')
 
         // Cerrando la modal
         onClose()
