@@ -24,3 +24,5 @@ export type CheckType = {
     totalCubiertos: number,
     pedido: PedidoCheck
 }
+
+export type PaymentMethod = "MercadoPago" | "Efectivo" | "Credito/Debito";

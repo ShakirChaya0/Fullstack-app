@@ -14,8 +14,8 @@ export default function ModalUpdateSuggestions({ suggestion }: { suggestion: Sug
                 Modificar
             </button>            
             <Modal
-                aria-labelledby="transition-modal-title"
-                aria-describedby="transition-modal-description"
+                aria-labelledby="Modificar Sugerencia"
+                aria-describedby="Formulario para modificar la sugerencia"
                 open={open}
                 onClose={handleClose}
                 closeAfterTransition

@@ -1,32 +1,45 @@
 export const printStyles = `
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inconsolata:wght@400;600&display=swap');
-    
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Inconsolata:wght@400;600&display=swap');
+  
+  body {
+    font-family: 'Inter', sans-serif;
+  }
+  .font-mono {
+    font-family: 'Inconsolata', monospace;
+  }
+  @media print {
+    .no-print {
+      display: none;
+    }
     body {
-      font-family: 'Inter', sans-serif;
+      background-color: #fff !important;
     }
-    .font-mono {
-      font-family: 'Inconsolata', monospace;
+    .print-container {
+      box-shadow: none;
+      margin: 0;
+      max-width: 100%;
+      border: 1px solid #ccc;
     }
-    @media print {
-      .no-print {
-        display: none;
-      }
-      body {
-        background-color: #fff !important;
-      }
-      .print-container {
-        box-shadow: none;
-        margin: 0;
-        max-width: 100%;
-        border: 1px solid #ccc;
-      }
-    }
+  }
 `;
 
-export const PrintIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2 h-5 w-5"><path d="M6 9V2h12v7" /><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" /><path d="M6 14h12v8H6z" /></svg>
-);
-
-export const CreditCardIcon = () => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="mr-2 h-5 w-5"><rect width="20" height="14" x="2" y="5" rx="2" /><line x1="2" x2="22" y1="10" y2="10" /></svg>
-);
+export const animationStyles = `
+  .checkmark__circle {
+    stroke-dasharray: 166;
+    stroke-dashoffset: 166;
+    animation: stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+  }
+      
+  .checkmark__check {
+    transform-origin: 50% 50%;
+    stroke-dasharray: 48;
+    stroke-dashoffset: 48;
+    animation: stroke 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.8s forwards;
+  }
+      
+  @keyframes stroke {
+    100% {
+      stroke-dashoffset: 0;
+    }
+  }
+`;

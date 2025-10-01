@@ -11,6 +11,10 @@ import  ReservationCRUD  from "../features/Reservation/pages/ReservationCRUD";
 import ReservationHistorial from "../features/Reservation/pages/ReservationList";
 import CheckPage from "../features/Payment/pages/CheckPage";
 import CheckSkeleton from "../features/Payment/pages/CheckSkeleton";
+import SuccessfulPaymentPage from "../features/Payment/pages/SuccessfulPaymentPage";
+import PendingPaymentPage from "../features/Payment/pages/PendingPaymentPage";
+import FailurePaymentPage from "../features/Payment/pages/FailurePaymentPage";
+import PaymentStatusSkeleton from "../features/Payment/pages/PaymentStatusSkeleton";
 
 export function ClientRouter() {
   return (
@@ -31,6 +35,21 @@ export function ClientRouter() {
         <Route path="/Pedido/Cuenta" element={
           <Suspense fallback = {<CheckSkeleton />}>
             <CheckPage />
+          </Suspense>
+        }/>
+        <Route path="/Pedido/Pago/Exito" element={
+          <Suspense fallback = {<PaymentStatusSkeleton />}>
+            <SuccessfulPaymentPage />
+          </Suspense>
+        }/>
+        <Route path="/Pedido/Pago/Pendiente" element={
+          <Suspense fallback = {<PaymentStatusSkeleton />}>
+            <PendingPaymentPage />
+          </Suspense>
+        }/>
+        <Route path="/Pedido/Pago/Fallo" element={
+          <Suspense fallback = {<PaymentStatusSkeleton />}>
+            <FailurePaymentPage />
           </Suspense>
         }/>
       </Route>

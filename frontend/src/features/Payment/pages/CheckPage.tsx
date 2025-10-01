@@ -1,5 +1,8 @@
 import Check from "../components/Check";
-import { CreditCardIcon, PrintIcon, printStyles } from "../constants/PaymentConstants";
+import { PrintIcon } from "../components/IconComponents";
+import PaymentMethodModal from "../components/PaymentMethodModal";
+import { printStyles } from "../constants/PaymentConstants";
+
 import { useCheck } from "../hooks/useCheck";
 import CheckSkeleton from "./CheckSkeleton";
 
@@ -28,12 +31,7 @@ export default function CheckPage() {
                     <PrintIcon />
                     Imprimir / Guardar PDF
                   </button>
-                  <button 
-                    className="w-full flex items-center justify-center bg-[var(--primary-100)] hover:bg-orange-600 cursor-pointer text-white font-bold py-3 px-4 rounded-lg transition-all duration-100 active:scale-95 active:bg-orange-700"
-                  >
-                    <CreditCardIcon />
-                    Proceder al Pago
-                  </button>
+                  <PaymentMethodModal />
                 </div>
               </section>
           </>
