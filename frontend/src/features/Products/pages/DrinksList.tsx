@@ -5,6 +5,7 @@ import SkeletonBody from "./skeletonBody"
 import { OrderList } from "../components/orderList"
 import SuggestionsList from "../components/SuggestionsList"
 import SuggestionSkeleton from "../components/SuggestionSkeleton"
+import GoBackButton from "../../../shared/components/GoBackButton"
 const FilteredDrinks = lazy(() => import("../components/drinks/FilteredDrinks"))
 
 function DrinksList() {
@@ -26,6 +27,7 @@ function DrinksList() {
   return (
     <>
       <section className="flex-1 md:p-4 pb-6 w-full h-full">
+        <GoBackButton position={{top: 95, left: 30}}/>
         <div className="border border-gray-300 rounded-2xl p-4 w-full min-w-2 shadow-2xl">
           {!isError && <FilterDrinks handleChange={handleChange} />}
           <Suspense fallback={<SuggestionSkeleton/>}>

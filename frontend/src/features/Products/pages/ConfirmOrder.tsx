@@ -15,6 +15,7 @@ import type { FormEvent } from "react"
 import type { LineaPedido } from "../../Order/interfaces/Order"
 import { toast } from "react-toastify";
 import { useMutationOrderRegistration } from "../hooks/useMutationOrder"
+import GoBackButton from "../../../shared/components/GoBackButton"
 
 export default function ConfirmOrder() {
   const order = useAppSelector((state) => state.order)
@@ -51,6 +52,7 @@ export default function ConfirmOrder() {
 
   return (
     <section className="p-4 flex w-full items-center justify-center">
+      <GoBackButton position={{top: 95, left: 30}}/>
       <div className="md:border flex flex-col justify-between py-4 md:border-gray-300 md:shadow-2xl min-h-[500px] w-full max-w-3xl md:rounded-2xl">
         <h1 className="text-2xl font-bold text-center text-gray-800">Mi Pedido</h1>
 
@@ -91,21 +93,21 @@ export default function ConfirmOrder() {
                 items-center gap-1 w-fit"
               >
                 <button
-                  onClick={() => handleAdd(lp)}
-                  className="cursor-pointer h-full w-full py-1.5 px-2 bg-orange-500 hover:scale-105
-                   hover:bg-orange-600 rounded-l-md transition-all ease-linear duration-150 
-                   active:bg-orange-700 active:scale-100"
-                >
-                  <ControlPointIcon/>
-                </button>
-                <p>{lp.cantidad}</p>
-                <button
                   onClick={() => handleRemove(lp.producto._name)}
                   className="cursor-pointer h-full w-full py-1.5 px-2 bg-orange-500 hover:scale-105
-                   hover:bg-orange-600 rounded-r-md transition-all ease-linear duration-150
+                   hover:bg-orange-600 rounded-l-md transition-all ease-linear duration-150
                    active:bg-orange-700 active:scale-100"
                 >
                   <RemoveCircleOutlineIcon/>
+                </button>
+                <p>{lp.cantidad}</p>
+                <button
+                  onClick={() => handleAdd(lp)}
+                  className="cursor-pointer h-full w-full py-1.5 px-2 bg-orange-500 hover:scale-105
+                   hover:bg-orange-600 rounded-r-md transition-all ease-linear duration-150 
+                   active:bg-orange-700 active:scale-100"
+                >
+                  <ControlPointIcon/>
                 </button>
               </div>
             </div>
@@ -160,21 +162,21 @@ export default function ConfirmOrder() {
                                   items-center gap-1 w-fit"
                                 >
                                     <button
-                                      onClick={() => handleAdd(lp)}
-                                      className="cursor-pointer h-full w-full py-1.5 px-2 bg-orange-500 hover:scale-105
-                                       hover:bg-orange-600 rounded-l-md transition-all ease-linear duration-150 
-                                       active:bg-orange-700 active:scale-100"
-                                    >
-                                      <ControlPointIcon/>
-                                    </button>
-                                    <p>{lp.cantidad}</p>
-                                    <button
                                       onClick={() => handleRemove(lp.producto._name)}
                                       className="cursor-pointer h-full w-full py-1.5 px-2 bg-orange-500 hover:scale-105
-                                       hover:bg-orange-600 rounded-r-md transition-all ease-linear duration-150
+                                       hover:bg-orange-600 rounded-l-md transition-all ease-linear duration-150
                                        active:bg-orange-700 active:scale-100"
                                     >
                                       <RemoveCircleOutlineIcon/>
+                                    </button>
+                                    <p>{lp.cantidad}</p>
+                                    <button
+                                      onClick={() => handleAdd(lp)}
+                                      className="cursor-pointer h-full w-full py-1.5 px-2 bg-orange-500 hover:scale-105
+                                       hover:bg-orange-600 rounded-r-md transition-all ease-linear duration-150 
+                                       active:bg-orange-700 active:scale-100"
+                                    >
+                                      <ControlPointIcon/>
                                     </button>
                                 </div>
                             </TableCell>
