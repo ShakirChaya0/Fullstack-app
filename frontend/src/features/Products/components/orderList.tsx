@@ -120,21 +120,21 @@ export function OrderList () {
                                   items-center gap-1 w-fit"
                                 >
                                   <button
-                                    onClick={() => handleAdd(lp)}
-                                    className="cursor-pointer h-full w-full py-1.5 px-2 bg-orange-500 hover:scale-105
-                                     hover:bg-orange-600 rounded-l-md transition-all ease-linear duration-150 
-                                     active:bg-orange-700 active:scale-100"
-                                  >
-                                    <ControlPointIcon/>
-                                  </button>
-                                  <p>{lp.cantidad}</p>
-                                  <button
                                     onClick={() => handleRemove(lp.producto._name)}
                                     className="cursor-pointer h-full w-full py-1.5 px-2 bg-orange-500 hover:scale-105
-                                     hover:bg-orange-600 rounded-r-md transition-all ease-linear duration-150
+                                     hover:bg-orange-600 rounded-l-md transition-all ease-linear duration-150
                                      active:bg-orange-700 active:scale-100"
                                   >
                                     <RemoveCircleOutlineIcon/>
+                                  </button>
+                                  <p>{lp.cantidad}</p>
+                                  <button
+                                    onClick={() => handleAdd(lp)}
+                                    className="cursor-pointer h-full w-full py-1.5 px-2 bg-orange-500 hover:scale-105
+                                     hover:bg-orange-600 rounded-r-md transition-all ease-linear duration-150 
+                                     active:bg-orange-700 active:scale-100"
+                                  >
+                                    <ControlPointIcon/>
                                   </button>
                                 </div>
                               </motion.div>

@@ -57,7 +57,7 @@ const FoodsSpecialFilter = memo(({ filteredFoods }: Props) => {
                     exit={{ opacity: 0, y: -20 }}
                     transition={{ type: "spring", stiffness: 300, damping: 25 }}
                   >
-                    <ProductsCard key={food._productId} product={food} />
+                    <ProductsCard product={food} />
                   </motion.li>
                 ))}
               </AnimatePresence>
