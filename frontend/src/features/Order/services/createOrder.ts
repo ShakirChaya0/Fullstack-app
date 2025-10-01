@@ -1,6 +1,8 @@
 import type { Pedido, OrderWithTableId } from "../interfaces/Order";
 
-export async function createOrder (orderData: Pedido | OrderWithTableId, token: string) {    
+export async function createOrder (
+apiCall: (url: string, options?: RequestInit) => Promise<Response>,    
+orderData: Pedido | OrderWithTableId) {    
     const bodyReq = {
         order: {
             cantidadCubiertos: orderData.comensales,
@@ -23,51 +25,34 @@ export async function createOrder (orderData: Pedido | OrderWithTableId, token: 
             })
         }
     }
-    const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/pedidos`, {
-        method: "POST",
-        headers: { 
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`
-        },
-        body: JSON.stringify(bodyReq),
-        credentials: "include"
+
+    // HARCODE DE COOKIE SOLO para prueba, eliminar cuando se haga correctamente la parte del QR
+    document.cookie = "QrToken=646b964a-97a7-4e5e-9b2a-7605797ef3cf; max-age=900; path=/; secure; samesite=strict";
+    console.log(document.cookie);
+    
+
+    const response = await apiCall('pedidos', {
+        method: 'POST',
+        body: JSON.stringify(bodyReq)
     })
 
-    if(!response.ok) {
-        const errorData = await response.json().catch(() => null);
-        const errorMessage = errorData?.message
-        switch(response.status){
-            case 409:
-                return errorMessage
-            case 503:
-                return errorMessage
-            default:
-                return errorMessage
+    if (!response.ok) {
+        if (response.status === 404) {
+            try {
+                const errorData = await response.json()
+                const error = new Error(errorData.message || 'Error al registrar el pedido')
+                error.name = 'NotFoundError'
+                throw error
+            } catch {
+                const error = new Error('Error al registrar el pedido')
+                error.name = 'NotFoundError'
+                throw error
+            }
         }
-    }
+        throw new Error(`Error ${response.status}: ${response.statusText}`)
+    }   
 
     const data = await response.json()
     
     return data
 }
-
-/*
-"order": {
-        "cantidadCubiertos": 4,
-        "observacion": "Pan sin gluten",
-        "items": [
-            {
-            "nombre": "Pan Sin TAC",
-            "tipo": "Postre",
-            "monto": 5000.00,
-            "cantidad": 4
-            },
-            {
-            "nombre": "Hamburguesa con queso",
-            "tipo": "Plato_Principal",
-            "monto": 12000.00,
-            "cantidad": 2
-            }
-        ]
-    }
-*/

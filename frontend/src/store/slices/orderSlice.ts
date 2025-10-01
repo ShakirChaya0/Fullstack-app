@@ -48,7 +48,14 @@ export const orderSlice = createSlice({
             }
         },
         confirmOrder: (state, action: PayloadAction<{comensales: number, observaciones: string}>) => {
-            console.log(action)
+            const { comensales, observaciones } = action.payload
+            
+            // Se persisten los cambios ya que las validaciones ya fueron hechas en este punto
+            state.comensales = comensales
+            state.observaciones = observaciones
+            state.estado = 'Solicitado'
+
+            localStorage.setItem("order", JSON.stringify(state));
         }
     }
 })

@@ -12,14 +12,14 @@ import ControlPointIcon from "@mui/icons-material/ControlPoint"
 import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline"
 import { useOrderActions } from "../../../shared/hooks/useOrderActions"
 import type { FormEvent } from "react"
-import { createOrder } from "../../Order/services/createOrder"
 import type { LineaPedido } from "../../Order/interfaces/Order"
-import useAuth from "../../../shared/hooks/useAuth"
+import { toast } from "react-toastify";
+import { useMutationOrderRegistration } from "../hooks/useMutationOrder"
 
 export default function ConfirmOrder() {
-  const { accessToken } = useAuth()
   const order = useAppSelector((state) => state.order)
   const { handleAddToCart, hanldeRemoveFromCart, handleConfirmOrder } = useOrderActions()
+  const { saveOrderMutation } = useMutationOrderRegistration(order)
 
   const handleAdd = (lp: LineaPedido) => {
     handleAddToCart(lp.producto)
@@ -33,14 +33,26 @@ export default function ConfirmOrder() {
       event.preventDefault()
       const formData = new FormData(event.currentTarget)
       const data = Object.fromEntries(formData.entries())
+      if(+data.cantidad <= 0) {
+        toast.error('No se puede registrar un pedido con número de comensales menor a 0')
+        return
+      }
+      if(+data.observaciones.toString() > 500) {
+        toast.error('La observación debe tener menos de 500 caracteres')
+        return
+      }
+      if(order.lineasPedido.length === 0) {
+        toast.error('No se puede registrar un pedido vacío')
+        return
+      }
       handleConfirmOrder({comensales: +data.cantidad, observaciones: data.observaciones.toString()})
-      createOrder({comensales: +data.cantidad, observaciones: data.observaciones.toString(), lineasPedido: order.lineasPedido, estado: "Solicitado"}, accessToken ?? "")
+      saveOrderMutation.mutate()
   }
 
   return (
     <section className="p-4 flex w-full items-center justify-center">
       <div className="md:border flex flex-col justify-between py-4 md:border-gray-300 md:shadow-2xl min-h-[500px] w-full max-w-3xl md:rounded-2xl">
-        <h1 className="text-2xl font-bold text-center">Mi Pedido</h1>
+        <h1 className="text-2xl font-bold text-center text-gray-800">Mi Pedido</h1>
 
         <div className="md:hidden flex flex-col gap-4">
           {order.lineasPedido.map((lp) => (
@@ -123,7 +135,7 @@ export default function ConfirmOrder() {
             <TableContainer component={Paper} className="hidden md:block">
                 <Table>
                     <TableHead>
-                        <TableRow sx={{bgcolor: "black"}}>
+                        <TableRow sx={{bgcolor: "#1e2939"}}>
                           <TableCell sx={{ color: "white"}}>Producto</TableCell>
                           <TableCell sx={{ color: "white"}}>Descripción</TableCell>
                           <TableCell align="right" sx={{ color: "white"}}>Cantidad</TableCell>

@@ -19,6 +19,7 @@ export function ClientRouter() {
         <Route path="/Menu/Comidas" element={<FoodsList />} />
         <Route path="/Menu/Bebidas" element={<DrinksList />} />
         <Route path="/Menu/RealizarPedido" element={<ConfirmOrder/>}/>
+        <Route path="/Menu/PedidoConfirmado" element={<h1>Hola Pedido Confirmado</h1>}/>
         <Route path="/Reserva" element={<ReservationCRUD/>}/>
         <Route path="/Reserva/Historial" element={<ReservationHistorial/>}></Route>
         <Route path="/Perfil" element={
