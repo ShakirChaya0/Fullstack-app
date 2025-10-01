@@ -26,11 +26,6 @@ orderData: Pedido | OrderWithTableId) {
         }
     }
 
-    // HARCODE DE COOKIE SOLO para prueba, eliminar cuando se haga correctamente la parte del QR
-    document.cookie = "QrToken=646b964a-97a7-4e5e-9b2a-7605797ef3cf; max-age=900; path=/; secure; samesite=strict";
-    console.log(document.cookie);
-    
-
     const response = await apiCall('pedidos', {
         method: 'POST',
         body: JSON.stringify(bodyReq)

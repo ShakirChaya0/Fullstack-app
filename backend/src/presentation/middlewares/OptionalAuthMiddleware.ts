@@ -5,7 +5,7 @@ import { JwtPayloadInterface } from "../../domain/interfaces/JwtPayloadInterface
 
 export const OptionalAuthMiddleware = (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
     const userJWT = req.headers.authorization?.split(' ')[1];
-    const qrToken = req.headers.cookie
+    const qrToken = req.cookies.QrToken
     req.qrToken = qrToken
 
     const jwtService = new JWTService();

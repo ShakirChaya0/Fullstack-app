@@ -19,10 +19,7 @@ export function useMutationOrderRegistration(order: Pedido) {
             }
 
             toast.success('Pedido registrado con exito')
-
-            setTimeout(() => {
-                navigate('/Menu/PedidoConfirmado');
-            }, 1000);
+            navigate('/Menu/PedidoConfirmado');
         },
         onError: () => {
             toast.error('Error al registrar el pedido')
