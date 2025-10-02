@@ -14,6 +14,10 @@ export class RefreshUseCase {
 
     async execute(refreshToken: string): Promise<{ accessToken: string, refreshToken: string }> {
         try{
+            const token = await this.refreshTokenRepository.getRefreshToken(refreshToken)
+
+            if(!token || token.revocado) throw new UnauthorizedError('Token inválido o expirado')
+
             const payload = this.jwtService.verifyRefreshToken(refreshToken);
             
             if (typeof payload === 'string') throw new UnauthorizedError("Token inválido o expirado");
@@ -38,7 +42,7 @@ export class RefreshUseCase {
                 username: user.userName
             });
 
-            const endDate = new Date(Date.now() + 15 * 60 * 1000); 
+            const endDate = new Date(Date.now() + 1 * 60 * 1000); 
 
             await this.refreshTokenRepository.saveRefreshedToken(user.userId, newRefreshToken, endDate);
 

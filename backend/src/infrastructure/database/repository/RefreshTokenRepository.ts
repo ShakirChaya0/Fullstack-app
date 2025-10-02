@@ -4,6 +4,7 @@ import { UUID } from "crypto";
 import { ConflictError } from "../../../shared/exceptions/ConflictError.js";
 import { ServiceError } from "../../../shared/exceptions/ServiceError.js";
 import { NotFoundError } from "../../../shared/exceptions/NotFoundError.js";
+import { RefreshTokenInterface } from "../../../domain/interfaces/RefreshTokenInterface.js";
 
 export class RefreshTokenRepository implements IRefreshTokenRepository {
     async saveRefreshedToken(userId: string, refreshToken: string, endDate: Date): Promise<void> {
@@ -40,6 +41,16 @@ export class RefreshTokenRepository implements IRefreshTokenRepository {
             else {
                 throw new ServiceError("Error al revocar el token de refresco");
             }
+        }
+    }
+
+    async getRefreshToken(token: string): Promise<RefreshTokenInterface | null> {
+        try {
+            return await prisma.refreshTokens.findFirst({
+                where: { token: token }
+            })
+        } catch (error) {
+            throw new ServiceError("Error al recuperar el token de refresco");
         }
     }
 }
