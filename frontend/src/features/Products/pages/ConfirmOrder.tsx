@@ -16,6 +16,7 @@ import type { LineaPedido } from "../../Order/interfaces/Order"
 import { toast } from "react-toastify";
 import { useMutationOrderRegistration } from "../hooks/useMutationOrder"
 import GoBackButton from "../../../shared/components/GoBackButton"
+import { OrderTotalAmount } from "../utils/OrderTotalAmount"
 
 export default function ConfirmOrder() {
   const order = useAppSelector((state) => state.order)
@@ -51,10 +52,18 @@ export default function ConfirmOrder() {
   }
 
   return (
-    <section className="p-4 flex w-full items-center justify-center">
-      <GoBackButton position={{top: 95, left: 30}}/>
+    <section className="p-4 flex flex-col w-full items-center justify-center">
+      <div className="flex justify-end w-full">
+        <GoBackButton url="/Cliente/Menu"/>
+      </div>
       <div className="md:border flex flex-col justify-between py-4 md:border-gray-300 md:shadow-2xl min-h-[500px] w-full max-w-3xl md:rounded-2xl">
-        <h1 className="text-2xl font-bold text-center text-gray-800">Mi Pedido</h1>
+        <div className="flex flex-row justify-between mx-5 my-3">
+          <h1 className="text-2xl font-bold text-center text-gray-800">Mi Pedido</h1>
+          <div className="flex">
+            <span className="text-gray-800 font-bold text-2xl">Total:</span>
+            <span className="text-orange-500 font-bold text-2xl ml-1">${OrderTotalAmount(order.lineasPedido)}</span>
+          </div>
+        </div>
 
         <div className="md:hidden flex flex-col gap-4">
           {order.lineasPedido.map((lp) => (
@@ -87,7 +96,7 @@ export default function ConfirmOrder() {
               </div>
 
               <div
-                className="self-center border rounded-md 
+                className="self-end border rounded-md 
                 transition-all duration-200 bg-orange-500
                 text-white font-medium flex flex-row justify-around 
                 items-center gap-1 w-fit"
@@ -134,57 +143,58 @@ export default function ConfirmOrder() {
           </form>
         </div>
 
-            <TableContainer component={Paper} className="hidden md:block">
-                <Table>
-                    <TableHead>
-                        <TableRow sx={{bgcolor: "#1e2939"}}>
-                          <TableCell sx={{ color: "white"}}>Producto</TableCell>
-                          <TableCell sx={{ color: "white"}}>Descripción</TableCell>
-                          <TableCell align="right" sx={{ color: "white"}}>Cantidad</TableCell>
-                          <TableCell align="right" sx={{ color: "white"}}>Precio</TableCell>
-                          <TableCell align="right" sx={{ color: "white"}}>Subtotal</TableCell>
-                          <TableCell align="center" sx={{ color: "white"}}>Acciones</TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody> 
-                    {order.lineasPedido.map((lp) => (
-                        <TableRow key={lp.producto._name}>
-                            <TableCell>{lp.producto._name}</TableCell>
-                            <TableCell>{lp.producto._description}</TableCell>
-                            <TableCell align="right">{lp.cantidad}</TableCell>
-                            <TableCell align="right">${lp.producto._price}</TableCell>
-                            <TableCell align="right">${lp.subtotal}</TableCell>
-                            <TableCell align="center">
-                                <div
-                                  className="self-center border rounded-md 
-                                  transition-all duration-200 bg-orange-500
-                                  text-white font-medium flex flex-row justify-around 
-                                  items-center gap-1 w-fit"
+        <TableContainer component={Paper} className="hidden md:block">
+            <Table>
+                <TableHead>
+                    <TableRow sx={{bgcolor: "#1e2939"}}>
+                      <TableCell sx={{ color: "white"}}>Producto</TableCell>
+                      <TableCell sx={{ color: "white"}}>Descripción</TableCell>
+                      <TableCell align="right" sx={{ color: "white"}}>Cantidad</TableCell>
+                      <TableCell align="right" sx={{ color: "white"}}>Precio</TableCell>
+                      <TableCell align="right" sx={{ color: "white"}}>Subtotal</TableCell>
+                      <TableCell align="center" sx={{ color: "white"}}>Acciones</TableCell>
+                    </TableRow>
+                </TableHead>
+                <TableBody> 
+                {order.lineasPedido.map((lp) => (
+                    <TableRow key={lp.producto._name}>
+                        <TableCell>{lp.producto._name}</TableCell>
+                        <TableCell>{lp.producto._description}</TableCell>
+                        <TableCell align="right">{lp.cantidad}</TableCell>
+                        <TableCell align="right">${lp.producto._price}</TableCell>
+                        <TableCell align="right">${lp.subtotal}</TableCell>
+                        <TableCell align="center">
+                            <div
+                              className="self-center border rounded-md 
+                              transition-all duration-200 bg-orange-500
+                              text-white font-medium flex flex-row justify-around 
+                              items-center gap-1 w-fit"
+                            >
+                                <button
+                                  onClick={() => handleRemove(lp.producto._name)}
+                                  className="cursor-pointer h-full w-full py-1.5 px-2 bg-orange-500 hover:scale-105
+                                    hover:bg-orange-600 rounded-l-md transition-all ease-linear duration-150
+                                    active:bg-orange-700 active:scale-100"
                                 >
-                                    <button
-                                      onClick={() => handleRemove(lp.producto._name)}
-                                      className="cursor-pointer h-full w-full py-1.5 px-2 bg-orange-500 hover:scale-105
-                                       hover:bg-orange-600 rounded-l-md transition-all ease-linear duration-150
-                                       active:bg-orange-700 active:scale-100"
-                                    >
-                                      <RemoveCircleOutlineIcon/>
-                                    </button>
-                                    <p>{lp.cantidad}</p>
-                                    <button
-                                      onClick={() => handleAdd(lp)}
-                                      className="cursor-pointer h-full w-full py-1.5 px-2 bg-orange-500 hover:scale-105
-                                       hover:bg-orange-600 rounded-r-md transition-all ease-linear duration-150 
-                                       active:bg-orange-700 active:scale-100"
-                                    >
-                                      <ControlPointIcon/>
-                                    </button>
-                                </div>
-                            </TableCell>
-                        </TableRow>
-                        ))}
-                    </TableBody>
-                </Table>
-            </TableContainer>
+                                  <RemoveCircleOutlineIcon/>
+                                </button>
+                                <p>{lp.cantidad}</p>
+                                <button
+                                  onClick={() => handleAdd(lp)}
+                                  className="cursor-pointer h-full w-full py-1.5 px-2 bg-orange-500 hover:scale-105
+                                    hover:bg-orange-600 rounded-r-md transition-all ease-linear duration-150 
+                                    active:bg-orange-700 active:scale-100"
+                                >
+                                  <ControlPointIcon/>
+                                </button>
+                            </div>
+                        </TableCell>
+                    </TableRow>
+                    ))}
+                </TableBody>
+            </Table>
+        </TableContainer>
+
             <div className="hidden md:block p-2">
                 <form className="flex flex-col gap-3" onSubmit={handleSubmit}>
                     <div className="flex flex-row gap-3">

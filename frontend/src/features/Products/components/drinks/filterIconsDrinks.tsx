@@ -1,7 +1,7 @@
 import { Stack, Avatar, Typography } from "@mui/material";
 import { orange } from "@mui/material/colors";
-import LocalDiningIcon from '@mui/icons-material/LocalDining';
-import KebabDiningIcon from '@mui/icons-material/KebabDining';
+import NoAlcohol from '../../assets/no-alcohol.png'
+import Alcohol from '../../assets/beer.png'
 
 export default function FilterIconsDrinks() {
   return (
@@ -41,10 +41,10 @@ export default function FilterIconsDrinks() {
                   transform: "scale(1.25)",
                 },
               }}>
-            <KebabDiningIcon fontSize='small'/>
+            <img src={Alcohol} alt="gluten free" className="h-10 w-10"/>
           </Avatar>
         </a>
-        <Typography variant="body2" noWrap>Alcoholicas</Typography>
+        <Typography variant="body2" noWrap>Alcohólicas</Typography>
       </Stack>
 
       <Stack
@@ -70,10 +70,10 @@ export default function FilterIconsDrinks() {
                   transform: "scale(1.25)",
                 },
               }}>
-            <LocalDiningIcon fontSize='small'/>
+            <img src={NoAlcohol} alt="Icon" className="h-10 w-10"/>
           </Avatar>
         </a>
-        <Typography variant="body2" noWrap>No Alcoholicas</Typography>
+        <Typography variant="body2" noWrap>No Alcohólicas</Typography>
       </Stack>
     </Stack>
   );

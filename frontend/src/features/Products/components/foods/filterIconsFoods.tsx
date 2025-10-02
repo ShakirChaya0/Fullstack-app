@@ -1,19 +1,20 @@
-import { Stack, Avatar, Typography } from "@mui/material";
-import { orange } from "@mui/material/colors";
-import LocalDiningIcon from "@mui/icons-material/LocalDining";
-import CakeIcon from "@mui/icons-material/Cake";
-import KebabDiningIcon from "@mui/icons-material/KebabDining";
-import RamenDiningIcon from '@mui/icons-material/RamenDining';
-import RiceBowlIcon from '@mui/icons-material/RiceBowl';
-import TapasIcon from '@mui/icons-material/Tapas';
+import { Stack, Avatar, Typography } from "@mui/material"
+import { orange } from "@mui/material/colors"
+import GlutenFree from '../../assets/gluten-free.png'
+import Vegan from '../../assets/vegan.png'
+import Vegetarian from '../../assets/vegetarian.png'
+import Cutlery from '../../assets/cutlery.png'
+import Fries from '../../assets/fires.png'
+import IceCream from '../../assets/ice-cream.png'
+
 
 const items = [
-  { href: "#Entrada", label: "Entradas", Icon: KebabDiningIcon },
-  { href: "#Plato_Principal", label: "Principal", Icon: LocalDiningIcon },
-  { href: "#Postre", label: "Postres", Icon: CakeIcon },
-  { href: "#Vegetariana", label: "Vegetariana", Icon: RamenDiningIcon },
-  { href: "#Vegana", label: "Vegana", Icon: RiceBowlIcon },
-  { href: "#Celiaca", label: "Celiaca", Icon: TapasIcon },
+  { href: "#Entrada", label: "Entradas", Icon: Cutlery },
+  { href: "#Plato_Principal", label: "Principal", Icon: Fries },
+  { href: "#Postre", label: "Postres", Icon: IceCream },
+  { href: "#Vegetariana", label: "Vegetariana", Icon: Vegetarian },
+  { href: "#Vegana", label: "Vegana", Icon: Vegan },
+  { href: "#Celiaca", label: "Celiaca", Icon: GlutenFree }
 ];
 
 export default function FilterIconsFoods() {
@@ -59,7 +60,7 @@ export default function FilterIconsFoods() {
                 },
               }}
             >
-              <Icon fontSize="small" />
+              <img src={Icon} alt="Icono" className="h-10 w-10"/>
             </Avatar>
           </a>
           <Typography variant="body2" noWrap>

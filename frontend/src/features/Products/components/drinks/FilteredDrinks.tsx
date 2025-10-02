@@ -28,9 +28,8 @@ export default function FilteredDrinks({filteredDrinks}: {filteredDrinks: Bebida
         if (drinksFiltered.length === 0) return null;
 
         return (
-          <div key={filtro} id={filtro} className="scroll-mt-55">
-            <span className="w-full h-0.5 bg-gray-300 block my-4"></span>
-            <h2 className="w-full text-center font-semibold text-black text-2xl">
+          <div key={filtro} id={filtro} className="scroll-mt-55 my-10">
+            <h2 className="w-full text-center font-semibold text-black text-2xl mb-5">
               {filtro.replace("_", " ").toUpperCase()}
             </h2>
             <motion.ul

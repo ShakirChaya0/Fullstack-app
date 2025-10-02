@@ -8,7 +8,7 @@ import { NavLink } from "react-router";
 import { AnimatePresence, motion } from "framer-motion";
 import type { LineaPedido } from "../../Order/interfaces/Order";
 import LocalGroceryStoreIcon from '@mui/icons-material/LocalGroceryStore';
-
+import { OrderTotalAmount } from "../utils/OrderTotalAmount";
 
 export function OrderList () {
     const [isOpen, setOpen] = useState(false)
@@ -31,7 +31,7 @@ export function OrderList () {
         <button 
           onClick={handleClick}
           className={
-            `group hidden md:flex fixed top-20 -right-18 
+            `group hidden md:flex fixed top-43 -right-18 
              bg-orange-500 text-white rounded-l-full h-14 w-[140px]
              shadow-lg items-center pl-4 hover:w-[250px]
              hover:bg-orange-600 active:bg-orange-700 
@@ -91,7 +91,7 @@ export function OrderList () {
                         <div
                           className="
                             flex flex-col gap-3
-                            max-h-[400px] overflow-y-auto 
+                            max-h-[400px] 
                             md:max-h-[684px] 
                           "
                         >
@@ -106,40 +106,48 @@ export function OrderList () {
                                 transition={{ type: "spring", stiffness: 300, damping: 25 }}
                                 className="flex py-0 shadow-none border-0 border-b-2 h-fit flex-col xl:flex-row
                                            justify-evenly md:justify-between md:border border-gray-300 md:shadow-lg
-                                           md:py-2 md:px-4 min-h-[150px] md:rounded-lg"
+                                           md:py-2 md:px-4 min-h-[100px] md:rounded-lg"
                               >
-                                  <div className="md:flex md:flex-col justify-between">
-                                      <h1 className="font-medium md:text-2xl">{lp.producto._name}</h1>
-                                      <p className="max-h-[60px] md:max-h-[72px] overflow-y-auto text-sm md:text-lg">{lp.producto._description}</p>
-                                      <p className="text-orange-500 font-bold">${lp.subtotal}</p>
+                                  <div className="flex flex-row justify-between">
+                                      <div className="flex flex-col">
+                                        <h1 className="font-medium md:text-2xl">{lp.producto._name}</h1>
+                                        <p className="max-h-[60px] md:max-h-[72px] overflow-y-auto text-sm md:text-lg">{lp.producto._description}</p>
+                                        <p className="text-orange-500 font-bold">${lp.subtotal}</p>
+                                      </div>
+                                      <div
+                                        className="self-start border rounded-md 
+                                        transition-all duration-200 bg-orange-500
+                                        text-white font-medium flex flex-row justify-around 
+                                        items-center gap-1 w-fit"
+                                      >
+                                        <button
+                                          onClick={() => handleRemove(lp.producto._name)}
+                                          className="cursor-pointer h-full w-full py-1.5 px-2 bg-orange-500 hover:scale-105
+                                          hover:bg-orange-600 rounded-l-md transition-all ease-linear duration-150
+                                          active:bg-orange-700 active:scale-100"
+                                        >
+                                          <RemoveCircleOutlineIcon/>
+                                        </button>
+                                        <p>{lp.cantidad}</p>
+                                        <button
+                                          onClick={() => handleAdd(lp)}
+                                          className="cursor-pointer h-full w-full py-1.5 px-2 bg-orange-500 hover:scale-105
+                                          hover:bg-orange-600 rounded-r-md transition-all ease-linear duration-150 
+                                          active:bg-orange-700 active:scale-100"
+                                        >
+                                          <ControlPointIcon/>
+                                        </button>
+                                      </div>
+
                                   </div>
-                                <div
-                                  className="self-center border rounded-md 
-                                  transition-all duration-200 bg-orange-500
-                                  text-white font-medium flex flex-row justify-around 
-                                  items-center gap-1 w-fit"
-                                >
-                                  <button
-                                    onClick={() => handleRemove(lp.producto._name)}
-                                    className="cursor-pointer h-full w-full py-1.5 px-2 bg-orange-500 hover:scale-105
-                                     hover:bg-orange-600 rounded-l-md transition-all ease-linear duration-150
-                                     active:bg-orange-700 active:scale-100"
-                                  >
-                                    <RemoveCircleOutlineIcon/>
-                                  </button>
-                                  <p>{lp.cantidad}</p>
-                                  <button
-                                    onClick={() => handleAdd(lp)}
-                                    className="cursor-pointer h-full w-full py-1.5 px-2 bg-orange-500 hover:scale-105
-                                     hover:bg-orange-600 rounded-r-md transition-all ease-linear duration-150 
-                                     active:bg-orange-700 active:scale-100"
-                                  >
-                                    <ControlPointIcon/>
-                                  </button>
-                                </div>
                               </motion.div>
                             ))}
                           </AnimatePresence>
+                        </div>
+
+                        <div className="flex justify-between md:justify-around">
+                          <span className="text-orange-500 font-bold text-2xl">Total: </span>
+                          <span className="text-orange-500 font-bold text-2xl">${OrderTotalAmount(order.lineasPedido)}</span>
                         </div>
                       
                         <div className="p-4">
