@@ -15,11 +15,11 @@ export function useMethodMutation() {
         mutationFn: (method: PaymentMethod) => selectPaymentMethod(1, method, apiCall), // cambiar el 1 por order.idPedido
         onSuccess: (data) => {
             if (data) window.location.href = data.redirect_url;
-            else navigate("Cliente/Pedido/Pago/Pendiente");
+            else navigate("/Cliente/Pedido/Pago/Pendiente");
         },
         onError: (error) => {
             toast.error(`Error al seleccionar el método de pago: ${error.message}`);
-            navigate("Cliente/Pedido/Pago/Fallo");
+            navigate("/Cliente/Pedido/Pago/Fallo");
         },
     });
 }

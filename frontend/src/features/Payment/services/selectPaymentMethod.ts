@@ -7,8 +7,6 @@ export async function selectPaymentMethod(orderId: number, method: PaymentMethod
         : method === "Credito/Debito" ? `tarjeta/${orderId}`
         : `efectivo/${orderId}`;
 
-    console.log(endpoint);
-
     const res = await apiCall(endpoint, {
         method: "POST"
     });

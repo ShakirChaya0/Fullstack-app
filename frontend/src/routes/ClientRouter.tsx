@@ -9,12 +9,12 @@ const ProfileCardSkeleton = lazy(() => import("../features/Profile/components/Pr
 const UserProfile = lazy(() => import("../features/Profile/pages/UserProfile"));
 import  ReservationCRUD  from "../features/Reservation/pages/ReservationCRUD";
 import ReservationHistorial from "../features/Reservation/pages/ReservationList";
-import CheckPage from "../features/Payment/pages/CheckPage";
-import CheckSkeleton from "../features/Payment/pages/CheckSkeleton";
-import SuccessfulPaymentPage from "../features/Payment/pages/SuccessfulPaymentPage";
-import PendingPaymentPage from "../features/Payment/pages/PendingPaymentPage";
-import FailurePaymentPage from "../features/Payment/pages/FailurePaymentPage";
-import PaymentStatusSkeleton from "../features/Payment/pages/PaymentStatusSkeleton";
+const CheckPage = lazy(() => import("../features/Payment/pages/CheckPage"));
+const CheckSkeleton = lazy(() => import("../features/Payment/pages/CheckSkeleton"));
+const SuccessfulPaymentPage = lazy(() => import("../features/Payment/pages/SuccessfulPaymentPage"));
+const PendingPaymentPage = lazy(() => import("../features/Payment/pages/PendingPaymentPage"));
+const FailurePaymentPage = lazy(() => import("../features/Payment/pages/FailurePaymentPage"));
+const PaymentStatusSkeleton = lazy(() => import("../features/Payment/pages/PaymentStatusSkeleton"));
 
 export function ClientRouter() {
   return (

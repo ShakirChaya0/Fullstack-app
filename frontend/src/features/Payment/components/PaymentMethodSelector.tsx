@@ -35,7 +35,7 @@ export default function PaymentMethodSelector({ onClose }: PaymentMethodSelector
                 </div>
 
                 <div className="flex flex-col gap-2 px-6">
-                    <label className="has-checked:bg-[var(--neutral-200)] transition-all duration-200 ease-in-out flex items-center space-x-3 bg-[var(--neutral-100)] rounded-lg sm:rounded-xl h-16 p-2">
+                    <label className="has-checked:bg-[var(--neutral-200)] cursor-pointer transition-all duration-200 ease-in-out flex items-center space-x-3 bg-[var(--neutral-100)] rounded-lg sm:rounded-xl h-16 p-2">
                         <img src={MPIcon} alt="Mercado Pago logo" className="w-10 sm:w-15" />
 
                         <input 
@@ -48,7 +48,7 @@ export default function PaymentMethodSelector({ onClose }: PaymentMethodSelector
                         <span className="text-lg">Mercado Pago</span>
                     </label>
 
-                    <label className="has-checked:bg-[var(--neutral-200)] transition-all duration-200 ease-in-out flex items-center space-x-3 bg-[var(--neutral-100)] rounded-lg sm:rounded-xl h-16 p-2">
+                    <label className="has-checked:bg-[var(--neutral-200)] cursor-pointer transition-all duration-200 ease-in-out flex items-center space-x-3 bg-[var(--neutral-100)] rounded-lg sm:rounded-xl h-16 p-2">
                         <img src={CardIcon} alt="Tarjetas de Crédito/Débito" className="w-10 sm:w-15" />
 
                         <input 
@@ -61,7 +61,7 @@ export default function PaymentMethodSelector({ onClose }: PaymentMethodSelector
                         <span className="text-lg">Tarjeta de Crédito/Débito</span>
                     </label>
 
-                    <label className="has-checked:bg-[var(--neutral-200)] transition-all duration-200 ease-in-out flex items-center space-x-3 bg-[var(--neutral-100)] rounded-lg sm:rounded-xl h-16 p-2">
+                    <label className="has-checked:bg-[var(--neutral-200)] cursor-pointer transition-all duration-200 ease-in-out flex items-center space-x-3 bg-[var(--neutral-100)] rounded-lg sm:rounded-xl h-16 p-2">
                         <img src={CashIcon} alt="Efectivo" className="w-10 sm:w-15" />
                         
                         <input 

@@ -13,8 +13,8 @@ export default function CheckPage() {
     <>
       {isLoading ? <CheckSkeleton /> 
         : isError ? <div className="w-full bg-[var(--background-200)] flex flex-col items-center justify-center min-h-screen p-4">
-            Error al cargar la cuenta. Intente nuevamente.
-          </div>
+            Error al generar la cuenta. Intente nuevamente.
+          </div> // Diseñar un mejor mensaje de error
         : (
             <>
               <style>{printStyles}</style>
