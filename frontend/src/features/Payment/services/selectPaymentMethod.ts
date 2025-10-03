@@ -1,7 +1,6 @@
 import type { PaymentMethod } from "../types/PaymentSharedTypes";
 
 export async function selectPaymentMethod(orderId: number, method: PaymentMethod, apiCall: (url: string, options?: RequestInit) => Promise<Response>) {
-    console.log(method);
     let endpoint = "pagos/";
     endpoint += method === "MercadoPago" ? `mp/${orderId}`
         : method === "Credito/Debito" ? `tarjeta/${orderId}`

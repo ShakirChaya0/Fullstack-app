@@ -1,8 +1,28 @@
 import Lottie from "lottie-react";
 import pendingAnimation from "../assets/pending_animation.json";
 import { animationStyles } from "../constants/PaymentConstants";
+import SuccessfulPaymentPage from "./SuccessfulPaymentPage";
+import { useCallback, useEffect, useState } from "react";
+import { useWebSocket } from "../../../shared/hooks/useWebSocket";
 
 export default function PendingPaymentPage() {
+    const [paymentStatus, setPaymentStatus] = useState<"pending" | "success">('pending');
+    const { onEvent, offEvent } = useWebSocket();
+      
+    const handleStatusChange = useCallback(() => {
+        console.log("SE RECIBE EL EVENTOOOOOOOO")
+        setPaymentStatus("success")
+    }, []);
+
+    useEffect(() => {
+        onEvent("orderPaymentEvent", handleStatusChange);
+
+        return () => {
+            offEvent("orderPaymentEvent", handleStatusChange)
+        }
+    }, [onEvent, offEvent]);
+    
+    if (paymentStatus === "success") return <SuccessfulPaymentPage />; 
 
     return (
         <>
