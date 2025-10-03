@@ -8,6 +8,7 @@ import ResetPasswordForm from "../features/Login/pages/ResetPasswordForm";
 import VerifyEmail from "../features/Login/pages/VerifyEmail";
 import NotFoundPage from "../shared/components/NotFoundPage"
 import ProtectedRoute from "../shared/components/ProtectedRoute";
+import { WaiterRouter } from "./WaiterRouter";
 
 export default function AppRouter() {
   const { isAuthenticated, user, isLoading } = useAuth();
@@ -37,6 +38,11 @@ export default function AppRouter() {
                 <Route path="/Cocina/*" element={
                     <ProtectedRoute userType={"SectorCocina"}>
                         <KitchenRouter />
+                    </ProtectedRoute>
+                } />
+                <Route path="/Mozo/*" element={
+                    <ProtectedRoute userType={"Mozo"}>
+                        <WaiterRouter />
                     </ProtectedRoute>
                 } />
                 <Route path="*" element={<NotFoundPage />}/>
