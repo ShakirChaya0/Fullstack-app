@@ -13,6 +13,7 @@ export default function GoBackButton({ url }: { url: string}) {
             className="flex justify-end my-3"
         >
             <button
+                type='button'
                 onClick={handleClick}
                 className="
                     flex items-center gap-2 rounded-xl px-5 py-2.5
@@ -33,7 +34,7 @@ export default function GoBackButton({ url }: { url: string}) {
                     flexShrink: 0
                 }} 
             />
-                Volver
+                Volver al menú
             </button>
       </div>
     )

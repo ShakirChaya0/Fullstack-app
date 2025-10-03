@@ -32,7 +32,7 @@ const FilterDrinks: React.FC<Props> = ({handleChange}) => {
                     }}
                     onChange={handleChange}
                 />
-                <GoBackButton url="/Cliente/Menu"/>
+                <GoBackButton url="/Cliente/Menu/"/>
             </div>
             <FilterIconsDrinks/>
         </form>

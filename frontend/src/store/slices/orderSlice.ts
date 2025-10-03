@@ -56,10 +56,17 @@ export const orderSlice = createSlice({
             state.estado = 'Solicitado'
 
             localStorage.setItem("order", JSON.stringify(state));
-        }
+        },
+        recoveryInitialState: (state) => {
+            //Actualizamos estado de Redux
+            Object.assign(state, defaultState);
+            
+            // Actualizamos localStorage
+            localStorage.setItem("order", JSON.stringify(defaultState));
+        } 
     }
 })
 
 export default orderSlice.reducer
 
-export const { addToCart, removeFromCart, confirmOrder } = orderSlice.actions
+export const { addToCart, removeFromCart, confirmOrder, recoveryInitialState} = orderSlice.actions

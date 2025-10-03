@@ -11,20 +11,20 @@ import LocalGroceryStoreIcon from '@mui/icons-material/LocalGroceryStore';
 import { OrderTotalAmount } from "../utils/OrderTotalAmount";
 
 export function OrderList () {
-    const [isOpen, setOpen] = useState(false)
-    const order = useAppSelector((state) => state.order)
-    const { handleAddToCart, hanldeRemoveFromCart } = useOrderActions()
+  const [isOpen, setOpen] = useState(false)
+  const order = useAppSelector((state) => state.order)
+  const { handleAddToCart, hanldeRemoveFromCart } = useOrderActions()
 
-    const handleAdd = (lp: LineaPedido) => {
-      handleAddToCart(lp.producto)
-    }
-    const handleRemove = (name: string) => {
-      hanldeRemoveFromCart({nombreProducto: name})
-    }
+  const handleAdd = (lp: LineaPedido) => {
+    handleAddToCart(lp.producto)
+  }
+  const handleRemove = (name: string) => {
+    hanldeRemoveFromCart({nombreProducto: name})
+  }
 
-    const handleClick = () => {
-        setOpen(!isOpen)
-    }
+  const handleClick = () => {
+      setOpen(!isOpen)
+  }
 
     return(
       <>
@@ -89,11 +89,7 @@ export function OrderList () {
                 <>
                     <div className="flex flex-col gap-3 p-4 w-full">
                         <div
-                          className="
-                            flex flex-col gap-3
-                            max-h-[400px] 
-                            md:max-h-[684px] 
-                          "
+                          className="flex flex-col gap-3"
                         >
                           <AnimatePresence>
                             {order.lineasPedido.map((lp) => (
@@ -104,42 +100,45 @@ export function OrderList () {
                                 animate={{ opacity: 1, y: 0 }}
                                 exit={{ opacity: 0, y: -20 }}
                                 transition={{ type: "spring", stiffness: 300, damping: 25 }}
-                                className="flex py-0 shadow-none border-0 border-b-2 h-fit flex-col xl:flex-row
+                                className="flex py-0 shadow-none border-0 border-b-2 flex-col xl:flex-row
                                            justify-evenly md:justify-between md:border border-gray-300 md:shadow-lg
-                                           md:py-2 md:px-4 min-h-[100px] md:rounded-lg"
+                                           md:py-2 md:px-4 md:rounded-lg"
                               >
-                                  <div className="flex flex-row justify-between">
-                                      <div className="flex flex-col">
-                                        <h1 className="font-medium md:text-2xl">{lp.producto._name}</h1>
-                                        <p className="max-h-[60px] md:max-h-[72px] overflow-y-auto text-sm md:text-lg">{lp.producto._description}</p>
-                                        <p className="text-orange-500 font-bold">${lp.subtotal}</p>
-                                      </div>
-                                      <div
-                                        className="self-start border rounded-md 
-                                        transition-all duration-200 bg-orange-500
-                                        text-white font-medium flex flex-row justify-around 
-                                        items-center gap-1 w-fit"
+                                <div className="flex flex-col w-full">
+                                  <div className="flex flex-row justify-between mb-2">
+                                    <div className="flex">
+                                      <h1 className="font-medium md:text-2xl">{lp.producto._name}</h1>
+                                    </div>
+                                    <div
+                                      className="self-start border rounded-md 
+                                      transition-all duration-200 bg-orange-500
+                                      text-white font-medium flex flex-row justify-around 
+                                      items-center gap-1 w-fit"
+                                    >
+                                      <button
+                                        onClick={() => handleRemove(lp.producto._name)}
+                                        className="cursor-pointer h-full w-full py-1.5 px-2 bg-orange-500 hover:scale-105
+                                        hover:bg-orange-600 rounded-l-md transition-all ease-linear duration-150
+                                        active:bg-orange-700 active:scale-100"
                                       >
-                                        <button
-                                          onClick={() => handleRemove(lp.producto._name)}
-                                          className="cursor-pointer h-full w-full py-1.5 px-2 bg-orange-500 hover:scale-105
-                                          hover:bg-orange-600 rounded-l-md transition-all ease-linear duration-150
-                                          active:bg-orange-700 active:scale-100"
-                                        >
-                                          <RemoveCircleOutlineIcon/>
-                                        </button>
-                                        <p>{lp.cantidad}</p>
-                                        <button
-                                          onClick={() => handleAdd(lp)}
-                                          className="cursor-pointer h-full w-full py-1.5 px-2 bg-orange-500 hover:scale-105
-                                          hover:bg-orange-600 rounded-r-md transition-all ease-linear duration-150 
-                                          active:bg-orange-700 active:scale-100"
-                                        >
-                                          <ControlPointIcon/>
-                                        </button>
-                                      </div>
-
+                                        <RemoveCircleOutlineIcon/>
+                                      </button>
+                                      <p>{lp.cantidad}</p>
+                                      <button
+                                        onClick={() => handleAdd(lp)}
+                                        className="cursor-pointer h-full w-full py-1.5 px-2 bg-orange-500 hover:scale-105
+                                        hover:bg-orange-600 rounded-r-md transition-all ease-linear duration-150 
+                                        active:bg-orange-700 active:scale-100"
+                                      >
+                                        <ControlPointIcon/>
+                                      </button>
+                                    </div>
                                   </div>
+                                  <div className="flex justify-between items-end gap-2 mb-3">
+                                    <p className="text-sm md:text-lg">{lp.producto._description}</p>
+                                    <p className="text-orange-500 font-bold">${lp.subtotal.toFixed(2)}</p>
+                                  </div>
+                                </div>
                               </motion.div>
                             ))}
                           </AnimatePresence>
@@ -147,7 +146,7 @@ export function OrderList () {
 
                         <div className="flex justify-between md:justify-around">
                           <span className="text-orange-500 font-bold text-2xl">Total: </span>
-                          <span className="text-orange-500 font-bold text-2xl">${OrderTotalAmount(order.lineasPedido)}</span>
+                          <span className="text-orange-500 font-bold text-2xl">${OrderTotalAmount(order.lineasPedido).toFixed(2)}</span>
                         </div>
                       
                         <div className="p-4">

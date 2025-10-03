@@ -26,10 +26,14 @@ orderData: Pedido | OrderWithTableId) {
         }
     }
 
+    await apiCall('qr/2')
+
     const response = await apiCall('pedidos', {
         method: 'POST',
         body: JSON.stringify(bodyReq)
     })
+
+    console.log(response.status)
 
     if (!response.ok) {
         if (response.status === 404) {

@@ -1,5 +1,5 @@
 import type { Bebida, Comida } from "../../features/Products/interfaces/products"
-import { addToCart, confirmOrder, removeFromCart } from "../../store/slices/orderSlice"
+import { addToCart, confirmOrder, recoveryInitialState, removeFromCart } from "../../store/slices/orderSlice"
 import { useAppDispatch } from "./store"
 
 
@@ -18,5 +18,9 @@ export const useOrderActions = () => {
         dispatch(confirmOrder({comensales: comensales, observaciones: observaciones}))
     }
 
-    return { handleAddToCart, hanldeRemoveFromCart, handleConfirmOrder }
+    const handleRecoveyInitialState = () => {
+        dispatch(recoveryInitialState())
+    }
+
+    return { handleAddToCart, hanldeRemoveFromCart, handleConfirmOrder, handleRecoveyInitialState }
 }
