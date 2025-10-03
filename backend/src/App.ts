@@ -76,7 +76,7 @@ app.use("/pagos", PaymentRouter())
 
 app.use("/pedidos", OptionalAuthMiddleware, OrderRouter())
 
-app.use("/qr", AuthMiddleware, RoleMiddleware(["Mozo"]), QrRoute())
+app.use("/qr", QrRoute())
 
 app.use("/reservas", ReservationRouter())
 

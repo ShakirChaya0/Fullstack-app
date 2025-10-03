@@ -17,35 +17,35 @@ type SuggestionWithProduct = Prisma.SugerenciasGetPayload<{
 export class SuggestionRepository implements ISuggestionRepository {
     
     public async getAll(page: number, filter: SuggFilterOption, sorted: SuggSortOption): Promise<Suggestion[]> {
-        const now = new Date();
-        now.setHours(0, 0, 0, 0);
-
-        const whereClause = filter === "ACTIVES" ? {
-            fechaDesde: { lte: now },
-            fechaHasta: { gte: now }
-        } : {};
-
-        const orderByClause: Prisma.SugerenciasOrderByWithRelationInput = 
-            sorted === "DATE_ASC" ? { fechaDesde: Prisma.SortOrder.asc } :
-            sorted === "DATE_DESC" ? { fechaDesde: Prisma.SortOrder.desc } :
-            sorted === "NAME_ASC" ? { Producto: { nombre: Prisma.SortOrder.asc } } :
-            sorted === "NAME_DESC" ? { Producto: { nombre: Prisma.SortOrder.desc } } :
-            { fechaDesde: Prisma.SortOrder.desc };
-
-        const limit = 15;
-        const skip = (page - 1) * limit;
-
-        const suggestions = await prisma.sugerencias.findMany({
-            skip: skip,
-            take: limit,
-            where: whereClause,
-            include: {
-                Producto: { include: { Precios: true }}
-            },
-            orderBy: orderByClause
-        });
-
-        return suggestions.map((sugg) => { return this.toDomainEntity(sugg) });
+            const now = new Date();
+            now.setHours(0, 0, 0, 0);
+    
+            const whereClause = filter === "ACTIVES" ? {
+                fechaDesde: { lte: now },
+                fechaHasta: { gte: now }
+            } : {};
+    
+            const orderByClause: Prisma.SugerenciasOrderByWithRelationInput = 
+                sorted === "DATE_ASC" ? { fechaDesde: Prisma.SortOrder.asc } :
+                sorted === "DATE_DESC" ? { fechaDesde: Prisma.SortOrder.desc } :
+                sorted === "NAME_ASC" ? { Producto: { nombre: Prisma.SortOrder.asc } } :
+                sorted === "NAME_DESC" ? { Producto: { nombre: Prisma.SortOrder.desc } } :
+                { fechaDesde: Prisma.SortOrder.desc };
+    
+            const limit = 15;
+            const skip = (page - 1) * limit;
+    
+            const suggestions = await prisma.sugerencias.findMany({
+                skip: skip,
+                take: limit,
+                where: whereClause,
+                include: {
+                    Producto: { include: { Precios: true }}
+                },
+                orderBy: orderByClause
+            });
+    
+            return suggestions.map((sugg) => { return this.toDomainEntity(sugg) });
     }
 
     public async findByProductAndDate(productId: number, dateFrom: Date): Promise<Suggestion | null> {
@@ -115,7 +115,7 @@ export class SuggestionRepository implements ISuggestionRepository {
                 sugg.Producto.nombre,
                 sugg.Producto.descripcion,
                 sugg.Producto.estado,
-                sugg.Producto.Precios[sugg.Producto.Precios.length - 1].monto.toNumber(),
+                sugg.Producto.Precios[sugg.Producto.Precios.length - 1]?.monto.toNumber(),
                 sugg.Producto.esVegetariana ?? false,
                 sugg.Producto.esVegana ?? false,
                 sugg.Producto.esSinGluten ?? false,
@@ -127,7 +127,7 @@ export class SuggestionRepository implements ISuggestionRepository {
                 sugg.Producto.nombre,
                 sugg.Producto.descripcion,
                 sugg.Producto.estado,
-                sugg.Producto.Precios[sugg.Producto.Precios.length - 1].monto.toNumber(),
+                sugg.Producto.Precios[sugg.Producto.Precios.length - 1]?.monto.toNumber(),
                 sugg.Producto.esAlcoholica ?? false
             );
         }

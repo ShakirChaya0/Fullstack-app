@@ -12,7 +12,7 @@ export default function WaitersCRUD () {
     const [currentPage, setPage] = useState(1)
     const [query, setQuery] = useState("")
     const {debouncedValue, isDebouncing} = useDebounce(query, 400);
-    const { isLoading, isError, data } = useWaiters(debouncedValue, currentPage)
+    const { isLoading, isError, data } = useWaiters(debouncedValue.trim(), currentPage)
     
     const handleChangePage = (event: React.ChangeEvent<unknown>, value: number) => {
         setPage(value)
@@ -23,7 +23,7 @@ export default function WaitersCRUD () {
     }, [setPage])
 
     const handleSearch = useCallback((event: ChangeEvent<HTMLInputElement>) => {
-            setQuery(event.target.value)
+        setQuery(event.target.value)
     },[setQuery])
     
     return(
@@ -42,7 +42,11 @@ export default function WaitersCRUD () {
                                             <WaitersTable waiters={data} handleResetPage={handleResetPage}/>
                                         </Suspense> 
                                     }
-                                    { (debouncedValue.length !== 0) && (data?.Waiters.length === 0) && <h1 className="text-center font-medium">No se encontraron los datos buscados</h1>}
+                                    { (debouncedValue.length !== 0) && (data?.Waiters.length === 0) && 
+                                        <div className="flex justify-center items-center h-full w-full">
+                                            <h1 className="font-medium">No se encontraron los datos buscados</h1>
+                                        </div>
+                                    }
                                     { isError && <p>Error al cargar los datos</p>}
                                     {
                                         !isError && data?.totalItems !== 0 &&

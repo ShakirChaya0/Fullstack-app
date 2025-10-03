@@ -1,13 +1,15 @@
 import { Route, Routes } from "react-router";
-import { Menu } from "../features/Products/pages/Menu";
+import { lazy, Suspense } from "react";
+const Menu = lazy(() => import("../features/Products/pages/Menu"))
 import { ClientMainLayout } from "../shared/components/ClientMainLayout";
-import DrinksList from "../features/Products/pages/DrinksList";
-import FoodsList from "../features/Products/pages/FoodsList";
-import { Suspense } from "react";
+const DrinksList = lazy(() => import("../features/Products/pages/DrinksList"))
+const FoodsList = lazy(() => import("../features/Products/pages/FoodsList"))
+const ConfirmOrder = lazy(() => import("../features/Products/pages/ConfirmOrder"))
 import ProfileCardSkeleton from "../features/Profile/components/ProfileCardSkeleton";
 import UserProfile from "../features/Profile/pages/UserProfile";
 import  ReservationCRUD  from "../features/Reservation/pages/ReservationCRUD";
 import ReservationHistorial from "../features/Reservation/pages/ReservationList";
+import FinishedOrder from "../features/Products/pages/FinishedOrder";
 
 export function ClientRouter() {
   return (
@@ -17,6 +19,8 @@ export function ClientRouter() {
         <Route path="/Menu" element={<Menu />} />
         <Route path="/Menu/Comidas" element={<FoodsList />} />
         <Route path="/Menu/Bebidas" element={<DrinksList />} />
+        <Route path="/Menu/RealizarPedido" element={<ConfirmOrder/>}/>
+        <Route path="/Menu/PedidoConfirmado" element={<FinishedOrder/>}/>
         <Route path="/Reserva" element={<ReservationCRUD/>}/>
         <Route path="/Reserva/Historial" element={<ReservationHistorial/>}></Route>
         <Route path="/Perfil" element={

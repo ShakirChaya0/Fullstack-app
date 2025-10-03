@@ -7,7 +7,6 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import Button from '@mui/material/Button';
 import type { BackResults, Waiter } from '../interfaces/Waiters';
 import { ModalContext } from '../hooks/useModalProvider';
 import updateWaiter from '../services/updateWaiter';
@@ -16,6 +15,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import deleteWaiter from '../services/deleteWaiter';
 import { usePage } from '../hooks/usePage';
 import { toast } from 'react-toastify';
+import DeleteWaiterModal from './DeleteWaiterModal';
 import useApiClient from '../../../shared/hooks/useApiClient';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -54,7 +54,7 @@ export default function WaitersTable ({waiters, handleResetPage}: {waiters: Back
           await queryClient.cancelQueries({ queryKey: ["Waiters", currentPage, query]})
     
           const previousState = queryClient.getQueryData(["Waiters", currentPage, query])
-          
+
           queryClient.setQueryData(["Waiters", currentPage, query], (oldData: BackResults) => {
             if (!oldData) return { Waiters: [], totalItems: 0, pages: 0 }
     
@@ -80,7 +80,7 @@ export default function WaitersTable ({waiters, handleResetPage}: {waiters: Back
         },
         onError: (err, variables, context) => {
             toast.error("Error al eliminar la novedad")
-            if (context?.previousState) queryClient.setQueryData(["Waiters", currentPage], context.previousState)
+            if (context?.previousState) queryClient.setQueryData(["Waiters", currentPage, query], context.previousState)
             console.log(err)
           },
         onSettled: async () => {
@@ -119,7 +119,11 @@ export default function WaitersTable ({waiters, handleResetPage}: {waiters: Back
               </Table>
             </TableContainer>
         </div>
-        ) : (<h1 className='text-center font-medium'>No hay novedades cargadas</h1>)
+        ) : (
+        <div className='flex items-center justify-center w-full h-full'>
+          <h1 className='font-medium'>No hay mozos cargados</h1>
+        </div>
+      )
       }
       </>
     );
@@ -144,9 +148,7 @@ const WaitersRow = React.memo(function WaitersRow({ waiters, handleDeleteWaiter 
         <ModalProvider fn={updateWaiter} waiters={waiters} msgs={{SuccessMsg: "Mozo modificado con exito", ErrorMsg: "Error al modificar el mozo"}} ButtonName='Modificar'>
             <ModalWaiters/>
         </ModalProvider>
-        <Button variant="contained" color="error" onClick={() => handleDeleteWaiter(waiters.idMozo ?? "")}>
-          Eliminar
-        </Button>   
+        <DeleteWaiterModal handleDeleteMozo={handleDeleteWaiter} Waiter={waiters}/>    
       </StyledTableCell>
     </StyledTableRow>
   )
