@@ -38,6 +38,8 @@ export async function fetchDeleteTable(apiCall: (url: string, options?: RequestI
   const res = await apiCall(`mesas/nromesa/${numTable}`, {
     method: "DELETE" });
 
+  console.log(res.status)
+  console.log(numTable)
   if (!res.ok) {
     throw new Error(`Error al eliminar mesa: ${res.status} ${res.statusText}`);
   }

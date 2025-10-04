@@ -72,7 +72,7 @@ export default function PolicyForm({ data }: {data: Policy}) {
               min: field.min ? { value: field.min, message: `Debe ser al menos ${field.min}` } : undefined,
               max: field.max ? { value: field.max, message: `No puede ser mayor a ${field.max}` } : undefined,
             })}
-            className="px-2 py-1 sm:px-4 sm:py-3 sm:text-lg border border-gray-300 rounded-lg sm:rounded-xl shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+            className="px-2 py-1 sm:px-4 sm:py-3 sm:text-lg border border-gray-300 rounded-lg sm:rounded-xl shadow-md focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition"
             disabled={isPending}
           />
           {errors[field.name] && <span className="text-red-500">{errors[field.name]?.message}</span>}
@@ -81,7 +81,7 @@ export default function PolicyForm({ data }: {data: Policy}) {
 
       <button
         type="submit"
-        className="col-span-full w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white font-medium sm:font-bold sm:text-lg py-2 sm:py-3 sm:px-6 rounded-lg sm:rounded-xl shadow-lg transition cursor-pointer"
+        className="col-span-full w-full bg-teal-600 hover:bg-teal-700 disabled:bg-gray-400 text-white font-medium sm:font-bold sm:text-lg py-2 sm:py-3 sm:px-6 rounded-lg sm:rounded-xl shadow-lg transition cursor-pointer"
       >
         Guardar
       </button>

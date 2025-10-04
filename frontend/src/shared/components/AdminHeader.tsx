@@ -5,7 +5,6 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
-import AccountCircle from '@mui/icons-material/AccountCircle';
 import MenuItem from '@mui/material/MenuItem';
 import Menu from '@mui/material/Menu';
 import Drawer from '@mui/material/Drawer';
@@ -14,12 +13,19 @@ import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
 import { NavLink } from 'react-router';
 import { ListItemButton } from '@mui/material';
-import HomeIcon from './HomeIcon';
 import useAuth from '../hooks/useAuth';
+import administrador from '../../shared/utils/assets/administrador.png'
+import administradorWhite from '../../shared/utils/assets/administradorWhite.png'
+import restauranteWhite from '../../shared/utils/assets/restauranteWhite.png'
+import restaurante from '../../shared/utils/assets/restaurante.png'
 
 // Links de navegación
 const navLinks = [
   { label: 'Novedades', path: '/Admin/Novedades' },
+  { label: 'Mozos', path: '/Admin/Mozos' },
+  { label: 'Mesas', path: '/Admin/Mesas' },
+  { label: 'Horarios', path: '/Admin/Horarios' },
+  { label: 'Productos', path: '/Admin/Productos' },
   { label: 'Datos Restaurante', path: '/Admin/DatosRestaurantes' },
 ];
 
@@ -54,33 +60,38 @@ export default function AdminHeader() {
     <AppBar position="static" sx={{ bgcolor: "#222222", height: "4rem" }}>
       <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
         
-        {/* Botón Home visible solo en desktop */}
-        <IconButton sx={{ display: { xs: "none", md: "block" } }} color="inherit">
-          <HomeIcon />
-        </IconButton>
+        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+          
+          <IconButton
+            size="large"
+            edge="start"
+            color="inherit"
+            aria-label="menu"
+            sx={{ display: { xs: "block", md: "none", marginBottom: "0.5rem"} }} 
+            onClick={toggleDrawer(true)}
+          >
+            <MenuIcon />
+          </IconButton>
+          
+          <NavLink to="/Admin" style={{ textDecoration: 'none', color: 'inherit', display: 'flex', alignItems: 'center' }}>
+            <IconButton 
+              sx={{ display: { xs: "none", md: "block" } }} 
+              color="inherit"
+            >
+              <img src={restauranteWhite} alt="Logo Restaurante" style={{ height: '2rem', width: 'auto' }} />
+            </IconButton>
+          </NavLink>
 
-        {/* Botón menú hamburguesa en mobile */}
-        <IconButton
-          size="large"
-          edge="start"
-          color="inherit"
-          aria-label="menu"
-          sx={{ display: { xs: "block", md: "none" } }}
-          onClick={toggleDrawer(true)}
-        >
-          <MenuIcon />
-        </IconButton>
+        </Box>
 
-        {/* Links visibles en desktop */}
         <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" }, gap: 3, ml: 2 }}>
           {navLinks.map(link => (
             <NavLinkItem key={link.path} to={link.path} label={link.label} />
           ))}
         </Box>
 
-        {/* Menú de usuario */}
         <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-          <Typography variant="body1" sx={{ fontWeight: 500 }}>
+          <Typography variant="body1" sx={{ fontWeight: 500, display: { xs: "none", sm: "block" } }}>
             {user?.username}
           </Typography>
           <IconButton
@@ -91,7 +102,7 @@ export default function AdminHeader() {
             onClick={handleMenu}
             color="inherit"
           >
-            <AccountCircle />
+             <img src={administradorWhite} alt="Logo Administrador del Restaurante" style={{ height: '2rem', width: 'auto' }} />
           </IconButton>
 
           <Menu
@@ -104,13 +115,17 @@ export default function AdminHeader() {
             onClose={handleClose}
           >
             <MenuItem onClick={handleClose}>
-              <NavLink to={"/Admin/Perfil"}>Profile</NavLink>
+              <NavLink 
+                to={"/Admin/Perfil"} 
+                style={{ textDecoration: "none", color: "inherit", width: '100%' }}
+              >
+                Perfil
+              </NavLink>
             </MenuItem>
-            <MenuItem onClick={logout}>Logout</MenuItem>
+            <MenuItem onClick={logout}>Cerrar Sesión</MenuItem>
           </Menu>
         </Box>
 
-        {/* Drawer (menú lateral en mobile) */}
         <Drawer anchor="left" open={drawerOpen} onClose={toggleDrawer(false)}>
           <Box
             sx={{ width: 250 }}
@@ -119,7 +134,7 @@ export default function AdminHeader() {
             onKeyDown={toggleDrawer(false)}
           >
             <div className='text-center py-4 font-bold'>
-              <h1>Restaurante</h1>
+              <h1>Restaurante Admin</h1>
             </div>
             <List>
               {navLinks.map(link => (

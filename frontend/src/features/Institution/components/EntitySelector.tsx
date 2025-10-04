@@ -9,8 +9,8 @@ export default function EntitySelector({entity, setEntity}: {entity: EntityState
         onClick={() => setEntity("Policy")}
         className={`${baseClasses} ${
           entity === "Policy"
-            ? "bg-blue-600 text-white shadow-lg border-2 border-blue-900 scale-105"
-            : "bg-gray-200 text-gray-700 hover:bg-blue-500 hover:text-white"
+            ? "bg-teal-600 text-white shadow-lg border-2 border-teal-900 scale-105"
+            : "bg-gray-200 text-gray-700 hover:bg-teal-500 hover:text-white"
         }`}
       >
         Políticas
@@ -20,8 +20,8 @@ export default function EntitySelector({entity, setEntity}: {entity: EntityState
         onClick={() => setEntity("Information")}
         className={`${baseClasses} ${
           entity === "Information"
-            ? "bg-blue-600 text-white shadow-lg border-2 border-blue-900 scale-105"
-            : "bg-gray-200 text-gray-700 hover:bg-blue-500 hover:text-white"
+            ? "bg-teal-600 text-white shadow-lg border-2 border-teal-900 scale-105"
+            : "bg-gray-200 text-gray-700 hover:bg-teal-500 hover:text-white"
         }`}
       >
         Información
