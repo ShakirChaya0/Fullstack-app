@@ -10,6 +10,7 @@ export type LineaPedido = {
 }
 
 export type Pedido = {
+    idPedido: number,
     lineasPedido: LineaPedido[],
     estado: OrderStatus,
     observaciones: string,

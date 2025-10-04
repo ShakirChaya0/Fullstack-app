@@ -7,6 +7,7 @@ interface OrderLineClientInfo {
 
 
 export interface OrderClientInfo {
+    idPedido: number
     lineasPedido: OrderLineClientInfo[],
     estado: string,
     observaciones: string

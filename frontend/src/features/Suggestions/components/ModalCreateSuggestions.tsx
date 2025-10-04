@@ -12,8 +12,8 @@ export default function ModalCreateSuggestions() {
         <div>
             <Button variant="contained" startIcon={<ControlPointIcon/>} onClick={handleOpen}>Crear Sugerencia</Button>
             <Modal
-                aria-labelledby="transition-modal-title"
-                aria-describedby="transition-modal-description"
+                aria-labelledby="Crear Sugerencia"
+                aria-describedby="Formulario para crear una nueva sugerencia"
                 open={open}
                 onClose={handleClose}
                 closeAfterTransition

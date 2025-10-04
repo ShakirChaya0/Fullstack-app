@@ -2,8 +2,7 @@ import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import type { Pedido } from "../../features/Order/interfaces/Order";
 import type { Bebida, Comida } from "../../features/Products/interfaces/products";
 
-
-const defaultState = {lineasPedido: [], estado: "", observaciones: "", comensales: 0}
+const defaultState = { idPedido: 0, lineasPedido: [], estado: "", observaciones: "", comensales: 0 }
 
 const initialState: Pedido = (() => {
     const persistedState = localStorage.getItem("order")

@@ -8,8 +8,8 @@ import { ModifySchedule } from "../features/Schedules/pages/ModifySchedule";
 import { RegisterSchedule } from "../features/Schedules/pages/RegisterSchedules";
 import { MainPanelProduct } from "../features/Product&Price/pages/MainPanelProduct";
 import { PriceList } from "../features/Product&Price/pages/PriceList";
-import UserProfile from "../features/Profile/pages/UserProfile";
-import ProfileCardSkeleton from "../features/Profile/components/ProfileCardSkeleton";
+const ProfileCardSkeleton = lazy(() => import("../features/Profile/components/ProfileCardSkeleton"));
+const UserProfile = lazy(() => import("../features/Profile/pages/UserProfile"));
 const NewsCRUD = lazy(() => import("../features/News/pages/NewsCRUD"))
 const WaitersCRUD = lazy(() => import("../features/Waiter/pages/WaitersCRUD"))
 
