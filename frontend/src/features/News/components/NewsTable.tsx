@@ -7,7 +7,6 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import Button from '@mui/material/Button';
 import ModalNews from './ModalNews';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { deleteNews } from '../services/deleteNews';
@@ -17,6 +16,7 @@ import { usePage } from '../hooks/usePage';
 import updateNews from '../services/updateNews';
 import type News from '../interfaces/News';
 import { ModalContext } from '../hooks/useModalProvider';
+import DeleteNewsModal from './DeleteNewsModal';
 import useApiClient from '../../../shared/hooks/useApiClient';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -52,9 +52,9 @@ export default function NewsTable ({data, handleResetPage}: {data: BackResults |
     mutationFn: (id: number) => deleteNews(apiCall, id),
     onMutate: async (newData) => {
       await queryClient.cancelQueries({ queryKey: ["News", currentPage, query, filter]})
-          
+
       const previousState = queryClient.getQueryData(["News", currentPage, query, filter])
-      
+
       queryClient.setQueryData(["News", currentPage, query, filter], (oldData: BackResults) => {
         if (!oldData) return { News: [], totalItems: 0, pages: 0 }
 
@@ -79,7 +79,7 @@ export default function NewsTable ({data, handleResetPage}: {data: BackResults |
     },
     onError: (err, variables, context) => {
         toast.error("Error al eliminar la novedad")
-        if (context?.previousState) queryClient.setQueryData(["News", currentPage], context.previousState)
+        if (context?.previousState) queryClient.setQueryData(["News", currentPage, query, filter], context.previousState)
         console.log(err)
       },
     onSettled: async () => {
@@ -120,7 +120,11 @@ export default function NewsTable ({data, handleResetPage}: {data: BackResults |
             </Table>
           </TableContainer>
       </div>
-      ) : (<h1 className='text-center font-medium'>No hay novedades cargadas</h1>)
+      ) : (
+      <div className="flex items-center w-full h-full justify-center">
+        <h1 className='text-center font-medium'>No hay novedades { filter === "Activas" ? "activas" : "cargadas" }</h1>
+      </div>
+    )
     }
     </>
   );
@@ -146,9 +150,7 @@ const NewsRow = React.memo(function NewsRow({ news, handleDeleteNews }: { news: 
         <ModalProvider news={news} fn={updateNews} msgs={{ SuccessMsg: "Novedad modificada con exito", ErrorMsg: "Error al modificar una novedad" }} ButtonName={"Modificar"}>
           <ModalNews/>
         </ModalProvider>
-        <Button variant="contained" color="error" onClick={() => handleDeleteNews(news._newsId ?? 0)}>
-          Eliminar
-        </Button>   
+        <DeleteNewsModal handleDeleteNews={handleDeleteNews} News={news}/>  
       </StyledTableCell>
     </StyledTableRow>
   )

@@ -130,7 +130,7 @@ export class PaymentController {
 
     public async registerPayment(req: Request, res: Response, next: NextFunction) {
         try {
-            const {id, topic} = req.query
+            const { id, topic } = req.query
             let order;
             if (topic && topic == "payment") {
                 const payment = await new Payment(mercadoPagoClient).get({ id: Number(id) });

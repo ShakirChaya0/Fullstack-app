@@ -142,6 +142,10 @@ export function ModifyProductModal({
                             }}
                             value={ newProduct.nombre }
                             onChange={(e) => {
+                                if (e.currentTarget.value.trim() == '' && e.currentTarget.value.startsWith(' ')) {
+                                    e.currentTarget.value = ''
+                                    return
+                                }
                                 if(modalError) setModalError('')
                                 setNewProduct(prev => {
                                     const productModify = {...prev}
@@ -160,6 +164,10 @@ export function ModifyProductModal({
                             placeholder="Describe tu producto..."
                             value={newProduct.descripcion}
                             onChange={(e) => {
+                                if (e.currentTarget.value.trim() == '' && e.currentTarget.value.startsWith(' ')) {
+                                    e.currentTarget.value = ''
+                                    return
+                                }
                                 if(modalError) setModalError('')
                                 setNewProduct(prev => {
                                     const productModify = {...prev}

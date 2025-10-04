@@ -37,13 +37,13 @@ export class PayWithMercadoPagoUseCase {
                 excluded_payment_types: []
             },
             back_urls: {
-                success: "payment/success", //cambiar cuando se haga el front
-                failure: "payment/failure", //cambiar cuando se haga el front
-                pending: "payment/pending" //cambiar cuando se haga el front
+                success: `${process.env.FRONTEND_URL}/Cliente/Pedido/Pago/Exito`, 
+                failure: `${process.env.FRONTEND_URL}/Cliente/Pedido/Pago/Fallo`, 
+                pending: `${process.env.FRONTEND_URL}/Cliente/Pedido/Pago/Pendiente` 
             },
             auto_return: "approved",
             external_reference: JSON.stringify({orderId: order.orderId, metodoPago: "MercadoPago"}),
-            notification_url: "/pagos/pagado", //cambiar cuando se haga el deploy por el endpoint que corresponda
+            notification_url: `${process.env.BACKEND_URL}/pagos/pagado`, 
         }
 
         const preference = await this.mpService.createPreference(draft)

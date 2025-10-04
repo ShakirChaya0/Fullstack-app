@@ -17,7 +17,7 @@ export default function SkeletonBody () {
                           bgcolor: "grey.700",
                           minWidth: 200,
                           maxWidth: 680,
-                          minHeight: 110,
+                          minHeight: 150,
                           borderRadius: "4px",
                           marginY: 1,
                         }}

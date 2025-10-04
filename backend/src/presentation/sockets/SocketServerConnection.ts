@@ -12,7 +12,7 @@ export function SocketServerConnection(server: Http2Server) {
         maxDisconnectionDuration: 1000 * 60
       },
       cors: {
-        origin: "*",
+        origin: `${process.env.FRONTEND_URL}`,
         credentials: true
       }
     });

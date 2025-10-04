@@ -148,6 +148,10 @@ export function NewProductModal() {
                                 htmlInput: { maxLength: 30}
                             }}
                             onChange={(e) => {
+                                if (e.currentTarget.value.trim() == '') {
+                                    e.currentTarget.value = ''
+                                    return
+                                }  
                                 if(modalError) setModalError('')
                                 setNewProduct(prev => {
                                     const newProduct = {...prev}
@@ -165,6 +169,10 @@ export function NewProductModal() {
                             rows={2}
                             placeholder="Describe tu producto..."
                             onChange={(e) => {
+                                if (e.currentTarget.value.trim() == '') {
+                                    e.currentTarget.value = ''
+                                    return
+                                }  
                                 if(modalError) setModalError('')
                                 setNewProduct(prev => {
                                     const newProduct = {...prev}
