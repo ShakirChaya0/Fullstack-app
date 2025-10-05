@@ -9,6 +9,8 @@ export function useTables() {
   const [error, setError] = useState<string | null>(null);
   const { apiCall } = useApiClient()
 
+  const { apiCall } = useApiClient()
+
   useEffect(() => {
     const loadTables = async () => {
       try {

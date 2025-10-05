@@ -10,7 +10,7 @@ import DashboardIcon from '@mui/icons-material/Dashboard';
 import ScheduleIcon from '@mui/icons-material/Schedule'; 
 import FastfoodIcon from '@mui/icons-material/Fastfood'; 
 
-export function ClientFooter() {
+export function WaiterFooter() {
   const currentYear = new Date().getFullYear();
   const restaurantName = "Tu Restaurante";
 
@@ -190,8 +190,7 @@ export function ClientFooter() {
       }} />
 
       <Typography variant="caption" display="block" sx={{ color: '#909090', fontSize: '0.75rem' }}>
-        © {currentYear} {restaurantName}. Todos los derechos reservados. Desarrollado por C-R-I-S para la gestión de restaurantes
-.
+        © {currentYear} {restaurantName}. Todos los derechos reservados. Desarrollado con ❤️ para la gestión de restaurantes.
       </Typography>
     </Box>
   );

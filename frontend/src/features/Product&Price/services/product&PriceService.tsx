@@ -149,7 +149,7 @@ export const modifyProductToBackend = async (
     esAlcoholica: newModification.esAlcoholica !== productBefModification.current.esAlcoholica ? newModification.esAlcoholica : undefined
   }
 
-  const response = await apiCall(`productos/${newModification.idProducto}`, {
+  const response = await apiCall(`productos/id/${newModification.idProducto}`, {
     method: 'PATCH',
     body: JSON.stringify(valuesToModify)
   })
