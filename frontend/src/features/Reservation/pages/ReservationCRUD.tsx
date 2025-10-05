@@ -20,7 +20,7 @@ export default function ReservationCRUD() {
 
     const handleFormSubmit = (data: FormData) => {
         setPendingData(data);
-        setShowModal(true); // abrir modal antes de mutación
+        setShowModal(true); 
   };
 
     const handleConfirm = () => {
@@ -31,6 +31,9 @@ export default function ReservationCRUD() {
             _reserveTime: pendingData.HoraReserva,
             _commensalsNumber: pendingData.CantidadComensales
         });
+
+        setShowModal(false);
+        setPendingData(null);
     }
 
     const handleCancel = () => {
@@ -39,9 +42,9 @@ export default function ReservationCRUD() {
     };
 
     const modalMessage = `Confirmar la reserva a las ${pendingData?.HoraReserva}. Podes cancelar las mismas con ${data?._horasDeAnticipacionParaCancelar} horas de antelacón`
-
+ 
     return (
-        <main className="p-4">
+        <div className="p-4">
           <ReservationForm onError={handleError} onFormSubmit={handleFormSubmit} />
             {errorMessage && <p className="text-red-500 text-center mt-4">{errorMessage}</p>}
         
@@ -53,7 +56,7 @@ export default function ReservationCRUD() {
             onConfirm={handleConfirm}
             onCancel={handleCancel}
           />
-        </main>
+        </div>
   );
     
     

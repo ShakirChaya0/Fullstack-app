@@ -7,14 +7,16 @@ import { ModalUpdateTable } from "../components/ModalUpdateTable";
 import type { ITable } from "../interfaces/ITable";
 import { fetchCreateTable, fetchDeleteTable, fetchUpdateTable } from "../services/fetchTable";
 import { toast } from "react-toastify";
+import useApiClient from "../../../shared/hooks/useApiClient";
 
 export function TableCRUD () {
     
     const { tables, loading, error } = useTables(); 
-    
+    const { apiCall } = useApiClient();
+
     const handleCreateSave = async (data: {capacity: number}) => {
         try {
-            const newTable = await fetchCreateTable(data);
+            const newTable = await fetchCreateTable(apiCall, data);
             setLocalTables(prev => [...prev, newTable]);
             toast.success('Mesa registrada exitosamente')
         } catch (error) {
@@ -25,7 +27,7 @@ export function TableCRUD () {
     
     const handleUpdateSave = async (numTable: number, data: { capacity: number }) => {
         try {
-           const updated = await fetchUpdateTable(numTable, data);
+           const updated = await fetchUpdateTable(apiCall,numTable, data);
             setLocalTables(prev =>
                prev.map(t => (t._tableNum === numTable ? updated : t))
             );
@@ -41,7 +43,7 @@ export function TableCRUD () {
         try {
             setLoadingDelete(true);
             console.log(numTable)
-            await fetchDeleteTable(numTable);
+            await fetchDeleteTable(apiCall,numTable);
             setLocalTables(prev => prev.filter(t => t._tableNum !== numTable));
             setDelete(null)
             toast.success("Mesa eliminada correctamente");
