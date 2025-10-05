@@ -66,7 +66,7 @@ export function WaiterFooter() {
             sx={{ mb: 2, color: '#B0B0B0' }}
             className="leading-relaxed"
           >
-            Plataforma de Administración v1.0. Gestiona horarios, mesas, productos y más de manera eficiente.
+            Plataforma de administración para restaurantes y bares. Gestiona tu restaurante de manera eficiente con nosotros.
           </Typography>
 
           <Box sx={{ 

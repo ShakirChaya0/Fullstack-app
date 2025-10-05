@@ -8,7 +8,11 @@ import EmailIcon from '@mui/icons-material/Email';
 import PhoneIcon from '@mui/icons-material/Phone'; 
 import DashboardIcon from '@mui/icons-material/Dashboard'; 
 import ScheduleIcon from '@mui/icons-material/Schedule'; 
-import FastfoodIcon from '@mui/icons-material/Fastfood'; 
+import FastfoodIcon from '@mui/icons-material/Fastfood';
+import NewspaperIcon from '@mui/icons-material/Newspaper';
+import GroupIcon from '@mui/icons-material/Group';
+import TableBarIcon from '@mui/icons-material/TableBar';
+import InfoOutlineIcon from '@mui/icons-material/InfoOutline';
 
 export function AdminFooter() {
   const currentYear = new Date().getFullYear();
@@ -22,8 +26,12 @@ export function AdminFooter() {
 
   const quickLinks = [
     { label: "Panel Principal", url: "/Admin", icon: <DashboardIcon sx={{ fontSize: 16, mr: 0.5 }} /> },
+    { label: "Novedades", url: "/Admin/Novedades", icon: <NewspaperIcon sx={{ fontSize: 16, mr: 0.5 }} /> },
+    { label: "Mozos", url: "/Admin/Mozos", icon: <GroupIcon sx={{ fontSize: 16, mr: 0.5 }} /> },
+    { label: "Mesas", url: "/Admin/Mesas", icon: <TableBarIcon sx={{ fontSize: 16, mr: 0.5 }} /> },
     { label: "Horarios", url: "/Admin/Horarios", icon: <ScheduleIcon sx={{ fontSize: 16, mr: 0.5 }} /> },
     { label: "Productos", url: "/Admin/Productos", icon: <FastfoodIcon sx={{ fontSize: 16, mr: 0.5 }} /> },
+    { label: "Datos Restaurante", url: "/Admin/DatosRestaurantes", icon: <InfoOutlineIcon sx={{ fontSize: 16, mr: 0.5 }} /> }
   ];
 
 
@@ -66,7 +74,7 @@ export function AdminFooter() {
             sx={{ mb: 2, color: '#B0B0B0' }}
             className="leading-relaxed"
           >
-            Plataforma de Administración v1.0. Gestiona horarios, mesas, productos y más de manera eficiente.
+            Plataforma de administración para restaurantes y bares. Gestiona tu restaurante de manera eficiente con nosotros.
           </Typography>
 
           <Box sx={{ 
@@ -190,7 +198,8 @@ export function AdminFooter() {
       }} />
 
       <Typography variant="caption" display="block" sx={{ color: '#909090', fontSize: '0.75rem' }}>
-        © {currentYear} {restaurantName}. Todos los derechos reservados. Desarrollado con pasión para la gestión de restaurantes.
+        © {currentYear} {restaurantName}. Todos los derechos reservados. Desarrollado por C-R-I-S para la gestión de restaurantes
+.
       </Typography>
     </Box>
   );

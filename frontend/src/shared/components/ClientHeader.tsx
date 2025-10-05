@@ -40,6 +40,8 @@ const NavLinkItem = ({ to, label }: { to: string; label: string }) => (
   </Typography>
 );
 
+
+//Este header se debe cambiar en el futuro la opción Realizar Pedido no va estar disponible al alcance de la nav Bar!!
 export default function ClientHeader() {
   const { logout, user } = useAuth(); // Asume que useAuth funciona igual para cliente
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -50,7 +52,7 @@ export default function ClientHeader() {
   const toggleDrawer = (open: boolean) => () => setDrawerOpen(open);
 
   return (
-    <AppBar position="static" sx={{ bgcolor: "#222222", height: "4rem" }}>
+    <AppBar position="static" sx={{ bgcolor: "#222222", height: "4rem", marginBottom: '5rem'}}>
       <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
         
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
@@ -137,7 +139,7 @@ export default function ClientHeader() {
             onKeyDown={toggleDrawer(false)}
           >
             <div className='text-center py-4 font-bold'>
-              <h1>Menú de Cliente</h1>
+              <h1>Panel Cliente</h1>
             </div>
             <List>
               {navLinks.map(link => (

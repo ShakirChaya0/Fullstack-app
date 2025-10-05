@@ -14,10 +14,8 @@ import ListItemText from '@mui/material/ListItemText';
 import { NavLink } from 'react-router';
 import { ListItemButton } from '@mui/material';
 import useAuth from '../hooks/useAuth';
-import administrador from '../../shared/utils/assets/administrador.png'
 import administradorWhite from '../../shared/utils/assets/administradorWhite.png'
 import restauranteWhite from '../../shared/utils/assets/restauranteWhite.png'
-import restaurante from '../../shared/utils/assets/restaurante.png'
 
 // Links de navegación
 const navLinks = [
@@ -134,7 +132,7 @@ export default function AdminHeader() {
             onKeyDown={toggleDrawer(false)}
           >
             <div className='text-center py-4 font-bold'>
-              <h1>Restaurante Admin</h1>
+              <h1>Panel Administrador</h1>
             </div>
             <List>
               {navLinks.map(link => (

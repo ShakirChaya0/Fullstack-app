@@ -66,7 +66,7 @@ export default function KitchenFooter() {
             sx={{ mb: 2, color: '#B0B0B0' }}
             className="leading-relaxed"
           >
-            Plataforma de Administración v1.0. Gestiona horarios, mesas, productos y más de manera eficiente.
+            Plataforma de administración para restaurantes y bares. Gestiona tu restaurante de manera eficiente con nosotros.
           </Typography>
 
           <Box sx={{ 
@@ -190,7 +190,8 @@ export default function KitchenFooter() {
       }} />
 
       <Typography variant="caption" display="block" sx={{ color: '#909090', fontSize: '0.75rem' }}>
-        © {currentYear} {restaurantName}. Todos los derechos reservados. Desarrollado con pasión para la gestión de restaurantes.
+        © {currentYear} {restaurantName}. Todos los derechos reservados. Desarrollado por C-R-I-S para la gestión de restaurantes
+.
       </Typography>
     </Box>
   );
