@@ -29,8 +29,7 @@ interface ModalShowTableProps {
 
 // --- Componente ModalShowTable (Esqueleto) ---
 export const ModalShowTable: FC<ModalShowTableProps> = ({ open, onClose, title, currentTable }) => {
-    const navigate = useNavigate()
-  // Variantes para la animación del panel (desde la izquierda)
+  const navigate = useNavigate()
   const modalVariants: Variants = {
     hidden: { x: '-100%', opacity: 0 },
     visible: {
@@ -45,7 +44,6 @@ export const ModalShowTable: FC<ModalShowTableProps> = ({ open, onClose, title, 
     },
   };
 
-  // Variantes para la animación del fondo
   const overlayVariants: Variants = {
     hidden: { opacity: 0 },
     visible: { opacity: 1, transition: { duration: 0.3 } },
@@ -53,14 +51,13 @@ export const ModalShowTable: FC<ModalShowTableProps> = ({ open, onClose, title, 
   };
 
   const handleCreateOrder = () => {
-    navigate("/Mozo/CargarPedido")
+    navigate(`/Mozo/CargarPedido/${currentTable._tableNum}`)
   }
 
   return (
     <AnimatePresence>
       {open && (
         <Fragment>
-          {/* Fondo oscuro semi-transparente */}
           <motion.div
             key="overlay"
             className="fixed inset-0 z-40 bg-black/50"
@@ -71,7 +68,6 @@ export const ModalShowTable: FC<ModalShowTableProps> = ({ open, onClose, title, 
             onClick={onClose}
           />
 
-          {/* Panel del Modal */}
           <motion.div
             key="modal"
             className="fixed top-0 left-0 h-full w-full max-w-md bg-white shadow-2xl z-50 flex flex-col"
@@ -80,7 +76,6 @@ export const ModalShowTable: FC<ModalShowTableProps> = ({ open, onClose, title, 
             animate="visible"
             exit="exit"
           >
-            {/* Encabezado del Modal */}
             <header className="flex items-center justify-between p-4 border-b border-gray-200">
               <h2 className="text-xl font-semibold text-gray-800">{title ?? `Mesa ${currentTable._tableNum}`}</h2>
               <button
@@ -91,11 +86,9 @@ export const ModalShowTable: FC<ModalShowTableProps> = ({ open, onClose, title, 
                 <CloseIcon className="w-6 h-6" />
               </button>
             </header>
-
-            {/* Contenido del Modal */}
+      
             <div className="flex-grow p-6 overflow-y-auto flex flex-col justify-between">
               <div>
-                {/* Detalles de la mesa */}
                 <div className="space-y-4 bg-gray-50 p-4 rounded-lg border">
                   <div className="flex justify-between items-center">
                     <span className="font-medium text-gray-600">Número de Mesa:</span>
@@ -115,8 +108,7 @@ export const ModalShowTable: FC<ModalShowTableProps> = ({ open, onClose, title, 
                     </span>
                   </div>
                 </div>
-
-                {/* Input para cambiar estado */}
+                  
                 <div className="mt-6">
                     <button
                         className={`w-full bg-blue-600 py-4 text-white rounded-lg cursor-pointer 
@@ -127,12 +119,12 @@ export const ModalShowTable: FC<ModalShowTableProps> = ({ open, onClose, title, 
                     </button>
                 </div>
               </div>
-
-              {/* Botón de acción principal */}
+                        
               <div className="mt-8">
                 <button 
                     onClick={handleCreateOrder}
-                    className="w-full px-4 py-3 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all"
+                    className="w-full px-4 py-3 text-sm font-medium text-white bg-blue-600 
+                    rounded-lg hover:bg-blue-700 active:scale-95 active:bg-blue-800 cursor-pointer transition-all"
                 >
                     Agregar Pedido
                 </button>
@@ -143,5 +135,5 @@ export const ModalShowTable: FC<ModalShowTableProps> = ({ open, onClose, title, 
       )}
     </AnimatePresence>
   );
-};
+}; 
 

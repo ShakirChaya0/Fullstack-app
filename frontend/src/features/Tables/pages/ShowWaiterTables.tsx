@@ -28,7 +28,6 @@ const STATUS_MAP: Record<statusTable, Status> = STATUSES.reduce((acc, status) =>
     return acc;
 }, {} as Record<statusTable, Status>);
 
-// --- Componente de Mesa Individual ---
 function Table({ tableData, onClick }: TableProps) {
     const { _tableNum, _state, _capacity } = tableData;
 
