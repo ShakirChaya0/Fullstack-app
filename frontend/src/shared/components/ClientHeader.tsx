@@ -52,7 +52,7 @@ export default function ClientHeader() {
   const toggleDrawer = (open: boolean) => () => setDrawerOpen(open);
 
   return (
-    <AppBar position="static" sx={{ bgcolor: "#222222", height: "4rem", marginBottom: '5rem'}}>
+    <AppBar position="static" sx={{ bgcolor: "#222222", height: "4rem"}}>
       <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
         
         <Box sx={{ display: 'flex', alignItems: 'center' }}>

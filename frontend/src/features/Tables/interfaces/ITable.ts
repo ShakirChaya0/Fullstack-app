@@ -1,4 +1,4 @@
-export type statusTable = 'Libre' |'Ocupda';
+export type statusTable = 'Libre' |'Ocupada';
 
 export interface ITable {
     readonly _tableNum: number, 

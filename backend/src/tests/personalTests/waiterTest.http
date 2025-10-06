@@ -13,16 +13,16 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzdWFyaW8iOiJlN
 ###
 POST http://localhost:3000/mozos
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzdWFyaW8iOiJlNTM0YjUyMS1iNzEwLTRhNjQtOGUyOC1iMTZkMTY5ZDVlYjQiLCJlbWFpbCI6ImFkbWluQGdtYWlsLmNvbSIsInRpcG9Vc3VhcmlvIjoiQWRtaW5pc3RyYWRvciIsInVzZXJuYW1lIjoiYWRtaW4iLCJpYXQiOjE3NTU2MDk2MzEsImV4cCI6MTc1NjIxNDQzMX0.56jCQ5DHfhVtDWciHrmX6b1WWK12rbIiLx3AfLQ5p48
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzdWFyaW8iOiI4ZmUyNmIwMC04ZWQ0LTQ2ZDgtYWQ1OC0wZjk4MDA2MjNlMGUiLCJlbWFpbCI6ImFkbWluQGdtYWlsLmNvbSIsInRpcG9Vc3VhcmlvIjoiQWRtaW5pc3RyYWRvciIsInVzZXJuYW1lIjoiYWRtaW4iLCJpYXQiOjE3NTk1MjAyMDEsImV4cCI6MTc1OTUyMDM4MX0.K8FBZXU8ArytwB2zDcbs6CXD5cqTj7YSUaxUhnW4rv0
 
 {
-    "nombreUsuario": "exampl",
-    "contrasenia": "holamundo",
-    "nombre": "Shakir",
-    "apellido": "Barragan Landriel",
-    "dni": "11222",
+    "nombreUsuario": "FranMozo",
+    "contrasenia": "Password1234",
+    "nombre": "Franco",
+    "apellido": "Sussi",
+    "dni": "45804817",
     "telefono": "341555",
-    "email": "examp@gmail.com"
+    "email": "frmozo@gmail.com"
 }   
 
 ###
