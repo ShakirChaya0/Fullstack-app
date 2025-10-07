@@ -7,7 +7,7 @@ export function QrRoute(){
     const qrRouter = Router();
     const qrController = new QRController();
 
-    qrRouter.get("/:nroMesa", (req, res, next) => { qrController.getQrTokenByTable(req, res, next) });
+    qrRouter.get("/", (req, res, next) => { qrController.getQrTokenByTable(req, res, next) });
 
     qrRouter.post("/", AuthMiddleware, RoleMiddleware(["Mozo"]), (req, res, next) => { qrController.createOrUpdate(req, res, next) });
     

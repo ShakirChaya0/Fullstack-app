@@ -2,6 +2,7 @@ import React, { type FC, Fragment } from 'react';
 import { motion, AnimatePresence, type Variants } from 'framer-motion';
 import type { ITable } from '../interfaces/ITable';
 import { useNavigate } from 'react-router';
+import ModalQR from './ModalQR';
 
 // --- Icono de Cierre (SVG) ---
 const CloseIcon: FC<{ className?: string }> = ({ className }) => (
@@ -108,16 +109,7 @@ export const ModalShowTable: FC<ModalShowTableProps> = ({ open, onClose, title, 
                     </span>
                   </div>
                 </div>
-                  
-                <div className="mt-6">
-                    <button
-                        className={`w-full bg-blue-600 py-4 text-white rounded-lg cursor-pointer 
-                            hover:bg-blue-600 active:bg-blue-700 active:scale-95 transition-all duration-100 ease-in-out 
-                            ${currentTable._state === "Libre" ? "bg-red-500 hover:bg-red-600 active:bg-red-700" : "bg-green-500 hover:bg-green-600 active:bg-green-700"}`}
-                    >
-                        {currentTable._state === "Libre" ? "Ocupar Mesa" : "Liberar Mesa"}
-                    </button>
-                </div>
+                <ModalQR tableNum={currentTable._tableNum}/>
               </div>
                         
               <div className="mt-8">

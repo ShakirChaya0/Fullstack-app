@@ -8,9 +8,4 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzdWFyaW8iOiIzO
 }
 
 ###
-GET http://localhost:3000/qr/
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzdWFyaW8iOiI4ZTA2ZTRiOS1jYzU4LTRmZWEtOWQ2ZS04MThjZmQ1Zjg2ZjciLCJlbWFpbCI6InNoYWtpcmNoYXlhMjAwNUBnbWFpbC5jb20iLCJ0aXBvVXN1YXJpbyI6Ik1vem8iLCJ1c2VybmFtZSI6Im1vem8iLCJpYXQiOjE3NTkyNDQ5MDksImV4cCI6MTc1OTI0NTA4OX0.S-8kx0tdzg-Xyf5PL6eHC4wMSTF34GWssdbL2C-ZP2c
-
-{
-    "tableNumber": 5
-}
+GET http://localhost:3000/qr?qrToken=98873676-7460-41f5-bcd7-be1b3eeadd1d&mesa=16

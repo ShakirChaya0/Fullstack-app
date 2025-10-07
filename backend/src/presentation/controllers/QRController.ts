@@ -14,15 +14,16 @@ export class QRController {
 
     public getQrTokenByTable = async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const tableNumber = req.params.nroMesa;
-            if (!tableNumber || isNaN(+tableNumber)) throw new ValidationError("El número de Mesa debe ser un número");
+            const { qrToken, mesa } = req.query;
             
-            const token = await this.getTokenByTableUseCase.execute(+tableNumber);
+            if (!mesa || isNaN(+mesa)) throw new ValidationError("El número de Mesa debe ser un número");
+            if (!qrToken) throw new ValidationError("El QR Token es obligatorio");
+            
+            const token = await this.getTokenByTableUseCase.execute(qrToken as string, +mesa);
 
             res
                 .cookie('QrToken', token, { httpOnly: true, secure: true, sameSite: 'strict', maxAge: 1000 * 60 * 60 * 24 })
                 .status(204).send();
-
         } catch(error) {
             next(error);
         }

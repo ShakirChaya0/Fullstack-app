@@ -36,7 +36,7 @@ export class CUU02RegisterOrder {
             if (!qrTokenData) {
                 throw new NotFoundError('No se encontro registro para ese token');
             }
-
+            if (qrTokenData.revocado) throw new BusinessError('El QR esta invalidado')
         }      
 
         if(tableNumberIsWaiter){
@@ -62,6 +62,8 @@ export class CUU02RegisterOrder {
         }
         
         const createdOrder = await this.orderRepository.create(order, !qrtoken ? userId! : qrTokenData!.idMozo, !qrtoken ? tableNumberIsWaiter! : qrTokenData!.nroMesa)
+
+        await this.qrTokenRepository.revoke(createdOrder.table!.tableNum); 
 
         return createdOrder
     }
