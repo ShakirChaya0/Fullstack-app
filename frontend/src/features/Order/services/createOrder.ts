@@ -3,7 +3,7 @@ import type { Pedido, OrderWithTableId } from "../interfaces/Order";
 export async function createOrder (
 apiCall: (url: string, options?: RequestInit) => Promise<Response>,    
 orderData: Pedido | OrderWithTableId) {   
-    console.log(orderData)
+
     const tableNumber = "tableNumber" in orderData ? { tableNumber: orderData.tableNumber } : null 
     const bodyReq = {
         ...tableNumber,
@@ -29,29 +29,15 @@ orderData: Pedido | OrderWithTableId) {
         }
     }
 
-    await apiCall('qr/2')
-
     const response = await apiCall('pedidos', {
         method: 'POST',
         body: JSON.stringify(bodyReq)
     })
 
-    console.log(response.status)
 
     if (!response.ok) {
-        if (response.status === 404) {
-            try {
-                const errorData = await response.json()
-                const error = new Error(errorData.message || 'Error al registrar el pedido')
-                error.name = 'NotFoundError'
-                throw error
-            } catch {
-                const error = new Error('Error al registrar el pedido')
-                error.name = 'NotFoundError'
-                throw error
-            }
-        }
-        throw new Error(`Error ${response.status}: ${response.statusText}`)
+        const error = await response.json()
+        throw new Error(error.message)
     }   
 
     const data = await response.json()

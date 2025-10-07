@@ -20,8 +20,8 @@ export const SchemaOrder = z.object({
         .min(1, 'La cantidad de cubiertos debe ser mayor a 1')
         .max(50, 'La cantidad de cubiertos debe ser menor a 50'),
     observacion: z.string()
-        .min(1, 'La observación debe tener al menos un caracter')
-        .max(500, 'La observación debe tener menos de 500 caracteres'), 
+        .max(500, 'La observación debe tener menos de 500 caracteres')
+        .optional(),
     items:  z.array(SchemaOrderLine),
 });
 

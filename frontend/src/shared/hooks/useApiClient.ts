@@ -16,25 +16,22 @@ export const useApiClient = () => {
             });
         };
 
-        try {
-            let response = await makeRequest(accessToken);
+        let response = await makeRequest(accessToken);
 
-            if (response.status === 401) {
-                await refreshAccessToken();
-                const newAccessToken = accessToken 
+        if (response.status === 401) {
+            await refreshAccessToken();
+            const newAccessToken = accessToken 
 
-                if (newAccessToken) {
-                    response = await makeRequest(newAccessToken);
-                } else {
-                    logout();
-                    throw new Error('Sesión expirada. Por favor, inicie sesión de nuevo.');
-                }
+            if (newAccessToken) {
+                response = await makeRequest(newAccessToken);
+            } else {
+                logout();
+                throw new Error('Sesión expirada. Por favor, inicie sesión de nuevo.');
             }
-
-            return response;
-        } catch (error) {
-            throw error;
         }
+
+        return response;
+
     };
 
     return { apiCall };

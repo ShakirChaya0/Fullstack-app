@@ -25,9 +25,7 @@ export default function AppRouter() {
         {!isLoading &&  
             <>
                 <Route path="/Cliente/*" element={
-                    <ProtectedRoute userType={"Cliente"}>
-                        <ClientRouter />
-                    </ProtectedRoute>
+                    <ClientRouter />
                     }
                 />
                 <Route path="/Admin/*" element={

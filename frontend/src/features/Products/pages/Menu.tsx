@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import DrinksLink from "../components/drinks/drinksLink";
 import FoodsLink from "../components/foods/foodsLink";
 import { OrderList } from "../components/orderList";
@@ -23,16 +22,18 @@ export default function Menu(){
     return(
         <>
             {!isLoading && !isError &&
-                <div className="flex flex-1 flex-col justify-center items-center gap-5">
+                <div className="flex flex-1 flex-col justify-center items-center gap-5 mt-10 mb-10">
                     <FoodsLink/>
                     <DrinksLink/>
                     <OrderList/>
                 </div>
             }
             {isError &&
-                <Alert severity="error">
-                    {error.message}
-                </Alert>
+                <div className="flex justify-center items-center mx-4 w-full">
+                    <Alert severity="error">
+                        {error.message}
+                    </Alert>
+                </div>
             }   
         </>
     ) 

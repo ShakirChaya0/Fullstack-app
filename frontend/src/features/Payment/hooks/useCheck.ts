@@ -10,7 +10,7 @@ export function useCheck() {
     
     const { data, isLoading, isError } = useQuery<CheckType>({
         queryKey: ["check"],
-        queryFn: () => generateCheck(1, apiCall), // cambiar el 1 a order.idPedido
+        queryFn: () => generateCheck(order.idPedido, apiCall), 
         staleTime: Infinity,
         refetchOnWindowFocus: false,
         retry: 1

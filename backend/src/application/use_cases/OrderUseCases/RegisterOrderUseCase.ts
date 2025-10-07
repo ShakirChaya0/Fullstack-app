@@ -36,7 +36,7 @@ export class CUU02RegisterOrder {
             if (!qrTokenData) {
                 throw new NotFoundError('No se encontro registro para ese token');
             }
-            if (qrTokenData.revocado) throw new BusinessError('El QR esta invalidado')
+            if (qrTokenData.revocado) throw new BusinessError('El QR ya fue usado')
         }      
 
         if(tableNumberIsWaiter){

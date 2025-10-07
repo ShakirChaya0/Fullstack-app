@@ -10,6 +10,8 @@ const UserProfile = lazy(() => import("../features/Profile/pages/UserProfile"));
 import  ReservationCRUD  from "../features/Reservation/pages/ReservationCRUD";
 import ReservationHistorial from "../features/Reservation/pages/ReservationList";
 import FinishedOrder from "../features/Products/pages/FinishedOrder";
+import ProtectedRoute from "../shared/components/ProtectedRoute";
+import { ProtectedPage } from "../shared/components/ProtectedPage";
 const CheckPage = lazy(() => import("../features/Payment/pages/CheckPage"));
 const CheckSkeleton = lazy(() => import("../features/Payment/pages/CheckSkeleton"));
 const SuccessfulPaymentPage = lazy(() => import("../features/Payment/pages/SuccessfulPaymentPage"));
@@ -27,17 +29,29 @@ export function ClientRouter() {
         <Route path="/Menu/Bebidas" element={<DrinksList />} />
         <Route path="/Menu/RealizarPedido" element={<ConfirmOrder/>}/>
         <Route path="/Menu/PedidoConfirmado" element={<FinishedOrder/>}/>
-        <Route path="/Reserva" element={<ReservationCRUD/>}/>
-        <Route path="/Reserva/Historial" element={<ReservationHistorial/>}></Route>
+        <Route path="/Reserva" element={
+          <ProtectedRoute userType={"Cliente"}>
+            <ReservationCRUD/>
+          </ProtectedRoute>
+        }/>
+        <Route path="/Reserva/Historial" element={
+          <ProtectedRoute userType={"Cliente"}>
+            <ReservationHistorial/>
+          </ProtectedRoute>
+        }/>
         <Route path="/Perfil" element={
-          <Suspense fallback = {<ProfileCardSkeleton/>}>
-            <UserProfile />
-          </Suspense>
+          <ProtectedRoute userType={"Cliente"}>
+            <Suspense fallback = {<ProfileCardSkeleton/>}>
+              <UserProfile />
+            </Suspense>
+          </ProtectedRoute>
         }/>
         <Route path="/Pedido/Cuenta" element={
-          <Suspense fallback = {<CheckSkeleton />}>
-            <CheckPage />
-          </Suspense>
+          <ProtectedPage>
+            <Suspense fallback = {<CheckSkeleton />}>
+              <CheckPage />
+            </Suspense>
+          </ProtectedPage>
         }/>
         <Route path="/Pedido/Pago/Exito" element={
           <Suspense fallback = {<PaymentStatusSkeleton />}>

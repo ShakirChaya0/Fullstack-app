@@ -47,10 +47,7 @@ export const AuthProvider = ({ children }: { children: ReactElement }) => {
                 
                 const userData: JwtPayloadInterface = jwtDecode(data.token);
                 setUser(userData);
-            } else {
-                logout();
-                throw new Error(data.message || "Error desconocido");
-            }
+            } 
         } catch (error) {
             console.error('Error refreshing token:', error);
             logout();

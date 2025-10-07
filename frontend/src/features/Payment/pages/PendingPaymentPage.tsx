@@ -4,14 +4,17 @@ import { animationStyles } from "../constants/PaymentConstants";
 import SuccessfulPaymentPage from "./SuccessfulPaymentPage";
 import { useCallback, useEffect, useState } from "react";
 import { useWebSocket } from "../../../shared/hooks/useWebSocket";
+import { useOrderActions } from "../../../shared/hooks/useOrderActions";
 
 export default function PendingPaymentPage() {
+    const { handleRecoveyInitialState } = useOrderActions()
     const [paymentStatus, setPaymentStatus] = useState<"pending" | "success">('pending');
     const { onEvent, offEvent } = useWebSocket();
+
       
     const handleStatusChange = useCallback(() => {
-        console.log("SE RECIBE EL EVENTOOOOOOOO")
         setPaymentStatus("success")
+        handleRecoveyInitialState()
     }, []);
 
     useEffect(() => {
@@ -20,7 +23,7 @@ export default function PendingPaymentPage() {
         return () => {
             offEvent("orderPaymentEvent", handleStatusChange)
         }
-    }, [onEvent, offEvent]);
+    }, [onEvent, offEvent, handleStatusChange]);
     
     if (paymentStatus === "success") return <SuccessfulPaymentPage />; 
 

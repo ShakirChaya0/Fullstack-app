@@ -3,12 +3,11 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { useAppSelector } from "../../../shared/hooks/store";
 import { OrderTotalAmount } from "../../Products/utils/OrderTotalAmount";
-import { useOrderActions } from "../../../shared/hooks/useOrderActions";
+import { toast } from "react-toastify";
 
 
 export function PaymentConfirmationModal() {
     const order = useAppSelector((state) => state.order)
-    const { handleRecoveyInitialState } = useOrderActions()
     const [isModalOpen, setIsModalOpen] = useState(false)
     const navigate = useNavigate()
 
@@ -31,10 +30,13 @@ export function PaymentConfirmationModal() {
     }
 
     const handleConfirmation = () => {
-        //Limpiamos el carrito antes de proceder al pago
-        handleRecoveyInitialState()
+        if(order.estado !== 'Completado') {
+            toast.error('El pedido aún no está completado')
+            return
+        }
+
         // URL que dispare CUU pagar Pedido
-        navigate('/Cliente') // <---- CAMBIAR
+        navigate('/Cliente/Pedido/Cuenta', {replace: true})
     }
 
     return (
@@ -98,7 +100,7 @@ export function PaymentConfirmationModal() {
                             "
                         onClick={handleConfirmation}
                     >
-                        Confirmar Pago
+                        Pagar Pedido
                     </button>
                 </div>
             </DialogActions>

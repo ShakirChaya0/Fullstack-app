@@ -12,10 +12,10 @@ export function useMethodMutation() {
     const navigate = useNavigate();
     
     return useMutation({
-        mutationFn: (method: PaymentMethod) => selectPaymentMethod(1, method, apiCall), // cambiar el 1 por order.idPedido
+        mutationFn: (method: PaymentMethod) => selectPaymentMethod(order.idPedido, method, apiCall), 
         onSuccess: (data) => {
-            if (data) window.location.href = data.redirect_url;
-            else navigate("/Cliente/Pedido/Pago/Pendiente");
+            if (data) window.location.href = data.redirect_url; //Ver como hacer {replace: true} cuando es con mercado Pago
+            else navigate("/Cliente/Pedido/Pago/Pendiente", { replace: true});
         },
         onError: (error) => {
             toast.error(`Error al seleccionar el método de pago: ${error.message}`);
