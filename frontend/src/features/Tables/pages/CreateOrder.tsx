@@ -1,4 +1,4 @@
-import React, { useState, type FormEvent, type JSX } from 'react';
+import React, { useState, type FormEvent } from 'react';
 import { Autocomplete, TextField, Button, List, ListItem, ListItemText, IconButton, Card, CardContent, Typography, Grid, Box, Divider } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
@@ -14,13 +14,13 @@ import { toast } from 'react-toastify';
 type OrderItemComida = Comida & { quantity: number };
 type OrderItemBebida = Bebida & { quantity: number };
 
-export default function CreateOrder(): JSX.Element {
+export default function CreateOrder() {
     const { data: products } = useProducts();
     const [selectedProduct, setSelectedProduct] = useState<Comida | Bebida | null>(null);
     const [quantity, setQuantity] = useState<number>(1);
     const [orderItems, setOrderItems] = useState<(OrderItemComida | OrderItemBebida)[]>([]);
     const nroMesa = useParams()
-    const { mutate, isPending, isError } = useSaveTableOrder()
+    const { mutate, isPending, isError, failureReason } = useSaveTableOrder()
 
     const handleAddProduct = (): void => {
         if (selectedProduct && quantity > 0) {
@@ -76,7 +76,7 @@ export default function CreateOrder(): JSX.Element {
             lineasDePedido: lineasDePedido,
         };
 
-        mutate({observaciones: orderData.observaciones, comensales: orderData.comensales, tableNumber: +nroMesa.nroMesa!, idPedido: 1, estado: "Solicitado", lineasPedido: orderData.lineasDePedido })
+        mutate({observaciones: orderData.observaciones, comensales: orderData.comensales, tableNumber: +nroMesa.nroMesa!, lineasPedido: orderData.lineasDePedido })
     };
 
 
@@ -89,6 +89,7 @@ export default function CreateOrder(): JSX.Element {
                 </Typography>
             </Box>
             <form onSubmit={handleSubmitOrder}>
+                { isError && <div className='w-full mb-2 px-6 py-2 bg-red-300 text-red-600 border rounded-lg border-red-600 '>{failureReason?.message}</div>}
                 <Grid container spacing={4}>
                     <Grid>
                         <Card sx={{ borderRadius: 3, boxShadow: 3 }}>

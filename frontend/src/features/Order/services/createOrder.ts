@@ -1,9 +1,8 @@
-import type { Pedido, OrderWithTableId } from "../interfaces/Order";
+import type { Pedido, OrderWithTableId, OrderWithOutId } from "../interfaces/Order";
 
 export async function createOrder (
 apiCall: (url: string, options?: RequestInit) => Promise<Response>,    
-orderData: Pedido | OrderWithTableId) {   
-
+orderData: Pedido | OrderWithTableId | OrderWithOutId) {   
     const tableNumber = "tableNumber" in orderData ? { tableNumber: orderData.tableNumber } : null 
     const bodyReq = {
         ...tableNumber,

@@ -9,6 +9,13 @@ export type LineaPedido = {
     subtotal: number
 }
 
+export type OrderWithOutId = {
+    lineasPedido: LineaPedido[],
+    observaciones: string,
+    comensales: number,
+    tableNumber: number
+}
+
 export type Pedido = {
     idPedido: number,
     lineasPedido: LineaPedido[],

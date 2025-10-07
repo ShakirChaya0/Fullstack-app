@@ -12,25 +12,25 @@ export function useMutationNews ({fn, currentPage, SuccessMsg, ErrorMsg, query, 
     const { mutate, isPending: isLoading, failureReason } = useMutation({
       mutationFn: (data: News) => fn(apiCall, data),
       onMutate: async (newData) => {
-        await queryClient.cancelQueries({ queryKey: ["News", currentPage, query, filter]})
+        // await queryClient.cancelQueries({ queryKey: ["News", currentPage, query, filter]})
         
-        const previousState: BackResults | undefined = queryClient.getQueryData(["News", currentPage, query, filter])
+        // const previousState: BackResults | undefined = queryClient.getQueryData(["News", currentPage, query, filter])
 
-        queryClient.setQueryData(["News", currentPage, query, filter], (oldData?: BackResults) => {
-          if (!oldData) return { News: [newData], totalItems: 1, pages: 1 }
-          const newNews = [newData, ...oldData.News]
-          const NewData = {
-            ...oldData,
-            News: newNews,
-            totalItems: oldData.totalItems + 1
-          }
+        // queryClient.setQueryData(["News", currentPage, query, filter], (oldData?: BackResults) => {
+        //   if (!oldData) return { News: [newData], totalItems: 1, pages: 1 }
+        //   const newNews = [newData, ...oldData.News]
+        //   const NewData = {
+        //     ...oldData,
+        //     News: newNews,
+        //     totalItems: oldData.totalItems + 1
+        //   }
           
-          if (previousState?.News && previousState.News.length >= 5) return previousState
+        //   if (previousState?.News && previousState.News.length >= 5) return previousState
 
-          return NewData
-        })
+        //   return NewData
+        // })
       
-        return { previousState }
+        // return { previousState }
       },
       onSuccess: () => {
         toast.success(SuccessMsg)

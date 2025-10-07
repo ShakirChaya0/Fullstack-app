@@ -11,7 +11,7 @@ export default async function updateWaiter (apiCall: (url: string, options?: Req
     })
     
     if(!response.ok) {
-        const errorData = await response.json().catch(() => null);
+        const errorData = await response.json();
         const errorMessage = errorData?.message
         switch(response.status){
             case 409:

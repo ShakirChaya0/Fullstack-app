@@ -65,8 +65,8 @@ export class OrderRepository implements IOrderRepository {
                 nroMesa: tableNumber,
                 idMozo: waiterId,
                 Linea_De_Pedido: {
-                create: order.items.map(linea => ({
-                    nroLinea: 0, //El trigger en BD pondrá el valor correspondiente
+                create: order.items.map((linea, index) => ({
+                    nroLinea: index + 1,
                     nombreProducto: linea.nombre,
                     monto: linea.monto,
                     estado: 'Pendiente',

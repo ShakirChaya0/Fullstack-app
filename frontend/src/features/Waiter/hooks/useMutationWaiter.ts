@@ -11,23 +11,23 @@ export function useMutationWaiter ({fn, currentPage, SuccessMsg, ErrorMsg, query
     const { mutate, isPending: isLoading, failureReason } = useMutation({
       mutationFn: (data: Waiter) => fn(apiCall, data),
       onMutate: async (newData) => {
-        await queryClient.cancelQueries({ queryKey: ["Waiters", currentPage, query]})
+        // await queryClient.cancelQueries({ queryKey: ["Waiters", currentPage, query]})
 
-        const previousState = queryClient.getQueryData(["Waiters", currentPage, query])
+        // const previousState = queryClient.getQueryData(["Waiters", currentPage, query])
 
-        queryClient.setQueryData(["Waiters", currentPage, query], (oldData?: BackResults) => {
-          if (!oldData) return { Waiters: [newData], totalItems: 1, pages: 1 }
-          const newWaiters = [newData, ...oldData.Waiters]
-          const NewData = {
-            ...oldData,
-            Waiters: newWaiters,
-            totalItems: oldData.totalItems + 1
-          }
+        // queryClient.setQueryData(["Waiters", currentPage, query], (oldData?: BackResults) => {
+        //   if (!oldData) return { Waiters: [newData], totalItems: 1, pages: 1 }
+        //   const newWaiters = [newData, ...oldData.Waiters]
+        //   const NewData = {
+        //     ...oldData,
+        //     Waiters: newWaiters,
+        //     totalItems: oldData.totalItems + 1
+        //   }
           
-          return NewData
-        })
+        //   return NewData
+        // })
       
-        return { previousState }
+        // return { previousState }
       },
       onSuccess: () => {
         toast.success(SuccessMsg)
