@@ -6,7 +6,7 @@ export function WaiterRouter () {
     const waiterRouter = Router();
     const waiterController = new WaiterController();
     
-    waiterRouter.get("/", (req, res, next) => { waiterController.getWaiters(req, res, next) }); // RoleMiddleware(["Administrador"])
+    waiterRouter.get("/", RoleMiddleware(["Administrador"]), (req, res, next) => { waiterController.getWaiters(req, res, next) }); // RoleMiddleware(["Administrador"])
 
     waiterRouter.get("/id/:idMozo", (req, res, next) => { waiterController.getWaiterById(req, res, next) }); // RoleMiddleware(["Administrador", "Mozo"])
     
@@ -16,7 +16,7 @@ export function WaiterRouter () {
 
     waiterRouter.post("/", (req, res, next) => { waiterController.createWaiter(req, res, next) }); // RoleMiddleware(["Administrador"])
 
-    waiterRouter.patch("/update", (req, res, next) => { waiterController.modifyWaiter(req, res, next) }); // RoleMiddleware(["Administrador", "Mozo"])
+    waiterRouter.patch("/update/:idMozo", RoleMiddleware(["Administrador", "Mozo"]), (req, res, next) => { waiterController.modifyWaiter(req, res, next) }); 
 
     return waiterRouter;
 }

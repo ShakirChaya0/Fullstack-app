@@ -5,20 +5,15 @@ export default async function updateWaiter (apiCall: (url: string, options?: Req
       Object.entries(datas).filter(([, value]) => value !== "")
     );
 
-    const response = await apiCall(`mozos/id/${datas.idMozo}`, {
+    const response = await apiCall(`mozos/update/${datas.idMozo}`, {
         method: "PATCH",
         body: JSON.stringify(body)
     })
     
     if(!response.ok) {
-        const errorData = await response.json();
+        const errorData = await response.json().catch(() => null);
         const errorMessage = errorData?.message
-        switch(response.status){
-            case 409:
-                throw new Error(errorMessage)
-            case 503:
-                throw new Error(errorMessage)
-        }
+        throw new Error(errorMessage)
     }
 
     const data = await response.json()

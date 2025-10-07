@@ -61,7 +61,7 @@ export class OrderRepository implements IOrderRepository {
                 horaInicio: timeAsDate,
                 estado: 'Solicitado',
                 cantCubiertos: order.cantidadCubiertos,
-                observaciones: order.observacion,
+                observaciones: order.observacion ?? "",
                 nroMesa: tableNumber,
                 idMozo: waiterId,
                 Linea_De_Pedido: {

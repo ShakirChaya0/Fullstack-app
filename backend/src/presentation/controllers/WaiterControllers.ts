@@ -44,14 +44,14 @@ export class WaiterController {
 
     public async modifyWaiter(req: AuthenticatedRequest, res: Response, next: NextFunction) {
         try {
-            const waiterId = req.user?.idUsuario;
+            const { idMozo }  = req.params;
 
-            if(!waiterId) throw new ValidationError('No se ingreso un ID válido');
+            if(!idMozo) throw new ValidationError('No se ingreso un ID válido');
 
             const data = req.body;
             const validation = ValidateWaiterPartial(data);
 
-            const updatedWaiter = await this.modifyWaiterUseCase.execute(waiterId, validation);
+            const updatedWaiter = await this.modifyWaiterUseCase.execute(idMozo, validation);
 
             const filteredWaiters = {
                 nombreUsuario: updatedWaiter.userName,

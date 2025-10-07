@@ -140,6 +140,7 @@ export class WaiterRepository implements IWaiterRepository {
             include: { Usuarios: true },
         });
 
+
         if (!waiter) return null;
 
         return this.toDomainEntity(waiter);
