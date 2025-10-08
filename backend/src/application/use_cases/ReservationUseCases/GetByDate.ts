@@ -7,10 +7,10 @@ export class GetByDate{
     private readonly reservationRepository = new ReservationRepository(),
   ) {}
   
-  async execute(date: Date): Promise<Reservation[]> {
-    const reservations = await this.reservationRepository.getByDate(date);
-    if (reservations.length === 0) throw new NotFoundError(`No se encontraron reservas para la fecha dada.`);
-
-    return reservations;
+  async execute(date: Date, page: number, pageSize: number): Promise<{ data: Reservation[]; meta: { page: number; pageSize: number; total: number; totalPages: number } }> {
+    const {data, meta} = await this.reservationRepository.getByDate(date, page, pageSize);
+    if (data.length === 0 && page === 1) throw new NotFoundError(`No se encontraron reservas para la fecha de ${date}.`);
+        
+    return {data, meta};
   }
 }

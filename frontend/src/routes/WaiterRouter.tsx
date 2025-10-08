@@ -5,6 +5,8 @@ import { ReservationsView } from "../features/Reservation/pages/ReservationListT
 const CreateOrder = lazy(() => import("../features/Tables/pages/CreateOrder"));
 const ShowWaiterTables = lazy(() => import("../features/Tables/pages/ShowWaiterTables"))
 const SkeletonCreateOrder = lazy(() => import("../features/Tables/pages/CreateOrderSkeletonBody"))
+import { AvailableTable } from "../features/Tables/pages/AvailableTable";
+
 
 export function WaiterRouter() {
     return (
@@ -17,6 +19,7 @@ export function WaiterRouter() {
                         <CreateOrder/>
                     </Suspense>
                 }/>
+                <Route path="MesasDisponibles" element={<AvailableTable />} />
             </Route>
         </Routes>
 

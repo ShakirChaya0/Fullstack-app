@@ -15,6 +15,7 @@ export function ConfirmModal({
   onConfirm,
   onCancel
 }: ConfirmationModalProps) {
+  
   if (!isOpen) return null;
 
   return (

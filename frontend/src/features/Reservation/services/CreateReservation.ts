@@ -13,11 +13,18 @@ export default async function CreateReservation(newReservation: ReservationCreat
             commensalsNumber: newReservation._commensalsNumber
         })
     });
-
-    if (!res.ok) {
-        if (res.status === 409) throw new Error("Ya realizo una reserva para esa fecha y hora");
-        throw new Error("error")
+ if (!res.ok) {
+    // Intentamos leer el JSON del backend
+    let msg = "Ocurrió un error al crear la reserva";
+    try {
+      const data = await res.json();
+      msg = data?.message || msg;
+    } catch (e) {
+      console.error("No se pudo parsear el mensaje del backend", e);
     }
+
+    throw new Error(msg);
+  }
 
     const data = await res.json();
     

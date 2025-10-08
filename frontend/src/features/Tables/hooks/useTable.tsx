@@ -1,30 +1,15 @@
-import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import type { ITable } from "../interfaces/ITable";
-import { fetchGetAllTable } from "../services/fetchTable";
-import useApiClient from "../../../shared/hooks/useApiClient";
+import { useApiClient } from "../../../shared/hooks/useApiClient";
+import { getAllTable } from "../services/getAllTable";
 
 export function useTables() {
-  const [tables, setTables] = useState<ITable[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const { apiCall } = useApiClient()
+  const { apiCall } = useApiClient();
 
-  useEffect(() => {
-    const loadTables = async () => {
-      try {
-        setLoading(true);
-        const  table  = await fetchGetAllTable(apiCall);
-        setTables(table);
-      } catch (err) {
-        setError("Error cargando las mesas");
-        console.log(err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadTables();
-  }, []);
-
-  return { tables, loading, error };
+  return useQuery<ITable[], Error>({
+    queryKey: ["tables"], 
+    queryFn: () => getAllTable(apiCall),
+    staleTime: 1000 * 60 * 2, 
+    retry: 2, 
+  });
 }

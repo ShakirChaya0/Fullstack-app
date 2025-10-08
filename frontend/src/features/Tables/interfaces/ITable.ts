@@ -1,4 +1,4 @@
-export type statusTable = 'Libre' |'Ocupada';
+import type { statusTable } from "../types/TableTypes"
 
 export interface ITable {
     readonly _tableNum: number, 

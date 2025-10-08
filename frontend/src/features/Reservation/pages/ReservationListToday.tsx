@@ -1,61 +1,104 @@
-// src/components/ReservationsView.tsx
-import { useState } from 'react';
-import type { IReservation, StateReservation } from '../interfaces/IReservation';
-import ReservationCard from '../components/ReservationCardWaiter';
-
-// Datos de MOCK para la vista previa (normalmente vendrían de useReservations)
-const MOCK_RESERVATIONS: IReservation[] = [
-  {
-    _reserveId: 101, _reserveDate: new Date(), _reserveTime: '20:00', _cancelationDate: null, _commensalsNumber: 4, _status: 'Realizada', 
-    _clientPublicInfo: { nombre: 'Juan', apellido: 'Pérez', telefono: '123456789' }, _table: [{
-      _tableNum: 5, _capacity: 1,
-      _state: 'Libre'
-    }]
-  },
-  {
-    _reserveId: 102, _reserveDate: new Date(), _reserveTime: '20:30', _cancelationDate: null, _commensalsNumber: 2, _status: 'Asistida', 
-    _clientPublicInfo: { nombre: 'María', apellido: 'Gómez', telefono: '987654321' }, _table: [{ _tableNum: 12, _capacity: 4 , _state:"Ocupda"}]
-  },
-  {
-    _reserveId: 103, _reserveDate: new Date(), _reserveTime: '21:00', _cancelationDate: null, _commensalsNumber: 6, _status: 'No_Asistida', 
-    _clientPublicInfo: { nombre: 'Carlos', apellido: 'Rodríguez', telefono: '112233445' }, _table: [{ _tableNum: 8, _capacity: 4 , _state:"Ocupda" }, { _tableNum: 9, _capacity: 4 , _state:"Ocupda" }]
-  },
-  {
-    _reserveId: 104, _reserveDate: new Date(), _reserveTime: '19:45', _cancelationDate: new Date(), _commensalsNumber: 3, _status: 'Cancelada', 
-    _clientPublicInfo: { nombre: 'Laura', apellido: 'Martínez', telefono: '001122334' }, _table: [{ _tableNum: 3, _capacity: 4 , _state:"Ocupda" }]
-  },
-];
+import type { IReservation } from '../interfaces/IReservation';
+import { ReservationCard } from '../components/ReservationCardWaiter';
+import { useReservations } from '../hooks/useReservation';
+import { useEffect, useState } from 'react';
+import { hoy } from '../constants/constants';
+import { Autocomplete, TextField } from '@mui/material';
 
 export function ReservationsView() {
-  const [searchTerm, setSearchTerm] = useState('');
+  const {
+    data,
+    isFetchingNextPage,
+    hasNextPage,
+    fetchNextPage,
+    status,
+    error,
+  } = useReservations(4, 'today');
 
-  // Lógica de filtrado simple para la simulación
-  const filteredReservations = MOCK_RESERVATIONS.filter(res => {
-    const fullName = `${res._clientPublicInfo.nombre} ${res._clientPublicInfo.apellido}`.toLowerCase();
-    return fullName.includes(searchTerm.toLowerCase());
+  const [searchTerm, setSearchTerm] = useState('');
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState('');
+
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedSearchTerm(searchTerm);
+    }, 500);
+    return () => clearTimeout(handler);
+  }, [searchTerm]);
+
+  if (status === 'pending') {
+    return <div className="text-center py-10">Cargando reservas...</div>;
+  }
+
+  if (status === 'error') {
+    return (
+      <div className="text-red-500 text-center py-10">
+        Error al cargar: {error.message}
+      </div>
+    );
+  }
+
+  const allReservations: IReservation[] = data.pages.flatMap((page) => page.data);
+  
+  const filteredReservations = allReservations.filter((res) => {
+    if (res._status !== 'Cancelada' && res._status !== 'No_Asistida') {
+      const fullName = `${res._clientPublicInfo.nombre} ${res._clientPublicInfo.apellido}`.toLowerCase();
+      return fullName.includes(searchTerm.toLowerCase());
+    }
   });
 
   return (
     <div className="p-4 md:p-8 bg-gray-50 w-full">
-      <h1 className="text-3xl font-extrabold text-gray-800 mb-6 border-b pb-2">Reservas de Hoy 📅</h1>
+      <h1 className="text-3xl font-extrabold text-center text-gray-800 mb-6 border-b pb-2">
+        Reservas de Hoy - {hoy}
+      </h1>
 
-      {/* Barra de Búsqueda */}
-      <div className="mb-6">
-        <input
-          type="text"
-          placeholder="Buscar por nombre o apellido del cliente..."
+      <div className="mb-6 w-full">
+        <Autocomplete
+          freeSolo
+          options={[]}
           value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 ease-in-out text-gray-700"
+          onInputChange={(event, newValue) => setSearchTerm(newValue)}
+          renderInput={(params) => (
+            <TextField
+              sx={{
+          '& .MuiOutlinedInput-root': {
+            borderRadius: 16, // redondeado
+            backgroundColor: '#f9fafb', // gris claro como fondo
+            paddingRight: 1,
+            '&:hover fieldset': {
+              borderColor: '#f59e0b', // borde ámbar al hover
+            },
+            '&.Mui-focused fieldset': {
+              borderColor: '#f59e0b', // borde ámbar al focus
+              boxShadow: '0 0 0 2px rgba(245,158,11,0.2)', // glow suave
+            },
+          },
+          '& .MuiInputLabel-root': {
+            color: '#374151', // gris oscuro label
+            fontWeight: 500,
+          },
+          '& .MuiInputBase-input': {
+            padding: '12px 14px', // más padding
+            fontSize: '0.95rem',
+            color: '#1f2937', // texto gris oscuro
+          },
+        }}
+              {...params}
+              label="Buscar por cliente"
+              variant="outlined"
+              fullWidth
+            />
+          )}
         />
       </div>
 
-      {/* Lista de Reservas */}
       <div className="space-y-4">
         {filteredReservations.length > 0 ? (
           filteredReservations.map((reservation) => (
-            // Clonamos la reserva para que cada tarjeta tenga su propio estado inicial
-            <ReservationCard key={reservation._reserveId} reservation={{...reservation}} /> 
+            <ReservationCard
+              key={reservation._reserveId}
+              reservation={{ ...reservation }}
+            />
           ))
         ) : (
           <div className="text-center py-10 text-gray-500 border border-dashed rounded-lg">
@@ -64,17 +107,23 @@ export function ReservationsView() {
         )}
       </div>
 
-      {/* Simulación de Carga Infinita */}
       <div className="flex justify-center py-8">
-        <button
-          className="cursor-pointer px-6 py-2 bg-indigo-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 transition duration-150 ease-in-out"
-          onClick={() => console.log('Simulando cargar más páginas...')}
-        >
-          Cargar más reservas...
-        </button>
+        {isFetchingNextPage ? (
+          <div className="text-indigo-600 font-semibold">
+            Cargando más reservas...
+          </div>
+        ) : hasNextPage ? (
+          <button
+            className="cursor-pointer px-6 py-2 bg-gray-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 transition duration-150 ease-in-out active:scale-95 disabled:opacity-50"
+            onClick={() => fetchNextPage()}
+            disabled={isFetchingNextPage}
+          >
+            Cargar más reservas
+          </button>
+        ) : filteredReservations.length > 0 ? (
+          <p className="text-gray-500">Fin de todas las reservas de hoy.</p>
+        ) : null}
       </div>
     </div>
   );
-};
-
-export default ReservationsView;
+}

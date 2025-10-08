@@ -6,7 +6,7 @@ import { ConfirmModal } from "../components/ModalConfirmReservation";
 import dateParser from "../../../shared/utils/dateParser";
 
 export default function ReservationList() {
-    const {data, isLoading, error, fetchNextPage, hasNextPage, isFetchingNextPage} = useReservations(4);
+    const {data, isLoading, error, fetchNextPage, hasNextPage, isFetchingNextPage} = useReservations(4, "byClient");
     const {mutate: UpdateReservation} = useReservationMutation({
         handleError: (msg) => console.log(msg), 
     });
@@ -65,9 +65,8 @@ export default function ReservationList() {
     const reservationToCancel = allReservations.find((r) => r._reserveId === selectedReservation);
 
     return (
-        <main className="p-6">
-            <h1 className="text-2xl font-bold mb-8 text-center">Sus Reservas</h1>
-            
+        <div className="p-6 w-full">
+            <h1 className="text-3xl font-extrabold text-center text-gray-800 mb-6">Sus Reservas</h1>
             <div className="flex flex-wrap justify-center gap-4 max-w-7xl mx-auto">
                 {data.pages.map((page, pageIndex) => (
                     <div key={`page-${pageIndex}`} className="contents">
@@ -105,6 +104,6 @@ export default function ReservationList() {
                   onConfirm={() => handleCancel(reservationToCancel._reserveId)}
                 />
                 )}
-        </main>
+        </div>
     )
 }

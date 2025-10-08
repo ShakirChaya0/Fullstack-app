@@ -142,10 +142,33 @@ export class ReservationRepository implements IReservationRepository {
     return reservation ? this.toDomainEntity(reservation) : null;
   }
 
-  public async getByDate(date: Date): Promise<Reservation[]> {
-    const reservations = await prisma.reserva.findMany({
-      where : { fechaReserva: new Date(date) }, 
-      include: { 
+  public async getByDate(date: Date, page?: number, pageSize?: number): Promise<{data: Reservation[];
+    meta: {
+      page: number;
+      pageSize: number;
+      total: number;
+      totalPages: number;
+    };
+  }> {
+
+    const dateOnly = new Date(date);
+    dateOnly.setUTCHours(0, 0, 0, 0);
+
+    const startOfDay = dateOnly;
+
+    const startOfNextDay = new Date(startOfDay);
+    startOfNextDay.setUTCDate(startOfNextDay.getUTCDate() + 1);
+
+    const dateRangeFilter = {
+      fechaReserva: {
+        gte: startOfDay,
+        lt: startOfNextDay,
+      },
+    };
+
+    const queryOptions: Prisma.ReservaFindManyArgs = {
+      where: dateRangeFilter,
+      include: {
         Clientes: {
           include: {
             Usuarios: true,
@@ -155,14 +178,39 @@ export class ReservationRepository implements IReservationRepository {
         },
         Mesas_Reservas: {
           include: {
-            Mesa: true
+            Mesa: true,
           },
         },
       },
+    };
+
+    if (page && pageSize && page > 0 && pageSize > 0) {
+      queryOptions.skip = (page > 0 ? page - 1 : 0) * pageSize;
+      queryOptions.take = pageSize;
+    }
+
+     const reservations = await prisma.reserva.findMany({
+          ...queryOptions
+        }) as ReservationWithClient[];
+
+    const total = await prisma.reserva.count({
+      where: dateRangeFilter,
     });
 
-    return reservations.map(reservation => this.toDomainEntity(reservation));
+    const effectivePage = page && page > 0 ? page : 1;
+    const effectivePageSize = pageSize && pageSize > 0 ? pageSize : total;
+
+    return {
+      data: reservations.map((reservation) => this.toDomainEntity(reservation)),
+      meta: {
+        page: effectivePage,
+        pageSize: effectivePageSize,
+        total,
+        totalPages: effectivePageSize > 0 ? Math.ceil(total / effectivePageSize) : 1,
+      },
+    };
   }
+
 
   public async updateStatus(id: number, status: StateReservation): Promise<Reservation> {
     const updatedReservation = await prisma.reserva.update({
@@ -198,7 +246,6 @@ export class ReservationRepository implements IReservationRepository {
       totalPages: number;
     };
   }> {
-
       const reservations = await prisma.reserva.findMany({
       where: { idCliente: clientId },
       include: { 

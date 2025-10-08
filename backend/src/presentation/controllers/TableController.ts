@@ -5,7 +5,7 @@ import { GetAllTable} from "../../application/use_cases/TableUseCase/GetTablesUs
 import { UpdateTableUseCase } from "../../application/use_cases/TableUseCase/UpdateTableUseCase.js";
 import { GetTableByCapacity } from "../../application/use_cases/TableUseCase/GetTablesByCapacity.js";
 import { DeleteTable } from "../../application/use_cases/TableUseCase/DeleteTable.js";
-import { UpdateCapacityTableUseCase } from "../../application/use_cases/TableUseCase/UpdateCapacitytableUseCase.js";
+import { UpdateCapacityTableUseCase } from "../../application/use_cases/TableUseCase/UpdateCapacityTableUseCase.js";
 import { ValidationError } from "../../shared/exceptions/ValidationError.js";
 
 export class TableController {
@@ -66,16 +66,17 @@ export class TableController {
 
     public update = async (req: Request, res: Response, next: NextFunction) => {
         try {
-            const { numTable, statusTable } = req.query; 
+            const { numTable } = req.params; 
+            const { statusTable } = req.body
 
             if (!numTable) throw new ValidationError('El numero de mesa es obligatorio'); 
             
             const numTableint = Number(numTable)
 
-            if (statusTable !== 'Libre') throw new ValidationError('El estado de la mesa ingresado es incorrecto');
+            if (statusTable !== 'Libre' && statusTable !== 'Ocupada') throw new ValidationError('El estado de la mesa ingresado es incorrecto');
 
-            await this.updateTable.execute(numTableint); 
-            res.status(204).json({message: "Mesa liberarada exitosamente"});
+            const updatedeTable = await this.updateTable.execute(numTableint, statusTable); 
+            res.status(204).json(updatedeTable);
 
         } catch (error) {
             next(error);

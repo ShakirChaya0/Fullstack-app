@@ -18,6 +18,7 @@ const SuccessfulPaymentPage = lazy(() => import("../features/Payment/pages/Succe
 const PendingPaymentPage = lazy(() => import("../features/Payment/pages/PendingPaymentPage"));
 const FailurePaymentPage = lazy(() => import("../features/Payment/pages/FailurePaymentPage"));
 const PaymentStatusSkeleton = lazy(() => import("../features/Payment/pages/PaymentStatusSkeleton"));
+import { ReservationFormSkeleton } from "../features/Reservation/pages/SkeletonReservationClient";
 
 export function ClientRouter() {
   return (
@@ -31,7 +32,9 @@ export function ClientRouter() {
         <Route path="/Menu/PedidoConfirmado" element={<FinishedOrder/>}/>
         <Route path="/Reserva" element={
           <ProtectedRoute userType={"Cliente"}>
-            <ReservationCRUD/>
+            <Suspense fallback = {<ReservationFormSkeleton />}>
+              <ReservationCRUD/>
+            </Suspense>
           </ProtectedRoute>
         }/>
         <Route path="/Reserva/Historial" element={

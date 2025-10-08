@@ -3,11 +3,22 @@ import { ValidationError } from "../exceptions/ValidationError.js";
 
 export const ReservationSchema = z.object({
   reserveDate: z.preprocess((val) => {
-      if (typeof val === "string" || val instanceof Date) return new Date(val);
-  }, z.date().refine(date => date >= new Date(new Date().setHours(0,0,0,0)), {
-      message: "La fecha de la reserva no puede ser en el pasado"
+    if (!val) return undefined;
+    if (typeof val === "string") {
+      const [year, month, day] = val.split("T")[0].split("-").map(Number);
+      return new Date(year, month - 1, day); // hora local
+    }
+    if (val instanceof Date) {
+      return new Date(val.getFullYear(), val.getMonth(), val.getDate());
+    }
+  }, z.date().refine(date => {
+    const today = new Date();
+    today.setHours(0,0,0,0);
+    return date.getTime() >= today.getTime();
+  }, {
+    message: "La fecha de la reserva no puede ser en el pasado"
   })),
-
+  
   reserveTime: z.string()
       .regex(/^([01]?[0-9]|2[0-3]):[0-5][0-9]$/, "Formato de hora inválido. Use HH:mm")
       .refine(time => {

@@ -41,10 +41,15 @@ export default function useReservationMutation({ handleError }: UseResMutationPa
     },
 
     onSuccess: async (_data, variables) => {
-      await queryClient.invalidateQueries({ queryKey: ["reservation"] });
+      // Invalida y refetch de todas las reservas activas
+      await queryClient.refetchQueries({ queryKey: ["reservations"], type: "active" });
 
       if (variables._status === "Cancelada") {
         toast.success("La reserva se canceló exitosamente");
+      } else if (variables._status === "Asistida") {
+        toast.success("La reserva fue marcada como Asistida");
+      } else if (variables._status === "No_Asistida") {
+        toast.success("La reserva fue marcada como No Asistida");
       } else {
         toast.success("Se creó la reserva con éxito");
       }
@@ -53,8 +58,8 @@ export default function useReservationMutation({ handleError }: UseResMutationPa
     },
 
     onError: (err) => {
-      toast.error("Ocurrió un error al procesar la reserva");
-      if (err instanceof Error) handleError(err.message);
+      toast.error(err.message);
+      handleError(err.message);
       console.log(err);
     },
   });

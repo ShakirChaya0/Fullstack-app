@@ -1,60 +1,65 @@
 import { useState } from "react";
-import ReservationForm, { type FormData } from "../components/ReservationForm";
-import useReservationMutation from "../hooks/userReservationMutation";
-import { ConfirmModal } from "../components/ModalConfirmReservation";
 import useEntity from "../../Institution/hooks/useEntity";
 import { fetchPolicy } from "../../Institution/services/fetchPolicy";
-import type Policy from "../../Institution/interfaces/Policy";
+import { ConfirmModal } from "../components/ModalConfirmReservation";
+import useReservationMutation from "../hooks/userReservationMutation";
+import ReservationForm, { type ReservationFormData } from "../components/ReservationForm";
 
+export default function ReservationPage() {
+  const [showModal, setShowModal] = useState(false);
+  const [pendingData, setPendingData] = useState<ReservationFormData | null>(null);
 
-export default function ReservationCRUD() {
-    const [showModal, setShowModal] = useState<boolean>(false)
-    const [errorMessage, setErrorMessage] = useState<string | null>(null)
-    const handleError = (message: string | null) => setErrorMessage(message);
-    const[,,data] = useEntity<Policy>("Policy",fetchPolicy);
-    const [pendingData, setPendingData] = useState<FormData | null>(null); 
+  // Traemos la política de cancelación
+  const [, , policyData] = useEntity("Policy", fetchPolicy);
 
-    const { mutate } = useReservationMutation({
-        handleError
+  // Hook de mutación para crear la reserva
+  const { mutate, isPending: isMutating } = useReservationMutation({
+    handleError: (errorMessage) => {
+      // Ya se maneja el toast dentro del hook, no necesitamos otra notificación
+      console.error(errorMessage);
+    },
   });
 
-    const handleFormSubmit = (data: FormData) => {
-        setPendingData(data);
-        setShowModal(true); // abrir modal antes de mutación
+  const handleFormSubmit = (data: ReservationFormData) => {
+    setPendingData(data);
+    setShowModal(true);
   };
 
-    const handleConfirm = () => {
+  const handleConfirm = () => {
     if (!pendingData) return;
 
-        mutate({
-            _reserveDate: new Date(pendingData.FechaReserva),
-            _reserveTime: pendingData.HoraReserva,
-            _commensalsNumber: pendingData.CantidadComensales
-        });
-    }
+    mutate({
+      _reserveDate: new Date(pendingData.FechaReserva),
+      _reserveTime: pendingData.HoraReserva,
+      _commensalsNumber: pendingData.CantidadComensales,
+    });
 
-    const handleCancel = () => {
-        setShowModal(false);
-        setPendingData(null);
-    };
+    setShowModal(false);
+    setPendingData(null);
+  };
 
-    const modalMessage = `Confirmar la reserva a las ${pendingData?.HoraReserva}. Podes cancelar las mismas con ${data?._horasDeAnticipacionParaCancelar} horas de antelacón`
+  const handleCancel = () => {
+    setShowModal(false);
+    setPendingData(null);
+  };
 
-    return (
-        <main className="p-4">
-          <ReservationForm onError={handleError} onFormSubmit={handleFormSubmit} />
-            {errorMessage && <p className="text-red-500 text-center mt-4">{errorMessage}</p>}
-        
-          <ConfirmModal
-            isOpen={showModal}
-            title="Confirmar Reserva"
-            message={modalMessage}
-            confirmLabel="Confirmar Reserva"
-            onConfirm={handleConfirm}
-            onCancel={handleCancel}
-          />
-        </main>
+  const modalMessage = `Confirmar la reserva a las ${pendingData?.HoraReserva}. 
+    Podés cancelar con ${policyData?._horasDeAnticipacionParaCancelar ?? 24} horas de antelación.`;
+
+  return (
+    <div className="bg-slate-100 w-full flex flex-col items-center justify-center p-4 font-sans">
+      <div className="w-full max-w-lg">
+        <ReservationForm onFormSubmit={handleFormSubmit} isMutating={isMutating} />
+      </div>
+
+      <ConfirmModal
+        isOpen={showModal}
+        title="Confirmar Reserva"
+        message={modalMessage}
+        onConfirm={handleConfirm}
+        onCancel={handleCancel}
+        confirmLabel="Confirmar"
+      />
+    </div>
   );
-    
-    
 }
