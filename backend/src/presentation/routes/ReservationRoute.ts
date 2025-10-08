@@ -11,7 +11,7 @@ export const ReservationRouter = () => {
   
   router.get("/:idReserva", controller.getById);
   
-  router.get("/", AuthMiddleware, RoleMiddleware(["Mozo"]), controller.getByDate);
+  router.get("/mozo/reservaDelDia", AuthMiddleware, RoleMiddleware(["Mozo"]), controller.getByDate);
   
   router.get("/cliente/historial", AuthMiddleware, RoleMiddleware(["Cliente"]), controller.getByClientId);
 

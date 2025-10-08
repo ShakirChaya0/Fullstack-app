@@ -7,7 +7,14 @@ export interface IReservationRepository {
   getExistingReservation(clientId: string, reservation: SchemaReservation): Promise<Reservation | null>;
   create(reservation: SchemaReservation, clientId: string, tables: Table[]): Promise<Reservation | null>; 
   getById(id: number): Promise<Reservation | null>;
-  getByDate(date: Date): Promise<Reservation[]>;
+  getByDate(date: Date, page: number, pageSize: number): Promise<{ data: Reservation[];
+  meta: {
+      page: number;
+      pageSize: number;
+      total: number;
+      totalPages: number;
+    };
+  }>;
   getByClientId(clientId: string, page: number, pageSize: number): Promise<{ data: Reservation[];
   meta: {
       page: number;

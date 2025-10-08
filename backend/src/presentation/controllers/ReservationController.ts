@@ -67,11 +67,14 @@ export class ReservationController {
 
   public getByDate = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const { date } = req.query;
-      if (!date || isNaN(Date.parse(date as string))) {
+      const { today } = req.query;
+      const page = parseInt(req.query.page as string) || 1;
+      const pageSize = parseInt(req.query.pageSize as string) || 10;
+
+      if (!today || isNaN(Date.parse(today as string))) {
         throw new ValidationError("Debe proporcionar una fecha válida");
       }
-      const reservations = await this.getByDateUseCase.execute(new Date(date as string));
+      const reservations = await this.getByDateUseCase.execute(new Date(today as string),  page, pageSize);
       res.status(200).json(reservations);
     } catch (error) {
       next(error);

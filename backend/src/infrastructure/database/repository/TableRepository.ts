@@ -2,6 +2,7 @@ import prisma from "../prisma/PrismaClientConnection.js"
 import { Table } from "../../../domain/entities/Table.js";
 import { schemaTable } from "../../../shared/validators/TableZod.js";
 import { ITableRepository } from "../../../domain/repositories/ITableRepository.js";
+import { TableState } from "../../../shared/types/SharedTypes.js";
 
 export class TableRepository implements ITableRepository {
     
@@ -104,13 +105,13 @@ export class TableRepository implements ITableRepository {
         return updatedTables;
     }
 
-    public async updateTable(numTable: number): Promise<Table | null> {
+    public async updateTable(numTable: number, status: TableState): Promise<Table | null> {
         const table = await prisma.mesa.update({
             where: {
                 nroMesa: numTable
             }, 
             data: {
-                estado: 'Libre'
+                estado: status
             }
         });
 

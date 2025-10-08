@@ -43,18 +43,23 @@ export class RegisterReservation {
     return null;
   }
 
-  private combineDateTime(date: Date, time: string): Date {
-    const [hours, minutes] = time.split(":").map(Number);
-    
-    return new Date(Date.UTC(
-      date.getUTCFullYear(),
-      date.getUTCMonth(),
-      date.getUTCDate(),
-      hours,
-      minutes,
-      0
-    ));
-  }
+private combineDateTime(date: Date, time: string): Date {
+  const [hours, minutes] = time.split(":").map(Number);
+
+  // Crear fecha local con la hora seleccionada
+  const localDate = new Date(date);
+  localDate.setHours(hours, minutes, 0, 0);
+
+  // Convertir a UTC al guardar
+  return new Date(Date.UTC(
+    localDate.getFullYear(),
+    localDate.getMonth(),
+    localDate.getDate(),
+    localDate.getHours(),
+    localDate.getMinutes(),
+    0
+  ));
+}
 
   public async execute(data: SchemaReservation, clientId: string): Promise<Reservation | null> {
     const policy = await this.policyRepository.getPolicy();
@@ -81,19 +86,28 @@ export class RegisterReservation {
     const dayReservation = data.reserveDate.getUTCDay();
     const schedule = await this.schedulelRepository.getById(dayReservation); 
 
-    if (!schedule) throw new NotFoundError('No hay horarios disponibles para ese dia'); 
+    if(!schedule) throw new BusinessError('No hay horarios de atención para ese día')
 
-    const [hours, minutes] = data.reserveTime.split(':').map(Number);
-    const timeAsDate = new Date(Date.UTC(1970, 0, 1, hours, minutes, 0, 0));
+    const [aperturaHours, aperturaMinutes] = schedule.horaApertura.split(":").map(Number);
+    const [cierreHours, cierreMinutes] = schedule.horaCierre.split(":").map(Number);
+    const [selectedHours, selectedMinutes] = data.reserveTime.split(":").map(Number);
 
-    const [aperturaHours, aperturaMinutes] = schedule.horaApertura.split(':').map(Number);
-    const [cierreHours, cierreMinutes] = schedule.horaCierre.split(':').map(Number);
+    const selectedTime = new Date(data.reserveDate);
+    selectedTime.setHours(selectedHours, selectedMinutes, 0, 0);
 
-    const aperturaDate = new Date(Date.UTC(1970, 0, 1, aperturaHours, aperturaMinutes, 0, 0));
-    const cierreDate = new Date(Date.UTC(1970, 0, 1, cierreHours, cierreMinutes, 0, 0));
+    const aperturaDate = new Date(data.reserveDate);
+    aperturaDate.setHours(aperturaHours, aperturaMinutes, 0, 0);
 
-    if (timeAsDate < aperturaDate || timeAsDate > cierreDate) throw new BusinessError('Horario fuera del rango de atención');
+    const cierreDate = new Date(data.reserveDate);
+    cierreDate.setHours(cierreHours, cierreMinutes, 0, 0);
+
+    console.log(selectedTime)
+    console.log(aperturaDate)
     
+    if (selectedTime < aperturaDate || selectedTime > cierreDate) {
+      throw new BusinessError('Horario fuera del rango de atención');
+    }
+
     //Validacion de Mesas disponibles y su asignacion
     const mesasDisponibles = await this.tableRepository.getAvailableTables(data.reserveDate, data.reserveTime);
     
