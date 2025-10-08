@@ -8,6 +8,7 @@ import ProfileCardSkeleton from "../features/Profile/components/ProfileCardSkele
 import UserProfile from "../features/Profile/pages/UserProfile";
 import  ReservationCRUD  from "../features/Reservation/pages/ReservationCRUD";
 import ReservationHistorial from "../features/Reservation/pages/ReservationList";
+import { ReservationFormSkeleton } from "../features/Reservation/pages/SkeletonReservationClient";
 
 export function ClientRouter() {
   return (
@@ -17,7 +18,11 @@ export function ClientRouter() {
         <Route path="/Menu" element={<Menu />} />
         <Route path="/Menu/Comidas" element={<FoodsList />} />
         <Route path="/Menu/Bebidas" element={<DrinksList />} />
-        <Route path="/Reserva" element={<ReservationCRUD/>}/>
+        <Route path="/Reserva" element={
+          <Suspense fallback = {<ReservationFormSkeleton />}>
+              <ReservationCRUD />
+          </Suspense>
+        }/>
         <Route path="/Reserva/Historial" element={<ReservationHistorial/>}></Route>
         <Route path="/Perfil" element={
           <Suspense fallback = {<ProfileCardSkeleton/>}>

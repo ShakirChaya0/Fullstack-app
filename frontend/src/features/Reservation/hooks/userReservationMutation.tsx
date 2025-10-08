@@ -58,8 +58,8 @@ export default function useReservationMutation({ handleError }: UseResMutationPa
     },
 
     onError: (err) => {
-      toast.error("Ocurrió un error al procesar la reserva");
-      if (err instanceof Error) handleError(err.message);
+      toast.error(err.message);
+      handleError(err.message);
       console.log(err);
     },
   });
