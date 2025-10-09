@@ -12,14 +12,14 @@ const ProfileCardSkeleton = lazy(() => import("../features/Profile/components/Pr
 const UserProfile = lazy(() => import("../features/Profile/pages/UserProfile"));
 const NewsCRUD = lazy(() => import("../features/News/pages/NewsCRUD"))
 const WaitersCRUD = lazy(() => import("../features/Waiter/pages/WaitersCRUD"))
-
+const AdminHomepage = lazy(() => import("../shared/components/AdminHomePage"))
 const DatosRestaurantes = lazy(() => import("../features/Institution/pages/Institution"));
 
 export function AdminRouter() {
   return (
     <Routes>
       <Route element={<AdminMainLayout/>}>
-        <Route path="/" element={<h1>Hola admin</h1>}/>
+        <Route path="/" element={<AdminHomepage/>}/>
         <Route path="/Novedades" element={ <NewsCRUD/>}/>
         <Route path="/DatosRestaurantes" element={<DatosRestaurantes/>}/>
         <Route path="/Mozos" element={<WaitersCRUD/>}/>
@@ -28,7 +28,7 @@ export function AdminRouter() {
             <TableCRUD/>
           </Suspense>
         }/> 
-        <Route path="/Horarios" element={<MainPanelSchedules/>}/>{/* Borrar todos los registros de horarios de la Base de datos antes de ejecutar /Admin/Horarios */}
+        <Route path="/Horarios" element={<MainPanelSchedules/>}/>
         <Route path="/Horarios/modificar" element={ <ModifySchedule/>}/>
         <Route path="Horarios/registrar" element={ <RegisterSchedule/>}/>
         <Route path="Productos" element={<MainPanelProduct/>}/>

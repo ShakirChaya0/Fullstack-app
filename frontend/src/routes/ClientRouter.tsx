@@ -18,13 +18,14 @@ const SuccessfulPaymentPage = lazy(() => import("../features/Payment/pages/Succe
 const PendingPaymentPage = lazy(() => import("../features/Payment/pages/PendingPaymentPage"));
 const FailurePaymentPage = lazy(() => import("../features/Payment/pages/FailurePaymentPage"));
 const PaymentStatusSkeleton = lazy(() => import("../features/Payment/pages/PaymentStatusSkeleton"));
+const ClientHomePage = lazy(() => import("../shared/components/ClienteHomePage"))
 import { ReservationFormSkeleton } from "../features/Reservation/pages/SkeletonReservationClient";
 
 export function ClientRouter() {
   return (
     <Routes>
       <Route element={<ClientMainLayout />}>
-        <Route path="/"></Route>
+        <Route path="/" element={<ClientHomePage/>}/>
         <Route path="/Menu" element={<Menu />} />
         <Route path="/Menu/Comidas" element={<FoodsList />} />
         <Route path="/Menu/Bebidas" element={<DrinksList />} />

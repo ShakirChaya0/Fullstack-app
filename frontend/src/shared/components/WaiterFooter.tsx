@@ -1,31 +1,18 @@
 import { Box, Typography, Link, IconButton, List, ListItem } from "@mui/material"; 
-import FacebookIcon from '@mui/icons-material/Facebook';
-import InstagramIcon from '@mui/icons-material/Instagram';
-import TwitterIcon from '@mui/icons-material/X';
-import PolicyIcon from '@mui/icons-material/Policy';
-import GavelIcon from '@mui/icons-material/Gavel';
-import EmailIcon from '@mui/icons-material/Email'; 
-import PhoneIcon from '@mui/icons-material/Phone'; 
 import DashboardIcon from '@mui/icons-material/Dashboard'; 
-import ScheduleIcon from '@mui/icons-material/Schedule'; 
-import FastfoodIcon from '@mui/icons-material/Fastfood'; 
+import EventSeatIcon from '@mui/icons-material/EventSeat';
+import TableRestaurantIcon from '@mui/icons-material/TableRestaurant';
+import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 
 export function WaiterFooter() {
   const currentYear = new Date().getFullYear();
   const restaurantName = "Tu Restaurante";
 
-  const socialLinks = [
-    { name: "Facebook", icon: <FacebookIcon fontSize="small" />, url: "#" },
-    { name: "Instagram", icon: <InstagramIcon fontSize="small" />, url: "#" },
-    { name: "Twitter", icon: <TwitterIcon fontSize="small" />, url: "#" },
-  ];
-
   const quickLinks = [
-    { label: "Panel Principal", url: "/Admin", icon: <DashboardIcon sx={{ fontSize: 16, mr: 0.5 }} /> },
-    { label: "Horarios", url: "/Admin/Horarios", icon: <ScheduleIcon sx={{ fontSize: 16, mr: 0.5 }} /> },
-    { label: "Productos", url: "/Admin/Productos", icon: <FastfoodIcon sx={{ fontSize: 16, mr: 0.5 }} /> },
+    { label: "Reserva del Día", url: "/ReservaDelDia/", icon: <CalendarTodayIcon sx={{ fontSize: 16, mr: 0.5 }} /> },
+    { label: "Mesas del Restaurante", url: "/MesasDelRestaurante/", icon: <TableRestaurantIcon sx={{ fontSize: 16, mr: 0.5 }} /> },
+    { label: "Mesas Disponibles", url: "/MesasDisponibles", icon: <EventSeatIcon sx={{ fontSize: 16, mr: 0.5 }} /> },
   ];
-
 
   return (
     <Box
@@ -34,7 +21,7 @@ export function WaiterFooter() {
       sx={{
         backgroundColor: "#222222", 
         color: "#E0E0E0",
-        py: { xs: 6, md: 8 },
+        py: { xs: 5, md: 6 },
         px: { xs: 4, md: 8 },
         width: "100%",
         textAlign: "center",
@@ -42,13 +29,13 @@ export function WaiterFooter() {
       }}
     >
       <Box 
-        className="max-w-6xl mx-auto"
+        className="max-w-4xl mx-auto"
         sx={{
           display: 'grid',
-          gap: { xs: 5, md: 4 },
-          gridTemplateColumns: { xs: '1fr', md: 'repeat(3, 1fr)' },
+          gap: { xs: 4, md: 3 },
+          gridTemplateColumns: { xs: '1fr', md: 'repeat(2, 1fr)' },
           textAlign: { xs: 'center', md: 'left' },
-          mb: 4,
+          mb: 3,
         }}
       >
         
@@ -66,35 +53,8 @@ export function WaiterFooter() {
             sx={{ mb: 2, color: '#B0B0B0' }}
             className="leading-relaxed"
           >
-            Plataforma de administración para restaurantes y bares. Gestiona tu restaurante de manera eficiente con nosotros.
+            Sistema de gestión para meseros. Visualiza tus mesas, reservas y disponibilidad de manera rápida y sencilla.
           </Typography>
-
-          <Box sx={{ 
-            display: 'flex', 
-            justifyContent: { xs: 'center', md: 'flex-start' },
-            gap: { xs: 1, sm: 2 },
-            mt: 2
-          }}>
-            {socialLinks.map((link) => (
-              <IconButton 
-                key={link.name} 
-                href={link.url} 
-                target="_blank" 
-                rel="noopener noreferrer" 
-                aria-label={`Seguinos en ${link.name}`}
-                sx={{ 
-                  color: '#E0E0E0', 
-                  transition: 'color 0.3s ease',
-                  '&:hover': {
-                    color: '#FFC107', 
-                    bgcolor: 'rgba(255, 255, 255, 0.05)'
-                  } 
-                }}
-              >
-                {link.icon}
-              </IconButton>
-            ))}
-          </Box>
         </Box>
 
         <Box>
@@ -130,55 +90,6 @@ export function WaiterFooter() {
             ))}
           </List>
         </Box>
-
-        <Box>
-          <Typography 
-            variant="subtitle1" 
-            component="p" 
-            sx={{ fontWeight: 600, mb: 2, color: '#FFFFFF' }}
-            className="uppercase tracking-wider"
-          >
-            Contacto & Legal
-          </Typography>
-          
-          <Box sx={{ color: '#B0B0B0' }} className="space-y-2">
-            <Typography variant="body2" sx={{ display: 'flex', alignItems: 'center', justifyContent: { xs: 'center', md: 'flex-start' } }}>
-                <EmailIcon sx={{ fontSize: 16, mr: 1 }} className="text-amber-400" />
-                admin@turestaurante.com
-            </Typography>
-            <Typography variant="body2" sx={{ display: 'flex', alignItems: 'center', justifyContent: { xs: 'center', md: 'flex-start' } }}>
-                <PhoneIcon sx={{ fontSize: 16, mr: 1 }} className="text-amber-400" />
-                (54) 11 5555-ADMIN
-            </Typography>
-          </Box>
-
-          <Box sx={{ 
-              display: 'flex', 
-              justifyContent: { xs: 'center', md: 'flex-start' }, 
-              gap: 2, 
-              flexWrap: 'wrap',
-              mt: 3 
-          }}>
-              <Link 
-                  href="#" 
-                  color="inherit" 
-                  underline="none" 
-                  sx={{ display: 'flex', alignItems: 'center', fontSize: '0.8rem', color: '#B0B0B0', '&:hover': { color: '#FFC107', textDecoration: 'underline' } }}
-              >
-                  <PolicyIcon sx={{ fontSize: 14, mr: 0.5 }} />
-                  Política de Privacidad
-              </Link>
-              <Link 
-                  href="#" 
-                  color="inherit" 
-                  underline="none" 
-                  sx={{ display: 'flex', alignItems: 'center', fontSize: '0.8rem', color: '#B0B0B0', '&:hover': { color: '#FFC107', textDecoration: 'underline' } }}
-              >
-                  <GavelIcon sx={{ fontSize: 14, mr: 0.5 }} />
-                  Términos y Condiciones
-              </Link>
-          </Box>
-        </Box>
       </Box>
 
       <Box sx={{ 
@@ -190,7 +101,7 @@ export function WaiterFooter() {
       }} />
 
       <Typography variant="caption" display="block" sx={{ color: '#909090', fontSize: '0.75rem' }}>
-        © {currentYear} {restaurantName}. Todos los derechos reservados. Desarrollado con ❤️ para la gestión de restaurantes.
+        © {currentYear} {restaurantName}. Sistema para meseros — desarrollado con ❤️ para facilitar tu trabajo.
       </Typography>
     </Box>
   );
