@@ -18,13 +18,9 @@ const SuccessfulPaymentPage = lazy(() => import("../features/Payment/pages/Succe
 const PendingPaymentPage = lazy(() => import("../features/Payment/pages/PendingPaymentPage"));
 const FailurePaymentPage = lazy(() => import("../features/Payment/pages/FailurePaymentPage"));
 const PaymentStatusSkeleton = lazy(() => import("../features/Payment/pages/PaymentStatusSkeleton"));
-<<<<<<< Updated upstream
 const ClientHomePage = lazy(() => import("../shared/components/ClienteHomePage"))
 const ReservationFormSkeleton = lazy(() => import("../features/Reservation/pages/SkeletonReservationClient"));
 
-=======
-const ReservationFormSkeleton = lazy(() => import("../features/Reservation/pages/SkeletonReservationClient"));
->>>>>>> Stashed changes
 
 export function ClientRouter() {
   return (
