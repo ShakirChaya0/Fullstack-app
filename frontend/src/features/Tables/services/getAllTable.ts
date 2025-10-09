@@ -7,5 +7,8 @@ export async function getAllTable(apiCall: (url: string, options?: RequestInit) 
     throw new Error(`Error al listar las mesas: ${response.status} ${response.statusText}`);
   }
 
-  return response.json();
+  const data = await response.json(); 
+  console.log("Response from getAllTable:", data);
+
+  return data;
 }
