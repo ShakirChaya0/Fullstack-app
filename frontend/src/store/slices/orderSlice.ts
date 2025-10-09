@@ -1,5 +1,5 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
-import type { Pedido } from "../../features/Order/interfaces/Order";
+import type { OrderStatus, Pedido } from "../../features/Order/interfaces/Order";
 import type { Bebida, Comida } from "../../features/Products/interfaces/products";
 
 const defaultState = { idPedido: 0, lineasPedido: [], estado: "", observaciones: "", comensales: 0 }
@@ -63,10 +63,14 @@ export const orderSlice = createSlice({
             console.log(action.payload)
             state.idPedido = action.payload
             return state
-        }
+        },
+        modifyStatus: (state, action: PayloadAction<OrderStatus>) => { 
+            // Se persisten los cambios ya que las validaciones ya fueron hechas en este punto
+            state.estado = action.payload
+        },
     }
 })
 
 export default orderSlice.reducer
 
-export const { addToCart, removeFromCart, confirmOrder, recoveryInitialState, assignOrderId} = orderSlice.actions
+export const { addToCart, removeFromCart, confirmOrder, recoveryInitialState, assignOrderId, modifyStatus} = orderSlice.actions

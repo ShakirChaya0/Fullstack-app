@@ -6,7 +6,7 @@ export default function FailurePaymentPage() {
     const navigate = useNavigate();
 
     const handleClick = () => {
-        navigate("/Pedido/Cuenta", { replace: true })
+        navigate("/Cliente/Pedido/Cuenta", { replace: true })
     }
 
     return (

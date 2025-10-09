@@ -1,5 +1,6 @@
+import type { OrderStatus } from "../../features/Order/interfaces/Order"
 import type { Bebida, Comida } from "../../features/Products/interfaces/products"
-import { addToCart, assignOrderId, confirmOrder, recoveryInitialState, removeFromCart } from "../../store/slices/orderSlice"
+import { addToCart, assignOrderId, confirmOrder, modifyStatus, recoveryInitialState, removeFromCart } from "../../store/slices/orderSlice"
 import { useAppDispatch } from "./store"
 
 
@@ -26,5 +27,9 @@ export const useOrderActions = () => {
         dispatch(assignOrderId(orderId))
     }
 
-    return { handleAddToCart, hanldeRemoveFromCart, handleConfirmOrder, handleRecoveyInitialState, handleAssignOrderId}
+    const handleModifyOrderStatus = (newStatus: OrderStatus) => {
+        dispatch(modifyStatus(newStatus))
+    }
+
+    return { handleAddToCart, hanldeRemoveFromCart, handleConfirmOrder, handleRecoveyInitialState, handleAssignOrderId, handleModifyOrderStatus}
 }

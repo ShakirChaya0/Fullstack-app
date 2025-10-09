@@ -19,11 +19,8 @@ export function useMutationOrderRegistration(order: Pedido) {
                 toast.error('Error al registrar el pedido')
                 return
             }
-            console.log('Estoy en Mutation')
-            console.log(data)
 
-            handleAssignOrderId(data.idPedido)
-
+            handleAssignOrderId(data.idPedido) //Se asigna al estado global el id del Pedido para ser usado en la cuenta
             toast.success('Pedido registrado con exito')
             navigate('/Cliente/Menu/PedidoConfirmado/')
         },

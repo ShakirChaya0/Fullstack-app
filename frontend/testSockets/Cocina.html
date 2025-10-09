@@ -14,7 +14,7 @@
         }
     });
 
-    // ws.emit('updateLineStatus', {idPedido: 38, nroLinea: 65, estadoLP: 'Terminada'})
+    ws.emit('updateLineStatus', {idPedido: 102, nroLinea: 1, estadoLP: 'En_Preparacion'})
     
     ws.on('activeOrders', (data) => {
         console.log(data)

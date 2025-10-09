@@ -29,7 +29,11 @@ export function ClientRouter() {
         <Route path="/Menu/Comidas" element={<FoodsList />} />
         <Route path="/Menu/Bebidas" element={<DrinksList />} />
         <Route path="/Menu/RealizarPedido" element={<ConfirmOrder/>}/>
-        <Route path="/Menu/PedidoConfirmado" element={<FinishedOrder/>}/>
+        <Route path="/Menu/PedidoConfirmado" element={
+          <ProtectedPage>
+            <FinishedOrder/>
+          </ProtectedPage>
+          }/>
         <Route path="/Reserva" element={
           <ProtectedRoute userType={"Cliente"}>
             <Suspense fallback = {<ReservationFormSkeleton />}>

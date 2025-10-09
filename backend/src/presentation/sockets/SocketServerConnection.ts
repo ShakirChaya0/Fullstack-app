@@ -7,6 +7,7 @@ import { registerOrderHandlers } from './handlers/OrderHandler.js';
 export let ioConnection: Server;
 
 export function SocketServerConnection(server: Http2Server) {
+    console.log('Estoy socket server conecction')
     ioConnection = new Server(server, {
       connectionStateRecovery: {
         maxDisconnectionDuration: 1000 * 60
@@ -20,27 +21,68 @@ export function SocketServerConnection(server: Http2Server) {
     ioConnection.use(AuthSocketMiddleware);
 
     const orderController = new OrderController();
-  
+
     ioConnection.on('connection', async (socket: AuthenticatedSocket) => {
-      if (socket.user?.tipoUsuario === "SectorCocina") {
+    console.log('🔌 Nueva conexión - Socket ID:', socket.id);
+    console.log('👤 Usuario:', socket.user?.username);
+    console.log('🎫 QR Token:', socket.qrToken);
+
+    if (socket.user?.tipoUsuario === "SectorCocina") {
         socket.join("cocina");
-        // REVISAR: debería hacerse en otro lado
+        console.log('👨‍🍳 Socket unido a sala: cocina');
+
         const activeOrders = await orderController.getActiveOrders();
         socket.emit('activeOrders', activeOrders);
-      }
-      else if (socket.user?.tipoUsuario === "Mozo") {
-        socket.join(`mozo:${socket.user.username}`);
-        // REVISAR: debería hacerse en otro lado
+    }
+    else if (socket.user?.tipoUsuario === "Mozo") {
+        const room = `mozo:${socket.user.username}`;
+        socket.join(room);
+        console.log(`🧑‍💼 Socket unido a sala: ${room}`);
+
         const waiterOrders = await orderController.getOrdersByWaiter(socket.user.idUsuario);
         socket.emit('waiterOrders', waiterOrders);
-      }
-      else if (socket.qrToken) {
-        socket.join(`comensal:${socket.qrToken}`);
-      }
+    }
+    else if (socket.qrToken) {
+        const room = `comensal:${socket.qrToken}`;
+        socket.join(room);
+        console.log(`🍽️ Socket unido a sala: ${room}`); // ✅ IMPORTANTE
+        // Ver si corresponde recuperar su pedido solicitado
+    } else {
+        console.warn('⚠️ Socket sin tipo de usuario ni qrToken');
+    }
 
-      registerOrderHandlers(ioConnection, socket);
-    });
+    registerOrderHandlers(ioConnection, socket);
+  });
     
     return ioConnection;
 }
 
+/*
+ioConnection.on('connection', async (socket: AuthenticatedSocket) => {
+    console.log('🔌 Nueva conexión - Socket ID:', socket.id);
+    console.log('👤 Usuario:', socket.user?.username);
+    console.log('🎫 QR Token:', socket.qrToken);
+
+    if (socket.user?.tipoUsuario === "SectorCocina") {
+        socket.join("cocina");
+        console.log('👨‍🍳 Socket unido a sala: cocina');
+        // ... resto del código
+    }
+    else if (socket.user?.tipoUsuario === "Mozo") {
+        const room = `mozo:${socket.user.username}`;
+        socket.join(room);
+        console.log(`🧑‍💼 Socket unido a sala: ${room}`);
+        // ... resto del código
+    }
+    else if (socket.qrToken) {
+        const room = `comensal:${socket.qrToken}`;
+        socket.join(room);
+        console.log(`🍽️ Socket unido a sala: ${room}`); // ✅ IMPORTANTE
+        // ... resto del código
+    } else {
+        console.warn('⚠️ Socket sin tipo de usuario ni qrToken');
+    }
+
+    registerOrderHandlers(ioConnection, socket);
+});
+*/
