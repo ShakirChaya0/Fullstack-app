@@ -2,7 +2,7 @@ import { Route, Routes } from "react-router";
 import { lazy, Suspense } from "react";
 import { AdminMainLayout } from "../shared/components/AdminMainLayout";
 import SkeletonTableBody from "../features/Tables/pages/SkeletonTableBody";
-import { TableCRUD } from "../features/Tables/pages/TableCRUD";
+const  TableCRUD = lazy(() => import("../features/Tables/pages/TableCRUD"));
 import { MainPanelSchedules } from "../features/Schedules/pages/MainPanelSchedules";
 import { ModifySchedule } from "../features/Schedules/pages/ModifySchedule";
 import { RegisterSchedule } from "../features/Schedules/pages/RegisterSchedules";

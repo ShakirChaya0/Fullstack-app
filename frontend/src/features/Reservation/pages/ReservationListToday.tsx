@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import { hoy } from '../constants/constants';
 import { Autocomplete, TextField } from '@mui/material';
 
-export function ReservationsView() {
+export default function ReservationsView() {
   const {
     data,
     isFetchingNextPage,

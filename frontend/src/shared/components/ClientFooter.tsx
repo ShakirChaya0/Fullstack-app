@@ -7,8 +7,8 @@ import GavelIcon from '@mui/icons-material/Gavel';
 import EmailIcon from '@mui/icons-material/Email'; 
 import PhoneIcon from '@mui/icons-material/Phone'; 
 import DashboardIcon from '@mui/icons-material/Dashboard'; 
-import ScheduleIcon from '@mui/icons-material/Schedule'; 
-import FastfoodIcon from '@mui/icons-material/Fastfood'; 
+import HistoryIcon from '@mui/icons-material/History';
+import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
 
 export function ClientFooter() {
   const currentYear = new Date().getFullYear();
@@ -21,9 +21,9 @@ export function ClientFooter() {
   ];
 
   const quickLinks = [
-    { label: "Panel Principal", url: "/Admin", icon: <DashboardIcon sx={{ fontSize: 16, mr: 0.5 }} /> },
-    { label: "Horarios", url: "/Admin/Horarios", icon: <ScheduleIcon sx={{ fontSize: 16, mr: 0.5 }} /> },
-    { label: "Productos", url: "/Admin/Productos", icon: <FastfoodIcon sx={{ fontSize: 16, mr: 0.5 }} /> },
+    { label: "Panel Principal", url: "/Cliente", icon: <DashboardIcon sx={{ fontSize: 16, mr: 0.5 }} /> },
+    { label: "Registrar Reserva", url: "/Cliente/Reserva", icon: <CalendarTodayIcon sx={{ fontSize: 16, mr: 0.5 }} /> },
+    { label: "Resgistro de Reservas", url: "/Cliente/Reserva/Historial", icon: <HistoryIcon sx={{ fontSize: 16, mr: 0.5 }} /> },
   ];
 
 
@@ -65,7 +65,7 @@ export function ClientFooter() {
             sx={{ mb: 2, color: '#B0B0B0' }}
             className="leading-relaxed"
           >
-            Plataforma de administración para restaurantes y bares. Gestiona tu restaurante de manera eficiente con nosotros.
+           Vive una experiencia gastronómica excepcional. Reserva fácilmente y descubre el mejor sabor con nuestro servicio personalizado.
           </Typography>
 
           <Box sx={{ 

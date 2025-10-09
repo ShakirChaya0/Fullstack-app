@@ -5,7 +5,7 @@ import { useTables } from "../hooks/useTable";
 import { useTableMutation } from "../hooks/useTableMutation";
 import { toast } from "react-toastify";
 
-export function AvailableTable() {
+export default function AvailableTable() {
   const { data: tables, isLoading, error } = useTables();
   const { mutateAsync: updateTable } = useTableMutation();
 

@@ -1,7 +1,7 @@
 import { useMemo } from "react";
 import { useForm } from "react-hook-form";
 import useAvailableSchedule from "../hooks/useAvailableSchedule";
-import { ReservationFormSkeleton } from "../pages/SkeletonReservationClient";
+import  ReservationFormSkeleton  from "../pages/SkeletonReservationClient";
 
 export interface ReservationFormData {
   FechaReserva: string;

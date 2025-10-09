@@ -1,32 +1,37 @@
-import * as React from 'react';
-import AppBar from '@mui/material/AppBar';
-import Box from '@mui/material/Box';
-import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
-import IconButton from '@mui/material/IconButton';
-import MenuIcon from '@mui/icons-material/Menu';
-import AccountCircle from '@mui/icons-material/AccountCircle';
-import MenuItem from '@mui/material/MenuItem';
-import Menu from '@mui/material/Menu';
-import Drawer from '@mui/material/Drawer';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemText from '@mui/material/ListItemText';
-import { NavLink } from 'react-router';
-import { ListItemButton } from '@mui/material';
-import useAuth from '../hooks/useAuth';
-import restauranteWhite from '../../shared/utils/assets/restauranteWhite.png' 
+import * as React from "react";
+import AppBar from "@mui/material/AppBar";
+import Box from "@mui/material/Box";
+import Toolbar from "@mui/material/Toolbar";
+import Typography from "@mui/material/Typography";
+import IconButton from "@mui/material/IconButton";
+import MenuIcon from "@mui/icons-material/Menu";
+import AccountCircle from "@mui/icons-material/AccountCircle";
+import MenuItem from "@mui/material/MenuItem";
+import Menu from "@mui/material/Menu";
+import Drawer from "@mui/material/Drawer";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/List";
+import ListItemButton from "@mui/material/ListItemButton";
+import ListItemText from "@mui/material/ListItemText";
+import Dialog from "@mui/material/Dialog";
+import { NavLink } from "react-router";
+import useAuth from "../hooks/useAuth";
+import useApiClient from "../hooks/useApiClient";
+import restauranteWhite from "../../shared/utils/assets/restauranteWhite.png";
+import { getClient, type ClienteProp } from "../../features/Client/Services/getClient";
 
-// Links de navegación para el cliente
+// --- Links de navegación ---
 const navLinks = [
-  { label: 'Realizar Pedido', path: '/Cliente/Menu' },
+  { label: "Registrar Reserva", path: "/Cliente/Reserva" },
+  { label: "Registro de Reservas", path: "/Cliente/Reserva/Historial" }
 ];
 
-// Componente para cada link de navegación, reutilizando los estilos del Admin
+// --- Componente de link individual ---
 const NavLinkItem = ({ to, label }: { to: string; label: string }) => (
   <Typography variant="h6" component="div">
     <NavLink
       to={to}
+      end
       className={({ isActive }) =>
         `
         relative pb-1 transition-all duration-300 
@@ -40,145 +45,238 @@ const NavLinkItem = ({ to, label }: { to: string; label: string }) => (
   </Typography>
 );
 
-
-//Este header se debe cambiar en el futuro la opción Realizar Pedido no va estar disponible al alcance de la nav Bar!!
 export default function ClientHeader() {
-  const { logout, user } = useAuth(); // Asume que useAuth funciona igual para cliente
+  const { logout, user } = useAuth();
+  const { apiCall } = useApiClient();
+
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [drawerOpen, setDrawerOpen] = React.useState(false);
+  const [cliente, setCliente] = React.useState<null | ClienteProp>(null);
+  const [openModal, setOpenModal] = React.useState(false);
 
+  // Cargar estado del cliente
+  React.useEffect(() => {
+    (async () => {
+      const clienteData = await getClient(apiCall, user?.idUsuario ?? "");
+      setCliente(clienteData);
+    })();
+  }, []);
+
+  // Mensaje del bloqueo
+  const motivoBloqueo =
+    "Tu cuenta se encuentra temporalmente deshabilitada debido a múltiples inasistencias. Por favor, comunícate con el restaurante para reactivar tu acceso.";
+
+  // Controladores del menú y modal
   const handleMenu = (event: React.MouseEvent<HTMLElement>) => setAnchorEl(event.currentTarget);
   const handleClose = () => setAnchorEl(null);
   const toggleDrawer = (open: boolean) => () => setDrawerOpen(open);
 
+  // Interceptar click en “Registrar Reserva”
+  const handleReservaClick = (e: React.MouseEvent) => {
+    if (cliente?.estadoCliente === "Deshabilitado") {
+      e.preventDefault();
+      setOpenModal(true);
+    }
+  };
+
   return (
-    <AppBar position="static" sx={{ bgcolor: "#222222", height: "4rem"}}>
-      <Toolbar sx={{ display: 'flex', justifyContent: 'space-between' }}>
-        
-        <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          
-          {/* Botón menú hamburguesa en mobile (VISIBLE EN XS, a la izquierda) */}
-          <IconButton
-            size="large"
-            edge="start"
-            color="inherit"
-            aria-label="menu"
-            // Se oculta en desktop (md)
-            sx={{ display: { xs: "block", md: "none", marginBottom: "0.5rem"} }} 
-            onClick={toggleDrawer(true)}
-          >
-            <MenuIcon />
-          </IconButton>
-          
-          {/* Botón Home con Logo visible solo en desktop (VISIBLE EN MD) */}
-          <NavLink to="/Cliente" style={{ textDecoration: 'none', color: 'inherit', display: 'flex', alignItems: 'center' }}>
-            <IconButton 
-              // Se oculta en mobile (xs)
-              sx={{ display: { xs: "none", md: "block" } }} 
+    <>
+      <AppBar
+        position="static"
+        sx={{
+          bgcolor: "#222222",
+          height: "4rem",
+          boxShadow: "0px 2px 6px rgba(0,0,0,0.3)",
+        }}
+      >
+        <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
+          {/* --- Sección Izquierda --- */}
+          <Box sx={{ display: "flex", alignItems: "center" }}>
+            {/* Botón menú (mobile) */}
+            <IconButton
+              size="large"
+              edge="start"
               color="inherit"
+              aria-label="menu"
+              sx={{ display: { xs: "block", md: "none" }, mb: "0.5rem" }}
+              onClick={toggleDrawer(true)}
             >
-              {/* Ajuste de tamaño del logo a 2rem para coincidir con el AdminHeader */}
-              <img src={restauranteWhite} alt="Logo Restaurante" style={{ height: '2rem', width: 'auto' }} />
+              <MenuIcon />
             </IconButton>
-          </NavLink>
 
-        </Box>
-
-        {/* Links visibles en desktop */}
-        <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" }, gap: 3, ml: 2 }}>
-          {navLinks.map(link => (
-            <NavLinkItem key={link.path} to={link.path} label={link.label} />
-          ))}
-        </Box>
-
-        {/* Menú de usuario (SIEMPRE A LA DERECHA) */}
-        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-          <Typography variant="body1" sx={{ fontWeight: 500, display: { xs: "none", sm: "block" } }}>
-            {user?.username || 'Invitado'}
-          </Typography>
-          <IconButton
-            aria-label="account of current user"
-            aria-controls="menu-appbar"
-            aria-haspopup="true"
-            onClick={handleMenu}
-            color="inherit"
-            // Ajuste para el icono de perfil del cliente
-            sx={{ p: 0 }}
-          >
-            {/* Icono de perfil de cliente, ajustado a 2rem para coincidir con el estilo del AdminHeader */}
-            <AccountCircle sx={{ fontSize: '2rem' }} /> 
-          </IconButton>
-
-          <Menu
-            id="menu-appbar"
-            anchorEl={anchorEl}
-            anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-            keepMounted
-            transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-            open={Boolean(anchorEl)}
-            onClose={handleClose}
-          >
-            <MenuItem onClick={handleClose}>
-              <NavLink 
-                to={"/Perfil"} 
-                style={{ textDecoration: "none", color: "inherit", width: '100%' }}
-              >
-                Mi Perfil
-              </NavLink>
-            </MenuItem>
-            <MenuItem onClick={logout}>Cerrar Sesión</MenuItem>
-          </Menu>
-        </Box>
-
-        {/* Drawer (menú lateral en mobile) */}
-        <Drawer anchor="left" open={drawerOpen} onClose={toggleDrawer(false)}>
-          <Box
-            sx={{ width: 250 }}
-            role="presentation"
-            onClick={toggleDrawer(false)}
-            onKeyDown={toggleDrawer(false)}
-          >
-            <div className='text-center py-4 font-bold'>
-              <h1>Panel Cliente</h1>
-            </div>
-            <List>
-              {navLinks.map(link => (
-                <NavLink
-                  key={link.path}
-                  to={link.path}
-                  style={{ textDecoration: "none", color: "inherit" }}
-                >
-                  {({ isActive }) => (
-                    <ListItem disablePadding>
-                      <ListItemButton
-                        disableRipple
-                        sx={{
-                          bgcolor: isActive ? "black" : "transparent",
-                          color: isActive ? "white" : "inherit",
-                          transition: "background-color 0.2s ease, color 0.2s ease",
-                          "&:hover": {
-                            bgcolor: isActive ? "grey.900" : "rgba(0,0,0,0.1)",
-                          },
-                        }}
-                      >
-                        <ListItemText primary={link.label} />
-                      </ListItemButton>
-                    </ListItem>
-                  )}
-                </NavLink>
-              ))}
-              <ListItem disablePadding>
-                <ListItemButton 
-                    onClick={logout} 
-                    sx={{ color: 'red', '&:hover': { bgcolor: 'rgba(255,0,0,0.1)' } }}
-                >
-                    <ListItemText primary="Cerrar Sesión" />
-                </ListItemButton>
-            </ListItem>
-            </List>
+            {/* Logo (desktop) */}
+            <NavLink
+              to="/Cliente"
+              style={{
+                textDecoration: "none",
+                color: "inherit",
+                display: "flex",
+                alignItems: "center",
+              }}
+            >
+              <IconButton sx={{ display: { xs: "none", md: "block" } }} color="inherit">
+                <img
+                  src={restauranteWhite}
+                  alt="Logo Restaurante"
+                  style={{ height: "2rem", width: "auto" }}
+                />
+              </IconButton>
+            </NavLink>
           </Box>
-        </Drawer>
-      </Toolbar>
-    </AppBar>
+
+          {/* --- Links (solo desktop) --- */}
+          <Box
+            sx={{
+              flexGrow: 1,
+              display: { xs: "none", md: "flex" },
+              gap: 3,
+              ml: 2,
+              alignItems: "center",
+            }}
+          >
+      {navLinks.map((link) => {
+  if (link.label === "Registrar Reserva") {
+    return (
+      <Typography key={link.path} variant="h6" component="div">
+        <Box
+          component="button"
+          onClick={() => {
+            if (cliente?.estadoCliente === "Deshabilitado") {
+              setOpenModal(true);
+            } else {
+              window.location.href = link.path; // navegación manual
+            }
+          }}
+          sx={{
+            background: "none",
+            border: "none",
+            cursor: "pointer",
+            p: 0,
+            color: "inherit",
+          }}
+        >
+          <NavLink
+            to={link.path}
+            end
+            className={({ isActive }) =>
+              `
+              relative pb-1 transition-all duration-300 
+              ${isActive ? "text-white font-bold after:w-full after:left-0" : "text-white/70 font-normal after:w-0 after:left-1/2"}
+              after:content-[''] after:absolute after:bottom-0 after:h-[2px] after:bg-white after:transition-all after:duration-300
+            `
+            }
+          >
+            {link.label}
+          </NavLink>
+        </Box>
+      </Typography>
+    );
+  }
+  return <NavLinkItem key={link.path} to={link.path} label={link.label} />;
+})}
+          </Box>
+
+          {/* --- Perfil Usuario --- */}
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+            <Typography
+              variant="body1"
+              sx={{ fontWeight: 500, display: { xs: "none", sm: "block" } }}
+            >
+              {user?.username || "Invitado"}
+            </Typography>
+            <IconButton onClick={handleMenu} color="inherit" sx={{ p: 0 }}>
+              <AccountCircle sx={{ fontSize: "2rem" }} />
+            </IconButton>
+
+            <Menu
+              id="menu-appbar"
+              anchorEl={anchorEl}
+              anchorOrigin={{ vertical: "top", horizontal: "right" }}
+              keepMounted
+              transformOrigin={{ vertical: "top", horizontal: "right" }}
+              open={Boolean(anchorEl)}
+              onClose={handleClose}
+            >
+              <MenuItem onClick={handleClose}>
+                <NavLink
+                  to="/Cliente/Perfil"
+                  style={{ textDecoration: "none", color: "inherit", width: "100%" }}
+                >
+                  Mi Perfil
+                </NavLink>
+              </MenuItem>
+              <MenuItem onClick={logout}>Cerrar Sesión</MenuItem>
+            </Menu>
+          </Box>
+
+          {/* --- Drawer (Mobile) --- */}
+          <Drawer anchor="left" open={drawerOpen} onClose={toggleDrawer(false)}>
+            <Box
+              sx={{ width: 250 }}
+              role="presentation"
+              onClick={toggleDrawer(false)}
+              onKeyDown={toggleDrawer(false)}
+            >
+              <div className="text-center py-4 font-bold">
+                <h1>Panel Cliente</h1>
+              </div>
+              <List>
+                {navLinks.map((link) => (
+                  <ListItem disablePadding>
+                  <NavLink
+                    key={link.path}
+                    to={link.path}
+                    onClick={link.label === "Registrar Reserva" ? handleReservaClick : undefined}
+                    style={{ textDecoration: "none", color: "inherit" }}
+                  >
+                  {({ isActive }) => (
+                        <ListItemButton
+                          disableRipple
+                          sx={{
+                            bgcolor: isActive ? "black" : "transparent",
+                            color: isActive ? "white" : "inherit",
+                            transition: "background-color 0.2s ease, color 0.2s ease",
+                            "&:hover": {
+                              bgcolor: isActive ? "grey.900" : "rgba(0,0,0,0.1)",
+                            },
+                          }}
+                        >
+                          <ListItemText primary={link.label} />
+                        </ListItemButton>
+                    )}
+                  </NavLink>
+                </ListItem>
+                ))}
+              </List>
+            </Box>
+          </Drawer>
+        </Toolbar>
+      </AppBar>
+
+      {/* --- Modal de Deshabilitación --- */}
+      <Dialog open={openModal} onClose={() => setOpenModal(false)}>
+        <Box sx={{ p: 3, textAlign: "center" }}>
+          <Typography variant="h6" gutterBottom color="error">
+            Acceso restringido
+          </Typography>
+          <Typography variant="body1" sx={{ mb: 2 }}>
+            {motivoBloqueo}
+          </Typography>
+          <button
+            onClick={() => setOpenModal(false)}
+            style={{
+              backgroundColor: "#222",
+              color: "white",
+              padding: "8px 16px",
+              borderRadius: "6px",
+              border: "none",
+              cursor: "pointer"
+            }}
+          >
+            Entendido
+          </button>
+        </Box>
+      </Dialog>
+    </>
   );
 }

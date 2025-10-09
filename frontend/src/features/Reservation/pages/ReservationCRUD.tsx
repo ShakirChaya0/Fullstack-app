@@ -9,13 +9,11 @@ export default function ReservationPage() {
   const [showModal, setShowModal] = useState(false);
   const [pendingData, setPendingData] = useState<ReservationFormData | null>(null);
 
-  // Traemos la política de cancelación
   const [, , policyData] = useEntity("Policy", fetchPolicy);
 
   // Hook de mutación para crear la reserva
   const { mutate, isPending: isMutating } = useReservationMutation({
     handleError: (errorMessage) => {
-      // Ya se maneja el toast dentro del hook, no necesitamos otra notificación
       console.error(errorMessage);
     },
   });

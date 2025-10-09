@@ -7,8 +7,8 @@ const FoodsList = lazy(() => import("../features/Products/pages/FoodsList"))
 const ConfirmOrder = lazy(() => import("../features/Products/pages/ConfirmOrder"))
 const ProfileCardSkeleton = lazy(() => import("../features/Profile/components/ProfileCardSkeleton"));
 const UserProfile = lazy(() => import("../features/Profile/pages/UserProfile"));
-import  ReservationCRUD  from "../features/Reservation/pages/ReservationCRUD";
-import ReservationHistorial from "../features/Reservation/pages/ReservationList";
+const ReservationPage = lazy(() => import("../features/Reservation/pages/ReservationCRUD"));
+const ReservationHistorial = lazy(() => import("../features/Reservation/pages/ReservationList"));
 import FinishedOrder from "../features/Products/pages/FinishedOrder";
 import ProtectedRoute from "../shared/components/ProtectedRoute";
 import { ProtectedPage } from "../shared/components/ProtectedPage";
@@ -19,7 +19,8 @@ const PendingPaymentPage = lazy(() => import("../features/Payment/pages/PendingP
 const FailurePaymentPage = lazy(() => import("../features/Payment/pages/FailurePaymentPage"));
 const PaymentStatusSkeleton = lazy(() => import("../features/Payment/pages/PaymentStatusSkeleton"));
 const ClientHomePage = lazy(() => import("../shared/components/ClienteHomePage"))
-import { ReservationFormSkeleton } from "../features/Reservation/pages/SkeletonReservationClient";
+const ReservationFormSkeleton = lazy(() => import("../features/Reservation/pages/SkeletonReservationClient"));
+
 
 export function ClientRouter() {
   return (
@@ -34,13 +35,13 @@ export function ClientRouter() {
         <Route path="/Reserva" element={
           <ProtectedRoute userType={"Cliente"}>
             <Suspense fallback = {<ReservationFormSkeleton />}>
-              <ReservationCRUD/>
+              <ReservationPage />
             </Suspense>
           </ProtectedRoute>
         }/>
         <Route path="/Reserva/Historial" element={
           <ProtectedRoute userType={"Cliente"}>
-            <ReservationHistorial/>
+            <ReservationHistorial />
           </ProtectedRoute>
         }/>
         <Route path="/Perfil" element={

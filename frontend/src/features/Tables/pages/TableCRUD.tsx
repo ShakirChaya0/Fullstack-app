@@ -7,7 +7,7 @@ import type { ITable } from "../interfaces/ITable";
 import { useTables } from "../hooks/useTable";
 import { useTableMutation } from "../hooks/useTableMutation";
 
-export function TableCRUD() {
+export default function TableCRUD() {
   const { data: tables, isLoading, error } = useTables(); 
   const { mutateAsync } = useTableMutation();
 

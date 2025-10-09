@@ -1,2 +1,4 @@
 declare module "swiper/css";
 declare module "swiper/css/navigation";
+
+export type StateClient = 'Habilitado' | 'Deshabilitado';

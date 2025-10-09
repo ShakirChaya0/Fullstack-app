@@ -1,4 +1,4 @@
-  export function ReservationFormSkeleton() {
+  export default function ReservationFormSkeleton() {
     return(
       <div className="animate-pulse space-y-5">
           <div className="space-y-2">

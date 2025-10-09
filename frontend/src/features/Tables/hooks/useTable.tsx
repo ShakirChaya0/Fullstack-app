@@ -6,7 +6,7 @@ import { getAllTable } from "../services/getAllTable";
 export function useTables() {
   const { apiCall } = useApiClient();
 
-  return useQuery<ITable[], Error>({
+  return useQuery<ITable[]>({
     queryKey: ["tables"], 
     queryFn: () => getAllTable(apiCall),
     staleTime: 1000 * 60 * 2, 
