@@ -40,6 +40,8 @@ export function registerOrderHandlers(io: Server, socket: AuthenticatedSocket) {
 
   socket.on("modifyOrder", async ({ orderId, lineNumbers, data }) => {
     console.log(`📥 Evento recibido: modifyOrder - Order: ${orderId}`);
+    console.log(lineNumbers)
+    console.log(data)
     try {
       await orderController.updateOrder(orderId, lineNumbers, data);
       console.log(`✅ modifyOrder completado`);

@@ -16,9 +16,9 @@ export const orderSlice = createSlice({
     reducers: {
         addToCart: (state, action: PayloadAction<Comida | Bebida>) => {
             const cantidadLp = state.lineasPedido.findIndex((lp) => lp.producto._name === action.payload._name)
-            const lineNumber = state.lineasPedido.length + 1;
+            const maxLineNumber = state.lineasPedido.length != 0 ? Math.max(...state.lineasPedido.map(l => l.lineNumber ?? 0)) : 0;
             if (cantidadLp === -1){
-                state.lineasPedido.push({producto: action.payload, lineNumber: lineNumber, estado: "", cantidad: 1, subtotal: action.payload._price})
+                state.lineasPedido.push({producto: action.payload, lineNumber: maxLineNumber + 1, estado: "", cantidad: 1, subtotal: action.payload._price})
                 return state
             }
             else{

@@ -14,9 +14,10 @@ import { OrderTotalAmount } from "../../Products/utils/OrderTotalAmount";
 import { useNavigate } from "react-router";
 import { PaymentConfirmationModal } from "../../Schedules/components/GoToPaymentConfirmationModal";
 import { useWebSocket } from "../../../shared/hooks/useWebSocket";
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useRef } from "react";
 import { useOrderActions } from "../../../shared/hooks/useOrderActions";
-import type { OrderStatus, LineaPedido } from "../../Order/interfaces/Order";
+import type { OrderStatus, LineaPedido, Pedido } from "../../Order/interfaces/Order";
+import { toast } from "react-toastify";
 
 interface OrderLineClientInfo {
     nombreProducto: string,
@@ -40,29 +41,18 @@ export default function ModifyOrder() {
         handleAddToCart,
         hanldeRemoveFromCart,
         handleConfirmOrder,
-        handleModifyOrderStatus
     } = useOrderActions();
 
     const comensalesRef = useRef<HTMLInputElement>(null);
     const observacionesRef = useRef<HTMLTextAreaElement>(null);
 
-    const handleAdd = useCallback((lp: LineaPedido) => {
+    const handleAdd = (lp: LineaPedido) => {
         handleAddToCart(lp.producto);
-    }, [handleAddToCart]);
+    };
 
-    const handleRemove = useCallback((name: string) => {
+    const handleRemove = (name: string) => {
         hanldeRemoveFromCart({ nombreProducto: name });
-    }, [hanldeRemoveFromCart]);
-
-    const handleStatusChangeRef = useRef((data: OrderClientInfo) => {
-        handleModifyOrderStatus(data.estado);
-    });
-
-    useEffect(() => {
-        handleStatusChangeRef.current = (data: OrderClientInfo) => {
-            handleModifyOrderStatus(data.estado);
-        };
-    }, [handleModifyOrderStatus]);
+    };
 
     const { sendEvent } = useWebSocket();
     
@@ -71,38 +61,101 @@ export default function ModifyOrder() {
     }
 
     const handleConfirmModification = () => {
-        const comensales = comensalesRef.current ? parseInt(comensalesRef.current.value, 10) : order.comensales;
-        const observaciones = observacionesRef.current ? observacionesRef.current.value : order.observaciones;
-
-        if (comensales <= 0) {
-            console.error('No se puede registrar un pedido con número de comensales menor a 1');
-            return;
+        const newOrderData = {
+            ...order,
+            comensales: parseInt(comensalesRef.current?.value || '0'),
+            observaciones: observacionesRef.current?.value || ''
+        };
+        
+        // ✅ Validar los datos propuestos
+        if(newOrderData.comensales <= 0) {
+            toast.error('Mínimo 1 comensal');
+            return; // No actualizar nada
         }
-        if (observaciones.length > 500) {
-            console.error('La observación debe tener menos de 500 caracteres');
-            return;
+        if(newOrderData.observaciones.length > 500) {
+            toast.error('Máximo 500 caracteres');
+            return; // No actualizar nada
         }
-
+        if(newOrderData.lineasPedido.length === 0) {
+            toast.error('No se puede registrar un pedido vacío');
+            return; // No actualizar nada
+        }
+        
+        // Solo actualizar si TODO es válido
         handleConfirmOrder({
-            comensales: comensales,
-            observaciones: observaciones,
-        })
+            comensales: newOrderData.comensales,
+            observaciones: newOrderData.observaciones,
+        });
 
+        // Validaciones para ejecutar endpoints de WebSocket
+
+        // Obtenemos el pedido antes de la modificación
+        const previousOrder: Pedido = JSON.parse(localStorage.getItem('previousOrder')!);
+
+        // Validamos los cambios
+        const productosNuevos = newOrderData.lineasPedido.filter(lp => 
+            !previousOrder.lineasPedido.some(existingLp => 
+                existingLp.producto._name === lp.producto._name
+            )
+        );
+
+        const productosEliminados = previousOrder.lineasPedido.filter(lp => 
+            !newOrderData.lineasPedido.some(newLp => 
+                newLp.producto._name === lp.producto._name
+            )
+        );
+
+        const productosModificados = newOrderData.lineasPedido.filter(lp => {
+            const original = previousOrder.lineasPedido.find(oldLp => 
+                oldLp.producto._name === lp.producto._name
+            );
+            return original && original.cantidad !== lp.cantidad;
+        });
+
+        // Enviar eventos específicos para cada tipo de cambio
+
+        // Añadir todas las lineas
+        sendEvent("addOrderLine", {
+            orderId: order.idPedido,
+            orderLines: productosNuevos.map( eachLp => {
+                return (
+                    {
+                        nombre: eachLp.producto._name,
+                        tipo: eachLp.tipo,
+                        monto: eachLp.producto._price,
+                        cantidad: eachLp.cantidad,
+                        esAlcoholica: eachLp.esAlcoholica
+                    }
+                )
+            })
+        });
+
+        // Eliminar todas las lineas correspondientes
+        productosEliminados.forEach(lineaPedido => {
+            sendEvent("deleteOrderLine", {
+                orderId: order.idPedido,
+                lineNumber: lineaPedido.lineNumber
+            });
+        });
+
+        console.log(productosModificados)
+
+        // Modificar pedido
         sendEvent("modifyOrder", {
             orderId: order.idPedido,
-            lineNumber: order.lineasPedido.map(lp => lp.lineNumber),
+            lineNumbers: productosModificados.map(lp => lp.lineNumber),
             data: {
-                cantidadCubiertos: order.comensales,
-                observacion: order.observaciones,
-                items: [
-                    order.lineasPedido.map(lp => ({
-                        cantidad: lp.cantidad
-                    }))
-                ]
+                cantidadCubiertos: order.comensales !== previousOrder.comensales ? order.comensales : undefined,
+                observacion: order.observaciones !== previousOrder.observaciones ? order.observaciones : undefined,
+                items: productosModificados.map(lp => (
+                        { cantidad: lp.cantidad }
+                    ))
+                
             }
         });
 
-        navigate(`/Cliente/Menu/PedidoConfirmado/`)
+        // navigate(`/Cliente/Menu/PedidoConfirmado/`)
+        toast.success('Todos los cambios hechos')
     }
 
     const baseButtonStyle = `active:bg-orange-700 hover:scale-105 relative transition-all 

@@ -9,6 +9,7 @@ export type LineaPedido = {
     subtotal: number;
     lineNumber?: number;
     tipo?: string;
+    esAlcoholica?: boolean
 }
 
 export type OrderWithOutId = {
