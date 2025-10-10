@@ -16,7 +16,7 @@ createRoot(document.getElementById('root')!).render(
       <QueryClientProvider client={query}>
         <App />
         <ToastContainer />
-        <ReactQueryDevtools initialIsOpen={false} buttonPosition='bottom-left'/>
+        {/* <ReactQueryDevtools initialIsOpen={false} buttonPosition='bottom-left'/> */}
       </QueryClientProvider>
     </Provider>
   </BrowserRouter>

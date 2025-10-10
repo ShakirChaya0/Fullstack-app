@@ -1,3 +1,4 @@
+import type { FoodType } from "../../Product&Price/types/product&PriceTypes";
 import type { Bebida, Comida } from "../../Products/interfaces/products"
 
 export type OrderStatus = "Solicitado" | "En_Preparacion" | "Completado" | "Pendiente_De_Pago" | "Pendiente_De_Cobro" | "Pagado"
@@ -25,6 +26,20 @@ export type Pedido = {
     estado: OrderStatus,
     observaciones: string,
     comensales: number
+}
+
+export interface OrderLineClientInfo {
+    nombreProducto: string,
+    tipo: FoodType | null,
+    cantidad: number,
+    estado: string,
+}
+
+export interface OrderClientInfo {
+    idPedido: number
+    lineasPedido: OrderLineClientInfo[],
+    estado: OrderStatus,
+    observaciones: string
 }
 
 export interface OrderWithTableId extends Pedido {

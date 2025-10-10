@@ -5,43 +5,27 @@ import { useNavigate } from "react-router"
 import { PaymentConfirmationModal } from "../../Schedules/components/GoToPaymentConfirmationModal"
 import { StatusIndicator } from "../../Order/components/StatusIndicator"
 import { useWebSocket } from "../../../shared/hooks/useWebSocket"
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useRef } from "react"
 import { useOrderActions } from "../../../shared/hooks/useOrderActions"
-import type { OrderStatus } from "../../Order/interfaces/Order"
+import type { OrderClientInfo, OrderStatus } from "../../Order/interfaces/Order"
 
-interface OrderLineClientInfo {
-    nombreProducto: string,
-    cantidad: number,
-    estado: string,
-}
-
-export interface OrderClientInfo {
-    idPedido: number
-    lineasPedido: OrderLineClientInfo[],
-    estado: OrderStatus,
-    observaciones: string
-}
 
 export default function FinishedOrder() {
     const order = useAppSelector((state) => state.order)
     const { handleModifyOrderStatus } = useOrderActions()
     const navigate = useNavigate()
-    const { onEvent, offEvent } = useWebSocket();
-    const [state, setState] = useState<OrderStatus>('Solicitado')
+    const { onEvent, offEvent, sendEvent} = useWebSocket();
 
 
-    const handleStatusChangeRef = useRef((data: OrderClientInfo) => {
-        console.log('📨 Data recibida del WebSocket:', data);
-        setState(data.estado);
-        handleModifyOrderStatus(data.estado);
-    });
+    const handleStatusChangeRef = useRef<(data: OrderClientInfo) => void>(() => {});
+    const OrderStatusRef = useRef<OrderStatus>(order.estado);
 
     // ✅ Actualizar el ref si las dependencias cambian
     useEffect(() => {
         handleStatusChangeRef.current = (data: OrderClientInfo) => {
             console.log('📨 Data recibida del WebSocket:', data);
-            setState(data.estado);
-            handleModifyOrderStatus(data.estado);
+            handleModifyOrderStatus({newOrderStatus: data.estado, orderLinesData: data.lineasPedido});
+            OrderStatusRef.current = data.estado
         };
     }, [handleModifyOrderStatus]);
 
@@ -70,15 +54,15 @@ export default function FinishedOrder() {
         window.dispatchEvent(new CustomEvent('openPaymentConfirmationModal'))
     }
 
-    // const handleClick = () => {
-    //     console.log("Emitiendo evento...");
-    //     sendEvent("updateLineStatus", {idPedido: 105, nroLinea: 1, estadoLP: 'Terminada'});
-    // }; Boton de prueba para emitir la orden
+     const handleClick = () => {
+        console.log("Emitiendo evento...");
+        sendEvent("updateLineStatus", {idPedido: 133, nroLinea: 1, estadoLP: 'Terminada'});
+    }; 
 
     return (
         <div className="flex flex-col justify-center w-full">
             <div>
-                    {/* 
+                    
                 <button 
                     className="active:bg-orange-700 hover:scale-105 relative transition-all 
                     ease-linear duration-100 active:scale-95 m-auto py-2 px-4 bg-orange-500 
@@ -86,9 +70,9 @@ export default function FinishedOrder() {
                     onClick={handleClick}
                 >
                     Emitir 
-                </button>  Boton de prueba para emitir la orden*/}
+                </button> 
             </div>
-            <StatusIndicator currentStatus={ state }></StatusIndicator>
+            <StatusIndicator currentStatus={ OrderStatusRef.current }></StatusIndicator>
             <section className="flex flex-col w-full items-center h-auto mb-10">
                 <div 
                     className="md:border flex flex-col py-4 md:border-gray-300 md:shadow-2xl 

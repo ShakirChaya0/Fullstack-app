@@ -16,21 +16,8 @@ import { PaymentConfirmationModal } from "../../Schedules/components/GoToPayment
 import { useWebSocket } from "../../../shared/hooks/useWebSocket";
 import { useRef } from "react";
 import { useOrderActions } from "../../../shared/hooks/useOrderActions";
-import type { OrderStatus, LineaPedido, Pedido } from "../../Order/interfaces/Order";
+import type { LineaPedido, Pedido } from "../../Order/interfaces/Order";
 import { toast } from "react-toastify";
-
-interface OrderLineClientInfo {
-    nombreProducto: string,
-    cantidad: number,
-    estado: string,
-}
-
-export interface OrderClientInfo {
-    idPedido: number
-    lineasPedido: OrderLineClientInfo[],
-    estado: OrderStatus,
-    observaciones: string
-}
 
 const EmptyOrderPlaceholder = "https://placehold.co/150x150/f9fafb/374151?text=Pedido+Vacío";
 
@@ -57,6 +44,7 @@ export default function ModifyOrder() {
     const { sendEvent } = useWebSocket();
     
     const handleAddProduct = () => {
+        localStorage.setItem('modification', 'true')
         navigate('/Cliente/Menu/')
     }
 
@@ -112,6 +100,21 @@ export default function ModifyOrder() {
             return original && original.cantidad !== lp.cantidad;
         });
 
+        // Validando 0 cambios
+        if(
+            productosNuevos.length === 0 && 
+            productosEliminados.length === 0 && 
+            productosModificados.length === 0 &&
+            newOrderData.comensales === previousOrder.comensales &&
+            newOrderData.observaciones === previousOrder.observaciones
+        ) {
+            toast.warning('No se detectaron cambios, mantenemos su pedido original')
+            localStorage.removeItem('previousOrder')
+            localStorage.removeItem('modification')
+            navigate(`/Cliente/Menu/PedidoConfirmado/`)
+            return
+        }
+
         // Enviar eventos específicos para cada tipo de cambio
 
         // Añadir todas las lineas
@@ -145,17 +148,20 @@ export default function ModifyOrder() {
             orderId: order.idPedido,
             lineNumbers: productosModificados.map(lp => lp.lineNumber),
             data: {
-                cantidadCubiertos: order.comensales !== previousOrder.comensales ? order.comensales : undefined,
-                observacion: order.observaciones !== previousOrder.observaciones ? order.observaciones : undefined,
+                cantidadCubiertos: newOrderData.comensales !== previousOrder.comensales ? newOrderData.comensales : undefined,
+                observacion: newOrderData.observaciones !== previousOrder.observaciones ? newOrderData.observaciones : undefined,
                 items: productosModificados.map(lp => (
                         { cantidad: lp.cantidad }
                     ))
-                
             }
         });
 
-        // navigate(`/Cliente/Menu/PedidoConfirmado/`)
         toast.success('Todos los cambios hechos')
+
+        localStorage.removeItem('previousOrder')
+        localStorage.removeItem('modification')
+        
+        navigate(`/Cliente/Menu/PedidoConfirmado/`)
     }
 
     const baseButtonStyle = `active:bg-orange-700 hover:scale-105 relative transition-all 
@@ -208,7 +214,12 @@ export default function ModifyOrder() {
                             <div className="self-end border rounded-md transition-all duration-200 bg-orange-500 text-white font-medium flex flex-row justify-around items-center gap-1 w-fit">
                                 <button
                                     onClick={() => handleRemove(lp.producto._name)}
-                                    className="cursor-pointer h-full w-full py-1.5 px-2 bg-orange-500 hover:scale-105 hover:bg-orange-600 rounded-l-md transition-all ease-linear duration-150 active:bg-orange-700 active:scale-100"
+                                    disabled={lp.estado === 'Terminada' || lp.estado === 'En_Preparacion'}
+                                    className={`h-full w-full py-1.5 px-2 rounded-l-md transition-all ease-linear duration-150 ${
+                                        lp.estado === 'Terminada' 
+                                            ? 'bg-gray-400 cursor-not-allowed' 
+                                            : 'cursor-pointer bg-orange-500 hover:scale-105 hover:bg-orange-600 active:bg-orange-700 active:scale-100'
+                                    }`}
                                 >
                                     <RemoveCircleOutlineIcon />
                                 </button>
@@ -302,7 +313,12 @@ export default function ModifyOrder() {
                                                 <div className="self-center border rounded-md transition-all duration-200 bg-orange-500 text-white font-medium flex flex-row justify-around items-center gap-1 w-fit m-auto">
                                                     <button
                                                         onClick={() => handleRemove(lp.producto._name)}
-                                                        className="cursor-pointer h-full w-full py-1.5 px-2 bg-orange-500 hover:scale-105 hover:bg-orange-600 rounded-l-md transition-all ease-linear duration-150 active:bg-orange-700 active:scale-100"
+                                                        disabled={lp.estado === 'Terminada' || lp.estado === 'En_Preparacion'}
+                                                        className={`h-full w-full py-1.5 px-2 rounded-l-md transition-all ease-linear duration-150 ${
+                                                            lp.estado === 'Terminada' 
+                                                                ? 'bg-orange-200 cursor-not-allowed' 
+                                                                : 'cursor-pointer bg-orange-500 hover:scale-105 hover:bg-orange-600 active:bg-orange-700 active:scale-100'
+                                                        }`}
                                                     >
                                                         <RemoveCircleOutlineIcon />
                                                     </button>
