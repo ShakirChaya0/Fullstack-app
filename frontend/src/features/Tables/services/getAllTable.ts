@@ -4,7 +4,8 @@ export async function getAllTable(apiCall: (url: string, options?: RequestInit) 
   const response = await apiCall("mesas");
 
   if (!response.ok) {
-    throw new Error(`Error al listar las mesas: ${response.status} ${response.statusText}`);
+    const error = await response.json();
+    throw new Error(error.message);
   }
 
   return response.json();

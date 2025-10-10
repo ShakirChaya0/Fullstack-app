@@ -15,7 +15,20 @@ export default function ModalNews() {
 
   return (
     <div className='lg:self-end md:self-start'>
-        <Button variant='contained' onClick={handleOpen} className='gap-2.5'>
+        <Button variant='contained' onClick={handleOpen} className='gap-2.5'
+          sx= {{
+              backgroundColor:  "#0F766E",
+              color: "#fff",
+              border: "#0F766E",
+              "&:active": {
+                    backgroundColor: "#fff", 
+                   },
+              "&:hover": {
+                    backgroundColor: "#115E59",
+                    color: "#fff"
+                  },
+            }}
+        >
           {(ButtonName.includes("Crear")) && <AddCircleOutlineIcon/>}
             {ButtonName}
         </Button>

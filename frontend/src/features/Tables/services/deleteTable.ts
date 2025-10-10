@@ -4,6 +4,7 @@ export async function deleteTable(apiCall: (url: string, options?: RequestInit) 
     method: "DELETE" });
 
   if (!res.ok) {
-    throw new Error(`Error al eliminar mesa: ${res.status} ${res.statusText}`);
+    const error = await res.json();
+    throw new Error(error.message);
   }
 }

@@ -2,21 +2,9 @@ import { useEffect, useState } from "react";
 import type { ITable } from "../interfaces/ITable";
 import { Box, Modal, Typography } from "@mui/material";
 import { TextField } from "@mui/material";
+import { style } from "../constants/constantes";
 
-const style = {
-  position: "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  width: 400,
-  bgcolor: "background.paper",
-  border: "2px solid #000",
-  borderRadius: 2,  
-  boxShadow: 24,
-  p: 4
-};
-
-type ModalUpdateTable = {
+interface ModalUpdateTable {
   open: boolean;
   table: ITable;
   onClose: () => void;
@@ -66,12 +54,12 @@ export function ModalUpdateTable ({open, table, onClose, onSave } : ModalUpdateT
                 <div className="flex justify-end gap-2 mt-4">
                     <button 
                     onClick={onClose}
-                    className="px-4 py-2 rounded-lg border border-gray-500 text-black hover:bg-gray-300 transition">
+                    className="cursor-pointer px-4 py-2 rounded-lg border border-gray-500 text-black hover:bg-gray-300 transition">
                         Cancelar
                     </button>
                     <button 
                     onClick={handleSubmit}
-                    className="px-4 py-2 rounded-lg border border-amber-600 text-black hover:bg-amber-600 transition">
+                    className="cursor-pointer px-4 py-2 rounded-lg border border-amber-600 text-black hover:bg-amber-600 transition">
                         Modificar                    
                     </button>
                 </div>

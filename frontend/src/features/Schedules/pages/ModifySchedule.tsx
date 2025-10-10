@@ -68,7 +68,7 @@ export function ModifySchedule () {
       mb: 4
     }}>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-        <Typography variant="h4" sx={{ color: "#561d03", fontWeight: 'bold', width: {xs: "70%"}}}>
+        <Typography variant="h4" sx={{ color: "black", fontWeight: 'bold', width: {xs: "70%"}}}>
           Gestión de Horarios - Modificar
         </Typography>
         <BackButton url="/Admin/Horarios"></BackButton>
@@ -98,8 +98,9 @@ export function ModifySchedule () {
           onClick={handleModifyAll}
           disabled={modifySchedulesMutation.isPending}
           sx={{
-            bgcolor: "#b12e1aff",
-            "&:hover": { bgcolor: "#561d03" },
+            textTransform:"none",
+            bgcolor: "#0F766E",
+            "&:hover": { bgcolor: "#0F766E" },
             borderRadius: 2,
             minWidth: "120px",
             flex: 1,

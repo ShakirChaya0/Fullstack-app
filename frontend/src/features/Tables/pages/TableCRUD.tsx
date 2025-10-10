@@ -60,40 +60,42 @@ export default function TableCRUD() {
   if (error) return <p>Error al cargar mesas: {error.message}</p>;
 
   return (
-    <div className="flex flex-col items-center w-full ml-6 mr-6 min-h-screen">
-      <TableList
-        tables={localTables}
-        onUpdate={table => setUpdate(table)}
-        onDelete={numTable => setDelete(numTable)}
-        onAdd={() => setAdd(true)}
-      />
-
-      {openAdd && (
-        <ModalCreateTable
-          open={openAdd}
-          onClose={() => setAdd(false)}
-          onSave={handleCreateSave}
+    <>
+      <div className="flex flex-col items-center w-full ml-6 mr-6 min-h-screen">
+        <TableList
+          tables={localTables}
+          onUpdate={table => setUpdate(table)}
+          onDelete={numTable => setDelete(numTable)}
+          onAdd={() => setAdd(true)}
         />
-      )}
 
-      {updatedTable && (
-        <ModalUpdateTable
-          open={updatedTable !== null}
-          table={updatedTable}
-          onClose={() => setUpdate(null)}
-          onSave={handleUpdateSave}
-        />
-      )}
+        {openAdd && (
+          <ModalCreateTable
+            open={openAdd}
+            onClose={() => setAdd(false)}
+            onSave={handleCreateSave}
+          />
+        )}
 
-      {deletedTable !== null && (
-        <ModalDeleteTable
-          open={deletedTable !== null}
-          numTable={deletedTable}
-          loading={loadingDelete}
-          onClose={() => setDelete(null)}
-          onConfirm={() => handleDeleteSave(deletedTable)}
-        />
-      )}
-    </div>
+        {updatedTable && (
+          <ModalUpdateTable
+            open={updatedTable !== null}
+            table={updatedTable}
+            onClose={() => setUpdate(null)}
+            onSave={handleUpdateSave}
+          />
+        )}
+
+        {deletedTable !== null && (
+          <ModalDeleteTable
+            open={deletedTable !== null}
+            numTable={deletedTable}
+            loading={loadingDelete}
+            onClose={() => setDelete(null)}
+            onConfirm={() => handleDeleteSave(deletedTable)}
+          />
+        )}
+      </div>
+    </>
   );
 }

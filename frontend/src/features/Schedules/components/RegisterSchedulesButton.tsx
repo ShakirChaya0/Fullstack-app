@@ -4,6 +4,9 @@ import type { BackendSchedule } from "../types/scheduleTypes";
 
 
 export function RegisterSchedulesButton ({ schedules }: { schedules: BackendSchedule[]}) {
+    
+    if (schedules.length > 0) return null;
+    
     return (
         <Button
             component={Link}
@@ -11,6 +14,7 @@ export function RegisterSchedulesButton ({ schedules }: { schedules: BackendSche
             variant="contained"
             disabled={schedules.length === 0 ? false : true}
             sx={{
+                textTransform: "none",
                 bgcolor: "#b12e1aff",
                 "&:hover": { bgcolor: "#561d03" },
                 borderRadius: 2,

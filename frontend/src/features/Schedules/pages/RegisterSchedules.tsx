@@ -36,7 +36,7 @@ export function RegisterSchedule () {
       mb: 4
     }}>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-            <Typography variant="h4" sx={{ color: "#561d03", fontWeight: 'bold', width: {xs: "70%"}}}>
+            <Typography variant="h4" sx={{ color: "black", fontWeight: 'bold', width: {xs: "70%"}}}>
                 Gestión de Horarios - Registrar
             </Typography>
             <BackButton url="/Admin/Horarios"></BackButton>
@@ -66,6 +66,7 @@ export function RegisterSchedule () {
           onClick={handleSaveAll}
           disabled={saveSchedulesMutation.isPending}
           sx={{
+            textTransform: "none",
             bgcolor: "#b12e1aff",
             "&:hover": { bgcolor: "#561d03" },
             borderRadius: 2,
@@ -79,7 +80,7 @@ export function RegisterSchedule () {
               size={20} 
               sx={{ 
                 color: "white", 
-                marginRight: 1 
+                marginRight: 1, 
               }} 
             />
           ) }

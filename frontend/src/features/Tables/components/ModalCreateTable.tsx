@@ -1,24 +1,14 @@
 import { Box, Modal, Typography } from "@mui/material";
 import { TextField } from "@mui/material";
 import { useState } from "react";
+import { style } from "../constants/constantes";
 
-type IModalCreateTable = {
+
+interface IModalCreateTable {
     open: boolean; 
     onClose: () => void;
     onSave: (data:{capacity: number}) => void;
 }
- const style = {
-  position: "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  width: 400,
-  bgcolor: "background.paper",
-  border: "2px solid #000",
-  borderRadius: 2,  
-  boxShadow: 24,
-  p: 4
-};
 
 export function ModalCreateTable({ open, onClose, onSave }: IModalCreateTable) {
     const [capacity, setCapacity] = useState<number>(0);
@@ -62,12 +52,12 @@ export function ModalCreateTable({ open, onClose, onSave }: IModalCreateTable) {
         <div className="flex justify-end gap-2 mt-4">
             <button 
             onClick={handleClose}
-            className="px-4 py-2 rounded-lg border border-gray-500 text-black hover:bg-gray-300 transition">
+            className="cursor-pointer px-4 py-2 rounded-lg border border-gray-500 text-black hover:bg-gray-300 transition">
                 Cancelar
             </button>
             <button 
             onClick={handleConfirm}
-            className="px-4 py-2 rounded-lg border border-amber-600 text-black hover:bg-amber-600 transition">
+            className="cursor-pointer px-4 py-2 rounded-lg border border-amber-600 text-black hover:bg-amber-600 transition">
                 Crear
             </button>
         </div>

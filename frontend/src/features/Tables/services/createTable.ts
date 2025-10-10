@@ -7,7 +7,8 @@ export async function createTable(apiCall: (url: string, options?: RequestInit) 
   });
 
   if (!res.ok) {
-    throw new Error(`Error al crear mesa: ${res.status} ${res.statusText}`);
+    const error = await res.json();
+    throw new Error(error.message);
   }
   return res.json();
 }

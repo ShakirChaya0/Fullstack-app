@@ -5,7 +5,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
 
-type TableList = {
+interface TableList {
   tables: ITable[];
   onUpdate: (Table: ITable) => void;
   onDelete: (numTable: number) => void;
@@ -14,28 +14,28 @@ type TableList = {
 
 export function TableList({ tables, onUpdate, onDelete , onAdd}: TableList) {
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm")); // detecta mobile
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm")); 
 
   return(  
     <>   
-      <h1 className="text-2xl font-bold mb-4 mt-5">Mesas</h1>
+      <h1 className="md:text-left md:text-4xl md:font-bold mb-4 mt-5">Gestor de Mesas</h1>
       <TableContainer component={Paper} sx={{ width: "100%", boxShadow: 3, borderRadius: 2 }}>
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell sx={{ textAlign:"center", fontWeight:600 }}>Número de Mesa</TableCell>
-              <TableCell sx={{ textAlign:"center", fontWeight:600 }}>Capacidad</TableCell>
-              <TableCell sx={{ textAlign:"center", fontWeight:600 }}>Estado</TableCell>
-              <TableCell sx={{ textAlign:"center", fontWeight:600 }}>Acciones</TableCell>
+              <TableCell sx={{ textAlign:"center", fontWeight:600, fontSize: "18px" }}>Número de Mesa</TableCell>
+              <TableCell sx={{ textAlign:"center", fontWeight:600, fontSize: "18px" }}>Capacidad</TableCell>
+              <TableCell sx={{ textAlign:"center", fontWeight:600, fontSize: "18px" }}>Estado</TableCell>
+              <TableCell sx={{ textAlign:"center", fontWeight:600, fontSize: "18px" }}>Acciones</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {tables.map((table) => (
               <TableRow key={table._tableNum}>
-                <TableCell sx={{ textAlign:"center" }}>{table._tableNum}</TableCell>
-                <TableCell sx={{ textAlign:"center" }}>{table._capacity}</TableCell>
-                <TableCell sx={{ textAlign:"center" }}>{table._state}</TableCell>
-                <TableCell sx={{ textAlign:"center"}} >
+                <TableCell sx={{ textAlign:"center", fontSize: "16px" }}>{table._tableNum}</TableCell>
+                <TableCell sx={{ textAlign:"center", fontSize: "16px" }}>{table._capacity}</TableCell>
+                <TableCell sx={{ textAlign:"center", fontSize: "16px" }}>{table._state}</TableCell>
+                <TableCell sx={{ textAlign:"center", fontSize: "16px"}} >
                   <Box display="flex" justifyContent="center" gap={1} >
                       <Button
                         sx={{
@@ -43,12 +43,12 @@ export function TableList({ tables, onUpdate, onDelete , onAdd}: TableList) {
                           color: "black", 
                           fontSize: "16px",
                           fontWeight: 24, 
-                          border: "2px solid #f0ea00", 
+                          border: "2px solid #0F766E", 
                           textTransform: "none", 
                           transition: "0.3s", 
                           "&:hover": {
-                            bgcolor: '#f0ea00',        
-                            color: 'black',              
+                            bgcolor: '#0F766E',        
+                            color: 'white',              
                             boxShadow: 6               
                           }
                         }}
@@ -94,7 +94,8 @@ export function TableList({ tables, onUpdate, onDelete , onAdd}: TableList) {
           bgcolor: "transparent", 
           fontSize: "16px", 
           textTransform: "none",
-          color: "black", 
+          color: "black",
+          alignItems: "center",
           border: "2px solid #ffb300", 
           paddingX: 3,
           transition: "0.3s", 

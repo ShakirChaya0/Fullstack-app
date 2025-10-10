@@ -42,6 +42,7 @@ export default function ReservationForm({ onFormSubmit, isMutating }: Reservatio
     defaultValues: { CantidadComensales: 1 },
   });
 
+  
   const selectedDate = watch("FechaReserva");
   const { availableSchedules, queryLoading, queryError } = useAvailableSchedule(selectedDate);
 
@@ -170,7 +171,7 @@ export default function ReservationForm({ onFormSubmit, isMutating }: Reservatio
           <button
             type="submit"
             disabled={!isValid || isSubmitting || isMutating}
-            className="w-full bg-amber-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-amber-700 transition-colors focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 disabled:bg-amber-300 disabled:cursor-not-allowed"
+            className="cursor-pointer w-full bg-amber-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-amber-700 transition-colors focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 disabled:bg-amber-300 disabled:cursor-not-allowed"
           >
             {isSubmitting || isMutating ? "Procesando..." : "Crear Reserva"}
           </button>

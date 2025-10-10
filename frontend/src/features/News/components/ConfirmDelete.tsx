@@ -1,4 +1,3 @@
-import * as React from "react";
 import type News from "../interfaces/News";
 import {
   Dialog,
@@ -46,13 +45,14 @@ export default function ConfirmDelete({
       </DialogContent>
 
       <DialogActions>
-        <Button onClick={onClose} color="inherit" variant="outlined">
+        <Button onClick={onClose} color="inherit" variant="outlined" sx={{textTransform: "none"}}>
           Volver
         </Button>
         <Button
           onClick={() => handleDeleteNews(News._newsId ?? 0)}
           color="error"
           variant="contained"
+          sx={{textTransform: "none"}}
         >
           Eliminar
         </Button>

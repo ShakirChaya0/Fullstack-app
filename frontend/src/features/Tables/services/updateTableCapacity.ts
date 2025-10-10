@@ -12,7 +12,8 @@ export async function updateTableCapacity(apiCall: (url: string, options?: Reque
   });
 
   if (!res.ok) {
-    throw new Error(`Error al actualizar mesa: ${res.status} ${res.statusText}`);
+    const error = await res.json();
+    throw new Error(error.message);
   }
   return res.json();
 }

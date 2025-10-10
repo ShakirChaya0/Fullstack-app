@@ -1,5 +1,4 @@
-import { Box, Typography, Link, IconButton, List, ListItem } from "@mui/material"; 
-import DashboardIcon from '@mui/icons-material/Dashboard'; 
+import { Box, Typography, Link, List, ListItem } from "@mui/material"; 
 import EventSeatIcon from '@mui/icons-material/EventSeat';
 import TableRestaurantIcon from '@mui/icons-material/TableRestaurant';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
@@ -25,7 +24,6 @@ export function WaiterFooter() {
         px: { xs: 4, md: 8 },
         width: "100%",
         textAlign: "center",
-        mt: { xs: 6, md: 10 },
       }}
     >
       <Box 

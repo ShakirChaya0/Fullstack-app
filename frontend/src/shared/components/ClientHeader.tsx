@@ -13,12 +13,9 @@ import List from "@mui/material/List";
 import ListItem from "@mui/material/List";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemText from "@mui/material/ListItemText";
-import Dialog from "@mui/material/Dialog";
-import { NavLink } from "react-router";
+import { NavLink, useNavigate } from "react-router";
 import useAuth from "../hooks/useAuth";
-import useApiClient from "../hooks/useApiClient";
 import restauranteWhite from "../../shared/utils/assets/restauranteWhite.png";
-import { getClient, type ClienteProp } from "../../features/Client/Services/getClient";
 
 // --- Links de navegación ---
 const navLinks = [
@@ -47,38 +44,20 @@ const NavLinkItem = ({ to, label }: { to: string; label: string }) => (
 
 export default function ClientHeader() {
   const { logout, user } = useAuth();
-  const { apiCall } = useApiClient();
-
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [drawerOpen, setDrawerOpen] = React.useState(false);
-  const [cliente, setCliente] = React.useState<null | ClienteProp>(null);
-  const [openModal, setOpenModal] = React.useState(false);
+  const navigate = useNavigate();
 
-  // Cargar estado del cliente
-  React.useEffect(() => {
-    (async () => {
-      const clienteData = await getClient(apiCall, user?.idUsuario ?? "");
-      setCliente(clienteData);
-    })();
-  }, []);
 
-  // Mensaje del bloqueo
-  const motivoBloqueo =
-    "Tu cuenta se encuentra temporalmente deshabilitada debido a múltiples inasistencias. Por favor, comunícate con el restaurante para reactivar tu acceso.";
 
   // Controladores del menú y modal
   const handleMenu = (event: React.MouseEvent<HTMLElement>) => setAnchorEl(event.currentTarget);
   const handleClose = () => setAnchorEl(null);
   const toggleDrawer = (open: boolean) => () => setDrawerOpen(open);
-
-  // Interceptar click en “Registrar Reserva”
-  const handleReservaClick = (e: React.MouseEvent) => {
-    if (cliente?.estadoCliente === "Deshabilitado") {
-      e.preventDefault();
-      setOpenModal(true);
-    }
-  };
-
+  const handelLogout = () => {
+    logout() 
+    navigate("/login")
+  } 
   return (
     <>
       <AppBar
@@ -140,13 +119,6 @@ export default function ClientHeader() {
       <Typography key={link.path} variant="h6" component="div">
         <Box
           component="button"
-          onClick={() => {
-            if (cliente?.estadoCliente === "Deshabilitado") {
-              setOpenModal(true);
-            } else {
-              window.location.href = link.path; // navegación manual
-            }
-          }}
           sx={{
             background: "none",
             border: "none",
@@ -205,7 +177,7 @@ export default function ClientHeader() {
                   Mi Perfil
                 </NavLink>
               </MenuItem>
-              <MenuItem onClick={logout}>Cerrar Sesión</MenuItem>
+              <MenuItem onClick={handelLogout}>Cerrar Sesión</MenuItem>
             </Menu>
           </Box>
 
@@ -226,7 +198,6 @@ export default function ClientHeader() {
                   <NavLink
                     key={link.path}
                     to={link.path}
-                    onClick={link.label === "Registrar Reserva" ? handleReservaClick : undefined}
                     style={{ textDecoration: "none", color: "inherit" }}
                   >
                   {({ isActive }) => (
@@ -252,31 +223,6 @@ export default function ClientHeader() {
           </Drawer>
         </Toolbar>
       </AppBar>
-
-      {/* --- Modal de Deshabilitación --- */}
-      <Dialog open={openModal} onClose={() => setOpenModal(false)}>
-        <Box sx={{ p: 3, textAlign: "center" }}>
-          <Typography variant="h6" gutterBottom color="error">
-            Acceso restringido
-          </Typography>
-          <Typography variant="body1" sx={{ mb: 2 }}>
-            {motivoBloqueo}
-          </Typography>
-          <button
-            onClick={() => setOpenModal(false)}
-            style={{
-              backgroundColor: "#222",
-              color: "white",
-              padding: "8px 16px",
-              borderRadius: "6px",
-              border: "none",
-              cursor: "pointer"
-            }}
-          >
-            Entendido
-          </button>
-        </Box>
-      </Dialog>
     </>
   );
 }

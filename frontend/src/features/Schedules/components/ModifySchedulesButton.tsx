@@ -10,8 +10,9 @@ export function ModifySchedulesButton ({ schedules }: { schedules: BackendSchedu
             variant="contained"
             disabled={schedules.length === 0 ? true : false}
             sx={{
-                bgcolor: "#b12e1aff",
-                "&:hover": { bgcolor: "#561d03" },
+                textTransform: "none",
+                bgcolor: "#0F766E",
+                "&:hover": { bgcolor: "#0F766E" },
                 borderRadius: 2,
                 minWidth: "120px",
                 flex: 1,

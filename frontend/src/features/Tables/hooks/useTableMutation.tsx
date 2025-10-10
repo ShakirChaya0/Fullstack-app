@@ -72,7 +72,7 @@ export function useTableMutation() {
     },
 
     onError: (error) => {
-      toast.error("Error en la operación de mesa");
+      toast.error(error.message);
       console.error(error);
     },
   });

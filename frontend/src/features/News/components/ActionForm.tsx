@@ -5,7 +5,7 @@ import { useModalProvider } from "../hooks/useModalProvider";
 import { CircularProgress } from "@mui/material";
 import { motion, AnimatePresence } from "framer-motion";
 
-type FormData = {
+interface FormData {
   Titulo: string,
   Descripcion: string,
   FechaInicio: string,
@@ -132,7 +132,7 @@ export default function ActionForm() {
           
           <button
             type="submit"
-            className={`flex flex-col items-center w-ful text-white font-medium sm:font-bold sm:text-lg py-2 sm:py-3 sm:px-6 rounded-lg sm:rounded-xl shadow-lg transition ${isLoading ? "bg-blue-900" : "bg-blue-600 hover:bg-blue-700 cursor-pointer"}`}
+            className={`flex flex-col items-center w-ful text-white font-medium sm:font-bold sm:text-lg py-2 sm:py-3 sm:px-6 rounded-lg sm:rounded-xl shadow-lg transition ${isLoading ? "bg-teal-700" : "bg-teal-700 hover:bg-teal-800 cursor-pointer"}`}
             disabled={isLoading}
           >
             {

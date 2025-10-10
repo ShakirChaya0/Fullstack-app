@@ -1,20 +1,8 @@
 import { Box, CircularProgress, Modal, Typography } from "@mui/material";
 import WarningIcon from '@mui/icons-material/Warning';
+import { style } from "../constants/constantes";
 
-const modalStyle = {
-  position: "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-  width: 400,
-  bgcolor: "background.paper",
-  border: "2px solid #000",
-  borderRadius: 2,  
-  boxShadow: 24,
-  p: 4
-};
-
-type ModalDeleteTable = {
+interface ModalDeleteTable {
     open: boolean;
     numTable: number;
     loading: boolean;
@@ -25,7 +13,7 @@ type ModalDeleteTable = {
 export function ModalDeleteTable({ open, numTable, loading, onClose, onConfirm }: ModalDeleteTable) {
   return (
     <Modal open={open} onClose={onClose}>
-      <Box sx={{...modalStyle}}>
+      <Box sx={{...style}}>
         <Box sx={{ display: "flex", justifyContent: "center", mb: 2 }}>
         <WarningIcon color="warning" sx={{fontSize: 60 }}></WarningIcon>
         </Box>

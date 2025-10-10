@@ -53,7 +53,7 @@ export function MainPanelSchedules() {
             mb: 4
         }}>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-                <Typography variant="h4" sx={{ color: "#561d03", fontWeight: 'bold' }}>
+                <Typography variant="h4" sx={{ color: "black", fontWeight: 'bold' }}>
                     Gestión de Horarios
                 </Typography>
             </Box>

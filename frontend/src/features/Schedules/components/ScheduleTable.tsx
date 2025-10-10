@@ -15,7 +15,8 @@ export function ScheduleTable ({ schedules }: { schedules: BackendSchedule[]}) {
                     <TableRow>
                         <TableCell sx={{ fontWeight: "bold", fontSize: "large" }}>Día de la semana</TableCell>
                         <TableCell align="center" sx={{ fontWeight: "bold", fontSize: "large" }}>Hora de Apertura</TableCell>
-                        <TableCell align="center" sx={{ fontWeight: "bold", fontSize: "large" }}>Hora de Cierre</TableCell>                                            </TableRow>
+                        <TableCell align="center" sx={{ fontWeight: "bold", fontSize: "large" }}>Hora de Cierre</TableCell>                                            
+                    </TableRow>
                 </TableHead>
                 <TableBody>
                     {schedules.map((eachShedule) => (

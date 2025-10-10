@@ -79,7 +79,7 @@ export default function WaiterHeader() {
 
           {/* Logo (desktop) */}
           <NavLink
-            to="/Cliente"
+            to="/Mozo"
             style={{
               textDecoration: "none",
               color: "inherit",

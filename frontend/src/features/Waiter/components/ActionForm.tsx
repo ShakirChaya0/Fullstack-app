@@ -120,7 +120,7 @@ return (
           <div className="md:col-span-2">
             <button
               type="submit"
-              className={`w-full text-white font-medium sm:font-bold sm:text-lg py-2 sm:py-3 sm:px-6 rounded-lg shadow-lg transition ${isLoading ? "bg-blue-900" : "bg-blue-600 hover:bg-blue-700 cursor-pointer"}`}
+              className={`w-full text-white font-medium sm:font-bold sm:text-lg py-2 sm:py-3 sm:px-6 rounded-lg shadow-lg transition ${isLoading ? "bg-teal-700" : "bg-teal-700 hover:bg-teal-800 cursor-pointer"}`}
               disabled={isLoading}
             >
                 {
