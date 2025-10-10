@@ -10,7 +10,6 @@ export default function PendingPaymentPage() {
     const { onEvent, offEvent } = useWebSocket();
       
     const handleStatusChange = useCallback(() => {
-        console.log("SE RECIBE EL EVENTOOOOOOOO")
         setPaymentStatus("success")
     }, []);
 
@@ -20,7 +19,7 @@ export default function PendingPaymentPage() {
         return () => {
             offEvent("orderPaymentEvent", handleStatusChange)
         }
-    }, [onEvent, offEvent]);
+    }, [onEvent, offEvent, handleStatusChange]);
     
     if (paymentStatus === "success") return <SuccessfulPaymentPage />; 
 

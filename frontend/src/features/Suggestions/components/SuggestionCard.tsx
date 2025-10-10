@@ -4,7 +4,7 @@ import ModalUpdateSuggestions from "./ModalUpdateSuggestions";
 
 export default function SuggestionCard({ suggestion }: { suggestion: Suggestion } ) {
     return(
-        <div className="w-2xs max-w-sm bg-white rounded-xl shadow-lg/30 overflow-hidden border border-transparent hover:border-amber-500 transform hover:-translate-y-1 transition-all duration-300">
+        <div className="w-2xs max-w-sm bg-white rounded-xl shadow-lg/30 overflow-hidden border border-transparent border-t-3 border-t-amber-500 hover:border-amber-500 transform hover:-translate-y-1 transition-all duration-300">
             <div className="p-6">
                 <div>
                     <p className="text-xs font-semibold text-amber-600 uppercase">Producto</p>

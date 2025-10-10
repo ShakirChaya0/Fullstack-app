@@ -25,12 +25,13 @@ export default function OrderLineItem({ line, orderId, lineIndex, onUpdateStatus
                 <span className={`font-bold text-lg mr-2 ${colors.text}`}>{cantidad}x</span>
                 <span className="text-[#444648] text-lg">{nombreProducto}</span>
             </div>
+
             <div className="flex items-center space-x-1 md:space-x-2">
                 {statuses.map(status => {
-                    const statusColorHex: Record<typeof statuses[number], string> = {
-                        Pendiente: '#6B6B6B',
-                        En_Preparacion: '#FF6600',
-                        Terminada: '#0F766E'
+                    const statusClasses: Record<typeof statuses[number], string> = {
+                        Pendiente: 'bg-[#6B6B6B] focus:ring-[#6B6B6B]',
+                        En_Preparacion: 'bg-[#FF6600] focus:ring-[#FF6600]',
+                        Terminada: 'bg-[#0F766E] focus:ring-[#0F766E]',
                     };
                 
                     return (
@@ -38,12 +39,11 @@ export default function OrderLineItem({ line, orderId, lineIndex, onUpdateStatus
                             key={status}
                             onClick={() => onUpdateStatus(orderId, lineIndex, status)}
                             className={`
-                                px-2 py-1 md:px-3 text-xs md:text-sm font-semibold rounded-md transition-all duration-200
-                                focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[${statusColorHex[status]}]
+                                cursor-pointer px-2 py-1 md:px-3 text-xs md:text-sm font-semibold rounded-md transition-all duration-200
+                                focus:outline-none focus:ring-2 focus:ring-offset-2
                                 ${estado === status
-                                    ? `bg-[${statusColorHex[status]}] text-white shadow-md`
-                                    : 'bg-[#FFFFFF] text-[#6B6B6B] hover:bg-[#F5F5F5] border border-[#CCCCCC]'
-                                }
+                                    ? `${statusClasses[status]} text-white shadow-md`
+                                    : 'bg-white text-[#6B6B6B] hover:bg-[#F5F5F5] border border-[#CCCCCC]'}
                             `}
                         >
                             {status === 'En_Preparacion' ? 'En Prep.' : status}
@@ -51,7 +51,6 @@ export default function OrderLineItem({ line, orderId, lineIndex, onUpdateStatus
                     );
                 })}
             </div>
-
         </div>
     );
 };

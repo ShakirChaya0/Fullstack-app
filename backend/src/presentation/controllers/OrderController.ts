@@ -80,10 +80,10 @@ export class OrderController {
     }
 
     public async updateOrderLineStatus(idPedido: number, nroLinea: number, estadoLP: OrderLineStatus) { 
-        if(isNaN(nroLinea)) throw new ValidationError("El número de Línea debe ser válido");
-        if(isNaN(idPedido)) throw new ValidationError("El número de Pedido debe ser válido");
+        if(isNaN(+nroLinea)) throw new ValidationError("El número de Línea debe ser válido");
+        if(isNaN(+idPedido)) throw new ValidationError("El número de Pedido debe ser válido");
 
-        const order =  await this.updateOrderLineStatusUseCase.execute(idPedido, nroLinea, estadoLP);
+        const order =  await this.updateOrderLineStatusUseCase.execute(+idPedido, +nroLinea, estadoLP);
         await this.orderSocketService.emitOrderEvent("updatedOrderLineStatus", order);
     }
 

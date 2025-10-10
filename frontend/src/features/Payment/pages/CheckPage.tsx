@@ -14,7 +14,7 @@ export default function CheckPage() {
   return (
     <>
       {isLoading ? <CheckSkeleton /> 
-        :isError ? (
+        : isError ? (
           <div className="w-full bg-[var(--background-200)] flex flex-col items-center justify-center p-6">
             <div className="bg-red-100 border border-red-300 text-red-700 rounded-lg p-6 max-w-md text-center shadow-md">
               <h2 className="text-xl font-bold mb-2">Error</h2>

@@ -1,7 +1,7 @@
 import { Order } from "../../../domain/entities/Order.js";
 import { OrderRepository } from "../../../infrastructure/database/repository/OrderRepository.js";
 import { NotFoundError } from "../../../shared/exceptions/NotFoundError.js";
-import { OrderLineStatus } from "../../../shared/types/SharedTypes.js";
+import { OrderLineStatus, OrderStatus } from "../../../shared/types/SharedTypes.js";
 
 export class UpdateOrderLineUseCase {
     constructor(
@@ -19,11 +19,16 @@ export class UpdateOrderLineUseCase {
             
         order = await this.orderRepository.changeOrderLineStatus(orderId, lineNumber,status)
 
-        const isFinished = order.orderLines.filter(ol => ol.status !== "Terminada")
-        const isInProcess = order.orderLines.some(ol => ol.status === "En_Preparacion")
+        const allFinished = order.orderLines.every(l => l.status === 'Terminada');
+        const anyInProgress = order.orderLines.some(l => l.status === 'En_Preparacion');
+        const anyFinished = order.orderLines.some(l => l.status === 'Terminada');
 
-        if (order.status === "Solicitado" && isInProcess) await this.orderRepository.changeState(order, "En_Preparacion")
-        if (isFinished.length === 0) return await this.orderRepository.changeState(order, "Completado")
+        let newOrderStatus: OrderStatus;
+        if (allFinished) newOrderStatus = 'Completado';
+        else if (anyInProgress || anyFinished) newOrderStatus = 'En_Preparacion';
+        else newOrderStatus = 'Solicitado';
+
+        if (order.status !== newOrderStatus) return await this.orderRepository.changeState(order, newOrderStatus);
         else return order 
     }
 }
