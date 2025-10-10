@@ -22,7 +22,7 @@ export class CheckExpiredReservations{
         const now = new Date();
         const reservations = await this.reservationRepository.getByDate(now); 
 
-        for (const reservation of reservations) {
+        for (const reservation of reservations.data) {
             if (reservation.status === 'Realizada') {
                 const reservationDate = this.combineDateTime(reservation.reserveDate, reservation.reserveTime);
                 const expiration = new Date(reservationDate.getTime() + policy.minutosTolerancia * 60000);

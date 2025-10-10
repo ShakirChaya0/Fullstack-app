@@ -45,20 +45,12 @@ export class RegisterReservation {
 
 private combineDateTime(date: Date, time: string): Date {
   const [hours, minutes] = time.split(":").map(Number);
-
-  // Crear fecha local con la hora seleccionada
+  
+  // Crear fecha en hora local
   const localDate = new Date(date);
   localDate.setHours(hours, minutes, 0, 0);
-
-  // Convertir a UTC al guardar
-  return new Date(Date.UTC(
-    localDate.getFullYear(),
-    localDate.getMonth(),
-    localDate.getDate(),
-    localDate.getHours(),
-    localDate.getMinutes(),
-    0
-  ));
+  
+  return localDate; // Devolver en hora local, no convertir a UTC aquí
 }
 
   public async execute(data: SchemaReservation, clientId: string): Promise<Reservation | null> {
@@ -85,7 +77,7 @@ private combineDateTime(date: Date, time: string): Date {
     if (existingReservation) throw new BusinessError('Usted ya tiene una reserva para esa fecha y ese horario');
 
     // Se valida que el horario de la Reserva sea entre los Horarios del Restaurante
-    const dayReservation = data.reserveDate.getUTCDay();
+    const dayReservation = data.reserveDate.getDay();
     const schedule = await this.schedulelRepository.getById(dayReservation); 
 
     if(!schedule) throw new BusinessError('No hay horarios de atención para ese día')
@@ -94,20 +86,28 @@ private combineDateTime(date: Date, time: string): Date {
     const [cierreHours, cierreMinutes] = schedule.horaCierre.split(":").map(Number);
     const [selectedHours, selectedMinutes] = data.reserveTime.split(":").map(Number);
 
-    const selectedTime = new Date(data.reserveDate);
-    selectedTime.setHours(selectedHours, selectedMinutes, 0, 0);
+    const selectedTimeMinutes = selectedHours * 60 + selectedMinutes;
+    const aperturaMinutesTotal = aperturaHours * 60 + aperturaMinutes;
+    let cierreMinutesTotal = cierreHours * 60 + cierreMinutes;
 
-    const aperturaDate = new Date(data.reserveDate);
-    aperturaDate.setHours(aperturaHours, aperturaMinutes, 0, 0);
-
-    const cierreDate = new Date(data.reserveDate);
-    cierreDate.setHours(cierreHours, cierreMinutes, 0, 0);
-
-    console.log(selectedTime)
-    console.log(aperturaDate)
+  // Si el cierre es antes que la apertura, significa que cierra después de medianoche
+    if (cierreMinutesTotal < aperturaMinutesTotal) {
+      cierreMinutesTotal += 24 * 60; // Agregar 24 horas
     
-    if (selectedTime < aperturaDate || selectedTime > cierreDate) {
-      throw new BusinessError('Horario fuera del rango de atención');
+    // Si la hora seleccionada es de madrugada (00:00 - apertura)
+     let adjustedSelectedTime = selectedTimeMinutes;
+      if (selectedTimeMinutes < aperturaMinutesTotal) {
+       adjustedSelectedTime = selectedTimeMinutes + 24 * 60;
+      }
+    
+      if (adjustedSelectedTime < aperturaMinutesTotal || adjustedSelectedTime > cierreMinutesTotal) {
+        throw new BusinessError('Horario fuera del rango de atención');
+      }
+    } else {
+      // Horario normal (no cruza medianoche)
+      if (selectedTimeMinutes < aperturaMinutesTotal || selectedTimeMinutes > cierreMinutesTotal) {
+        throw new BusinessError('Horario fuera del rango de atención');
+      }
     }
 
     //Validacion de Mesas disponibles y su asignacion
