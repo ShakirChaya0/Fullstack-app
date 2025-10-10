@@ -16,8 +16,9 @@ export const orderSlice = createSlice({
     reducers: {
         addToCart: (state, action: PayloadAction<Comida | Bebida>) => {
             const cantidadLp = state.lineasPedido.findIndex((lp) => lp.producto._name === action.payload._name)
+            const lineNumber = state.lineasPedido.length + 1;
             if (cantidadLp === -1){
-                state.lineasPedido.push({producto: action.payload, estado: "", cantidad: 1, subtotal: action.payload._price})
+                state.lineasPedido.push({producto: action.payload, lineNumber: lineNumber, estado: "", cantidad: 1, subtotal: action.payload._price})
                 return state
             }
             else{
@@ -64,6 +65,12 @@ export const orderSlice = createSlice({
             state.idPedido = action.payload
             return state
         },
+        assignLineNumber: (state, action: PayloadAction<{ nombreProducto: string, lineNumber: number }>) => {
+            const index = state.lineasPedido.findIndex((lp) => lp.producto._name === action.payload.nombreProducto)
+            if (index !== -1) {
+                state.lineasPedido[index].lineNumber = action.payload.lineNumber
+            }
+        },
         modifyStatus: (state, action: PayloadAction<OrderStatus>) => { 
             // Se persisten los cambios ya que las validaciones ya fueron hechas en este punto
             state.estado = action.payload
@@ -73,4 +80,4 @@ export const orderSlice = createSlice({
 
 export default orderSlice.reducer
 
-export const { addToCart, removeFromCart, confirmOrder, recoveryInitialState, assignOrderId, modifyStatus} = orderSlice.actions
+export const { addToCart, removeFromCart, confirmOrder, recoveryInitialState, assignOrderId, assignLineNumber, modifyStatus} = orderSlice.actions

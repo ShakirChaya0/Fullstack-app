@@ -6,7 +6,9 @@ export type LineaPedido = {
     producto: Comida | Bebida,
     cantidad: number,
     estado: string,
-    subtotal: number
+    subtotal: number;
+    lineNumber?: number;
+    tipo?: string;
 }
 
 export type OrderWithOutId = {

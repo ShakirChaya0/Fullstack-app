@@ -63,7 +63,7 @@ export default function FinishedOrder() {
 
     const handleModify = () => {
         localStorage.setItem("previousOrder", JSON.stringify(order))
-        navigate('/Cliente/Menu/RealizarPedido/')
+        navigate('/Cliente/Menu/ModificarPedido/')
     }
 
     const handleGoToPayment = () => {

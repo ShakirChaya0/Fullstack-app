@@ -19,6 +19,7 @@ const PendingPaymentPage = lazy(() => import("../features/Payment/pages/PendingP
 const FailurePaymentPage = lazy(() => import("../features/Payment/pages/FailurePaymentPage"));
 const PaymentStatusSkeleton = lazy(() => import("../features/Payment/pages/PaymentStatusSkeleton"));
 import { ReservationFormSkeleton } from "../features/Reservation/pages/SkeletonReservationClient";
+import ModifyOrder from "../features/Order/pages/modifyOrder";
 
 export function ClientRouter() {
   return (
@@ -29,6 +30,7 @@ export function ClientRouter() {
         <Route path="/Menu/Comidas" element={<FoodsList />} />
         <Route path="/Menu/Bebidas" element={<DrinksList />} />
         <Route path="/Menu/RealizarPedido" element={<ConfirmOrder/>}/>
+        <Route path="/Menu/ModificarPedido" element={<ModifyOrder/>}/>
         <Route path="/Menu/PedidoConfirmado" element={
           <ProtectedPage>
             <FinishedOrder/>

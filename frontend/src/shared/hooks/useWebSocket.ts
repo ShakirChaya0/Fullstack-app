@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { io, Socket } from "socket.io-client";
 import useAuth from "./useAuth";
 
-type OrderEvent = "newOrder" | "updateLineStatus" | "updatedOrderStatus" | "updatedOrderLineStatus" | "addedOrderLine" | "modifiedOrderLine" | "deletedOrderLine" | "orderPaymentEvent" | "errorEvent"
+type OrderEvent = "deleteOrderLine" | "addOrderLine" | "newOrder" | "updateLineStatus" | "modifiedOrderLine" | "modifyOrder" | "updatedOrderStatus" | "updatedOrderLineStatus" | "addedOrderLine" | "modifiedOrderLine" | "deletedOrderLine" | "orderPaymentEvent" | "errorEvent"
 
 type WebSocketHook = {
     connected: boolean;
