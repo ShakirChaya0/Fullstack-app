@@ -27,11 +27,13 @@ export default function SuggestionsPage() {
     }, []);
 
     return (
-        <>
-            <main className="flex flex-col items-center justify-start w-full p-4">
-                <h1 className="text-3xl md:text-4xl font-bold text-gray-800 mb-6 mt-6 max-w-7xl">Sugerencias</h1>
-                
-                <div className="flex flex-col md:flex-row justify-between items-center gap-10 w-full max-w-7xl my-4">
+        <section className="flex flex-col items-center justify-start w-full">
+            <div className="w-full bg-white shadow-md mb-2 p-4">
+                <h1 className="text-3xl md:text-4xl font-bold text-gray-800 text-center">Sugerencias</h1>
+            </div>
+
+            <div className="flex flex-col justify-center items-center sm:px-4">
+                <div className="flex flex-col md:flex-row justify-between items-center gap-10 w-full max-w-7xl mt-6 mb-2">
                     <ModalCreateSuggestions />
                     <div className="flex flex-col sm:flex-row gap-4">
                         <SuggestionsFilters filter={filter} onFilterChange={handleFilterChange}/>
@@ -39,7 +41,7 @@ export default function SuggestionsPage() {
                     </div>
                 </div>
 
-                <section aria-label="listado de sugerencias" className="flex flex-col items-center justify-center w-full p-4">
+                <section aria-label="listado de sugerencias" className="flex flex-col items-center justify-center w-full sm:p-4">
                     { suggestions.length > 0 && <SuggestionsList suggestions={suggestions}/> }
                     { isLoading && <CircularProgress size="3rem" /> }
                     { isError && <p className="text-base text-center text-red-500">Error al cargar las sugerencias</p> }
@@ -54,7 +56,7 @@ export default function SuggestionsPage() {
                         </button>
                     }
                 </section>
-            </main>
-        </>
+            </div>
+        </section>
     )
 }

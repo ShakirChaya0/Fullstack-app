@@ -10,7 +10,16 @@ export default function ModalCreateSuggestions() {
 
     return (
         <div>
-            <Button variant="contained" startIcon={<ControlPointIcon/>} onClick={handleOpen}>Crear Sugerencia</Button>
+            <Button variant="contained" startIcon={<ControlPointIcon/>} onClick={handleOpen} 
+                sx={{
+                    backgroundColor: '#0F766E',
+                    '&:hover': {
+                        backgroundColor: '#115E59',
+                    },
+                }}
+            >
+                Crear Sugerencia
+            </Button>
             <Modal
                 aria-labelledby="Crear Sugerencia"
                 aria-describedby="Formulario para crear una nueva sugerencia"

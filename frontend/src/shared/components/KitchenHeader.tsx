@@ -19,7 +19,8 @@ import restauranteWhite from '../../shared/utils/assets/restauranteWhite.png'
 
 // Links de navegación
 const navLinks = [
-  { label: 'Sugerencias', path: '/Admin/Sugerencias' }
+  { label: 'Sugerencias', path: '/Cocina/Sugerencias' },
+  { label: 'Pedidos', path: '/Cocina/Pedidos' }
 ]
 
 // Componente para cada link de navegación
@@ -109,7 +110,7 @@ export default function AdminHeader() {
           >
             <MenuItem onClick={handleClose}>
               <NavLink 
-                to={"/Admin/Perfil"} 
+                to={"/Cocina/Perfil"} 
                 style={{ textDecoration: "none", color: "inherit", width: '100%' }}
               >
                 Perfil
