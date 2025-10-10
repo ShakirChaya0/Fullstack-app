@@ -72,6 +72,8 @@ private combineDateTime(date: Date, time: string): Date {
     const client = await this.clientRepository.getClientByidUser(clientId);
     if (!client) throw new NotFoundError('Cliente no encontrado');
     
+    if (!client.emailVerified) throw new BusinessError('Debe verificar su email para continuar, por favor ');
+
     //Se busca el último estado que se le puso al cliente ordenadas por las fechas
     const latestState = client.states.sort((a, b) => new Date(b.modifyDate).getTime() - new Date(a.modifyDate).getTime())[0];
     const currentState = latestState.state === 'Habilitado';
