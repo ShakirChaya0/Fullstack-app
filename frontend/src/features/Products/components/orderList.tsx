@@ -26,6 +26,8 @@ export function OrderList () {
       setOpen(!isOpen)
   }
 
+  const isValidModification = localStorage.getItem('modification')
+
     return(
       <>
         <button 
@@ -150,7 +152,7 @@ export function OrderList () {
                         </div>
                       
                         <div className="p-4">
-                          <NavLink to="/Cliente/Menu/RealizarPedido">
+                          <NavLink to={isValidModification === 'true' ? '/Cliente/Menu/ModificarPedido' : '/Cliente/Menu/RealizarPedido'}>
                             <button className="w-full py-3 cursor-pointer bg-orange-500
                              hover:bg-orange-600 hover:scale-105 text-white font-bold rounded-lg shadow-md 
                              transition-all ease-linear duration-150 active:bg-orange-700 active:scale-95">

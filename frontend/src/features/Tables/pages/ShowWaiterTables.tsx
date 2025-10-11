@@ -81,8 +81,8 @@ export default function ShowWaiterTables() {
                             { open && <div className='absolute w-full h-full bg-black opacity-50 inset-0' onClick={handleToggleModal}></div>}
                             <ModalShowTable onClose={handleToggleModal} open={open} currentTable={currentTable!}/>
                             <header className="mb-6">
-                                <h1 className="text-4xl font-bold text-center text-gray-700">Plano de Mesas del Restaurante</h1>
-                                <p className="text-center text-gray-500 mt-1">Haz click en una mesa para cambiar su estado.</p>
+                                <h1 className="text-4xl font-bold text-center text-gray-700">Mesas a tu cargo</h1>
+                                <p className="text-center text-gray-500 mt-1">Haz click en una mesa para visualizar su información.</p>
                             </header>
                             <section className="w-full bg-white rounded-2xl shadow-lg p-6 overflow-x-auto h-full">
                               <div className="grid grid-cols-[repeat(8,200px)] place-items-center grid-rows-3 gap-6 w-full">
