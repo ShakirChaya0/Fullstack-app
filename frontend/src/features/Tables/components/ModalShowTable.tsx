@@ -55,6 +55,7 @@ export const ModalShowTable: FC<ModalShowTableProps> = ({ open, onClose, title, 
   };
 
   const handleCreateOrder = () => {
+    localStorage.removeItem("modifyOrder")
     const orderToEdit = isModify.length > 0 ? isModify[0] : null;
     navigate(`/Mozo/CargarPedido/${currentTable._tableNum}`, {
       state: {
