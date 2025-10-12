@@ -83,7 +83,7 @@ export default function ModifyOrder() {
         // Validamos los cambios
         const productosNuevos = newOrderData.lineasPedido.filter(lp => 
             !previousOrder.lineasPedido.some(existingLp => 
-                existingLp.producto._name === lp.producto._name
+                existingLp.producto._name === lp.producto._name || existingLp.estado !== 'Pendiente'
             )
         );
 
@@ -203,6 +203,9 @@ export default function ModifyOrder() {
                                     <span className="text-orange-600 font-bold">
                                         ${lp.subtotal.toFixed(2)}
                                     </span>
+                                    <span>
+                                        <span className="font-medium">{lp.estado}</span>
+                                    </span>
                                 </div>
 
                                 <div className="text-right">
@@ -226,7 +229,12 @@ export default function ModifyOrder() {
                                 <p>{lp.cantidad}</p>
                                 <button
                                     onClick={() => handleAdd(lp)}
-                                    className="cursor-pointer h-full w-full py-1.5 px-2 bg-orange-500 hover:scale-105 hover:bg-orange-600 rounded-r-md transition-all ease-linear duration-150 active:bg-orange-700 active:scale-100"
+                                    disabled={lp.estado === 'Terminada' || lp.estado === 'En_Preparacion'}
+                                    className={`h-full w-full py-1.5 px-2 rounded-l-md transition-all ease-linear duration-150 ${
+                                        lp.estado === 'Terminada' 
+                                            ? 'bg-gray-400 cursor-not-allowed' 
+                                            : 'cursor-pointer bg-orange-500 hover:scale-105 hover:bg-orange-600 active:bg-orange-700 active:scale-100'
+                                    }`}
                                 >
                                     <ControlPointIcon />
                                 </button>
@@ -298,37 +306,43 @@ export default function ModifyOrder() {
                                         <TableCell align="right" sx={{ color: "white" }}>Cantidad</TableCell>
                                         <TableCell align="right" sx={{ color: "white" }}>Precio</TableCell>
                                         <TableCell align="right" sx={{ color: "white" }}>Subtotal</TableCell>
+                                        <TableCell align="right" sx={{ color: "white" }}>Estado</TableCell>
                                         <TableCell align="center" sx={{ color: "white" }}>Acciones</TableCell>
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
                                     {order.lineasPedido.map((lp) => (
-                                        <TableRow key={lp.producto._name}>
+                                        <TableRow sx={{
+                                            backgroundColor: (lp.estado === 'En_Preparacion' || lp.estado === 'Terminada') ? 'gray' : 'white'
+                                            }}
+                                            key={lp.producto._name}>
                                             <TableCell>{lp.producto._name}</TableCell>
                                             <TableCell>{lp.producto._description}</TableCell>
                                             <TableCell align="right">{lp.cantidad}</TableCell>
                                             <TableCell align="right">${lp.producto._price.toFixed(2)}</TableCell>
                                             <TableCell align="right">${lp.subtotal.toFixed(2)}</TableCell>
+                                            <TableCell align="right">{lp.estado}</TableCell>
                                             <TableCell align="center">
                                                 <div className="self-center border rounded-md transition-all duration-200 bg-orange-500 text-white font-medium flex flex-row justify-around items-center gap-1 w-fit m-auto">
+                                                    { lp.estado === 'Pendiente' &&
                                                     <button
                                                         onClick={() => handleRemove(lp.producto._name)}
-                                                        disabled={lp.estado === 'Terminada' || lp.estado === 'En_Preparacion'}
-                                                        className={`h-full w-full py-1.5 px-2 rounded-l-md transition-all ease-linear duration-150 ${
-                                                            lp.estado === 'Terminada' 
-                                                                ? 'bg-orange-200 cursor-not-allowed' 
-                                                                : 'cursor-pointer bg-orange-500 hover:scale-105 hover:bg-orange-600 active:bg-orange-700 active:scale-100'
-                                                        }`}
+                                                        className={`h-full w-full py-1.5 px-2 rounded-l-md transition-all ease-linear duration-150 'cursor-pointer bg-orange-500 hover:scale-105 hover:bg-orange-600 active:bg-orange-700 active:scale-100'
+                                                        `}
                                                     >
                                                         <RemoveCircleOutlineIcon />
                                                     </button>
+                                                    }
                                                     <p>{lp.cantidad}</p>
+                                                    { lp.estado === 'Pendiente' &&
                                                     <button
                                                         onClick={() => handleAdd(lp)}
-                                                        className="cursor-pointer h-full w-full py-1.5 px-2 bg-orange-500 hover:scale-105 hover:bg-orange-600 rounded-r-md transition-all ease-linear duration-150 active:bg-orange-700 active:scale-100"
+                                                        className={`h-full w-full py-1.5 px-2 rounded-l-md transition-all ease-linear duration-150 'cursor-pointer bg-orange-500 hover:scale-105 hover:bg-orange-600 active:bg-orange-700 active:scale-100'
+                                                        `}
                                                     >
                                                         <ControlPointIcon />
                                                     </button>
+                                                    }
                                                 </div>
                                             </TableCell>
                                         </TableRow>

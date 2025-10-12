@@ -117,6 +117,7 @@ export function OrderList () {
                                       text-white font-medium flex flex-row justify-around 
                                       items-center gap-1 w-fit"
                                     >
+                                      { lp.estado === 'Pendiente' &&
                                       <button
                                         onClick={() => handleRemove(lp.producto._name)}
                                         className="cursor-pointer h-full w-full py-1.5 px-2 bg-orange-500 hover:scale-105
@@ -125,7 +126,9 @@ export function OrderList () {
                                       >
                                         <RemoveCircleOutlineIcon/>
                                       </button>
+                                      }
                                       <p>{lp.cantidad}</p>
+                                       { lp.estado === 'Pendiente' &&
                                       <button
                                         onClick={() => handleAdd(lp)}
                                         className="cursor-pointer h-full w-full py-1.5 px-2 bg-orange-500 hover:scale-105
@@ -134,6 +137,7 @@ export function OrderList () {
                                       >
                                         <ControlPointIcon/>
                                       </button>
+                                       }
                                     </div>
                                   </div>
                                   <div className="flex justify-between items-end gap-2 mb-3">

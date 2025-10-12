@@ -22,7 +22,7 @@ export class UpdateOrderLineUseCase {
         const isFinished = order.orderLines.filter(ol => ol.status !== "Terminada")
         const isInProcess = order.orderLines.some(ol => ol.status === "En_Preparacion")
 
-        if (order.status === "Solicitado" && isInProcess) await this.orderRepository.changeState(order, "En_Preparacion")
+        if (order.status === "Solicitado" && isInProcess) order = await this.orderRepository.changeState(order, "En_Preparacion")
         if (isFinished.length === 0) return await this.orderRepository.changeState(order, "Completado")
         else return order 
     }

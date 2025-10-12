@@ -15,14 +15,17 @@ export const orderSlice = createSlice({
     initialState: initialState,
     reducers: {
         addToCart: (state, action: PayloadAction<Comida | Bebida>) => {
-            const cantidadLp = state.lineasPedido.findIndex((lp) => lp.producto._name === action.payload._name)
+            const cantidadLp = state.lineasPedido.map(lp => lp.producto._name).lastIndexOf(action.payload._name)
             const maxLineNumber = state.lineasPedido.length != 0 ? Math.max(...state.lineasPedido.map(l => l.lineNumber ?? 0)) : 0;
             if (cantidadLp === -1){
                 state.lineasPedido.push({producto: action.payload, lineNumber: maxLineNumber + 1, estado: "Pendiente", cantidad: 1, subtotal: action.payload._price})
                 return state
+            } else if (state.lineasPedido[cantidadLp].estado !== 'Pendiente'){
+                state.lineasPedido.push({producto: action.payload, lineNumber: maxLineNumber + 1, estado: "Pendiente", cantidad: 1, subtotal: action.payload._price})
+                return state
             }
             else{
-                const index = state.lineasPedido.findIndex((lp) => lp.producto._name === action.payload._name)
+                const index = state.lineasPedido.map(lp => lp.producto._name).lastIndexOf(action.payload._name)
                 const newLp = {
                     ...state.lineasPedido[index],
                     cantidad: state.lineasPedido[index].cantidad + 1,
@@ -32,13 +35,14 @@ export const orderSlice = createSlice({
             }
         },
         removeFromCart: (state, action: PayloadAction<string>) => {
-            const cantidadLp = state.lineasPedido.findIndex((lp) => lp.producto._name === action.payload)
+            const cantidadLp = state.lineasPedido.map(lp => lp.producto._name).lastIndexOf(action.payload)
+            if (cantidadLp === -1) return state
             if (state.lineasPedido[cantidadLp].cantidad === 1){
-                const newLps = state.lineasPedido.filter((lp) => lp.producto._name !== action.payload)
+                const newLps = state.lineasPedido.filter((lp) => lp.producto._name !== action.payload || lp.estado !== 'Pendiente')
                 return {...state, lineasPedido: newLps}
             }
             else{
-                const index = state.lineasPedido.findIndex((lp) => lp.producto._name === action.payload)
+                const index = state.lineasPedido.findIndex((lp) => lp.producto._name === action.payload && lp.estado === 'Pendiente')
                 const newLp = {
                     ...state.lineasPedido[index],
                     cantidad: state.lineasPedido[index].cantidad - 1,

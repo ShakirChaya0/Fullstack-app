@@ -56,7 +56,7 @@ export default function FinishedOrder() {
 
      const handleClick = () => {
         console.log("Emitiendo evento...");
-        sendEvent("updateLineStatus", {idPedido: 133, nroLinea: 1, estadoLP: 'Terminada'});
+        sendEvent("updateLineStatus", {idPedido: 77, nroLinea: 1, estadoLP: 'En_Preparacion'});
     }; 
 
     return (
