@@ -18,10 +18,10 @@ export const orderSlice = createSlice({
             const cantidadLp = state.lineasPedido.map(lp => lp.producto._name).lastIndexOf(action.payload._name)
             const maxLineNumber = state.lineasPedido.length != 0 ? Math.max(...state.lineasPedido.map(l => l.lineNumber ?? 0)) : 0;
             if (cantidadLp === -1){
-                state.lineasPedido.push({producto: action.payload, lineNumber: maxLineNumber + 1, estado: "Pendiente", cantidad: 1, subtotal: action.payload._price})
+                state.lineasPedido.push({producto: action.payload, lineNumber: maxLineNumber + 1, estado: "Pendiente", cantidad: 1, subtotal: action.payload._price, tipo: '_type' in action.payload ? (action.payload as Comida)._type : undefined, esAlcoholica: '_isAlcoholic' in action.payload ? (action.payload as Bebida)._isAlcoholic : undefined})
                 return state
             } else if (state.lineasPedido[cantidadLp].estado !== 'Pendiente'){
-                state.lineasPedido.push({producto: action.payload, lineNumber: maxLineNumber + 1, estado: "Pendiente", cantidad: 1, subtotal: action.payload._price})
+                state.lineasPedido.push({producto: action.payload, lineNumber: maxLineNumber + 1, estado: "Pendiente", cantidad: 1, subtotal: action.payload._price, tipo: '_type' in action.payload ? (action.payload as Comida)._type : undefined, esAlcoholica: '_isAlcoholic' in action.payload ? (action.payload as Bebida)._isAlcoholic : undefined})
                 return state
             }
             else{

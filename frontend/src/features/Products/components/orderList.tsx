@@ -127,7 +127,7 @@ export function OrderList () {
                                         <RemoveCircleOutlineIcon/>
                                       </button>
                                       }
-                                      <p>{lp.cantidad}</p>
+                                      <p className='px-2 py-1'>{lp.cantidad}</p>
                                        { lp.estado === 'Pendiente' &&
                                       <button
                                         onClick={() => handleAdd(lp)}

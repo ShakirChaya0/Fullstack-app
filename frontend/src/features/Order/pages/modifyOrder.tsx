@@ -18,8 +18,8 @@ import { useRef } from "react";
 import { useOrderActions } from "../../../shared/hooks/useOrderActions";
 import type { LineaPedido, Pedido } from "../../Order/interfaces/Order";
 import { toast } from "react-toastify";
-
-const EmptyOrderPlaceholder = "https://placehold.co/150x150/f9fafb/374151?text=Pedido+Vacío";
+import { formatCurrency } from "../../../shared/utils/formatCurrency";
+import EmptyOrder from "../../Products/assets/empty-order.svg"
 
 export default function ModifyOrder() {
     const navigate = useNavigate();
@@ -80,24 +80,41 @@ export default function ModifyOrder() {
         // Obtenemos el pedido antes de la modificación
         const previousOrder: Pedido = JSON.parse(localStorage.getItem('previousOrder')!);
 
-        // Validamos los cambios
-        const productosNuevos = newOrderData.lineasPedido.filter(lp => 
+        // Evaluamos nuevas lineas
+        // Obtener solo las líneas pendientes del pedido actual
+        const lineasPendientesActuales = newOrderData.lineasPedido.filter(lp => lp.estado === 'Pendiente')
+
+        // Filtrar las que NO existían en el pedido previo
+        const productosNuevos = lineasPendientesActuales.filter(lp => 
             !previousOrder.lineasPedido.some(existingLp => 
-                existingLp.producto._name === lp.producto._name || existingLp.estado !== 'Pendiente'
+                existingLp.producto._name === lp.producto._name && 
+                existingLp.estado === 'Pendiente'
             )
         );
 
-        const productosEliminados = previousOrder.lineasPedido.filter(lp => 
+        // Evaluamos lineas eliminadas
+        const lineasEliminar = previousOrder.lineasPedido.filter(lp => lp.estado === 'Pendiente')
+
+        const productosEliminados = lineasEliminar.filter(lp => 
             !newOrderData.lineasPedido.some(newLp => 
-                newLp.producto._name === lp.producto._name
+                newLp.producto._name === lp.producto._name && 
+                newLp.estado === 'Pendiente'
             )
         );
 
+        // Evaluamos lineas modificadas
         const productosModificados = newOrderData.lineasPedido.filter(lp => {
+            // Solo considerar líneas que siguen existiendo en ambos pedidos
             const original = previousOrder.lineasPedido.find(oldLp => 
                 oldLp.producto._name === lp.producto._name
             );
-            return original && original.cantidad !== lp.cantidad;
+            
+            // Debe existir en ambos Y tener cantidad diferente
+            // Además, solo considerar líneas que mantengan un estado modificable
+            return original && 
+                original.cantidad !== lp.cantidad &&
+                original.estado === 'Pendiente' &&  // Solo las que estaban pendientes
+                lp.estado === 'Pendiente';          // Y siguen pendientes
         });
 
         // Validando 0 cambios
@@ -116,7 +133,7 @@ export default function ModifyOrder() {
         }
 
         // Enviar eventos específicos para cada tipo de cambio
-
+        console.log(productosNuevos.map)
         // Añadir todas las lineas
         sendEvent("addOrderLine", {
             orderId: order.idPedido,
@@ -141,20 +158,29 @@ export default function ModifyOrder() {
             });
         });
 
-        console.log(productosModificados)
+        // Modificar pedido - comensales y observaciones
+        const hayComensalesModificados = newOrderData.comensales !== previousOrder.comensales;
+        const hayObservacionesModificadas = newOrderData.observaciones !== previousOrder.observaciones;
+        const hayProductosModificados = productosModificados.length > 0;
 
-        // Modificar pedido
-        sendEvent("modifyOrder", {
-            orderId: order.idPedido,
-            lineNumbers: productosModificados.map(lp => lp.lineNumber),
-            data: {
-                cantidadCubiertos: newOrderData.comensales !== previousOrder.comensales ? newOrderData.comensales : undefined,
-                observacion: newOrderData.observaciones !== previousOrder.observaciones ? newOrderData.observaciones : undefined,
-                items: productosModificados.map(lp => (
-                        { cantidad: lp.cantidad }
-                    ))
-            }
-        });
+        if( hayObservacionesModificadas && newOrderData.estado === 'En_Preparacion') {
+            toast.warning('No se puede modificar las observaciones de un pedido en preparación.')
+            return
+        }
+
+        if (hayComensalesModificados || hayObservacionesModificadas || hayProductosModificados) {
+            sendEvent("modifyOrder", {
+                orderId: order.idPedido,
+                lineNumbers: productosModificados.map(lp => lp.lineNumber),
+                data: {
+                    cantidadCubiertos: hayComensalesModificados ? newOrderData.comensales : undefined,
+                    observacion: hayObservacionesModificadas ? newOrderData.observaciones : undefined,
+                    items: productosModificados.map(lp => (
+                            { cantidad: lp.cantidad }
+                        ))
+                }
+            });
+        }
 
         toast.success('Todos los cambios hechos')
 
@@ -176,7 +202,7 @@ export default function ModifyOrder() {
                     <h1 className="text-2xl font-bold text-center text-gray-800">Modificar Pedido</h1>
                     <div className="flex">
                         <span className="text-gray-800 font-bold text-2xl">Total:</span>
-                        <span className="text-orange-500 font-bold text-2xl ml-1">${OrderTotalAmount(order.lineasPedido).toFixed(2)}</span>
+                        <span className="text-orange-500 font-bold text-2xl ml-1">{formatCurrency(OrderTotalAmount(order.lineasPedido), 'es-AR', 'ARS')}</span>
                     </div>
                 </div>
 
@@ -185,14 +211,14 @@ export default function ModifyOrder() {
                     {
                         order.lineasPedido?.length === 0 &&
                         <>
-                            <img src={EmptyOrderPlaceholder} alt="pedido vacio" className="m-auto w-fit" />
-                            <p className="text-center mb-4">Pedido Vacio</p>
+                            <img src={EmptyOrder} alt="pedido vacio" className="m-auto w-fit"/>
+                            <p className="text-center">Pedido Vacio</p>
                         </>
                     }
                     {order.lineasPedido.map((lp) => (
                         <div
                             key={lp.producto._name}
-                            className="flex flex-col gap-2 border border-gray-300 rounded-xl shadow-sm p-3"
+                            className="flex flex-col gap-2 border #e5e7eb rounded-xl shadow-sm p-3"
                         >
                             <div className="flex justify-between items-center">
                                 <div className="flex flex-col max-w-[200px]">
@@ -201,43 +227,38 @@ export default function ModifyOrder() {
                                         {lp.producto._description}
                                     </span>
                                     <span className="text-orange-600 font-bold">
-                                        ${lp.subtotal.toFixed(2)}
+                                        {formatCurrency(lp.subtotal, 'es-AR', 'ARS')}
                                     </span>
                                     <span>
-                                        <span className="font-medium">{lp.estado}</span>
+                                        <span className="font-medium">{lp.estado.replace('_', ' ').replace('o', 'ó')}</span>
                                     </span>
                                 </div>
 
                                 <div className="text-right">
                                     <p className="text-sm font-bold">Cant: {lp.cantidad}</p>
-                                    <p className="text-sm font-bold">Precio: ${(lp.producto._price * lp.cantidad).toFixed(2)}</p>
+                                    <p className="text-sm font-bold">Precio: {formatCurrency((lp.producto._price * lp.cantidad), 'es-AR', 'ARS')}</p>
                                 </div>
                             </div>
 
                             <div className="self-end border rounded-md transition-all duration-200 bg-orange-500 text-white font-medium flex flex-row justify-around items-center gap-1 w-fit">
+                                { lp.estado === 'Pendiente' && 
                                 <button
                                     onClick={() => handleRemove(lp.producto._name)}
-                                    disabled={lp.estado === 'Terminada' || lp.estado === 'En_Preparacion'}
-                                    className={`h-full w-full py-1.5 px-2 rounded-l-md transition-all ease-linear duration-150 ${
-                                        lp.estado === 'Terminada' 
-                                            ? 'bg-gray-400 cursor-not-allowed' 
-                                            : 'cursor-pointer bg-orange-500 hover:scale-105 hover:bg-orange-600 active:bg-orange-700 active:scale-100'
-                                    }`}
+                                    className={`h-full w-full py-1.5 px-2 rounded-md transition-all ease-linear duration-150 
+                                    'cursor-pointer bg-orange-500 hover:scale-105 hover:bg-orange-600 active:bg-orange-700 active:scale-100'`}
                                 >
                                     <RemoveCircleOutlineIcon />
                                 </button>
-                                <p>{lp.cantidad}</p>
+                                }
+                                <p className='px-2 py-1'>{lp.cantidad}</p>
+                                { lp.estado === 'Pendiente' &&
                                 <button
                                     onClick={() => handleAdd(lp)}
-                                    disabled={lp.estado === 'Terminada' || lp.estado === 'En_Preparacion'}
-                                    className={`h-full w-full py-1.5 px-2 rounded-l-md transition-all ease-linear duration-150 ${
-                                        lp.estado === 'Terminada' 
-                                            ? 'bg-gray-400 cursor-not-allowed' 
-                                            : 'cursor-pointer bg-orange-500 hover:scale-105 hover:bg-orange-600 active:bg-orange-700 active:scale-100'
-                                    }`}
+                                    className={`h-full w-full py-1.5 px-2 rounded-md transition-all ease-linear duration-150 'cursor-pointer bg-orange-500 hover:scale-105 hover:bg-orange-600 active:bg-orange-700 active:scale-100'`}
                                 >
                                     <ControlPointIcon />
                                 </button>
+                                }
                             </div>
                         </div>
                     ))}
@@ -263,12 +284,17 @@ export default function ModifyOrder() {
                             <label htmlFor="obsMobile">Observaciones: </label>
                             <textarea
                                 name="observaciones"
-                                className="bg-gray-200 rounded-2xl py-2 px-4 outline-0"
+                                className={`rounded-2xl py-2 px-4 outline-0 ${
+                                    order.estado === 'En_Preparacion' 
+                                        ? 'bg-gray-300 cursor-not-allowed' 
+                                        : 'bg-gray-200'
+                                }`}
                                 placeholder="ej: sin cebolla en la hamburguesa"
                                 rows={4}
                                 id="obsMobile"
                                 ref={observacionesRef}
                                 defaultValue={order.observaciones}
+                                disabled={order.estado === 'En_Preparacion'}
                             />
                         </div>
 
@@ -293,8 +319,8 @@ export default function ModifyOrder() {
                 {
                     order.lineasPedido?.length === 0 ?
                         <div className="hidden md:block">
-                            <img src={EmptyOrderPlaceholder} alt="pedido vacio" className="m-auto w-fit" />
-                            <p className="text-center mb-4">Pedido Vacio</p>
+                            <img src={EmptyOrder} alt="pedido vacio" className="m-auto w-fit"/>
+                            <p className="text-center">Pedido Vacio</p>
                         </div>
                         :
                         <TableContainer component={Paper} className="hidden md:block w-full">
@@ -306,38 +332,38 @@ export default function ModifyOrder() {
                                         <TableCell align="right" sx={{ color: "white" }}>Cantidad</TableCell>
                                         <TableCell align="right" sx={{ color: "white" }}>Precio</TableCell>
                                         <TableCell align="right" sx={{ color: "white" }}>Subtotal</TableCell>
-                                        <TableCell align="right" sx={{ color: "white" }}>Estado</TableCell>
+                                        <TableCell align="center" sx={{ color: "white" }}>Estado</TableCell>
                                         <TableCell align="center" sx={{ color: "white" }}>Acciones</TableCell>
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
                                     {order.lineasPedido.map((lp) => (
                                         <TableRow sx={{
-                                            backgroundColor: (lp.estado === 'En_Preparacion' || lp.estado === 'Terminada') ? 'gray' : 'white'
+                                            backgroundColor: (lp.estado === 'En_Preparacion' || lp.estado === 'Terminada') ? '#e5e7eb' : 'white'
                                             }}
                                             key={lp.producto._name}>
                                             <TableCell>{lp.producto._name}</TableCell>
                                             <TableCell>{lp.producto._description}</TableCell>
                                             <TableCell align="right">{lp.cantidad}</TableCell>
-                                            <TableCell align="right">${lp.producto._price.toFixed(2)}</TableCell>
-                                            <TableCell align="right">${lp.subtotal.toFixed(2)}</TableCell>
-                                            <TableCell align="right">{lp.estado}</TableCell>
+                                            <TableCell align="right">{formatCurrency(lp.producto._price, 'es-AR', 'ARS')}</TableCell>
+                                            <TableCell align="right">{formatCurrency(lp.subtotal, 'es-AR', 'ARS')}</TableCell>
+                                            <TableCell align="center">{lp.estado.replace('_', ' ').replace('o', 'ó')}</TableCell>
                                             <TableCell align="center">
-                                                <div className="self-center border rounded-md transition-all duration-200 bg-orange-500 text-white font-medium flex flex-row justify-around items-center gap-1 w-fit m-auto">
+                                                <div className={`self-center border rounded-md transition-all duration-200 bg-orange-500 text-white font-medium flex flex-row justify-around items-center gap-1 w-fit m-auto`}>
                                                     { lp.estado === 'Pendiente' &&
                                                     <button
                                                         onClick={() => handleRemove(lp.producto._name)}
-                                                        className={`h-full w-full py-1.5 px-2 rounded-l-md transition-all ease-linear duration-150 'cursor-pointer bg-orange-500 hover:scale-105 hover:bg-orange-600 active:bg-orange-700 active:scale-100'
+                                                        className={`h-full w-full py-1.5 px-2 rounded-md transition-all ease-linear duration-150 'cursor-pointer bg-orange-500 hover:scale-105 hover:bg-orange-600 active:bg-orange-700 active:scale-100'
                                                         `}
                                                     >
                                                         <RemoveCircleOutlineIcon />
                                                     </button>
                                                     }
-                                                    <p>{lp.cantidad}</p>
+                                                    <p className={`px-2 py-1 ${lp.estado === 'En_Preparacion' || lp.estado === 'Terminada' ? 'bg-gray-200 text-black border-2 border-black' : 'bg-orange-500 text-white'}`}>{lp.cantidad}</p>
                                                     { lp.estado === 'Pendiente' &&
                                                     <button
                                                         onClick={() => handleAdd(lp)}
-                                                        className={`h-full w-full py-1.5 px-2 rounded-l-md transition-all ease-linear duration-150 'cursor-pointer bg-orange-500 hover:scale-105 hover:bg-orange-600 active:bg-orange-700 active:scale-100'
+                                                        className={`h-full w-full py-1.5 px-2 rounded-md transition-all ease-linear duration-150 'cursor-pointer bg-orange-500 hover:scale-105 hover:bg-orange-600 active:bg-orange-700 active:scale-100'
                                                         `}
                                                     >
                                                         <ControlPointIcon />
@@ -374,12 +400,17 @@ export default function ModifyOrder() {
                             <label htmlFor="obsDesktop" className="font-semibold">Observaciones: </label>
                             <textarea
                                 name="observaciones"
-                                className="bg-gray-200 rounded-2xl py-2 px-4 outline-0"
+                                className={`rounded-2xl py-2 px-4 outline-0 ${
+                                    order.estado === 'En_Preparacion' 
+                                        ? 'bg-gray-300 cursor-not-allowed' 
+                                        : 'bg-gray-200'
+                                }`}
                                 placeholder="ej: sin cebolla en la hamburguesa"
                                 rows={4}
                                 id="obsDesktop"
                                 ref={observacionesRef}
                                 defaultValue={order.observaciones}
+                                disabled={order.estado === 'En_Preparacion'}
                             />
                         </div>
 

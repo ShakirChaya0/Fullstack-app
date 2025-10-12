@@ -18,30 +18,44 @@ export default function FinishedOrder() {
 
 
     const handleStatusChangeRef = useRef<(data: OrderClientInfo) => void>(() => {});
-    const OrderStatusRef = useRef<OrderStatus>(order.estado);
+    const orderStatusRef = useRef<OrderStatus>(order.estado);
+
+    // Sincronizar ref cuando Redux cambie
+    useEffect(() => {
+        orderStatusRef.current = order.estado;
+    }, [order.estado]); // ✅ Se actualiza cuando Redux cambia
 
     // ✅ Actualizar el ref si las dependencias cambian
     useEffect(() => {
         handleStatusChangeRef.current = (data: OrderClientInfo) => {
             console.log('📨 Data recibida del WebSocket:', data);
             handleModifyOrderStatus({newOrderStatus: data.estado, orderLinesData: data.lineasPedido});
-            OrderStatusRef.current = data.estado
+            orderStatusRef.current = data.estado
         };
     }, [handleModifyOrderStatus]);
 
     // ✅ Efecto separado para listeners - se ejecuta UNA SOLA VEZ
     useEffect(() => {
-        console.log('🎯 Configurando listener para updatedOrderLineStatus');
+        console.log('🎯 Configurando listeners para eventos de orden');
 
-        const handler = (data: OrderClientInfo) => {
+        // Handler único para todos los eventos ya que el backend siempre envía Order.toClientInfo()
+        const handleOrderUpdate = (data: OrderClientInfo) => {
+            console.log('📨 Evento de orden recibido:', data);
             handleStatusChangeRef.current(data);
         };
 
-        onEvent("updatedOrderLineStatus", handler);
+        // Registrar el mismo handler para todos los eventos que devuelven Order.toClientInfo()
+        onEvent("updatedOrderLineStatus", handleOrderUpdate);
+        onEvent("addedOrderLine", handleOrderUpdate);
+        onEvent("deletedOrderLine", handleOrderUpdate);
+        onEvent("modifiedOrderLine", handleOrderUpdate);
 
         return () => {
-            console.log('🧹 Limpiando listener updatedOrderLineStatus');
-            offEvent("updatedOrderLineStatus", handler);
+            console.log('🧹 Limpiando listeners de orden');
+            offEvent("updatedOrderLineStatus", handleOrderUpdate);
+            offEvent("addedOrderLine", handleOrderUpdate);
+            offEvent("deletedOrderLine", handleOrderUpdate);
+            offEvent("modifiedOrderLine", handleOrderUpdate);
         };
     }, []); 
 
@@ -56,7 +70,7 @@ export default function FinishedOrder() {
 
      const handleClick = () => {
         console.log("Emitiendo evento...");
-        sendEvent("updateLineStatus", {idPedido: 77, nroLinea: 1, estadoLP: 'En_Preparacion'});
+        sendEvent("updateLineStatus", {idPedido: 148, nroLinea: 3, estadoLP: 'Terminada'});
     }; 
 
     return (
@@ -72,7 +86,7 @@ export default function FinishedOrder() {
                     Emitir 
                 </button> 
             </div>
-            <StatusIndicator currentStatus={ OrderStatusRef.current }></StatusIndicator>
+            <StatusIndicator currentStatus={ order.estado }></StatusIndicator>
             <section className="flex flex-col w-full items-center h-auto mb-10">
                 <div 
                     className="md:border flex flex-col py-4 md:border-gray-300 md:shadow-2xl 
