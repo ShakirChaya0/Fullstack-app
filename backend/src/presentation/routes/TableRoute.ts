@@ -8,6 +8,8 @@ export function MesaRouter (){
 
     tableRouter.get('/', /*RoleMiddleware(["Administrador", "Mozo"])*/ (req, res, next) => { tableController.getAll(req, res, next) }); 
 
+    tableRouter.get('/pedidos', /*RoleMiddleware(["Administrador", "Mozo"]),*/ (req, res, next)=> { tableController.getWithOrders(req, res, next) });
+
     tableRouter.get('/capacidad/:capacity', RoleMiddleware(["Administrador", "Mozo"]), (req, res, next)=> { tableController.getByCapacity(req, res, next) }); 
 
     tableRouter.post('/', /*RoleMiddleware(["Administrador"]),*/ (req, res, next) => { tableController.create(req, res, next) }); 

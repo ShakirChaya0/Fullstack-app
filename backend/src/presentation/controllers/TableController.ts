@@ -7,11 +7,13 @@ import { GetTableByCapacity } from "../../application/use_cases/TableUseCase/Get
 import { DeleteTable } from "../../application/use_cases/TableUseCase/DeleteTable.js";
 import { UpdateCapacityTableUseCase } from "../../application/use_cases/TableUseCase/UpdateCapacityTableUseCase.js";
 import { ValidationError } from "../../shared/exceptions/ValidationError.js";
+import { GetTablesWithOrders } from "../../application/use_cases/TableUseCase/GetTablesWithOrders.js";
 
 export class TableController {
     constructor(
         private readonly CU17RegisterTable = new CUU17RegisterTable(),
         private readonly getAllTable = new GetAllTable(),
+        private readonly getTablesWithOrders = new GetTablesWithOrders(),
         private readonly getTableByCapacity = new GetTableByCapacity(),
         private readonly deletedTable = new DeleteTable(), 
         private readonly updateTable = new UpdateTableUseCase(), 
@@ -21,6 +23,15 @@ export class TableController {
     public getAll = async (req: Request, res: Response, next: NextFunction) => {
         try {
             const tables = await this.getAllTable.execute();
+            res.status(200).json(tables);
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    public getWithOrders = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const tables = await this.getTablesWithOrders.execute();
             res.status(200).json(tables);
         } catch (error) {
             next(error);

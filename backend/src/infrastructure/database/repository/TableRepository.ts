@@ -16,6 +16,38 @@ export class TableRepository implements ITableRepository {
         )
     }
 
+    public async getWithOrders(): Promise<Table[]> {
+       const tables = await prisma.mesa.findMany({
+            include: {
+                Pedido: {
+                    include: {
+                        Linea_De_Pedido: true,
+                    }
+                }
+            }
+        });
+        return tables.map(table => new Table (
+                table.nroMesa, 
+                table.capacidad,
+                table.estado,
+                table.Pedido.map(p => ({
+                    idPedido: p.idPedido,
+                    horaInicio: p.horaInicio,
+                    nroMesa: p.nroMesa,
+                    cantidadCubiertos: p.cantCubiertos,
+                    lineasPedido: p.Linea_De_Pedido.map(lp => ({
+                        nombreProducto: lp.nombreProducto,
+                        cantidad: lp.cantidad,
+                        estado: lp.estado
+                    })),
+                    estado: p.estado,
+                    observaciones: p.observaciones,
+                    idMozo: p.idMozo
+                }))
+            )
+        )
+    }
+
     public async getByNumTable(numTable: number): Promise<Table | null> {
         const table = await prisma.mesa.findUnique({
             where: { nroMesa: numTable }
