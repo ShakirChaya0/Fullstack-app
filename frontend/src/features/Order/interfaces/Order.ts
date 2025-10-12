@@ -28,6 +28,13 @@ export type Pedido = {
     comensales: number
 }
 
+export type WaiterOrder = Pedido & {
+    nroMesa: number,
+    horaInicio: string,
+    idMozo?: string,
+    cantCubiertos: number,
+}
+
 export interface OrderLineClientInfo {
     nombreProducto: string,
     tipo: FoodType | null,

@@ -1,46 +1,25 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useTables } from '../hooks/useTable';
 import type { ITable } from '../interfaces/ITable';
 import { ModalShowTable } from '../components/ModalShowTable';
 import { CircularProgress } from '@mui/material';
-import type { statusTable } from '../types/TableTypes';
 import { getTablesWithOrders } from '../services/getTablesWithOrders';
 import useAuth from '../../../shared/hooks/useAuth';
-
-interface Status {
-    id: statusTable;
-    label: string;
-    color: string;
-    textColor: string;
-}
+import { useWebSocket } from '../../../shared/hooks/useWebSocket';
+import type { WaiterOrder } from '../../Order/interfaces/Order';
 
 interface TableProps {
     tableData: ITable;
     onClick: (table: ITable) => void;
+    orders: WaiterOrder[]
 }
 
-const STATUSES: Status[] = [
-    { id: 'Libre', label: 'Disponible', color: 'bg-green-500', textColor: 'text-green-800' },
-    { id: 'Ocupada', label: 'Ocupada', color: 'bg-red-500', textColor: 'text-red-800' },
-    { id: 'Libre', label: 'Reservada', color: 'bg-yellow-400', textColor: 'text-yellow-800' },
-    { id: 'Libre', label: 'Limpiando', color: 'bg-blue-400', textColor: 'text-blue-800' },
-];
 
-const STATUS_MAP: Record<statusTable, Status> = STATUSES.reduce((acc, status) => {
-    acc[status.id] = status;
-    return acc;
-}, {} as Record<statusTable, Status>);
+function Table({ tableData, onClick, orders }: TableProps) {
+    const { _tableNum, _capacity } = tableData;
 
-function Table({ tableData, onClick }: TableProps) {
-    const { _tableNum, _state, _capacity } = tableData;
-    const { user } = useAuth()
-
-    console.log(user?.idUsuario === tableData._orders[0]?.idMozo)
-
-    const isValid = user?.idUsuario === tableData._orders[0]?.idMozo
-
-    const statusInfo = STATUS_MAP[_state];
+    const isAssigned = orders.find((o) => o.nroMesa === _tableNum)
 
     const handleClick = (e: React.MouseEvent) => {
         e.stopPropagation();
@@ -55,7 +34,7 @@ function Table({ tableData, onClick }: TableProps) {
             exit={{ opacity: 0, scale: 0.8 }}
             transition={{ type: 'spring', stiffness: 300, damping: 25 }}
             className={`flex justify-center flex-col items-center shadow-lg 
-                rounded-xl cursor-pointer transition-all duration-200 hover:scale-105 ${ isValid ? "bg-amber-600" : "bg-red-600"}`
+                rounded-xl cursor-pointer transition-all duration-200 hover:scale-105 ${ isAssigned ? "bg-amber-600" : "bg-red-600"}`
             
             }
             onClick={handleClick}
@@ -71,14 +50,23 @@ export default function ShowWaiterTables() {
     const { data, isLoading, error} = useTables(getTablesWithOrders)
     const [open, setOpen] = useState(false)
     const [currentTable, setCurrentTable] = useState<ITable | null>(null)
+    const [orders, setOrders] = useState< WaiterOrder[] | null>(null)
     const { user } = useAuth()
+    const { onEvent, offEvent } = useWebSocket()
 
-    const tables = data?.filter((t) => ((t._state === "Ocupada") && ((t._orders[0]?.idMozo === undefined) || (t._orders[0]?.idMozo === user?.idUsuario)))).sort((a, b) => a._tableNum - b._tableNum )
+    const tables = data?.filter((t) => (((t._orders[0]?.idMozo === undefined) || (t._orders[0]?.idMozo === user?.idUsuario)))).sort((a, b) => a._tableNum - b._tableNum )
 
     const handleToggleModal = useCallback(() => {
         setOpen(!open)
     }, [setOpen, open])
 
+    useEffect(() => {
+        onEvent("waiterOrders", (data) => setOrders(data))
+
+        return () => {
+            offEvent("waiterOrders", (data) => setOrders(data))
+        }
+    }, [])
 
     const handleSelectTable = useCallback((table: ITable) => {
         setOpen(!open)
@@ -92,7 +80,7 @@ export default function ShowWaiterTables() {
                     !error ? (
                         <div className="bg-gray-100 w-full font-sans text-gray-800 flex flex-col p-4 md:p-8">
                             { open && <div className='absolute w-full h-full bg-black opacity-50 inset-0' onClick={handleToggleModal}></div>}
-                            <ModalShowTable onClose={handleToggleModal} open={open} currentTable={currentTable!}/>
+                            { currentTable && <ModalShowTable onClose={handleToggleModal} open={open} currentTable={currentTable}/>}
                             <header className="mb-6">
                                 <h1 className="text-4xl font-bold text-center text-gray-700">Mesas ocupadas del restaurante</h1>
                                 <p className="text-center text-gray-500 mt-1">Haz click en una mesa para visualizar su información.</p>
@@ -104,6 +92,7 @@ export default function ShowWaiterTables() {
                                     key={table._tableNum}
                                     tableData={table}
                                     onClick={handleSelectTable}
+                                    orders={orders ?? []}
                                   />
                                 ))}
                               </div>

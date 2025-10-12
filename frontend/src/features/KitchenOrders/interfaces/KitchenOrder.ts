@@ -12,5 +12,6 @@ export interface OrderLine {
     nombreProducto: string,
     tipoComida: FoodType,
     cantidad: number,
-    estado: OrderLineStatus
+    estado: OrderLineStatus,
+    nroLinea: number
 }

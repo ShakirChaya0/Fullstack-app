@@ -18,6 +18,7 @@ export class TableRepository implements ITableRepository {
 
     public async getWithOrders(): Promise<Table[]> {
        const tables = await prisma.mesa.findMany({
+            where: { estado: "Ocupada" },
             include: {
                 Pedido: {
                     include: {
@@ -38,7 +39,8 @@ export class TableRepository implements ITableRepository {
                     lineasPedido: p.Linea_De_Pedido.map(lp => ({
                         nombreProducto: lp.nombreProducto,
                         cantidad: lp.cantidad,
-                        estado: lp.estado
+                        estado: lp.estado,
+                        nroLinea: lp.nroLinea
                     })),
                     estado: p.estado,
                     observaciones: p.observaciones,

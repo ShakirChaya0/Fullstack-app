@@ -33,6 +33,7 @@ interface ModalShowTableProps {
 export const ModalShowTable: FC<ModalShowTableProps> = ({ open, onClose, title, currentTable }) => {
   const navigate = useNavigate()
   const { mutate, isPending } = useTableMutation()
+
   const modalVariants: Variants = {
     hidden: { x: '-100%', opacity: 0 },
     visible: {
@@ -54,16 +55,23 @@ export const ModalShowTable: FC<ModalShowTableProps> = ({ open, onClose, title, 
   };
 
   const handleCreateOrder = () => {
-    navigate(`/Mozo/CargarPedido/${currentTable._tableNum}`)
+    const orderToEdit = isModify.length > 0 ? isModify[0] : null;
+    navigate(`/Mozo/CargarPedido/${currentTable._tableNum}`, {
+      state: {
+        action: orderToEdit ? "modificar" : "agregar",
+        existingOrder: orderToEdit
+      }
+    })
   }
 
   const handleFreeTable = () => {
     mutate({action: "updateState", _tableNum: currentTable._tableNum, _state: "Libre"})
   }
+  const isModify = currentTable._orders.filter((o) => ((o.idMozo) && (o.estado !== "Completado" && o.estado !== "Pagado" && o.estado !== "Pendiente_De_Pago" && o.estado !== "Pendiente_De_Cobro")))
 
   return (
     <AnimatePresence>
-      {open && (
+      {open && ( 
         <Fragment>
           <motion.div
             key="overlay"
@@ -132,7 +140,7 @@ export const ModalShowTable: FC<ModalShowTableProps> = ({ open, onClose, title, 
                     className="w-full px-4 py-3 text-sm font-medium text-white bg-blue-600 
                     rounded-lg hover:bg-blue-700 active:scale-95 active:bg-blue-800 cursor-pointer transition-all"
                 >
-                    Agregar Pedido
+                    {isModify.length === 0 ? "Agregar Pedido" : "Modificar Pedido"}
                 </button>
               </div>
             </div>

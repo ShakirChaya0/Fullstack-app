@@ -114,7 +114,7 @@ export class OrderController {
         const validatedOrder = ValidateOrderPartialMinimal(data);
         if(!validatedOrder.success) throw new ValidationError(`Validation failed: ${validatedOrder.error.message}`);
 
-        const updatedOrder = await this.updateOrderUseCase.execute(orderId, lineNumbers, validatedOrder.data);
+        const updatedOrder = await this.updateOrderUseCase.execute(orderId, lineNumbers, data);
         await this.orderSocketService.emitOrderEvent("modifiedOrderLine", updatedOrder);
     }
 }
