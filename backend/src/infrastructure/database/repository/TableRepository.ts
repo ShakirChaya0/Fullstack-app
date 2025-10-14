@@ -3,6 +3,7 @@ import { Table } from "../../../domain/entities/Table.js";
 import { schemaTable } from "../../../shared/validators/TableZod.js";
 import { ITableRepository } from "../../../domain/repositories/ITableRepository.js";
 import { TableState } from "../../../shared/types/SharedTypes.js";
+import { JwtPayloadInterface } from "../../../domain/interfaces/JwtPayloadInterface.js";
 
 export class TableRepository implements ITableRepository {
     
@@ -16,9 +17,19 @@ export class TableRepository implements ITableRepository {
         )
     }
 
-    public async getWithOrders(): Promise<Table[]> {
-       const tables = await prisma.mesa.findMany({
-            where: { estado: "Ocupada" },
+    public async getWithOrders(user: JwtPayloadInterface | undefined): Promise<Table[]> {
+
+        const tables = await prisma.mesa.findMany({
+            where: { 
+                estado: "Ocupada",
+                 OR: [
+                  // Mesas sin ningún pedido (sin mozo todavía)
+                  { Pedido: { none: {} } },
+                            
+                  // Mesas con pedidos asignados al mozo actual
+                  { Pedido: { some: { idMozo: user?.idUsuario } } },
+                ],
+            },
             include: {
                 Pedido: {
                     include: {

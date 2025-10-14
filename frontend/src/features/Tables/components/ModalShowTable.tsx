@@ -33,6 +33,9 @@ interface ModalShowTableProps {
 export const ModalShowTable: FC<ModalShowTableProps> = ({ open, onClose, title, currentTable }) => {
   const navigate = useNavigate()
   const { mutate, isPending } = useTableMutation()
+  const isModify = currentTable._orders?.find((o) => ((o.idMozo) && (o.estado !== "Completado" && o.estado !== "Pagado" && o.estado !== "Pendiente_De_Pago" && o.estado !== "Pendiente_De_Cobro")))
+
+  console.log("table: ", isModify)
 
   const modalVariants: Variants = {
     hidden: { x: '-100%', opacity: 0 },
@@ -56,19 +59,14 @@ export const ModalShowTable: FC<ModalShowTableProps> = ({ open, onClose, title, 
 
   const handleCreateOrder = () => {
     localStorage.removeItem("modifyOrder")
-    const orderToEdit = isModify.length > 0 ? isModify[0] : null;
-    navigate(`/Mozo/CargarPedido/${currentTable._tableNum}`, {
-      state: {
-        action: orderToEdit ? "modificar" : "agregar",
-        existingOrder: orderToEdit
-      }
-    })
+    const url = !isModify ? `/Mozo/CargarPedido/${currentTable._tableNum}` : `/Mozo/ModificarPedido/${currentTable._tableNum}`
+    if (isModify) localStorage.setItem("modifyOrder", JSON.stringify(isModify))
+    navigate(`${url}`)
   }
 
   const handleFreeTable = () => {
     mutate({action: "updateState", _tableNum: currentTable._tableNum, _state: "Libre"})
   }
-  const isModify = currentTable._orders.filter((o) => ((o.idMozo) && (o.estado !== "Completado" && o.estado !== "Pagado" && o.estado !== "Pendiente_De_Pago" && o.estado !== "Pendiente_De_Cobro")))
 
   return (
     <AnimatePresence>
@@ -141,7 +139,7 @@ export const ModalShowTable: FC<ModalShowTableProps> = ({ open, onClose, title, 
                     className="w-full px-4 py-3 text-sm font-medium text-white bg-blue-600 
                     rounded-lg hover:bg-blue-700 active:scale-95 active:bg-blue-800 cursor-pointer transition-all"
                 >
-                    {isModify.length === 0 ? "Agregar Pedido" : "Modificar Pedido"}
+                    { !isModify ? "Agregar Pedido" : "Modificar Pedido"}
                 </button>
               </div>
             </div>

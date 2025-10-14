@@ -9,7 +9,6 @@ import { useParams } from 'react-router';
 import useSaveTableOrder from '../hooks/useSaveTableOrder';
 import type { LineaPedido } from '../../Order/interfaces/Order';
 import { toast } from 'react-toastify';
-import { useWebSocket } from '../../../shared/hooks/useWebSocket';
 
 
 type OrderItemComida = Comida & { quantity: number };

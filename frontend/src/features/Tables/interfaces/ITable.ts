@@ -6,7 +6,7 @@ export interface ITable {
     readonly _tableNum: number, 
     _capacity: number, 
     _state: statusTable,
-    _orders: {
+    _orders?: {
         cantidadCubiertos: number,
         estado: OrderStatus,
         horaInicio: string,

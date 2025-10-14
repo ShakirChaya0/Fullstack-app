@@ -8,6 +8,7 @@ import { DeleteTable } from "../../application/use_cases/TableUseCase/DeleteTabl
 import { UpdateCapacityTableUseCase } from "../../application/use_cases/TableUseCase/UpdateCapacityTableUseCase.js";
 import { ValidationError } from "../../shared/exceptions/ValidationError.js";
 import { GetTablesWithOrders } from "../../application/use_cases/TableUseCase/GetTablesWithOrders.js";
+import { AuthenticatedRequest } from "../middlewares/AuthMiddleware.js";
 
 export class TableController {
     constructor(
@@ -29,9 +30,9 @@ export class TableController {
         }
     }
 
-    public getWithOrders = async (req: Request, res: Response, next: NextFunction) => {
+    public getWithOrders = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
         try {
-            const tables = await this.getTablesWithOrders.execute();
+            const tables = await this.getTablesWithOrders.execute(req?.user);
             res.status(200).json(tables);
         } catch (error) {
             next(error);

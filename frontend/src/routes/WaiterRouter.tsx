@@ -7,6 +7,7 @@ const SkeletonCreateOrder = lazy(() => import("../features/Tables/pages/CreateOr
 const AvailableTable = lazy (() => import("../features/Tables/pages/AvailableTable"));
 import { WaiterMainLayout } from "../shared/components/WaiterMainLayout";
 import WaiterHomepage from "../shared/components/WaiterHomePage";
+import ModifyOrder from "../features/Tables/pages/ModifyOrder";
 
 
 export function WaiterRouter() {
@@ -19,6 +20,11 @@ export function WaiterRouter() {
                 <Route path="/CargarPedido/:nroMesa" element={
                     <Suspense fallback={<SkeletonCreateOrder/>}>
                         <CreateOrder/>
+                    </Suspense>
+                }/>
+                <Route path="/ModificarPedido/:nroMesa" element={
+                    <Suspense fallback={<SkeletonCreateOrder/>}>
+                        <ModifyOrder/>
                     </Suspense>
                 }/>
                 <Route path="/MesasDisponibles" element={<AvailableTable />} />

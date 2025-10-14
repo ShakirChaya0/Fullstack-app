@@ -51,10 +51,21 @@ export default function ShowWaiterTables() {
     const [open, setOpen] = useState(false)
     const [currentTable, setCurrentTable] = useState<ITable | null>(null)
     const [orders, setOrders] = useState< WaiterOrder[] | null>(null)
-    const { user } = useAuth()
     const { onEvent, offEvent } = useWebSocket()
+    const { user } = useAuth()
 
-    const tables = data?.filter((t) => (((t._orders[0]?.idMozo === undefined) || (t._orders[0]?.idMozo === user?.idUsuario)))).sort((a, b) => a._tableNum - b._tableNum )
+    const tables = data?.filter((t) => {
+          const orders = t._orders ?? []
+    
+          if ( t._state === "Ocupada"){
+              if (orders.length === 0) return true
+            
+              if (orders.some((o) => o.idMozo === user?.idUsuario)) return true
+          }
+
+        
+          return false
+        })?.sort((a, b) => a._tableNum - b._tableNum)
 
     const handleToggleModal = useCallback(() => {
         setOpen(!open)
