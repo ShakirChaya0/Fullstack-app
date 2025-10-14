@@ -7,6 +7,8 @@ const SkeletonCreateOrder = lazy(() => import("../features/Tables/pages/CreateOr
 const AvailableTable = lazy (() => import("../features/Tables/pages/AvailableTable"));
 import { WaiterMainLayout } from "../shared/components/WaiterMainLayout";
 import WaiterHomepage from "../shared/components/WaiterHomePage";
+const ProfileCardSkeleton = lazy(() => import("../features/Profile/components/ProfileCardSkeleton"));
+const UserProfile = lazy(() => import("../features/Profile/pages/UserProfile"));
 
 
 export function WaiterRouter() {
@@ -22,8 +24,12 @@ export function WaiterRouter() {
                     </Suspense>
                 }/>
                 <Route path="/MesasDisponibles" element={<AvailableTable />} />
+                <Route path="/Perfil" element={
+                  <Suspense fallback = {<ProfileCardSkeleton />}>
+                    <UserProfile />
+                  </Suspense>
+                }/>
             </Route>
         </Routes>
-
     )
 }

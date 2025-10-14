@@ -43,8 +43,8 @@ export default function UserProfile() {
                 <div className="p-2 w-full">
                     <div className="flex flex-col items-center gap-6">
                         <div className="flex flex-col items-center gap-2 w-full">
-                            <Typography variant="h5">{(profile as any).nombre || profile.nombreUsuario}</Typography>
-                            <Typography variant="h6">@{profile.nombreUsuario}</Typography>
+                            <Typography variant="h5" sx={{ textAlign: 'center' }}>{(profile as any).nombre || profile.nombreUsuario}</Typography>
+                            <Typography variant="h6" sx={{ textAlign: 'center' }}>@{profile.nombreUsuario}</Typography>
                         </div>
 
                         <Divider className="w-full flex items-center justify-center">

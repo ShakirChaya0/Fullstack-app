@@ -6,7 +6,6 @@ import { useEffect } from "react";
 import type { ProfileData, UniqueProfileData } from "../types/ProfileSharedTypes";
 import { useProfileMutation } from "../hooks/useProfileMutation";
 import { getFieldConfigs } from "../services/getFieldConfig";
-import useAuth from "../../../shared/hooks/useAuth";
 import type { Client } from "../../Login/interfaces/Client";
 import dateParser from "../../../shared/utils/dateParser";
 
@@ -17,7 +16,6 @@ interface ProfileFormProps {
 }
 
 export default function ProfileForm({ profile, editMode , onEditModeChange }: ProfileFormProps) {
-    const { user } = useAuth();
     const { mutate, isPending } = useProfileMutation(onEditModeChange);
     const fieldConfigs = getFieldConfigs();
 
@@ -46,7 +44,7 @@ export default function ProfileForm({ profile, editMode , onEditModeChange }: Pr
             (formattedData as Client).fechaNacimiento = dateParser(formattedData.fechaNacimiento);
         }
 
-        mutate({ userData: formattedData, userType: user!.tipoUsuario });
+        mutate({ userData: formattedData });
     };
 
     return (

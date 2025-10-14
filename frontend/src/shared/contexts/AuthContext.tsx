@@ -13,6 +13,7 @@ export type UserType = "Administrador" | "SectorCocina" | "Mozo" | "Cliente";
 
 interface AuthContextType {
     user: JwtPayloadInterface | null,
+    setUser: (user: JwtPayloadInterface | null) => void,
     accessToken: string | null, 
     login: (email: string, password: string) => Promise<{ success: boolean; error?: undefined; } | { success: boolean; error: any; } | undefined>,
     logout: () => void,
@@ -107,7 +108,8 @@ export const AuthProvider = ({ children }: { children: ReactElement }) => {
 
   return (
     <AuthContext.Provider value={{ 
-        user, 
+        user,
+        setUser, 
         accessToken, 
         login, 
         logout, 
