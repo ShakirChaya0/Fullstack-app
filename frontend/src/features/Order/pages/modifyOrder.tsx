@@ -20,6 +20,7 @@ import type { LineaPedido, Pedido } from "../../Order/interfaces/Order";
 import { toast } from "react-toastify";
 import { formatCurrency } from "../../../shared/utils/formatCurrency";
 import EmptyOrder from "../../Products/assets/empty-order.svg"
+import type { FoodType } from "../../Product&Price/types/product&PriceTypes";
 
 export default function ModifyOrder() {
     const navigate = useNavigate();
@@ -28,6 +29,7 @@ export default function ModifyOrder() {
         handleAddToCart,
         hanldeRemoveFromCart,
         handleConfirmOrder,
+        handleModifyOrderStatus
     } = useOrderActions();
 
     const comensalesRef = useRef<HTMLInputElement>(null);
@@ -132,23 +134,62 @@ export default function ModifyOrder() {
             return
         }
 
-        // Enviar eventos específicos para cada tipo de cambio
-        console.log(productosNuevos.map)
-        // Añadir todas las lineas
-        sendEvent("addOrderLine", {
-            orderId: order.idPedido,
-            orderLines: productosNuevos.map( eachLp => {
-                return (
-                    {
-                        nombre: eachLp.producto._name,
-                        tipo: eachLp.tipo,
-                        monto: eachLp.producto._price,
-                        cantidad: eachLp.cantidad,
-                        esAlcoholica: eachLp.esAlcoholica
-                    }
-                )
-            })
-        });
+        // ✅ LÓGICA CENTRALIZADA: Calcular estado final del pedido
+        const calcularEstadoFinalPedido = () => {
+            // Simular el estado final después de todas las modificaciones
+            let lineasFinales = [...newOrderData.lineasPedido];
+            
+            // 2. Simular eliminación de productos 
+            productosEliminados.forEach(producto => {
+                lineasFinales = lineasFinales.filter(lp => 
+                    !(lp.producto._name === producto.producto._name && lp.estado === 'Pendiente')
+                );
+            });
+            
+            // 3. Contar líneas pendientes finales
+            const lineasPendientesFinales = lineasFinales.filter(lp => lp.estado === 'Pendiente').length;     
+            
+            // 4. Determinar estado final
+            if (lineasPendientesFinales > 0) {
+                return 'En_Preparacion';
+            } else {
+                return 'Completado';
+            }
+        };
+        
+        const estadoFinalCalculado = calcularEstadoFinalPedido();
+        
+        // ✅ OPTIMISTIC UPDATE: Actualizar estado solo si cambia
+        if (newOrderData.estado !== estadoFinalCalculado) {
+            console.log(`🚀 Actualizando estado optimísticamente: ${newOrderData.estado} → ${estadoFinalCalculado}`);
+            handleModifyOrderStatus({
+                newOrderStatus: estadoFinalCalculado,
+                orderLinesData: newOrderData.lineasPedido.map(lp => ({
+                    nombreProducto: lp.producto._name,
+                    tipo: lp.tipo as FoodType || null,
+                    cantidad: lp.cantidad,
+                    estado: lp.estado
+                }))
+            });
+        }
+
+        if (productosNuevos.length > 0) {
+            // Añadir todas las lineas
+            sendEvent("addOrderLine", {
+                orderId: order.idPedido,
+                orderLines: productosNuevos.map( eachLp => {
+                    return (
+                        {
+                            nombre: eachLp.producto._name,
+                            tipo: eachLp.tipo,
+                            monto: eachLp.producto._price,
+                            cantidad: eachLp.cantidad,
+                            esAlcoholica: eachLp.esAlcoholica
+                        }
+                    )
+                })
+            });
+        }
 
         // Eliminar todas las lineas correspondientes
         productosEliminados.forEach(lineaPedido => {

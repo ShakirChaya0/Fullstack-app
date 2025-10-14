@@ -26,7 +26,7 @@ function DrinksList() {
 
   return (
     <>
-      <section className="flex-1 md:p-4 pb-6 w-full h-full">
+      <section className="flex-1 md:p-4 pb-6 w-full h-full overflow-y-auto">
         <div className="border border-gray-300 rounded-2xl p-4 w-full min-w-2 shadow-2xl">
           {!isError && <FilterDrinks handleChange={handleChange} />}
           <Suspense fallback={<SuggestionSkeleton/>}>

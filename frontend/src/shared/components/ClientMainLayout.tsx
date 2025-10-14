@@ -6,7 +6,7 @@ export function ClientMainLayout() {
   return (
     <div className="min-h-screen w-full flex flex-col">
       <ClientHeader />
-        <main className="flex-1 flex">
+        <main className="flex h-[100vh] justify-center">
           <Outlet />
         </main>
       <ClientFooter />
