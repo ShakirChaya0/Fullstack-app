@@ -16,8 +16,10 @@ const DefaultProductImg = (
 
 const ProductsCard: React.FC<Props> = ({product}) => {
   const order = useAppSelector((state) => state.order)
-  const productAmount = order.lineasPedido.find((lp) => lp.producto._name === product._name)?.cantidad
-  const countStart = productAmount ?? 0
+  const pendingProduct = order.lineasPedido
+    .filter(lp => lp.estado === 'Pendiente')
+    .find(lp => lp.producto._name === product._name)
+  const countStart = pendingProduct?.cantidad ?? 0
   const { handleAddToCart, hanldeRemoveFromCart} = useOrderActions()
   const handleAdd = () => {
     handleAddToCart(product)
@@ -25,6 +27,7 @@ const ProductsCard: React.FC<Props> = ({product}) => {
   const handleRemove = () => {
     hanldeRemoveFromCart({nombreProducto: product._name})
   }
+  
   return (
     <div className='min-w-[200px] max-w-[600px] mt-1 mb-1'>
         <div 

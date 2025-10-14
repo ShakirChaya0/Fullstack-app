@@ -8,5 +8,8 @@ export async function getAllTable(apiCall: (url: string, options?: RequestInit) 
     throw new Error(error.message);
   }
 
-  return response.json();
+  const data = await response.json(); 
+  console.log("Response from getAllTable:", data);
+
+  return data;
 }

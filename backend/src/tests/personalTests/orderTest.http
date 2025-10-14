@@ -1,29 +1,23 @@
 ### Por parte del Cliente
 POST http://localhost:3000/pedidos/
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzdWFyaW8iOiIwZGM4ZDVjZi04ZTI5LTQzNmItOTVhNS1mNTUyYTA1MzY3NDgiLCJlbWFpbCI6InRlc3QyQGdtYWlsLmNvbSIsInRpcG9Vc3VhcmlvIjoiQ2xpZW50ZSIsInVzZXJuYW1lIjoiVGVzdDIiLCJpYXQiOjE3NTU2MTExMTEsImV4cCI6MTc1NjIxNTkxMX0.o71-CnSzNTC_AOPlXntAdG_0SxWDVhjKkF5p-DDkT-o
-Cookie: e185e54f-e7c2-4931-aefe-6b3605e0096d
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzdWFyaW8iOiI0Njc3NTgyMy1kYTM2LTQ0NGQtYjgyMS0zZmZmNWZiYTMxZjQiLCJlbWFpbCI6InNoYWtpcmNoYXlhMjAwNUBnbWFpbC5jb20iLCJ0aXBvVXN1YXJpbyI6IkNsaWVudGUiLCJ1c2VybmFtZSI6Ikpvc2VCXzIwMDA0IiwiaWF0IjoxNzYwMDI0MjQyLCJleHAiOjE3NjA2MjkwNDJ9.-bToQhrRnnmKPuRt1Yg-oM_xOacLh9MvFH_ayYYjTcs
+Cookie: QrToken=03d4af66-bc48-480f-a737-138cefe3bad8
 
 {
-    "order": {
-        "cantidadCubiertos": 4,
-        "observacion": "Pan sin gluten",
-        "items": [
-            {
-            "nombre": "Pan Sin TAC",
-            "tipo": "Postre",
-            "monto": 5000.00,
-            "cantidad": 4
-            },
-            {
-            "nombre": "Hamburguesa con queso",
-            "tipo": "Plato_Principal",
-            "monto": 12000.00,
-            "cantidad": 2
-            }
-        ]
+  "order": {
+    "cantidadCubiertos": 4,
+    "observacion": "assd",
+    "items": [
+        {
+        "nombre": "Whisky",
+        "monto": 150000.00,
+        "cantidad": 1
+        }
+    ]
     }
 }
+
 
 ### Por parte del Cliente NO registrado
 POST http://localhost:3000/pedidos/

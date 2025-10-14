@@ -1,4 +1,3 @@
-import * as React from 'react';
 import { Skeleton } from "@mui/material";
 import Box from '@mui/material/Box'; // Using Box for simple centering container
 import { createTheme, ThemeProvider } from '@mui/material/styles'; // For Skeleton styles

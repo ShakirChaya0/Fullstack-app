@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useEffect, useRef, useState } from "react";
 import { io, Socket } from "socket.io-client";
 import useAuth from "./useAuth";
 
@@ -25,19 +25,21 @@ export function useWebSocket(): WebSocketHook {
         
         const socket = io(`${import.meta.env.VITE_WEBSOCKET_BACKEND_URL}`, {
             auth: accessToken ? { jwt: accessToken } : {},
-            withCredentials: true
+            withCredentials: true,  // ✅ Esto ya estaba bien
+            transports: ['websocket', 'polling'], // ✅ Asegura transporte correcto
         });
 
         socketRef.current = socket;
 
         socket.on("connect", () => {
+            console.log("✅ WebSocket conectado - ID:", socket.id);
             setConnected(true);
             setConnecting(false);
         });
 
         socket.on("errorEvent", ({ message }) => {
-            console.error(message);
-        })
+            console.error("❌ Error del servidor:", message);
+        });
 
         socket.on("connect_error", (err) => {
             console.error("Error de conexión:", err.message);
@@ -45,29 +47,43 @@ export function useWebSocket(): WebSocketHook {
         });
 
         socket.on("disconnect", () => {
+            console.log("🔌 WebSocket desconectado");
             setConnected(false);
         });
 
         return () => {
+            console.log("🧹 Limpiando conexión WebSocket");
             socket.disconnect();
         };
     }, [accessToken]);
 
-    const sendEvent = useCallback((event: OrderEmitEvent, data?: any) => {
-        socketRef.current?.emit(event, data);
-    }, []);
-
-    const onEvent = useCallback((event: OrderOnEvent, callback: (...args: any[]) => void) => {
-        socketRef.current?.on(event, callback);
-    }, []);
-
-    const offEvent = useCallback((event: OrderOnEvent, callback?: (...args: any[]) => void) => {
-        if (callback) {
-            socketRef.current?.off(event, callback);
+    // ✅ NO usar useCallback - mantener referencias estables usando el ref
+    const sendEvent = (event: OrderEmitEvent, data?: any) => {
+        if (socketRef.current?.connected) {
+            console.log(`📤 Emitiendo evento: ${event}`, data);
+            socketRef.current.emit(event, data);
         } else {
-            socketRef.current?.off(event);
+            console.warn("⚠️ Socket no conectado, no se puede emitir:", event);
         }
-    }, []);
+    };
+
+    const onEvent = (event: OrderOnEvent, callback: (...args: any[]) => void) => {
+        if (socketRef.current) {
+            console.log(`👂 Escuchando evento: ${event}`);
+            socketRef.current.on(event, callback);
+        }
+    };
+
+    const offEvent = (event: OrderOnEvent, callback?: (...args: any[]) => void) => {
+        if (socketRef.current) {
+            console.log(`🔇 Dejando de escuchar: ${event}`);
+            if (callback) {
+                socketRef.current.off(event, callback);
+            } else {
+                socketRef.current.off(event);
+            }
+        }
+    };
 
     return {
         connected,

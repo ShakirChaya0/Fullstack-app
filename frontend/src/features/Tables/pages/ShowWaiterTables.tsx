@@ -58,7 +58,7 @@ function Table({ tableData, onClick }: TableProps) {
 }
 
 export default function ShowWaiterTables() {
-    const { data, isLoading, error} = useTables()
+    const { data: tables, isLoading, isError } = useTables();
     const [open, setOpen] = useState(false)
     const [currentTable, setCurrentTable] = useState<ITable | null>(null)
 
@@ -76,23 +76,23 @@ export default function ShowWaiterTables() {
         <>
             {
                 !isLoading ? (
-                    !error ? (
+                    !isError ? (
                         <div className="bg-gray-100 w-full font-sans text-gray-800 flex flex-col p-4 md:p-8">
                             { open && <div className='absolute w-full h-full bg-black opacity-50 inset-0' onClick={handleToggleModal}></div>}
                             <ModalShowTable onClose={handleToggleModal} open={open} currentTable={currentTable!}/>
                             <header className="mb-6">
-                                <h1 className="text-4xl font-bold text-center text-gray-700">Plano de Mesas del Restaurante</h1>
-                                <p className="text-center text-gray-500 mt-1">Haz click en una mesa para cambiar su estado.</p>
+                                <h1 className="text-4xl font-bold text-center text-gray-700">Mesas a tu cargo</h1>
+                                <p className="text-center text-gray-500 mt-1">Haz click en una mesa para visualizar su información.</p>
                             </header>
                             <section className="w-full bg-white rounded-2xl shadow-lg p-6 overflow-x-auto h-full">
                               <div className="grid grid-cols-[repeat(8,200px)] place-items-center grid-rows-3 gap-6 w-full">
-                                {data?.map(table => (
-                                  <Table
-                                    key={table._tableNum}
-                                    tableData={table}
-                                    onClick={handleSelectTable}
-                                  />
-                                ))}
+                                {tables?.map(table => (
+                                    <Table
+                                        key={table._tableNum}
+                                        tableData={table}
+                                        onClick={handleSelectTable}
+                                    />
+                                    ))}
                               </div>
                             </section>
                         </div>

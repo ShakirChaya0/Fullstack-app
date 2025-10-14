@@ -34,7 +34,7 @@ export default function SuggestionsList() {
         !isLoading ? (
           uniqueSuggestions.length > 0 ? (
             <>
-              <h1 className="w-full text-center font-semibold text-black text-2xl">SUGERENCIAS</h1>
+              <h1 className="w-full text-center font-semibold text-black text-2xl mt-3">SUGERENCIAS</h1>
               {
                 !isError ? (
                   <div className="min-h-[260px] flex items-center justify-center py-4 w-full relative">
@@ -70,8 +70,10 @@ export default function SuggestionsList() {
 
 function SuggestionCard ({s, handleAdd, handleRemove}: {s: BackSuggestion, handleAdd: (prod: Comida | Bebida) => void, handleRemove: (name: string) => void}) {
   const order = useAppSelector((state) => state.order)
-  const lp = order.lineasPedido.find((lp) => lp.producto._name === s._product._name)
-  const cantidad = lp?.cantidad ?? 0
+  const pendingProduct = order.lineasPedido
+    .filter(lp => lp.estado === 'Pendiente')
+    .find(lp => lp.producto._name === s._product._name)
+  const cantidad = pendingProduct?.cantidad ?? 0
   return (
     <div
       className="

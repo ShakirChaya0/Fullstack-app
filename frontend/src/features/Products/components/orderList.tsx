@@ -26,6 +26,8 @@ export function OrderList () {
       setOpen(!isOpen)
   }
 
+  const isValidModification = localStorage.getItem('modification')
+
     return(
       <>
         <button 
@@ -115,6 +117,7 @@ export function OrderList () {
                                       text-white font-medium flex flex-row justify-around 
                                       items-center gap-1 w-fit"
                                     >
+                                      { lp.estado === 'Pendiente' &&
                                       <button
                                         onClick={() => handleRemove(lp.producto._name)}
                                         className="cursor-pointer h-full w-full py-1.5 px-2 bg-orange-500 hover:scale-105
@@ -123,7 +126,9 @@ export function OrderList () {
                                       >
                                         <RemoveCircleOutlineIcon/>
                                       </button>
-                                      <p>{lp.cantidad}</p>
+                                      }
+                                      <p className='px-2 py-1'>{lp.cantidad}</p>
+                                       { lp.estado === 'Pendiente' &&
                                       <button
                                         onClick={() => handleAdd(lp)}
                                         className="cursor-pointer h-full w-full py-1.5 px-2 bg-orange-500 hover:scale-105
@@ -132,6 +137,7 @@ export function OrderList () {
                                       >
                                         <ControlPointIcon/>
                                       </button>
+                                       }
                                     </div>
                                   </div>
                                   <div className="flex justify-between items-end gap-2 mb-3">
@@ -150,7 +156,7 @@ export function OrderList () {
                         </div>
                       
                         <div className="p-4">
-                          <NavLink to="/Cliente/Menu/RealizarPedido">
+                          <NavLink to={isValidModification === 'true' ? '/Cliente/Menu/ModificarPedido' : '/Cliente/Menu/RealizarPedido'}>
                             <button className="w-full py-3 cursor-pointer bg-orange-500
                              hover:bg-orange-600 hover:scale-105 text-white font-bold rounded-lg shadow-md 
                              transition-all ease-linear duration-150 active:bg-orange-700 active:scale-95">

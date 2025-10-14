@@ -61,7 +61,7 @@ export default function ConfirmOrder() {
   }
 
   return (
-    <section className="p-4 flex flex-col w-full items-center justify-center">
+    <section className="pr-4 pl-4 flex flex-col w-full items-center justify-center">
       <div className="flex justify-end w-full">
         <GoBackButton url="/Cliente/Menu/"/>
       </div>
@@ -156,7 +156,7 @@ export default function ConfirmOrder() {
               defaultValue={order.observaciones !== '' ? order.observaciones : undefined}
               name="observaciones" 
               className="bg-gray-200 rounded-2xl py-2 px-4" 
-              placeholder="ej: sacale el chorizo al choripan" 
+              placeholder="ej: Carne al punto justo" 
               rows={4} id=""
               onChange={(e) => {
                 if (e.currentTarget.value.trim() == '') {
@@ -256,7 +256,7 @@ export default function ConfirmOrder() {
                       <textarea 
                         name="observaciones" 
                         className="bg-gray-200 rounded-2xl py-2 px-4 outline-0" 
-                        placeholder="ej: sacale el chorizo al choripan" rows={4} 
+                        placeholder="ej: Carne al punto justo" rows={4} 
                         id=""
                         defaultValue={order.observaciones !== '' ? order.observaciones : undefined}
                         onChange={(e) => {
