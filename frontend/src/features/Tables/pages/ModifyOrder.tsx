@@ -4,22 +4,19 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import { useProducts } from '../../Products/hooks/useProducts';
-import type { Bebida, Comida } from '../../Products/interfaces/products';
+import type { Bebida, Comida, TipoComida } from '../../Products/interfaces/products';
 import { useParams } from 'react-router';
 import type { OrderStatus } from '../../Order/interfaces/Order';
 import { toast } from 'react-toastify';
 import type { OrderLineStatus } from '../../KitchenOrders/types/SharedTypes';
 import { useWebSocket } from '../../../shared/hooks/useWebSocket';
 
-
-type OrderItemComida = Comida & { quantity: number };
-type OrderItemBebida = Bebida & { quantity: number };
-
 type LineaPedido = {
   nombreProducto: string;
   cantidad: number;
   estado: OrderLineStatus;
   nroLinea: number;
+  tipo?: TipoComida  
 };
 
 type PedidoBackend = {
@@ -37,44 +34,25 @@ export default function ModifyOrder() {
     const { data: products, isError, isLoading } = useProducts();
     const [selectedProduct, setSelectedProduct] = useState<Comida | Bebida | null>(null);
     const [quantity, setQuantity] = useState<number>(1);
-    const [orderItems, setOrderItems] = useState<(OrderItemComida | OrderItemBebida)[]>([]);
     const nroMesa = useParams()
-    const existingOrder: PedidoBackend | null = JSON.parse(localStorage.getItem("modifyOrder") ?? "")
+    const [existingOrder, setExistingOrder] = useState<PedidoBackend | null>(JSON.parse(localStorage.getItem("modifyOrder") ?? ""))
     const { sendEvent, onEvent, offEvent } = useWebSocket()
     console.log("existingOrder: ", existingOrder)
 
     useEffect(() => {
-        if (existingOrder && !isError && !isLoading) {
-            setOrderItems((): (OrderItemComida | OrderItemBebida)[]=> {
-                return existingOrder.lineasPedido.map((lp) => {
-                    const productData = products?.find((p) => p._name === lp.nombreProducto);
-                    if (!productData) return null;
-                    
-                    if ("_type" in productData) {
-                      return {
-                        ...productData,
-                        quantity: lp.cantidad,
-                      } as OrderItemComida;
-                    }
-                  
-                    return {
-                      ...productData,
-                      quantity: lp.cantidad,
-                    } as OrderItemBebida;
-                }).filter((item): item is OrderItemComida | OrderItemBebida => item !== null);
-            })
-        }
-
         onEvent("modifiedOrderLine", (data) => {
             console.log("salio bien: ", localStorage.setItem("modifyOrder", JSON.stringify(data)))
+            setExistingOrder(data)
             toast.success("Se modifico con exito su Pedido")
         })
         onEvent("deletedOrderLine", (data) => {
             console.log("hola: ", localStorage.setItem("modifyOrder", JSON.stringify(data)))
+            setExistingOrder(data)
             toast.success("Se elimino con exito la linea de pedido")
         })
         onEvent("addedOrderLine", (data) => {
             console.log("hola: ", localStorage.setItem("modifyOrder", JSON.stringify(data)))
+            setExistingOrder(data)
             toast.success("Se agrego con exito la nueva linea de pedido")
         })
         return () => {
@@ -95,26 +73,26 @@ export default function ModifyOrder() {
         if (selectedProduct && quantity > 0) {
             const existingItemIndex = existingOrder?.lineasPedido.findIndex((lp) => (lp.nombreProducto === selectedProduct._name) && lp.estado === "Pendiente") ?? 0
             let orderLines;
+            const product = products?.find((p) => p._name === selectedProduct._name)
             if (existingItemIndex > -1) {
-                const updatedItems = [...orderItems];
-                updatedItems[existingItemIndex].quantity += 1;
+                const cantidad = existingOrder?.lineasPedido[existingItemIndex].cantidad ? existingOrder.lineasPedido[existingItemIndex].cantidad += 1 : 1
                 orderLines = [
                     {
                         nombre: selectedProduct._name, 
                         monto: selectedProduct._price, 
-                        cantidad: updatedItems[existingItemIndex].quantity
+                        cantidad: cantidad,
+                        tipo: (product && "_type" in product) ? product._type : undefined
                     }
                 ]
-                setOrderItems(updatedItems);
             } else {
                 orderLines = [
                     {
                         nombre: selectedProduct._name, 
                         monto: selectedProduct._price, 
-                        cantidad: quantity 
+                        cantidad: quantity,
+                        tipo: (product && "_type" in product) ? product._type : undefined 
                     }
                 ]
-                setOrderItems([...orderItems, { ...selectedProduct, quantity }]);
             }
 
             const isPrep = existingOrder?.lineasPedido.some((lp) => (lp.nombreProducto === selectedProduct._name) && (lp.estado === "Pendiente"))
@@ -141,25 +119,24 @@ export default function ModifyOrder() {
     };
 
     const handleRemoveItem = (indexToRemove: number, nameProduct: string, lineNumber: number | undefined): void => {
-        const correspondingLine = existingOrder?.lineasPedido.find(
-            (lp) => lp.nombreProducto === nameProduct && lp.nroLinea === lineNumber
-        );
+        const correspondingLine = existingOrder?.lineasPedido.filter(
+            (lp) => (lp.nombreProducto === nameProduct) && (lp.nroLinea === lineNumber)).find((lp) => lp.estado === "Pendiente");
+
     
-        console.log(lineNumber)
+        console.log("corres: ", correspondingLine)
         if (!correspondingLine || correspondingLine.estado !== "Pendiente") {
             toast.warning("No se puede eliminar esta línea porque ya está en preparación o fue entregada");
             return;
         }
 
-        // Actualización optimista: remover inmediatamente de la UI
-        setOrderItems(prev => prev.filter((_, index) => index !== indexToRemove));
-
-        // Enviar al backend
         sendEvent("deleteOrderLine", { orderId: existingOrder?.idPedido, lineNumber });
     };
 
     const calculateTotal = (): string => {
-        return orderItems.reduce((total, item) => total + item._price * item.quantity, 0).toFixed(2);
+        return existingOrder?.lineasPedido.reduce((total, item) => {
+            const price = products?.find((p) => p._name === item.nombreProducto)?._price ?? 1
+            return total + price * item.cantidad
+        }, 0).toFixed(2) ?? "";
     };
 
     const handleSubmitOrder = (e: FormEvent<HTMLFormElement>) => {
@@ -176,13 +153,14 @@ export default function ModifyOrder() {
             return
         }
 
-        if (orderItems.length === 0) {
+        if (existingOrder?.lineasPedido.length === 0) {
             toast.warning("Los comensales no estan en un formato correcto")
             return;
         }
 
-        const lineasDePedido = orderItems.map((p) => {
-            return {producto: p, cantidad: p.quantity, estado: "En_Preparacion", subtotal: p.quantity * p._price}
+        const lineasDePedido = existingOrder?.lineasPedido.map((lp) => {
+            const precio = products?.find((p) => p._name === lp.nombreProducto)?._price ?? 1
+            return {producto: lp, cantidad: lp.cantidad, estado: "En_Preparacion", subtotal: lp.cantidad * precio}
         })
 
         const orderData = {
@@ -197,9 +175,8 @@ export default function ModifyOrder() {
             lineNumbers: orderData.nrolineasDePedido,
             data: {
                 cantidadCubiertos: orderData.comensales,
-                observacion: orderData.observaciones,
+                observacion: orderData.observaciones === existingOrder?.observaciones ? undefined : orderData.observaciones,
                 items: lineasDePedido
-                
             }
         }
         console.log(order)
@@ -262,34 +239,34 @@ export default function ModifyOrder() {
                             <CardContent sx={{ p: 3 }}>
                                 <Typography variant="h6" gutterBottom fontWeight="medium">Resumen del Pedido</Typography>
                                  <List sx={{ minHeight: '150px' }}>
-                                    {orderItems.length === 0 && (
+                                    {existingOrder?.lineasPedido.length === 0 && (
                                         <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%', minHeight: '150px', color: 'text.secondary' }}>
                                             <Typography>El pedido está vacío</Typography>
                                         </Box>
                                     )}
-                                    {orderItems.map((item, index) => {
-                                        const line = existingOrder?.lineasPedido.find((lp) => lp.nombreProducto === item._name)
-                                        const isPendiente = line?.estado === "Pendiente";
+                                    {existingOrder?.lineasPedido.map((item, index) => {
+                                        const isPending = existingOrder?.lineasPedido.find(() => item.estado === "Pendiente")
+                                        const price = products?.find((p) => p._name === item.nombreProducto)?._price ?? 1
                                         return (
-                                            <React.Fragment key={item._productId}>
+                                            <React.Fragment key={item.nroLinea}>
                                              <ListItem
                                                  secondaryAction={
                                                      <IconButton 
                                                      edge="end" 
                                                      aria-label="delete" 
-                                                     onClick={() => handleRemoveItem(index, item._name, line?.nroLinea)}
-                                                     disabled={!isPendiente}
+                                                     onClick={() => handleRemoveItem(index, item.nombreProducto, item.nroLinea)}
+                                                     disabled={!isPending}
                                                      >
-                                                         <DeleteIcon color={isPendiente ? "error" : "disabled"} />
+                                                         <DeleteIcon color={isPending ? "error" : "disabled"}  />
                                                      </IconButton>
                                                  }
                                              >
                                                  <ListItemText
-                                                     primary={<Typography fontWeight="medium">{`${item._name} (x${item.quantity})`}</Typography>}
-                                                     secondary={`$${(item._price * item.quantity).toFixed(2)}`}
+                                                     primary={<Typography fontWeight="medium">{`${item.nombreProducto} (x${item.cantidad})`}</Typography>}
+                                                     secondary={`$${(price * item.cantidad).toFixed(2)}`}
                                                  />
                                              </ListItem>
-                                              {index < orderItems.length - 1 && <Divider component="li" />}
+                                              {index < existingOrder.lineasPedido.length - 1 && <Divider component="li" />}
                                              </React.Fragment>
                                         )
                                     })}
@@ -323,7 +300,7 @@ export default function ModifyOrder() {
                                     variant="contained"
                                     color="success"
                                     type='submit'
-                                    disabled={(orderItems.length === 0)}
+                                    disabled={(existingOrder?.lineasPedido.length === 0)}
                                     fullWidth
                                     sx={{ mt: 2, py: 1.5, fontWeight: 'bold', fontSize: '1rem' }}
                                 >

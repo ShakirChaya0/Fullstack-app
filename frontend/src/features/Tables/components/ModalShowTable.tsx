@@ -33,7 +33,7 @@ interface ModalShowTableProps {
 export const ModalShowTable: FC<ModalShowTableProps> = ({ open, onClose, title, currentTable }) => {
   const navigate = useNavigate()
   const { mutate, isPending } = useTableMutation()
-  const isModify = currentTable._orders?.find((o) => ((o.idMozo) && (o.estado !== "Completado" && o.estado !== "Pagado" && o.estado !== "Pendiente_De_Pago" && o.estado !== "Pendiente_De_Cobro")))
+  const isModify = currentTable._orders?.find((o) => ((o.idMozo) && ( o.estado !== "Pagado" && o.estado !== "Pendiente_De_Pago" && o.estado !== "Pendiente_De_Cobro")))
 
   console.log("table: ", isModify)
 

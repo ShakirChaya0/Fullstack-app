@@ -51,7 +51,8 @@ export class TableRepository implements ITableRepository {
                         nombreProducto: lp.nombreProducto,
                         cantidad: lp.cantidad,
                         estado: lp.estado,
-                        nroLinea: lp.nroLinea
+                        nroLinea: lp.nroLinea,
+                        tipo: lp.tipoComida
                     })),
                     estado: p.estado,
                     observaciones: p.observaciones,
