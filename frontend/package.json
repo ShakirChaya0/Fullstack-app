@@ -23,6 +23,7 @@
     "just-debounce-it": "^3.2.0",
     "jwt-decode": "^4.0.0",
     "lottie-react": "^2.4.1",
+    "lucide-react": "^0.545.0",
     "qrcode.react": "^4.2.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",

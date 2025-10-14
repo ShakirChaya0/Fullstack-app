@@ -4,6 +4,8 @@ import useReservationMutation from "../hooks/userReservationMutation";
 import { useEffect, useRef, useState } from "react";
 import { ConfirmModal } from "../components/ModalConfirmReservation";
 import dateParser from "../../../shared/utils/dateParser";
+import { AlertCircle, Calendar, Loader2 } from "lucide-react";
+import { useNavigate } from "react-router";
 
 export default function ReservationList() {
     const {data, isLoading, error, fetchNextPage, hasNextPage, isFetchingNextPage} = useReservations(4, "byClient");
@@ -11,6 +13,8 @@ export default function ReservationList() {
         handleError: (msg) => console.log(msg), 
     });
     
+    const navigate = useNavigate();
+
     const [selectedReservation, setSelectedReservation] = useState<number | null>(null);
      const loadMoreRef = useRef<HTMLDivElement | null>(null);
     
@@ -57,10 +61,68 @@ export default function ReservationList() {
         };
     }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
-    if(isLoading) return <p>Cargando...</p>
-    if(error) return <p>Error al cargar las reservas</p>
-    if(!data || data.pages.length === 0) return <p>No tiene reservas registradas.</p>
+    if(isLoading) {
+            return (
+                <div className="flex flex-col items-center justify-center w-full min-h-screen bg-gradient-to-br from-blue-50 to-gray-100">
+                    <div className="flex flex-col items-center space-y-4">
+                        <Loader2 className="w-12 h-12 text-blue-600 animate-spin" />
+                        <div className="text-center">
+                            <h2 className="text-xl font-semibold text-gray-800">Cargando sus reservas</h2>
+                            <p className="text-sm text-gray-500 mt-1">Preparando su información...</p>
+                        </div>
+                    </div>
+                </div>
+            );
+        }
 
+        
+        if(!data || data.pages.length === 0) {
+            return (
+                <div className="flex flex-col items-center justify-center w-full min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 p-6">
+                <div className="bg-white rounded-lg shadow-md p-8 max-w-md w-full text-center">
+                    <div className="flex justify-center mb-4">
+                        <div className="bg-blue-100 rounded-full p-4">
+                            <Calendar className="w-12 h-12 text-blue-600" />
+                        </div>
+                    </div>
+                    <h2 className="text-2xl font-bold text-gray-800 mb-2">No hay reservas</h2>
+                    <p className="text-gray-600 mb-6">
+                        Aún no tienes ninguna reserva registrada. ¡Comienza a reservar ahora!
+                    </p>
+                    <button
+                        onClick={() => navigate("../Reserva")}
+                        className="cursor-pointer bg-amber-600 hover:bg-amber-700 text-white font-medium py-2 px-6 rounded-md transition-colors duration-200"
+                        >
+                        Hacer una reserva
+                    </button>
+                </div>
+            </div>
+        );
+    }
+        if(error) {
+            return (
+                <div className="flex flex-col items-center justify-center w-full min-h-screen bg-gradient-to-br from-red-50 to-gray-100 p-6">
+                    <div className="bg-white rounded-lg shadow-lg p-8 max-w-md w-full border-l-4 border-red-500">
+                        <div className="flex items-center space-x-3 mb-4">
+                            <div className="bg-red-100 rounded-full p-2">
+                                <AlertCircle className="w-6 h-6 text-red-600" />
+                            </div>
+                            <h2 className="text-xl font-bold text-gray-800">Error al cargar</h2>
+                        </div>
+                        <p className="text-gray-600 mb-4">
+                            No se pudieron cargar sus reservas. Por favor, verifica tu conexión e intenta nuevamente.
+                        </p>
+                        <button
+                            onClick={() => window.location.reload()}
+                            className="cursor-pointer w-full bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded-md transition-colors duration-200"
+                        >
+                            Reintentar
+                        </button>
+                    </div>
+                </div>
+            );
+        }
+    
     const allReservations = data.pages.flatMap((page) => page.data);
     const reservationToCancel = allReservations.find((r) => r._reserveId === selectedReservation);
 
