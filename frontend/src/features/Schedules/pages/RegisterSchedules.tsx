@@ -11,7 +11,7 @@ import { SuccessNotification } from "../components/SuccessNotification"
 import { RegisterAndModifierTable } from "../components/RegisterAndModifierTable"
 import { useMutationRegistration } from "../hooks/useMutationRegistration"
 
-export function RegisterSchedule () {
+export default function RegisterSchedule () {
   // Custom hook para manejar el estado local de horarios
   const {
     schedules,

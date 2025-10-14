@@ -14,7 +14,7 @@ const LazyTablePrice = lazy(() => import('../components/TablePrice').then(module
     default: module.TablePrice
 })));
 
-export function PriceList() {
+export default function PriceList() {
     const { idProducto } = useParams()
     const [selectedPrice, setSelectedPrice] = useState<PriceList | null>(null)
 

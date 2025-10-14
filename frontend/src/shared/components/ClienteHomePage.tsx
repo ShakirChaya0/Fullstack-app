@@ -108,9 +108,9 @@ export default function App() {
   ];
 
   return (
-    <div className="relative w-full h-full overflow-hidden bg-black">
-      <div className="absolute inset-0 bg-[url('/src/shared/assets/rest.jpg')] bg-cover bg-center bg-no-repeat blur-xs brightness-110"></div>
-      <div className="relative mx-auto px-4 py-16 sm:py-24 text-center">
+    <div className="relative w-full flex-1 overflow-hidden bg-black">
+      <div className="absolute inset-0 bg-[url('/src/shared/assets/rest.jpg')] bg-cover bg-center bg-no-repeat blur-xs brightness-110"></div>
+      <div className="relative mx-auto px-4 py-16 sm:py-24 text-center">
         <h1 className="text-4xl md:text-5xl font-bold text-white">
           ¡Hola, {user?.username}!
         </h1>

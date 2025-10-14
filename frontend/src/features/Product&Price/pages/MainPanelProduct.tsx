@@ -18,7 +18,7 @@ const LazyPaginationControls = lazy(() => import('../components/PaginationContro
     default: module.PaginationControls
 })));
 
-export function MainPanelProduct () {
+export default function MainPanelProduct () {
     const { 
         allProducts,
         pagination,

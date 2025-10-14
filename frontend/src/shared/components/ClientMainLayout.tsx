@@ -2,14 +2,16 @@ import { Outlet } from "react-router";
 import ClientHeader from "./ClientHeader";
 import { ClientFooter } from "./ClientFooter";
 
-export function ClientMainLayout() {
+export default function ClientMainLayout() {
   return (
-    <div className="min-h-screen w-full flex flex-col">
-      <ClientHeader />
-        <main className="flex h-[100vh] justify-center">
+    <>
+      <div className="min-h-screen w-full flex flex-col">
+        <ClientHeader />
+        <main className="flex-1 flex justify-center overflow-y-auto">
           <Outlet />
         </main>
+      </div>
       <ClientFooter />
-    </div>
+    </>
   );
 }

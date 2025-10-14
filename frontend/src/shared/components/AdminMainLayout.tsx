@@ -2,7 +2,7 @@ import { Outlet } from "react-router";
 import AdminHeader from "./AdminHeader";
 import { AdminFooter } from "./AdminFooter";
 
-export function AdminMainLayout() {
+export default function AdminMainLayout() {
   return (
     <div className="min-h-screen w-full flex flex-col">
       <AdminHeader />

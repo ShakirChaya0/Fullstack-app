@@ -16,7 +16,7 @@ import { useMutationModification } from "../hooks/useMutationModification";
 import { incompleteDays } from "../utils/incompleteDays";
 import useApiClient from "../../../shared/hooks/useApiClient";
 
-export function ModifySchedule () {  
+export default function ModifySchedule () {  
   // React Query para obtener datos del backend
   const { apiCall } = useApiClient()
 

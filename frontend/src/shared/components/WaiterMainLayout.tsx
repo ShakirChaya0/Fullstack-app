@@ -2,7 +2,7 @@ import { Outlet } from "react-router";
 import WaiterHeader from "./WaiterHeader";
 import { WaiterFooter } from "./WaiterFooter";
 
-export function WaiterMainLayout() {
+export default function WaiterMainLayout() {
   return (
     <div className="min-h-screen w-full flex flex-col">
       <WaiterHeader />

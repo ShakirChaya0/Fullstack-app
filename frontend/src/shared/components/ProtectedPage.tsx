@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 
-export function ProtectedPage({children}: {children?: React.ReactNode}) {
+export default function ProtectedPage({children}: {children?: React.ReactNode}) {
   useEffect(() => {
     // PASO 1: Crear colchón inicial con múltiples entradas
     for (let i = 0; i < 50; i++) {

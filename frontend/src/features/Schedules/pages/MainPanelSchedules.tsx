@@ -16,7 +16,7 @@ import useApiClient from "../../../shared/hooks/useApiClient";
 // Lazy load del componente ScheduleTable
 const ScheduleTable = lazy(() => import("../components/ScheduleTable").then(module => ({ default: module.ScheduleTable })));
 
-export function MainPanelSchedules() {
+export default function MainPanelSchedules() {
     const { apiCall } = useApiClient()
 
     const { data: backendSchedules, isLoading: queryLoading, error: queryError } = useQuery({

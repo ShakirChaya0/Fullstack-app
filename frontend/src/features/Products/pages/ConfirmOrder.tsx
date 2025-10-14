@@ -61,7 +61,7 @@ export default function ConfirmOrder() {
   }
 
   return (
-    <section className="pr-4 pl-4 flex flex-col w-full items-center justify-center">
+    <section className="p-4 flex flex-col w-full items-center justify-center">
       <div className="flex justify-end w-full">
         <GoBackButton url="/Cliente/Menu/"/>
       </div>

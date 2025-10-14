@@ -41,7 +41,7 @@ const NavLinkItem = ({ to, label }: { to: string; label: string }) => (
   </Typography>
 );
 
-export default function AdminHeader() {
+export default function KitchenHeader() {
   const { logout, user } = useAuth();
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [drawerOpen, setDrawerOpen] = React.useState(false);
@@ -67,7 +67,7 @@ export default function AdminHeader() {
             <MenuIcon />
           </IconButton>
           
-          <NavLink to="/Admin" style={{ textDecoration: 'none', color: 'inherit', display: 'flex', alignItems: 'center' }}>
+          <NavLink to="/Cocina" style={{ textDecoration: 'none', color: 'inherit', display: 'flex', alignItems: 'center' }}>
             <IconButton 
               sx={{ display: { xs: "none", md: "block" } }} 
               color="inherit"

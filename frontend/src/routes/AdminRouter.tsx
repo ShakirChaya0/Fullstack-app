@@ -1,21 +1,25 @@
 import { Route, Routes } from "react-router";
 import { lazy, Suspense } from "react";
-import { AdminMainLayout } from "../shared/components/AdminMainLayout";
-import SkeletonTableBody from "../features/Tables/pages/SkeletonTableBody";
-const  TableCRUD = lazy(() => import("../features/Tables/pages/TableCRUD"));
-import { MainPanelSchedules } from "../features/Schedules/pages/MainPanelSchedules";
-import { ModifySchedule } from "../features/Schedules/pages/ModifySchedule";
-import { RegisterSchedule } from "../features/Schedules/pages/RegisterSchedules";
-import { MainPanelProduct } from "../features/Product&Price/pages/MainPanelProduct";
-import { PriceList } from "../features/Product&Price/pages/PriceList";
-const ProfileCardSkeleton = lazy(() => import("../features/Profile/components/ProfileCardSkeleton"));
+
+// Skeletons y Layouts
+const AdminMainLayout = lazy(() => import("../shared/components/AdminMainLayout"));
+const SkeletonTableBody = lazy(() => import("../features/Tables/pages/SkeletonTableBody"));
+const ProfileCardSkeleton = lazy(() => import("../features/Profile/components/ProfileCardSkeleton")); 
+
+// Páginas de Administración (lazy loaded)
+const TableCRUD = lazy(() => import("../features/Tables/pages/TableCRUD"));
+const MainPanelSchedules = lazy(() => import("../features/Schedules/pages/MainPanelSchedules"));
+const ModifySchedule = lazy(() => import("../features/Schedules/pages/ModifySchedule"));
+const RegisterSchedule = lazy(() => import("../features/Schedules/pages/RegisterSchedules"));
+const MainPanelProduct = lazy(() => import("../features/Product&Price/pages/MainPanelProduct"));
+const PriceList = lazy(() => import("../features/Product&Price/pages/PriceList"));
 const UserProfile = lazy(() => import("../features/Profile/pages/UserProfile"));
-const NewsCRUD = lazy(() => import("../features/News/pages/NewsCRUD"))
-const WaitersCRUD = lazy(() => import("../features/Waiter/pages/WaitersCRUD"))
-const AdminHomepage = lazy(() => import("../shared/components/AdminHomePage"))
+const NewsCRUD = lazy(() => import("../features/News/pages/NewsCRUD"));
+const WaitersCRUD = lazy(() => import("../features/Waiter/pages/WaitersCRUD"));
+const AdminHomepage = lazy(() => import("../shared/components/AdminHomePage"));
 const DatosRestaurantes = lazy(() => import("../features/Institution/pages/Institution"));
 
-export function AdminRouter() {
+export default function AdminRouter() {
   return (
     <Routes>
       <Route element={<AdminMainLayout/>}>
