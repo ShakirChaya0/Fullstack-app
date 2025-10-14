@@ -9,7 +9,7 @@ export function useProducts () {
     const {isLoading, isError, data} = useQuery<(Comida | Bebida)[]>({
         queryKey: ["Products"],
         queryFn: () => fetchProducts(apiCall),
-        staleTime: 1000 * 60 * 60,
+        staleTime: Infinity,
         retry: 1
     })
     return {isLoading, isError, data}

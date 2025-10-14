@@ -145,7 +145,7 @@ export default function WaiterHomepage() {
   ];
 
   return (
-    <div className="relative w-full h-full overflow-hidden bg-black">
+    <div className="relative w-full min-h-full overflow-hidden bg-black">
       <div className="absolute inset-0 bg-[url('/src/shared/assets/rest.jpg')] bg-cover bg-center bg-no-repeat blur-xs brightness-110"></div>
       <div className="relative z-10 container mx-auto p-6 md:p-10 text-white">
         <div className="mb-10">

@@ -109,7 +109,8 @@ export class Order {
                 return {
                     nombreProducto: ol.productoVO.productName,
                     cantidad: ol.amount,
-                    estado: ol.status
+                    estado: ol.status,
+                    nroLinea: ol.lineNumber
                 }
             }),
             estado: this._status,

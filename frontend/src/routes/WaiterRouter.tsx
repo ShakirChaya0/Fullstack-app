@@ -9,6 +9,7 @@ const AvailableTable = lazy (() => import("../features/Tables/pages/AvailableTab
 const WaiterMainLayout = lazy(() => import("../shared/components/WaiterMainLayout"));
 const WaiterHomepage = lazy(() => import("../shared/components/WaiterHomePage"));
 const UserProfile = lazy(() => import("../features/Profile/pages/UserProfile"));
+const ModifyOrder = lazy(() => import("../features/Tables/pages/ModifyOrder"))
 
 // Skeletons
 const ProfileCardSkeleton = lazy(() => import("../features/Profile/components/ProfileCardSkeleton"));
@@ -31,7 +32,11 @@ export default function WaiterRouter() {
                         <CreateOrder/>
                     </Suspense>
                 }/>
-
+                <Route path="/ModificarPedido/:nroMesa" element={
+                    <Suspense fallback={<SkeletonCreateOrder/>}>
+                        <ModifyOrder/>
+                    </Suspense>
+                }/>
                 <Route path="/MesasDisponibles" element={<AvailableTable />} />
 
                 <Route path="/Perfil" element={

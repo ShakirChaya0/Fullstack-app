@@ -28,6 +28,7 @@ const PaymentStatusSkeleton = lazy(() => import("../features/Payment/pages/Payme
 const MenuSkeleton = lazy(() => import("../features/Products/pages/MenuSkeleton"));
 const OrderSkeleton = lazy(() => import("../features/Products/pages/OrderSkeleton"));
 
+
 export default function ClientRouter() {
   return (
     <Routes>

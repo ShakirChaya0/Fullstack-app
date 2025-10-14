@@ -1,8 +1,9 @@
-import React, { type FC, Fragment } from 'react';
+import { type FC, Fragment } from 'react';
 import { motion, AnimatePresence, type Variants } from 'framer-motion';
 import type { ITable } from '../interfaces/ITable';
 import { useNavigate } from 'react-router';
 import ModalQR from './ModalQR';
+import { useTableMutation } from '../hooks/useTableMutation';
 
 // --- Icono de Cierre (SVG) ---
 const CloseIcon: FC<{ className?: string }> = ({ className }) => (
@@ -31,6 +32,11 @@ interface ModalShowTableProps {
 // --- Componente ModalShowTable (Esqueleto) ---
 export const ModalShowTable: FC<ModalShowTableProps> = ({ open, onClose, title, currentTable }) => {
   const navigate = useNavigate()
+  const { mutate, isPending } = useTableMutation()
+  const isModify = currentTable._orders?.find((o) => ((o.idMozo) && ( o.estado !== "Pagado" && o.estado !== "Pendiente_De_Pago" && o.estado !== "Pendiente_De_Cobro")))
+
+  console.log("table: ", isModify)
+
   const modalVariants: Variants = {
     hidden: { x: '-100%', opacity: 0 },
     visible: {
@@ -52,12 +58,19 @@ export const ModalShowTable: FC<ModalShowTableProps> = ({ open, onClose, title, 
   };
 
   const handleCreateOrder = () => {
-    navigate(`/Mozo/CargarPedido/${currentTable._tableNum}`)
+    localStorage.removeItem("modifyOrder")
+    const url = !isModify ? `/Mozo/CargarPedido/${currentTable._tableNum}` : `/Mozo/ModificarPedido/${currentTable._tableNum}`
+    if (isModify) localStorage.setItem("modifyOrder", JSON.stringify(isModify))
+    navigate(`${url}`)
+  }
+
+  const handleFreeTable = () => {
+    mutate({action: "updateState", _tableNum: currentTable._tableNum, _state: "Libre"})
   }
 
   return (
     <AnimatePresence>
-      {open && (
+      {open && ( 
         <Fragment>
           <motion.div
             key="overlay"
@@ -110,6 +123,14 @@ export const ModalShowTable: FC<ModalShowTableProps> = ({ open, onClose, title, 
                   </div>
                 </div>
                 <ModalQR tableNum={currentTable._tableNum}/>
+                <button 
+                    onClick={handleFreeTable}
+                    disabled={isPending}
+                    className="w-full px-4 py-4 text-sm mt-5 font-medium text-white bg-amber-600 
+                    rounded-lg hover:bg-amber-700 active:scale-95 active:bg-amber-800 cursor-pointer transition-all"
+                >
+                    Liberar Mesa
+                </button>
               </div>
                         
               <div className="mt-8">
@@ -118,7 +139,7 @@ export const ModalShowTable: FC<ModalShowTableProps> = ({ open, onClose, title, 
                     className="w-full px-4 py-3 text-sm font-medium text-white bg-blue-600 
                     rounded-lg hover:bg-blue-700 active:scale-95 active:bg-blue-800 cursor-pointer transition-all"
                 >
-                    Agregar Pedido
+                    { !isModify ? "Agregar Pedido" : "Modificar Pedido"}
                 </button>
               </div>
             </div>
