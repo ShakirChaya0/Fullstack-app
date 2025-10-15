@@ -3,7 +3,6 @@ import { HorarioController } from "../controllers/ScheduleController.js";
 import { AuthMiddleware } from "../middlewares/AuthMiddleware.js";
 import { RoleMiddleware } from "../middlewares/RoleMiddleware.js";
 
-
 export function HorariosRouter() {
     const horarioRouter = Router();
     const horarioController = new HorarioController();

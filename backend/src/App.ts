@@ -38,7 +38,7 @@ SocketServerConnection(server)
 const PORT = process.env.PORT ?? 3000
 
 app.use(cors({
-    origin: "http://localhost:5173",
+    origin: `${process.env.FRONTEND_URL}`,
     credentials: true
 }))
 
@@ -50,9 +50,9 @@ app.use("/auth", AuthRouter())
 
 app.use('/productos', ProductosRouter())
 
-app.use("/novedades", NewsRouter())
+app.use("/novedades", AuthMiddleware, NewsRouter())
 
-app.use("/politicas", PolicyRouter()) //  AuthMiddleware, RoleMiddleware(["Administrador"])
+app.use("/politicas", AuthMiddleware, RoleMiddleware(["Administrador"]), PolicyRouter()) 
 
 app.use('/informacion', InformationRouter())
 
@@ -60,7 +60,7 @@ app.use('/horarios', HorariosRouter())
 
 app.use("/sugerencias", SuggestionsRouter())
 
-app.use('/mozos', AuthMiddleware, WaiterRouter()) // AuthMiddleware
+app.use('/mozos', AuthMiddleware, WaiterRouter())
 
 app.use('/mesas', AuthMiddleware, MesaRouter())
 

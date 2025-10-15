@@ -19,7 +19,8 @@ export class AuthController {
         private readonly forgotPasswordUC = new ForgotPasswordUseCase(),
         private readonly resetPasswordUC = new ResetPasswordUseCase(),
         private readonly verifyEmailUC = new VerifyEmailUseCase(),
-        private readonly resendEmailUC = new ResendEmailUseCase()
+        private readonly resendEmailUC = new ResendEmailUseCase(),
+        private readonly isProduction = process.env.NODE_ENV === "production"
     ) {}
     
     async login(req: Request, res: Response, next: NextFunction) {
@@ -35,7 +36,12 @@ export class AuthController {
             if (user.userType === "Cliente") await this.checkClientStatusUC.execute(user.userId);
 
             res
-                .cookie('refreshToken', refreshToken, { httpOnly: true, secure: true, sameSite: 'strict', maxAge: 1000 * 60 * 15 })
+                .cookie("refreshToken", refreshToken, {
+                    httpOnly: true,
+                    secure: this.isProduction,
+                    sameSite: this.isProduction ? "none" : "lax",
+                    maxAge: 1000 * 60 * 60 * 24 * 7,
+                })
                 .status(200).json({ token: accessToken });
         } catch (error) {
             next(error);
@@ -50,8 +56,13 @@ export class AuthController {
             const result = await this.refreshUC.execute(token);
 
             res
-                .cookie('refreshToken', result.refreshToken, { httpOnly: true, secure: true, sameSite: 'strict', maxAge: 1000 * 60 * 15 })
-                .status(200).json({ token: result.accessToken});
+                .cookie("refreshToken", result.refreshToken, {
+                    httpOnly: true,
+                    secure: this.isProduction,
+                    sameSite: this.isProduction ? "none" : "lax",
+                    maxAge: 1000 * 60 * 60 * 24 * 7, 
+                })
+                .status(200).json({ token: result.accessToken });
         } catch (error) {
             next(error);
         }
@@ -64,10 +75,12 @@ export class AuthController {
 
             await this.logOutUC.execute(token);
 
-            // Acordarse de que despues de que el front realice esta peticion, debe eliminar el token de acceso del contexto global
-
             res
-                .clearCookie('refreshToken', { httpOnly: true, secure: true, sameSite: 'strict' })
+                .clearCookie("refreshToken", {
+                    httpOnly: true,
+                    secure: this.isProduction,
+                    sameSite: this.isProduction ? "none" : "lax",
+                })
                 .status(204).send();
         } catch (error) {
             next(error);

@@ -9,13 +9,13 @@ export let ioConnection: Server;
 export function SocketServerConnection(server: Http2Server) {
     console.log('Estoy socket server conecction')
     ioConnection = new Server(server, {
-      connectionStateRecovery: {
-        maxDisconnectionDuration: 1000 * 60
-      },
-      cors: {
-        origin: `${process.env.FRONTEND_URL}`,
-        credentials: true
-      }
+        connectionStateRecovery: {
+            maxDisconnectionDuration: 1000 * 60
+        },
+        cors: {
+            origin: `${process.env.FRONTEND_URL}`,
+            credentials: true
+        }
     });
       
     ioConnection.use(AuthSocketMiddleware);

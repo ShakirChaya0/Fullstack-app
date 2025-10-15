@@ -51,7 +51,7 @@ export class NewsRepository implements INewsRepository{
                 throw new ConflictError("Ya existe una novedad con ese título")
             }
             else {
-                throw new ServiceError("Error al registrar la novedad en la base de datos")
+                throw new ServiceError("Error al modificar la novedad en la base de datos")
             }
         }
     }
@@ -106,7 +106,7 @@ export class NewsRepository implements INewsRepository{
             }), pages: totalPages, totalItems: totalItems}
         }
         catch (error) {
-            throw new ServiceError("Error al registrar la novedad en la base de datos")
+            throw new ServiceError("Error al recuperar la novedad en la base de datos")
         }
     }
 
@@ -137,7 +137,7 @@ export class NewsRepository implements INewsRepository{
             }), pages: totalPages, totalItems: totalItems}
         }
         catch (error) {
-            throw new ServiceError("Error al registrar la novedad en la base de datos")
+            throw new ServiceError("Error al recuperar la novedad en la base de datos")
         }
     }
 
@@ -149,7 +149,7 @@ export class NewsRepository implements INewsRepository{
             return
         }
         catch (error) {
-            throw new ServiceError("Error al registrar la novedad en la base de datos")
+            throw new ServiceError("Error al eliminar la novedad en la base de datos")
         }
     }
 }

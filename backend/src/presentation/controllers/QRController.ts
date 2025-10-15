@@ -9,7 +9,8 @@ import { GetTokenByTableUseCase } from "../../application/use_cases/QrUseCases/G
 export class QRController {
     constructor(
         private readonly registerOrModifyQRUseCase = new RegisterOrModifyQRUseCase(),
-        private readonly getTokenByTableUseCase = new GetTokenByTableUseCase()
+        private readonly getTokenByTableUseCase = new GetTokenByTableUseCase(),
+        private readonly isProduction = process.env.NODE_ENV === "production"
     ){}
 
     public getQrTokenByTable = async (req: Request, res: Response, next: NextFunction) => {
@@ -22,7 +23,12 @@ export class QRController {
             const token = await this.getTokenByTableUseCase.execute(qrToken as string, +mesa);
 
             res
-                .cookie('QrToken', token, { httpOnly: true, secure: true, sameSite: 'strict', maxAge: 1000 * 60 * 60 * 24 })
+                .cookie('QrToken', token, {
+                    httpOnly: true,
+                    secure: this.isProduction,
+                    sameSite: this.isProduction ? "none" : "lax",
+                    maxAge: 1000 * 60 * 60 * 24,
+                })
                 .status(204).send();
         } catch(error) {
             next(error);
