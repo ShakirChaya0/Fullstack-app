@@ -11,7 +11,7 @@ export default function useSaveTableOrder() {
     return useMutation({
         mutationFn: (order: OrderWithOutId) => createOrder(apiCall, order),
         onSuccess: () => {
-            toast.success("Pedido creado con exito")
+            toast.success("Pedido creadó con éxito")
         },
         onError: (err) => {
             toast.error("Error al intentar crear el Pedido")

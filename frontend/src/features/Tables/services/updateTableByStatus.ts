@@ -16,7 +16,7 @@ export async function updateTableByStatus(apiCall: (url: string, options?: Reque
         throw new Error(error);
     }
   
-    if (res.status === 204) return;  // nada que parsear
+    if (res.status === 204) return;  
 
     return res.json();
  

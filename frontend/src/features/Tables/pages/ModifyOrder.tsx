@@ -41,35 +41,29 @@ export default function ModifyOrder() {
 
     useEffect(() => {
         onEvent("modifiedOrderLine", (data) => {
-            console.log("salio bien: ", localStorage.setItem("modifyOrder", JSON.stringify(data)))
             setExistingOrder(data)
-            toast.success("Se modifico con exito su Pedido")
+            toast.success("Se modificó con éxito su Pedido")
         })
         onEvent("deletedOrderLine", (data) => {
-            console.log("hola: ", localStorage.setItem("modifyOrder", JSON.stringify(data)))
             setExistingOrder(data)
-            toast.success("Se elimino con exito la linea de pedido")
+            toast.success("Se eliminó con éxito la línea de pedido")
         })
         onEvent("addedOrderLine", (data) => {
-            console.log("hola: ", localStorage.setItem("modifyOrder", JSON.stringify(data)))
             setExistingOrder(data)
-            toast.success("Se agrego con exito la nueva linea de pedido")
+            toast.success("Se agregó con éxito la nueva línea de pedido")
         })
         return () => {
             offEvent("modifiedOrderLine", (data) => {
-                console.log("salio bien: ", localStorage.setItem("modifyOrder", JSON.stringify(data)))
                 setExistingOrder(data)
-                toast.success("Se modifico con exito su Pedido")
+                toast.success("Se modificó con éxito su Pedido")
             })
             offEvent("deletedOrderLine", (data) => {
-                console.log("hola: ", localStorage.setItem("modifyOrder", JSON.stringify(data)))
                 setExistingOrder(data)
-                toast.success("Se elimino con exito la linea de pedido")
+                toast.success("Se eliminó con éxito la línea de pedido")
             })
             offEvent("addedOrderLine", (data) => {
-                console.log("hola: ", localStorage.setItem("modifyOrder", JSON.stringify(data)))
                 setExistingOrder(data)
-                toast.success("Se agrego con exito la nueva linea de pedido")
+                toast.success("Se agregó con éxito la nueva línea de pedido")
             })
         }
 
@@ -150,17 +144,17 @@ export default function ModifyOrder() {
         const form = new FormData(e.currentTarget)
         const data = Object.fromEntries(form.entries())
         if (+data.comensales < 0) {
-            toast.warning("Los comensales no estan en un formato correcto")
+            toast.warning("Los comensales no están en un formato correcto")
             return
         }
 
         if (+data.cantidad < 0) {
-            toast.warning("La  no estan en un formato correcto")
+            toast.warning("La cantidad no está en un formato correcto")
             return
         }
 
         if (existingOrder?.lineasPedido.length === 0) {
-            toast.warning("Los comensales no estan en un formato correcto")
+            toast.warning("Los comensales no están en un formato correcto")
             return;
         }
 
@@ -185,7 +179,6 @@ export default function ModifyOrder() {
                 items: lineasDePedido
             }
         }
-        console.log(order)
         sendEvent("modifyOrder", order)
     };
 

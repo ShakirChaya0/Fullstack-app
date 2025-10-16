@@ -52,17 +52,17 @@ export default function CreateOrder() {
         const form = new FormData(e.currentTarget)
         const data = Object.fromEntries(form.entries())
         if (+data.comensales < 0) {
-            toast.warning("Los comensales no estan en un formato correcto")
+            toast.warning("Los comensales no están en un formato correcto")
             return
         }
 
         if (+data.cantidad < 0) {
-            toast.warning("La  no estan en un formato correcto")
+            toast.warning("La cantidad no está en un formato correcto")
             return
         }
 
         if (orderItems.length === 0) {
-            toast.warning("Los comensales no estan en un formato correcto")
+            toast.warning("Los comensales no están en un formato correcto")
             return;
         }
 

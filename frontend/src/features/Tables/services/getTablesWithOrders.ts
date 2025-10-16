@@ -9,7 +9,6 @@ export async function getTablesWithOrders(apiCall: (url: string, options?: Reque
   }
 
   const data = await response.json(); 
-  console.log("Response from getAllTable:", data);
 
   return data;
 }

@@ -57,15 +57,38 @@ export class TableRepository implements ITableRepository {
 
     public async getByNumTable(numTable: number): Promise<Table | null> {
         const table = await prisma.mesa.findUnique({
-            where: { nroMesa: numTable }
-        }); 
-
-        if(!table) return null;
-
-        return new Table (
-            table.nroMesa, 
+            where: { nroMesa: numTable },
+            include: {
+                Pedido: {
+                    include: {
+                        Linea_De_Pedido: true,
+                    },
+                },
+            },
+        });
+    
+        if (!table) return null;
+    
+        return new Table(
+            table.nroMesa,
             table.capacidad,
-            table.estado
+            table.estado,
+            table.Pedido?.map(p => ({
+                idPedido: p.idPedido,
+                horaInicio: p.horaInicio,
+                nroMesa: p.nroMesa,
+                cantidadCubiertos: p.cantCubiertos,
+                lineasPedido: p.Linea_De_Pedido.map(lp => ({
+                    nombreProducto: lp.nombreProducto,
+                    cantidad: lp.cantidad,
+                    estado: lp.estado,
+                    nroLinea: lp.nroLinea,
+                    tipo: lp.tipoComida,
+                })),
+                estado: p.estado,
+                observaciones: p.observaciones,
+                idMozo: p.idMozo,
+            })) || []
         );
     }
 

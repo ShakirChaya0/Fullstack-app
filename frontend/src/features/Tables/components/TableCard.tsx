@@ -4,7 +4,7 @@ import { StatusBadge } from "./StatusCard";
 
 interface TableCardProps {
   table: ITable;
-  onOccupy: (tableNum: number) => Promise<void>; // ahora es async
+  onOccupy: (tableNum: number) => Promise<void>; 
 }
 
 export function TableCard({ table, onOccupy }: TableCardProps) {
@@ -14,8 +14,8 @@ export function TableCard({ table, onOccupy }: TableCardProps) {
   const handleOccupy = async () => {
     setLoading(true);
     try {
-      await onOccupy(table._tableNum); // llama a tu mutateAsync
-      setLocalState("Ocupada"); // actualiza el estado local instantáneamente
+      await onOccupy(table._tableNum); 
+      setLocalState("Ocupada"); 
     } catch (err) {
       console.error(err);
     } finally {
@@ -41,7 +41,7 @@ export function TableCard({ table, onOccupy }: TableCardProps) {
           disabled={loading}
           className="cursor-pointer w-full bg-orange-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-opacity-50 transition-colors duration-300 disabled:opacity-50"
         >
-          {loading ? "Ocupando..." : "Ocupar Mesa"}
+          {loading ? "Ocupanda..." : "Ocupar Mesa"}
         </button>
       )}
     </div>

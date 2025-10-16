@@ -16,7 +16,7 @@ export class UpdateOrderUseCase {
         const order = await this.orderRepository.getOne(orderId)
         
         if (!order) {
-            throw new NotFoundError("Pedido no encontrado");
+            throw new NotFoundError("Pedido no encontradó");
         }
 
         const isInProcess =  order.orderLines.some(line => {

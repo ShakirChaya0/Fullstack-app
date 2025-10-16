@@ -9,7 +9,6 @@ export async function getAllTable(apiCall: (url: string, options?: RequestInit) 
   }
 
   const data = await response.json(); 
-  console.log("Response from getAllTable:", data);
 
   return data;
 }

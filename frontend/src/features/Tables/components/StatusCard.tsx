@@ -7,8 +7,8 @@ interface StatusProps {
 export function StatusBadge( {status}: StatusProps ) {
   const baseClasses = 'px-3 py-1 text-xs font-semibold rounded-full text-white';
   const statusClasses = {
-    Libre: 'bg-teal-600', // --secondary-300
-    Ocupada: 'bg-orange-500', // --primary-100
+    Libre: 'bg-teal-600', 
+    Ocupada: 'bg-orange-500', 
   };
 
   return (

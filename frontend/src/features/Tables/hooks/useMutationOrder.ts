@@ -18,7 +18,7 @@ export function useMutationOrderRegistration( order: Pedido){
                 return
             }
 
-            toast.success('Pedido registrado con exito')
+            toast.success('Pedido registrado con éxito')
             navigate('/Mozo/MesasDelRestaurante/')
         },
         onError: () => {

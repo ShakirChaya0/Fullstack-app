@@ -57,7 +57,7 @@ private combineDateTime(date: Date, time: string): Date {
     const policy = await this.policyRepository.getPolicy();
     const now = new Date();
     const reservaDateTime = this.combineDateTime(data.reserveDate, data.reserveTime);
-    const diffMs = reservaDateTime.getTime() - (now.getTime() - 1000 * 60 * 60 * 3);
+    const diffMs = reservaDateTime.getTime() - now.getTime();
 
     if (diffMs < (policy.horasDeAnticipacionParaReservar * 60 * 60 * 1000)) throw new BusinessError(`Las reservas deben realizarse con al menos ${policy.horasDeAnticipacionParaReservar} horas de anticipación.`);
 

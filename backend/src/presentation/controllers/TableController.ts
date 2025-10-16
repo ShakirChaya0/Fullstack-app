@@ -85,7 +85,7 @@ export class TableController {
             
             const numTableint = Number(numTable)
 
-            if (statusTable !== 'Libre' && statusTable !== 'Ocupada') throw new ValidationError('El estado de la mesa ingresado es incorrecto');
+            if (statusTable !== 'Libre' && statusTable !== 'Ocupada') throw new ValidationError('El estado de la mesa ingresadó es incorrecto');
 
             const updatedeTable = await this.updateTable.execute(numTableint, statusTable); 
             res.status(204).json(updatedeTable);
