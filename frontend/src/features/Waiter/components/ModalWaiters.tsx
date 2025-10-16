@@ -48,7 +48,7 @@ export default function ModalWaiters() {
         <Fade in={open}>
             <div className="fixed inset-0 flex items-center justify-center p-4" onClick={handleClose}>
                 <div onClick={(e) => e.stopPropagation()} className='bg-white p-6 rounded-lg shadow-lg w-full max-w-2xl max-h-[90vh] overflow-y-auto'>
-                    <ActionForm/>
+                    <ActionForm handleClose={handleClose}/>
                 </div>
             </div>
         </Fade>

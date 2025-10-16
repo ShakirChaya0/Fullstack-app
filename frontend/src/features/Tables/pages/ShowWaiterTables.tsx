@@ -100,45 +100,65 @@ export default function ShowWaiterTables() {
             {
                 !isLoading ? (
                     !isError ? (
-                        <div className="bg-gray-100 w-full font-sans text-gray-800 flex flex-col p-4 md:p-8">
-                            { open && <div className='absolute w-full h-full bg-black opacity-50 inset-0' onClick={handleToggleModal}></div>}
-                            { currentTable && <ModalShowTable onClose={handleToggleModal} open={open} currentTable={currentTable}/>}
-                            <header className="mb-6 flex flex-col w-full">
-                                <div className='self-center justify-self-center'>
-                                    <h1 className="text-4xl font-bold text-center text-gray-700">Mesas ocupadas del restaurante</h1>
-                                    <p className="text-center text-gray-500 mt-1">Haz click en una mesa para visualizar su información.</p>
-                                </div>
-                                <div className="bg-gray-100 flex items-center justify-center p-4 font-sans">
-                                  <div className="w-full max-w-md bg-white rounded-xl shadow-lg p-6">
-                                    <h1 className="text-xl font-bold text-gray-800 mb-4 border-b border-gray-200 pb-3">
-                                      Estados de los pedidos de cada mesa
-                                    </h1>
-                                    <ul className="flex flex-wrap gap-y-4 gap-x-6">
-                                      {(["Solicitado", "En_Preparacion", "Completado", "Pendiente_De_Pago", "Pendiente_De_Cobro", "Pagado", "Ningun pedido"] as OrderStatus[]).map((status) => (
-                                        <li key={status} className="flex items-center text-sm">
-                                          <span className={`w-3 h-3 rounded-full mr-3 ${tableState[status]}`}></span>
-                                          <span className="text-gray-700">
-                                            {status.replaceAll("_", " ")}
-                                          </span>
-                                        </li>
-                                      ))}
-                                    </ul>
+                        tables?.length === 0 ? (
+                            <div className="bg-gray-100 w-full font-sans text-gray-800 flex flex-col p-4 md:p-8">
+                                { open && <div className='absolute w-full h-full bg-black opacity-50 inset-0' onClick={handleToggleModal}></div>}
+                                { currentTable && <ModalShowTable onClose={handleToggleModal} open={open} currentTable={currentTable}/>}
+                                <header className="mb-6 flex flex-col w-full">
+                                    <div className='self-center justify-self-center'>
+                                        <h1 className="text-4xl font-bold text-center text-gray-700">Mesas ocupadas del restaurante</h1>
+                                        <p className="text-center text-gray-500 mt-1">Haz click en una mesa para visualizar su información.</p>
+                                    </div>
+                                    <div className="bg-gray-100 flex items-center justify-center p-4 font-sans">
+                                      <div className="w-full max-w-md bg-white rounded-xl shadow-lg p-6">
+                                        <h1 className="text-xl font-bold text-gray-800 mb-4 border-b border-gray-200 pb-3">
+                                          Estados de los pedidos de cada mesa
+                                        </h1>
+                                        <ul className="flex flex-wrap gap-y-4 gap-x-6">
+                                          {(["Solicitado", "En_Preparacion", "Completado", "Pendiente_De_Pago", "Pendiente_De_Cobro", "Pagado", "Ningun pedido"] as OrderStatus[]).map((status) => (
+                                            <li key={status} className="flex items-center text-sm">
+                                              <span className={`w-3 h-3 rounded-full mr-3 ${tableState[status]}`}></span>
+                                              <span className="text-gray-700">
+                                                {status.replaceAll("_", " ")}
+                                              </span>
+                                            </li>
+                                          ))}
+                                        </ul>
+                                      </div>
+                                    </div>
+                                </header>
+                                <section className="w-full bg-white rounded-2xl shadow-lg p-6 overflow-x-auto h-full">
+                                  <div className="flex flex-wrap justify-center items-center gap-6 w-full">
+                                    {tables?.map(table => (
+                                      <Table
+                                        key={table._tableNum}
+                                        tableData={table}
+                                        onClick={handleSelectTable}
+                                        orders={orders ?? []}
+                                      />
+                                    ))}
                                   </div>
+                                </section>
+                            </div>
+                        ) : (
+                            <div className="flex flex-col w-full items-center justify-center  bg-gray-100 text-center p-4">
+                                <div className="bg-white p-8 md:p-12 rounded-2xl shadow-xl max-w-md w-full">
+                                    <svg className="w-20 h-20 mx-auto text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                    <h2 className="mt-6 text-2xl font-bold text-gray-800">No hay mesas ocupadas en este momento</h2>
+                                    <p className="mt-2 text-gray-600">
+                                        Espere a que se ocupe alguna
+                                    </p>
+                                    <button 
+                                        onClick={() => window.location.reload()}
+                                        className="mt-8 px-6 py-3 bg-blue-600 cursor-pointer text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-75 transition-transform transform hover:scale-105"
+                                    >
+                                        Recargar Página
+                                    </button>
                                 </div>
-                            </header>
-                            <section className="w-full bg-white rounded-2xl shadow-lg p-6 overflow-x-auto h-full">
-                              <div className="flex flex-wrap justify-center items-center gap-6 w-full">
-                                {tables?.map(table => (
-                                  <Table
-                                    key={table._tableNum}
-                                    tableData={table}
-                                    onClick={handleSelectTable}
-                                    orders={orders ?? []}
-                                  />
-                                ))}
-                              </div>
-                            </section>
-                        </div>
+                            </div>
+                        )
                     ) : (
                         <div className="flex flex-col w-full items-center justify-center  bg-gray-100 text-center p-4">
                             <div className="bg-white p-8 md:p-12 rounded-2xl shadow-xl max-w-md w-full">

@@ -14,7 +14,7 @@ type FormData = {
     telefono: string,
 };
 
-export default function ActionForm() {
+export default function ActionForm({handleClose}: {handleClose: () => void}) {
     const {
       register,           
       handleSubmit,       
@@ -31,6 +31,7 @@ export default function ActionForm() {
             contrasenia: data.contrasenia.trim(), email: data.email.trim(), 
             nombre: data.nombre.trim(), apellido: data.apellido.trim(), 
             dni: data.dni.trim(), telefono: data.telefono.trim()})
+          handleClose()
     }
 
 return (

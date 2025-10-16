@@ -30,7 +30,7 @@ const today = new Date();
 const minDate = getLocalISODate(today); 
 
 
-export default function ActionForm() {
+export default function ActionForm({handleClose}: {handleClose: () => void}) {
     const {currentPage, filter, query} = usePage()
     const {
       register,           
@@ -44,7 +44,8 @@ export default function ActionForm() {
     const { mutate, isLoading, failureReason } = useMutationNews({fn, currentPage, SuccessMsg: msgs.SuccessMsg, ErrorMsg: msgs.ErrorMsg, query, filter})
 
     const onSubmit =  (data: FormData) => {
-        mutate({_newsId: news?._newsId, _title: data.Titulo.trim(), _description: data.Descripcion.trim(), _startDate: data.FechaInicio.trim(), _endDate: data.FechaFin.trim()})
+      mutate({_newsId: news?._newsId, _title: data.Titulo.trim(), _description: data.Descripcion.trim(), _startDate: data.FechaInicio.trim(), _endDate: data.FechaFin.trim()})
+      handleClose()
     };
 
     const fechaInicioValue = watch("FechaInicio");

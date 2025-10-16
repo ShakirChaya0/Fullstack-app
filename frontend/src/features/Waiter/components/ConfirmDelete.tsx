@@ -50,7 +50,7 @@ export default function ConfirmDelete({
           Volver
         </Button>
         <Button
-          onClick={() => handleDeleteMozo(Waiter?.idMozo ?? '')}
+          onClick={() => {handleDeleteMozo(Waiter?.idMozo ?? ''); onClose()}}
           color="error"
           variant="contained"
         >

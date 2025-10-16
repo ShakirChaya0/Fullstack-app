@@ -47,7 +47,7 @@ export default function ModalNews() {
       >
         <Fade in={open}>
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white p-6 rounded-lg shadow-lg w-full max-w-2xl">
-                <ActionForm/>
+                <ActionForm handleClose={handleClose}/>
             </div>
         </Fade>
       </Modal>

@@ -49,7 +49,7 @@ export default function ConfirmDelete({
           Volver
         </Button>
         <Button
-          onClick={() => handleDeleteNews(News._newsId ?? 0)}
+          onClick={() => {handleDeleteNews(News._newsId ?? 0); onClose()}}
           color="error"
           variant="contained"
           sx={{textTransform: "none"}}
