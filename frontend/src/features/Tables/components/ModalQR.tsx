@@ -28,7 +28,7 @@ export default function ModalQR({tableNum} : {tableNum: number}){
             <div className="mt-6">
                 <button
                     onClick={handleOpen}
-                    className={`w-full bg-blue-600 py-4 text-white rounded-lg cursor-pointer hover:bg-blue-600 active:bg-blue-700 active:scale-95 transition-all duration-100 ease-in-out`}
+                    className="w-full bg-blue-600 py-4 text-white rounded-lg cursor-pointer hover:bg-blue-700 active:bg-blue-800 active:scale-95 transition-all duration-100 ease-in-out"
                     >
                     Generar QR
                 </button>
@@ -52,7 +52,7 @@ export default function ModalQR({tableNum} : {tableNum: number}){
                             {!isPending && (
                                     <QRCodeSVG
                                         value={`${import.meta.env.VITE_FRONTEND_URL}/Cliente/Menu?qrToken=${qrToken}&mesa=${tableNum}`}
-                                        size={360}
+                                        size={260}
                                         level="H"
                                     />
                                 )}

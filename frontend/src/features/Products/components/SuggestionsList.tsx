@@ -34,24 +34,24 @@ export default function SuggestionsList() {
         !isLoading ? (
           uniqueSuggestions.length > 0 ? (
             <>
-              <h1 className="w-full text-center font-semibold text-black text-2xl mt-3">SUGERENCIAS</h1>
+              <h1 className="text-center font-semibold text-black text-2xl mt-3">SUGERENCIAS</h1>
               {
                 !isError ? (
-                  <div className="min-h-[260px] flex items-center justify-center py-4 w-full relative">
+                  <div className="min-h-[260px] flex items-center justify-center py-4 h-full relative">
                     <Swiper
                       modules={[Navigation]}
                       navigation
-                      spaceBetween={20}        
-                      slidesPerView={1}    
-                      loop={true}    
+                      spaceBetween={20}
+                      slidesPerView={1}
+                      loop={uniqueSuggestions.length > 3}
                       breakpoints={{
-                        1000: { slidesPerView: 2 },
-                        1500: { slidesPerView: 3 }
+                        1000: { slidesPerView: uniqueSuggestions.length >= 2 ? 2 : 1 },
+                        1500: { slidesPerView: uniqueSuggestions.length >= 3 ? 3 : uniqueSuggestions.length }
                       }}
-                      className="px-8"
+                      className="px-8 max-w-7xl"
                     >
                       {uniqueSuggestions?.map((s) => (
-                        <SwiperSlide key={s._product._description} className="px-8">
+                        <SwiperSlide key={s._product._description} >
                           <SuggestionCard s={s} handleAdd={handleAdd} handleRemove={handleRemove}/>
                         </SwiperSlide>
                       ))}
@@ -77,12 +77,12 @@ function SuggestionCard ({s, handleAdd, handleRemove}: {s: BackSuggestion, handl
   return (
     <div
       className="
-        border border-orange-500 min-h-[200px] flex-shrink-0 
+        border border-orange-500 flex-shrink-0 
         flex flex-col bg-white rounded-xl shadow-md justify-evenly
-        transition-all ease-in-out py-4 px-2 
+        transition-all ease-in-out py-4 px-2 min-h-[250px]
       "
     >
-      <h1 className="self-center lg:text-2xl">{s._product._name}</h1>
+      <h1 className="self-center text-xl md:text-2xl">{s._product._name}</h1>
       <p className="self-center md:text-md">{s._product._description}</p>
       <p className="self-center text-orange-500 md:text-md">${s._product._price}</p>
       <div className="self-center border rounded-md 

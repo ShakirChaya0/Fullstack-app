@@ -12,6 +12,24 @@ interface FormData {
   FechaFin: string
 };
 
+function parseLocalDateFromInput(value: string): Date | null {
+  if (!value) return null;
+  const parts = value.split("-");
+  if (parts.length !== 3) return null;
+  const [y, m, d] = parts.map((p) => Number(p));
+  if (!y || !m || !d) return null;
+  return new Date(y, m - 1, d, 0, 0, 0, 0); 
+}
+
+function getLocalISODate(date: Date) {
+  const local = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
+  return local.toISOString().split("T")[0];
+}
+
+const today = new Date();
+const minDate = getLocalISODate(today); 
+
+
 export default function ActionForm() {
     const {currentPage, filter, query} = usePage()
     const {
@@ -26,7 +44,7 @@ export default function ActionForm() {
     const { mutate, isLoading, failureReason } = useMutationNews({fn, currentPage, SuccessMsg: msgs.SuccessMsg, ErrorMsg: msgs.ErrorMsg, query, filter})
 
     const onSubmit =  (data: FormData) => {
-        mutate({_newsId: news?._newsId, _title: data.Titulo, _description: data.Descripcion, _startDate: data.FechaInicio, _endDate: data.FechaFin})
+        mutate({_newsId: news?._newsId, _title: data.Titulo.trim(), _description: data.Descripcion.trim(), _startDate: data.FechaInicio.trim(), _endDate: data.FechaFin.trim()})
     };
 
     const fechaInicioValue = watch("FechaInicio");
@@ -83,18 +101,24 @@ export default function ActionForm() {
           <div className="flex flex-col gap-2">
             <label className="sm:text-lg font-semibold text-gray-800">Fecha de inicio</label>
             <input
-                type="date"
-                {...register("FechaInicio", {
-                  required: "La fecha de inicio es obligatoria",
-                  validate: (value) =>
-                    new Date(value) >= new Date(new Date().toDateString()) ||
-                    "Debe ser mayor o igual a hoy",
-                })}
-                min={new Date().toISOString().split("T")[0]}
-                className="px-2 py-1 sm:px-4 sm:py-3 sm:text-lg border border-gray-300 rounded-lg sm:rounded-xl shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
-                defaultValue={news?._endDate
-                    ? new Date(news._endDate).toISOString().split("T")[0]
-                    : ""}
+              type="date"
+              {...register("FechaInicio", {
+                required: "La fecha de inicio es obligatoria",
+                validate: (value) => {
+                  const inputDate = parseLocalDateFromInput(value); 
+                  if (!inputDate) return "Formato de fecha inválido";
+                
+                  const today = new Date();
+                  today.setHours(0, 0, 0, 0);
+                
+                  return inputDate >= today || "Debe ser mayor o igual a hoy";
+                },
+              })}
+              min={minDate}
+              className="px-2 py-1 sm:px-4 sm:py-3 sm:text-lg border border-gray-300 rounded-lg sm:rounded-xl shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+              defaultValue={news?._endDate
+                  ? getLocalISODate(new Date(news._endDate))
+                  : ""}
             />
             {errors.FechaInicio && (
                 <p className="text-base text-red-500">{errors.FechaInicio.message}</p>

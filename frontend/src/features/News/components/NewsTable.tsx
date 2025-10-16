@@ -75,7 +75,7 @@ export default function NewsTable ({data, handleResetPage}: {data: BackResults |
       if (currentPage > 1 && (totalItems - 1) <= (currentPage - 1) * itemsPerPage) {
         handleResetPage(currentPage - 1);
       }
-      toast.success("La novedad se elimino con exito")
+      toast.success("La novedad se eliminó con éxito")
     },
     onError: (err, variables, context) => {
         toast.error("Error al eliminar la novedad")

@@ -9,9 +9,6 @@ export class CreateNewsUseCases {
     ){}
     
     async execute(data: SchemaNews): Promise<NewsClass>{
-        const hoy = new Date();
-
-        if (data.fechaInicio < hoy) throw new BusinessError("La fecha de inicio no puede ser anterior a la fecha actual");
         if (data.fechaFin < data.fechaInicio) throw new BusinessError("La fecha final no puede ser anterior a la fecha de inicio");    
 
         const news = await this.newsRepo.register(data)

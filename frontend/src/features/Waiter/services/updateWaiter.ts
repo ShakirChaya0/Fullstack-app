@@ -10,11 +10,10 @@ export default async function updateWaiter (apiCall: (url: string, options?: Req
         body: JSON.stringify(body)
     })
     
-    if(!response.ok) {
-        const errorData = await response.json().catch(() => null);
-        const errorMessage = errorData?.message
-        throw new Error(errorMessage)
-    }
+    if (!response.ok) {
+        const error = await response.json()
+        throw new Error(error.message)
+    }   
 
     const data = await response.json()
     return data

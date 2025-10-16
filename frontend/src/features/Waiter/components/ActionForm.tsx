@@ -27,10 +27,10 @@ export default function ActionForm() {
     const { mutate, isLoading, failureReason } = useMutationWaiter({fn: fn, currentPage: currentPage, SuccessMsg: msgs.SuccessMsg, ErrorMsg: msgs.ErrorMsg, query: query})
 
     const onSubmit = (data: FormData) => {
-        mutate({idMozo: waiters?.idMozo, nombreUsuario: data.nombreUsuario, 
-            contrasenia: data.contrasenia, email: data.email, 
-            nombre: data.nombre, apellido: data.apellido, 
-            dni: data.dni, telefono: data.telefono})
+        mutate({idMozo: waiters?.idMozo, nombreUsuario: data.nombreUsuario.trim(), 
+            contrasenia: data.contrasenia.trim(), email: data.email.trim(), 
+            nombre: data.nombre.trim(), apellido: data.apellido.trim(), 
+            dni: data.dni.trim(), telefono: data.telefono.trim()})
     }
 
 return (
@@ -54,9 +54,18 @@ return (
           <div className="flex flex-col gap-2">
             <label className="sm:text-lg font-semibold text-gray-800">Contraseña</label>
             <input
-              {...register("contrasenia")}
+              {...register("contrasenia", {
+                      required: "La contraseña es obligatoria",
+                      minLength: { value: 6, message: "La contraseña debe tener al menos 6 caracteres." },
+                      maxLength: { value: 100, message: "La contraseña no puede tener más de 100 caracteres." },
+                      pattern: {
+                          value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{6,}$/,
+                          message: "Debe incluir una mayúscula, una minúscula y un número."
+                      }
+                    })}
               placeholder="Escribe la contraseña..."
               className="px-2 py-1 sm:px-4 sm:py-3 sm:text-lg border border-gray-300 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              type="password"
               defaultValue={waiters?.contrasenia}
             />
             {errors.contrasenia && <p className="text-base text-red-500">{errors.contrasenia.message}</p>}
@@ -87,8 +96,9 @@ return (
           <div className="flex flex-col gap-2">
             <label className="sm:text-lg font-semibold text-gray-800">DNI</label>
             <input
-              {...register("dni", {required: "El dni es obligatorio"})}
+              {...register("dni", {required: "El dni es obligatorio", maxLength: 10})}
               placeholder="Escribe un DNI..."
+              type="number"
               className="px-2 py-1 sm:px-4 sm:py-3 sm:text-lg border border-gray-300 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               defaultValue={waiters?.dni}
             />
@@ -98,7 +108,13 @@ return (
           <div className="flex flex-col gap-2">
             <label className="sm:text-lg font-semibold text-gray-800">Teléfono</label>
             <input
-              {...register("telefono", {required: "El teléfono es obligatorio"})}
+              {...register("telefono", {
+                required: "El teléfono es obligatorio",
+                pattern: {
+                  value: /^\+\d{6,15}$/,
+                  message: "El teléfono debe comenzar con + y contener solo números (mínimo 6 dígitos)",
+                },
+              })}
               placeholder="Escribe un teléfono..."
               className="px-2 py-1 sm:px-4 sm:py-3 sm:text-lg border border-gray-300 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               defaultValue={waiters?.telefono}
@@ -109,7 +125,13 @@ return (
           <div className="flex flex-col gap-2 md:col-span-2">
             <label className="sm:text-lg font-semibold text-gray-800">Email</label>
             <input
-              {...register("email", {required: "El email es obligatorio"})}
+              {...register("email", {
+                required: "El email es obligatorio",
+                pattern: {
+                  value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                  message: "El formato del email no es válido",
+                },
+              })}
               placeholder="Escribe el email del usuario..."
               className="px-2 py-1 sm:px-4 sm:py-3 sm:text-lg border border-gray-300 rounded-lg shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               defaultValue={waiters?.email}

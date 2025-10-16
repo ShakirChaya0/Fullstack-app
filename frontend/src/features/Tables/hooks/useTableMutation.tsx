@@ -53,6 +53,7 @@ export function useTableMutation() {
 
     onSuccess: async (_, variables) => {
       await queryClient.invalidateQueries({ queryKey: ["tables"] });
+      await queryClient.invalidateQueries({ queryKey: ["waitersTable"] });
 
       const messages = {
         create: "Mesa creada exitosamente",

@@ -35,12 +35,12 @@ export default function ConfirmDelete({
       }}
     >
       <DialogTitle id="confirm-delete-title">
-        Eliminar Novedad {Waiter.email}
+        Eliminar Mozo {Waiter.email}
       </DialogTitle>
 
       <DialogContent>
         <DialogContentText id="confirm-delete-description">
-          ¿Está seguro que desea eliminar esta novedad? Esta acción no se puede
+          ¿Está seguro que desea al mozo? Esta acción no se puede
           deshacer.
         </DialogContentText>
       </DialogContent>
