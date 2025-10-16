@@ -11,7 +11,7 @@ export class JWTService {
     ) {}
 
     public generateAccessToken(payload: JwtPayloadInterface): string {
-        return jwt.sign(payload, this.accessTokenSecret, { expiresIn: "7d" }); // <-- VOLVER A LA DURACIÓN 10m
+        return jwt.sign(payload, this.accessTokenSecret, { expiresIn: "10m" });
     }
 
     public verifyAccessToken(token: string): JwtPayloadInterface {
@@ -19,7 +19,7 @@ export class JWTService {
     }
     
     public generateRefreshToken(payload: JwtPayloadInterface): string {
-        return jwt.sign(payload, this.refreshTokenSecret, { expiresIn: "8d" });
+        return jwt.sign(payload, this.refreshTokenSecret, { expiresIn: "7d" });
     }
 
     public verifyRefreshToken(token: string): JwtPayloadInterface {
