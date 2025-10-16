@@ -1,4 +1,4 @@
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, FormControlLabel, Checkbox, Typography, Alert } from "@mui/material";
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, FormControlLabel, Checkbox, Typography, Alert } from "@mui/material";
 import ModeEditIcon from '@mui/icons-material/ModeEdit';
 import { useRef, useState } from "react";
 import type { ModifyProductModalProps, ProductWithoutPrice } from "../interfaces/product&PriceInterfaces";
@@ -123,65 +123,69 @@ export function ModifyProductModal({
             
             <DialogContent>
                 <div className="flex flex-col">
-                    <Typography variant="h6" sx={{ color: '#4a5565', mb:'1rem' }}>
+                    <Typography variant="h6" sx={{ color: '#1e2939', mb:'1rem' }}>
                         Modifique lo que desee de su producto.
                     </Typography>
-                    <Typography variant="subtitle1" sx={{ color: '#4a5565', mb:'0.5rem' }}>
+                    <Typography variant="subtitle1" sx={{ color: '#1e2939', mb:'0.5rem' }}>
                         Campos básicos <Typography variant="subtitle1" sx={{ color: 'red', display: 'inline'}}>*</Typography>
                     </Typography>
 
                     {/* Campos básicos */}
                     <div className="flex flex-col justify-between gap-4 mb-5">
-                        <TextField
-                            label="Nombre del Producto"
-                            variant="outlined"
-                            fullWidth
-                            placeholder="Nombre de tu producto"
-                            slotProps={{
-                                htmlInput: { maxLength: 30}
-                            }}
-                            value={ newProduct.nombre }
-                            onChange={(e) => {
-                                if (e.currentTarget.value.trim() == '' && e.currentTarget.value.startsWith(' ')) {
-                                    e.currentTarget.value = ''
-                                    return
-                                }
-                                if(modalError) setModalError('')
-                                setNewProduct(prev => {
-                                    const productModify = {...prev}
-                                    const newName = e.target.value
-                                    productModify.nombre = newName
-                                    return productModify;
-                                });
-                            }}
-                        />
-                        <TextField
-                            label="Descripción"
-                            variant="outlined"
-                            fullWidth
-                            multiline
-                            rows={2}
-                            placeholder="Describe tu producto..."
-                            value={newProduct.descripcion}
-                            onChange={(e) => {
-                                if (e.currentTarget.value.trim() == '' && e.currentTarget.value.startsWith(' ')) {
-                                    e.currentTarget.value = ''
-                                    return
-                                }
-                                if(modalError) setModalError('')
-                                setNewProduct(prev => {
-                                    const productModify = {...prev}
-                                    const newDescription = e.target.value
-                                    productModify.descripcion = newDescription
-                                    return productModify;
-                                });
-                            }}
-                        />
+                        <div>
+                            <label className="block text-sm font-medium text-gray-500 mb-1">
+                                Nombre del Producto
+                            </label>
+                            <input
+                                type="text"
+                                placeholder="Ej: Salmón a la Parrilla"
+                                maxLength={30}
+                                className="w-full px-3 py-2 h-[50px] border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 placeholder-gray-400"
+                                value={ newProduct.nombre }
+                                onChange={(e) => {
+                                    if (e.currentTarget.value.trim() == '' && e.currentTarget.value.startsWith(' ')) {
+                                        e.currentTarget.value = ''
+                                        return
+                                    }
+                                    if(modalError) setModalError('')
+                                    setNewProduct(prev => {
+                                        const productModify = {...prev}
+                                        const newName = e.target.value.trim()
+                                        productModify.nombre = newName
+                                        return productModify;
+                                    });
+                                }}
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-sm font-medium text-gray-500 mb-1">
+                                Descripción
+                            </label>
+                            <textarea
+                                placeholder="Describe tu producto..."
+                                rows={3}
+                                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 placeholder-gray-400 resize-vertical"
+                                value={ newProduct.descripcion }
+                                onChange={(e) => {
+                                    if (e.currentTarget.value.trim() == '' && e.currentTarget.value.startsWith(' ')) {
+                                        e.currentTarget.value = ''
+                                        return
+                                    }
+                                    if(modalError) setModalError('')
+                                    setNewProduct(prev => {
+                                        const productModify = {...prev}
+                                        const newDescription = e.target.value.trim()
+                                        productModify.descripcion = newDescription
+                                        return productModify;
+                                    });
+                                }}
+                            />
+                        </div>
                     </div>
 
                     {/* Manejo Disponibilidad */}
                     <div className="w-full mb-4">
-                        <Typography variant="subtitle1" sx={{ color: '#4a5565', mb:'0.5rem' }}>
+                        <Typography variant="subtitle1" sx={{ color: '#1e2939', mb:'0.5rem' }}>
                             Disponiblidad <Typography variant="subtitle1" sx={{ color: 'red', display: 'inline'}}>*</Typography>
                         </Typography>
                         <div className="flex flex-row justify-around">

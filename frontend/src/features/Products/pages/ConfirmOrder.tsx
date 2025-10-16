@@ -41,8 +41,8 @@ export default function ConfirmOrder() {
       const formData = new FormData(event.currentTarget)
       const data = Object.fromEntries(formData.entries())
       if(+data.cantidad <= 0) {
-        toast.error('No se puede registrar un pedido con número de comensales menor a 0')
-        return
+        toast.error('Cantidad de comensales invalida');
+        return; // No actualizar nada
       }
       if(data.observaciones.toString().length > 500) {
         toast.error('La observación debe tener menos de 500 caracteres')
@@ -144,7 +144,7 @@ export default function ConfirmOrder() {
               <label htmlFor="cantComensales">
                 Cantidad de comensales: 
               </label>
-                <input required name="cantidad" type="number" placeholder="ej:12" id="cantComensales" 
+                <input name="cantidad" type="number" min={0} placeholder="ej:12" id="cantComensales" 
                 className="py-0.5 px-1 w-12 outline-0 rounded-lg bg-gray-200"
                 defaultValue={order.comensales !== 0 ? order.comensales : undefined}
                 onInput={(e) => {

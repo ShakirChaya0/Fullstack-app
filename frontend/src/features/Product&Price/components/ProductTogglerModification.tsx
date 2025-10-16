@@ -14,7 +14,7 @@ export function ProductTogglerModification({ product, newProduct, setNewProduct}
         <>
             {/* Toggle para tipo de producto */}
             <div className="flex flex-col w-full mb-4">
-                <Typography variant="subtitle1" sx={{ color: '#4a5565', mb:'0.5rem' }}>
+                <Typography variant="subtitle1" sx={{ color: '#1e2939', mb:'0.5rem' }}>
                     Tipo de producto <Typography variant="subtitle1" sx={{ color: 'red', display: 'inline'}}>*</Typography>
                 </Typography>
                 <ToggleButtonGroup
@@ -59,7 +59,7 @@ export function ProductTogglerModification({ product, newProduct, setNewProduct}
                 </ToggleButtonGroup>
             </div>
             <div className="flex flex-col w-[98%] border-2 border-gray-300 rounded-2xl m-auto py-2 px-4">
-                <Typography variant="subtitle1" sx={{ color: '#4a5565', mb:'0.5rem' }}>
+                <Typography variant="subtitle1" sx={{ color: '#1e2939', mb:'0.5rem' }}>
                     Características de la {product.tipo ? 'comida': 'bebida'}
                     { product.tipo && <Typography variant="subtitle1" sx={{ color: 'red', display: 'inline'}}>*</Typography>} 
                 </Typography>
@@ -108,7 +108,7 @@ export function ProductTogglerModification({ product, newProduct, setNewProduct}
                         </div>
 
                         <div>
-                            <Typography variant="subtitle2" sx={{ color: '#4a5565', mb:'0.5rem' }}>
+                            <Typography variant="subtitle2" sx={{ color: '#1e2939', mb:'0.5rem' }}>
                                 Especificaciones
                             </Typography>
                             <div className="flex flex-col gap-2 sm:flex-row sm:justify-around sm:gap-0.5">

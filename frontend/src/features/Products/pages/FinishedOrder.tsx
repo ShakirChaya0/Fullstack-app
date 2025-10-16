@@ -69,24 +69,8 @@ export default function FinishedOrder() {
         window.dispatchEvent(new CustomEvent('openPaymentConfirmationModal'))
     }
 
-    // Función Para hardcodear emisión de eventos de la cocina
-    // const handleClick = () => {
-    //     console.log("Emitiendo evento...");
-    //     sendEvent("updateLineStatus", {idPedido: 152, nroLinea: 1, estadoLP: 'Terminada'});
-    // }; 
-
     return (
         <div className="flex flex-col justify-center w-full">
-            {/* <div>   BOTON Para hardcodear emisión de eventos de la cocina
-                <button 
-                    className="active:bg-orange-700 hover:scale-105 relative transition-all 
-                    ease-linear duration-100 active:scale-95 m-auto py-2 px-4 bg-orange-500 
-                    rounded-lg shadow-lg text-white font-bold cursor-pointer hover:bg-orange-600"
-                    onClick={handleClick}
-                >
-                    Emitir 
-                </button> 
-            </div> */}
             <StatusIndicator currentStatus={ order.estado }></StatusIndicator>
             <section className="flex flex-col w-full items-center h-auto mb-10">
                 <div 

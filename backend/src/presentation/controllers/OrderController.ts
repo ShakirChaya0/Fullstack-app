@@ -84,6 +84,7 @@ export class OrderController {
         if(isNaN(+idPedido)) throw new ValidationError("El número de Pedido debe ser válido");
 
         const order =  await this.updateOrderLineStatusUseCase.execute(+idPedido, +nroLinea, estadoLP);
+        order.orderLines.sort((a, b) => a.lineNumber - b.lineNumber)
         await this.orderSocketService.emitOrderEvent("updatedOrderLineStatus", order);
     }
 
@@ -94,6 +95,7 @@ export class OrderController {
         if(!validatedOrderLines.success) throw new ValidationError(`Validation failed: ${validatedOrderLines.error.message}`);
 
         const order = await this.addOrderLineUseCase.execute(orderId, validatedOrderLines.data);
+        order.orderLines.sort((a, b) => a.lineNumber - b.lineNumber)
         await this.orderSocketService.emitOrderEvent("addedOrderLine", order);
     }
 
@@ -102,6 +104,7 @@ export class OrderController {
         if(isNaN(lineNumber)) throw new ValidationError("El número de Línea debe ser válido");
         
         const deletedOrder =  await this.deleteOrderLineUseCase.execute(orderId, lineNumber);
+        deletedOrder.orderLines.sort((a, b) => a.lineNumber - b.lineNumber)
         await this.orderSocketService.emitOrderEvent("deletedOrderLine", deletedOrder)
     }
 
@@ -115,6 +118,7 @@ export class OrderController {
         if(!validatedOrder.success) throw new ValidationError(`Validation failed: ${validatedOrder.error.message}`);
 
         const updatedOrder = await this.updateOrderUseCase.execute(orderId, lineNumbers, data);
+        updatedOrder.orderLines.sort((a, b) => a.lineNumber - b.lineNumber)
         await this.orderSocketService.emitOrderEvent("modifiedOrderLine", updatedOrder);
     }
 }

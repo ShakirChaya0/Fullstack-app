@@ -1,4 +1,4 @@
-import { Alert, Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Typography } from "@mui/material";
+import { Alert, Button, Dialog, DialogActions, DialogContent, DialogTitle, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useMutationPriceRegistration } from "../hooks/useMutationPrice";
 import { getCurrentDate } from "../utils/getCurrentDate";
@@ -101,38 +101,45 @@ export function NewPriceModal({ idProducto, preciosRegistrados }: NewPriceModalP
                         <Typography variant="subtitle1" sx={{ color: '#4a5565', mb:'0.5rem' }}>
                             Precio - Fecha Vigencia desde: <p className="inline font-bold">{ getCurrentDate() }</p>
                         </Typography>
-                        <TextField
-                            label="Precio"
-                            type="text"
-                            variant="outlined"
-                            fullWidth
-                            placeholder="0,00"
-                            onChange={(e) => {
-                                setNewPrice(prev => {
-                                    const newProduct = {...prev}
-                                    if(e.target.value.indexOf(',') !== -1 && e.target.value.indexOf("-") === e.target.value.lastIndexOf("-")) { //Validando que tenga un formato correcto
-                                        const newValue = e.target.value.replace(',','.')
-                                        const newPrice = !isNaN(parseFloat(newValue)) ? parseFloat(newValue) : 0
-                                        newProduct.monto = newPrice
-                                        return newProduct
-                                    }
+                        <div>
+                            <label className="block text-sm font-medium text-gray-500 mb-1">
+                                Precio
+                            </label>
+                            <input
+                                type="number"
+                                min={0}
+                                placeholder="0,00"
+                                className="w-full px-3 py-2 h-[50px] border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 placeholder-gray-400"
+                                onChange={(e) => {
                                     const newPrice = !isNaN(parseFloat(e.target.value)) ? parseFloat(e.target.value) : 0
-                                    newProduct.monto = newPrice;
-                                    return newProduct;
-                                });
-                            }}
-                            onBlur={(e) => { // Solución al problema estético del input: aplicar el formateo al perder el foco en otro lado no con el onBlur
-                                // Formatear a 2 decimales cuando pierde el foco
-                                const value = parseFloat(e.target.value.indexOf(',') !== -1 ? e.target.value.replace(',','.') : e.target.value) || 0
-                                const formatted = value.toFixed(2)
-                                e.target.value = formatted
-                                
-                                setNewPrice(prev => ({
-                                    ...prev,
-                                    precio: parseFloat(formatted)
-                                }));
-                            }}
-                        />
+                                    if (newPrice < 0) return
+                                    if(modalError) setModalError('')
+                                    setNewPrice(prev => {
+                                        const newProduct = {...prev}
+                                        if(e.target.value.indexOf(',') !== -1 && e.target.value.indexOf(",") === e.target.value.lastIndexOf(",")) { //Validando que tenga un formato correcto
+                                            const newValue = e.target.value.replace(',','.')
+                                            const newPrice = !isNaN(parseFloat(newValue)) ? parseFloat(newValue) : 0       
+                                            newProduct.monto = newPrice
+                                            return newProduct
+                                        }
+                                        const newPrice = !isNaN(parseFloat(e.target.value)) ? parseFloat(e.target.value) : 0         
+                                        newProduct.monto = newPrice;
+                                        return newProduct;
+                                    });
+                                }}
+                                onBlur={(e) => {
+                                    // Formatear a 2 decimales cuando pierde el foco
+                                    const value = parseFloat(e.target.value.indexOf(',') !== -1 ? e.target.value.replace(',','.').replace('-', '') : e.target.value.replace('-', '')) || 0
+                                    const formatted = value.toFixed(2)
+                                    e.target.value = formatted
+                                    
+                                    setNewPrice(prev => ({
+                                        ...prev,
+                                        precio: parseFloat(formatted)
+                                    }));
+                                }}
+                            />
+                        </div>
                     </div>
                 </div>
             </DialogContent>

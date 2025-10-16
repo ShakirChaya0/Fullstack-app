@@ -4,7 +4,7 @@ import type { SearchProductsProps } from "../interfaces/product&PriceInterfaces"
 import SearchIcon from '@mui/icons-material/Search';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import debounce from 'just-debounce-it'
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 
 export function SearchProducts({ filtersToSearch, updateFilter }: SearchProductsProps) {
@@ -27,6 +27,12 @@ export function SearchProducts({ filtersToSearch, updateFilter }: SearchProducts
         setInputValue(newInputValue)
         debounceSearch(newInputValue)
     }
+
+    useEffect(() => {
+        if (filtersToSearch === '') {
+            setInputValue('');
+        }
+    }, [filtersToSearch]);
 
     return (
         <div className="flex flex-row justify-between gap-2 items-center my-3">

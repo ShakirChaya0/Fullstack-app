@@ -26,7 +26,7 @@ export function useWebSocket(): WebSocketHook {
         const socket = io(`${import.meta.env.VITE_WEBSOCKET_BACKEND_URL}`, {
             auth: accessToken ? { jwt: accessToken } : {},
             withCredentials: true,  
-            transports: ['websocket', 'polling'], 
+            transports: ['websocket', 'polling'] 
         });
 
         socketRef.current = socket;

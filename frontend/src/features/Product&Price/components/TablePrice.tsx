@@ -1,6 +1,7 @@
 import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@mui/material";
 import type { PriceList, TablePriceProps } from "../interfaces/product&PriceInterfaces";
 import DeleteIcon from '@mui/icons-material/Delete';
+import { formatCurrency } from "../../../shared/utils/formatCurrency";
 
 export function TablePrice({ priceList, onDeletePrice }: TablePriceProps) {
     const handleOpenPriceDelete = (price: PriceList) => {
@@ -97,7 +98,7 @@ export function TablePrice({ priceList, onDeletePrice }: TablePriceProps) {
                                     borderBottom: 'none'
                                 }}
                             >
-                                ${price.monto.toLocaleString()}
+                                {formatCurrency(price.monto, 'es-AR', 'ARS')}
                             </TableCell>
                             <TableCell 
                                 align="center"

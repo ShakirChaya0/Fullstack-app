@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useMutationDeletePrice } from "../hooks/useMutationPrice";
 import type { DeleteConfirmationModalProps } from "../interfaces/product&PriceInterfaces";
 import { toast } from "react-toastify";
+import { formatCurrency } from "../../../shared/utils/formatCurrency";
 
 
 export function DeleteConfirmationModal({ idProducto, selectedPrice, amountPrices}: DeleteConfirmationModalProps ) {
@@ -88,7 +89,7 @@ export function DeleteConfirmationModal({ idProducto, selectedPrice, amountPrice
                             Fecha Vigencia desde: <p className="inline font-bold">{selectedPrice?.fechaVigencia.slice(0,10) || 'No seleccionado'}</p>
                         </Typography>
                         <Typography variant="h6" sx={{ color: '#4a5565', mb:'0.5rem' }}>
-                            Monto: <p className="inline font-bold">${selectedPrice?.monto || 0}</p>
+                            Monto: <p className="inline font-bold">{formatCurrency(selectedPrice?.monto ? selectedPrice?.monto : 0, 'es-AR', 'ARS')}</p>
                         </Typography>
                     </div>
                 </div>

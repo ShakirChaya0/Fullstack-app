@@ -88,8 +88,6 @@ export const useProductsWithFilters = (initialPage = 1, initialLimit = 9) => {
 
     }, [productsPrice, filters]);
 
-
-
     // Funciones propias de la navegación
     const nextPage = () => {
         if (productsPrice.paginacion.proxPagina) setPage(prev => prev + 1)

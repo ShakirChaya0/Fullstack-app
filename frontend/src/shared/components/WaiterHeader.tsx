@@ -5,7 +5,6 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
-import AccountCircle from "@mui/icons-material/AccountCircle";
 import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
 import Drawer from "@mui/material/Drawer";
@@ -14,6 +13,7 @@ import ListItem from "@mui/material/ListItem";
 import ListItemText from "@mui/material/ListItemText";
 import { ListItemButton } from "@mui/material";
 import useAuth from "../hooks/useAuth";
+import camareroWhite from '../../shared/utils/assets/camareroWhite.png'
 import restauranteWhite from "../../shared/utils/assets/restauranteWhite.png";
 import { NavLink } from "react-router";
 
@@ -121,7 +121,7 @@ export default function WaiterHeader() {
             {user?.username || "Invitado"}
           </Typography>
           <IconButton onClick={handleMenu} color="inherit" sx={{ p: 0 }}>
-            <AccountCircle sx={{ fontSize: "2rem" }} />
+            <img src={camareroWhite} alt="Logo Administrador del Restaurante" style={{ height: '2rem', width: 'auto' }} />
           </IconButton>
 
           <Menu

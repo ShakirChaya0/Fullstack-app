@@ -14,9 +14,9 @@ import { OrderTotalAmount } from "../../Products/utils/OrderTotalAmount";
 import { useNavigate } from "react-router";
 import { PaymentConfirmationModal } from "../components/GoToPaymentConfirmationModal";
 import { useWebSocket } from "../../../shared/hooks/useWebSocket";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { useOrderActions } from "../../../shared/hooks/useOrderActions";
-import type { LineaPedido, Pedido } from "../../Order/interfaces/Order";
+import type { LineaPedido, OrderClientInfo, Pedido } from "../../Order/interfaces/Order";
 import { toast } from "react-toastify";
 import { formatCurrency } from "../../../shared/utils/formatCurrency";
 import EmptyOrder from "../../Products/assets/empty-order.svg"
@@ -31,6 +31,30 @@ export default function ModifyOrder() {
         handleConfirmOrder,
         handleModifyOrderStatus
     } = useOrderActions();
+    const { onEvent, offEvent } = useWebSocket();
+    
+    useEffect(() => {
+        const handleOrderUpdate = (data: OrderClientInfo) => {
+            console.log('📨 Actualización recibida en modifyOrder:', data);
+            handleModifyOrderStatus({
+                newOrderStatus: data.estado, 
+                orderLinesData: data.lineasPedido
+            });
+        };
+
+        // Mismos eventos que FinishedOrder
+        onEvent("updatedOrderLineStatus", handleOrderUpdate);
+        onEvent("addedOrderLine", handleOrderUpdate);
+        onEvent("deletedOrderLine", handleOrderUpdate);
+        onEvent("modifiedOrderLine", handleOrderUpdate);
+
+        return () => {
+            offEvent("updatedOrderLineStatus", handleOrderUpdate);
+            offEvent("addedOrderLine", handleOrderUpdate);
+            offEvent("deletedOrderLine", handleOrderUpdate);
+            offEvent("modifiedOrderLine", handleOrderUpdate);
+        };
+    }, []);
 
     const comensalesRef = useRef<HTMLInputElement>(null);
     const observacionesRef = useRef<HTMLTextAreaElement>(null);
@@ -59,7 +83,7 @@ export default function ModifyOrder() {
         
         // ✅ Validar los datos propuestos
         if(newOrderData.comensales <= 0) {
-            toast.error('Mínimo 1 comensal');
+            toast.error('Cantidad de comensales invalida');
             return; // No actualizar nada
         }
         if(newOrderData.observaciones.length > 500) {
@@ -319,6 +343,9 @@ export default function ModifyOrder() {
                                 className="py-0.5 px-1 w-12 outline-0 rounded-lg bg-gray-200"
                                 ref={comensalesRef}
                                 defaultValue={order.comensales}
+                                onInput={(e) => {
+                                    if (e.currentTarget.valueAsNumber < 1) e.currentTarget.value = "1";
+                                }}
                             />
                         </div>
                         <div className="flex flex-col">
@@ -435,6 +462,9 @@ export default function ModifyOrder() {
                                 className="py-0.5 px-1 w-12 outline-0 rounded-lg bg-gray-200"
                                 ref={comensalesRef}
                                 defaultValue={order.comensales}
+                                onInput={(e) => {
+                                    if (e.currentTarget.valueAsNumber < 1) e.currentTarget.value = "1";
+                                }}
                             />
                         </div>
                         <div className="flex flex-col">
