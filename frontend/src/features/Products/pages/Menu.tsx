@@ -29,16 +29,16 @@ export default function Menu(){
                 </div>
             }
             {isError &&
-                <div className="w-full max-w-md bg-gray-50 rounded-2xl shadow-xl p-6 md:p-8 text-center m-10">
+                <div className="w-full max-w-md sm:max-w-lg md:max-w-2xl bg-gray-50 rounded-xl sm:rounded-2xl shadow-xl p-4 sm:p-6 md:p-8 text-center mx-auto my-4 sm:my-10">
         
-                    <h1 className="text-2xl md:text-3xl font-bold text-gray-800">Escanear Código QR</h1>
-                    <p className="text-gray-500 mt-2">Asegurate de solicitarle el QR al mozo</p>
+                    <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800">Escanear Código QR</h1>
+                    <p className="text-sm sm:text-base text-gray-500 mt-2">Asegurate de solicitarle el QR al mozo</p>
 
-                    <div className="mt-4 mb-8">
-                        <div id="error-message" className="bg-red-50 border-l-4 border-red-500 text-red-800 p-4 rounded-lg text-left flex items-center" role="alert">
+                    <div className="mt-4 sm:mt-6 mb-6 sm:mb-8">
+                        <div id="error-message" className="bg-red-50 border-l-4 border-red-500 text-red-800 p-3 sm:p-4 rounded-lg text-left flex items-center gap-2 sm:gap-3 mb-4 sm:mb-6" role="alert">
                             <div>
-                                <p className="font-bold">¡QR no reconocido!</p>
-                                <p className="text-sm">No pudimos leer el código. Asegúrate de que esté bien iluminado y vuelve a intentarlo.</p>
+                                <p className="font-bold text-sm sm:text-base">¡QR no reconocido!</p>
+                                <p className="text-xs sm:text-sm">No pudimos leer el código. Asegúrate de que esté bien iluminado y vuelve a intentarlo.</p>
                             </div>
                         </div>
 

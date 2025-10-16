@@ -10,6 +10,7 @@ import { useAppSelector } from "../../../shared/hooks/store"
 import SuggestionSkeleton from "./SuggestionSkeleton"
 import { useCallback } from "react"
 import type { Bebida, Comida } from "../interfaces/products"
+import { formatCurrency } from "../../../shared/utils/formatCurrency"
 
 export default function SuggestionsList() {
   const { isError, isLoading, data } = useSuggestions()
@@ -84,7 +85,7 @@ function SuggestionCard ({s, handleAdd, handleRemove}: {s: BackSuggestion, handl
     >
       <h1 className="self-center text-xl md:text-2xl">{s._product._name}</h1>
       <p className="self-center md:text-md">{s._product._description}</p>
-      <p className="self-center text-orange-500 md:text-md">${s._product._price}</p>
+      <p className="self-center text-orange-500 md:text-md">{formatCurrency(s._product._price, 'es-AR', 'ARS')}</p>
       <div className="self-center border rounded-md 
         transition-all duration-200 bg-orange-500
         text-white font-medium flex flex-row justify-around 

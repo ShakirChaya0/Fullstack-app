@@ -55,6 +55,10 @@ export default function InformationForm({ data }: { data: Information }) {
 
   if (!data) return <p className="text-center text-gray-500">Cargando...</p>;
 
+  const validateNoOnlySpaces = (value: string) => {
+    return value.trim().length > 0 || "No se permiten solo espacios en blanco";
+  };
+
   const fields: {
     label: string;
     name: keyof Information;
@@ -68,8 +72,8 @@ export default function InformationForm({ data }: { data: Information }) {
       rules: {
         required: "El nombre es obligatorio",
         minLength: { value: 3, message: "Debe tener al menos 3 caracteres" },
-        // evita cualquier dígito en el string
         pattern: { value: /^[^\d]+$/, message: "No se permiten números en el nombre" },
+        validate: validateNoOnlySpaces,
       },
     },
     {
@@ -79,7 +83,7 @@ export default function InformationForm({ data }: { data: Information }) {
       rules: {
         required: "La dirección es obligatoria",
         minLength: { value: 3, message: "Debe tener al menos 3 caracteres" },
-        // la dirección puede tener números (número de calle), por eso no ponemos pattern que bloquee dígitos
+        validate: validateNoOnlySpaces,
       },
     },
     {
@@ -90,6 +94,7 @@ export default function InformationForm({ data }: { data: Information }) {
         required: "La razón social es obligatoria",
         minLength: { value: 3, message: "Debe tener al menos 3 caracteres" },
         pattern: { value: /^[^\d]+$/, message: "No se permiten números en la razón social" },
+        validate: validateNoOnlySpaces,
       },
     },
     {
@@ -111,7 +116,7 @@ export default function InformationForm({ data }: { data: Information }) {
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="grid grid-cols-1 md:grid-cols-2 gap-6 p-6 border rounded-lg bg-white w-full max-w-4xl"
+      className="grid grid-cols-1 md:grid-cols-2 gap-6 p-6 md:border md:rounded-lg bg-white w-full max-w-4xl mb-8 md:mb-0"
     >
       <h2 className="col-span-full text-xl font-bold text-center mb-4">
         Información del Restaurante

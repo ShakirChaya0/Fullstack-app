@@ -4,12 +4,14 @@ import { WaiterFooter } from "./WaiterFooter";
 
 export default function WaiterMainLayout() {
   return (
-    <div className="min-h-screen w-full flex flex-col">
-      <WaiterHeader />
-        <main className="flex-1 flex">
-          <Outlet />
-        </main>
+    <>   
+      <div className="min-h-screen w-full flex flex-col">
+        <WaiterHeader />
+          <main className="flex-1 flex justify-center overflow-y-auto">
+            <Outlet />
+          </main>
+      </div>
       <WaiterFooter />
-    </div>
+    </>
   );
 }

@@ -20,6 +20,7 @@ import GoBackButton from "../../../shared/components/GoBackButton"
 import { OrderTotalAmount } from "../utils/OrderTotalAmount"
 import { useNavigate } from "react-router"
 import { isAModifiedOrder } from "../utils/isAModifiedOrder"
+import { formatCurrency } from "../../../shared/utils/formatCurrency"
 
 export default function ConfirmOrder() {
   const navigate = useNavigate()
@@ -66,13 +67,14 @@ export default function ConfirmOrder() {
         <GoBackButton url="/Cliente/Menu/"/>
       </div>
       <div className="md:border flex flex-col justify-between py-4 md:border-gray-300 md:shadow-2xl min-h-[500px] w-full max-w-3xl md:rounded-2xl">
-        <div className="flex flex-row justify-between mx-5 mb-3">
-          <h1 className="text-2xl font-bold text-center text-gray-800">Mi Pedido</h1>
-          <div className="flex">
-            <span className="text-gray-800 font-bold text-2xl">Total:</span>
-            <span className="text-orange-500 font-bold text-2xl ml-1">${OrderTotalAmount(order.lineasPedido).toFixed(2)}</span>
-          </div>
+        <div className="flex flex-col md:flex-row md:justify-between gap-2 md:gap-0 md:mx-5 mb-3 md:items-center">
+            <h1 className="text-2xl md:text-2xl font-bold text-gray-800">Mi Pedido</h1>
+            <div className="flex gap-1 md:gap-2">
+                <span className="text-gray-800 font-bold text-lg md:text-2xl">Total:</span>
+                <span className="text-orange-500 font-bold text-lg md:text-2xl">{formatCurrency(OrderTotalAmount(order.lineasPedido), 'es-AR', 'ARS')}</span>
+            </div>
         </div>
+
 
         <div className="md:hidden flex flex-col gap-4">
           {
@@ -101,13 +103,13 @@ export default function ConfirmOrder() {
                     {lp.producto._name}
                   </span>
                   <span className="text-orange-600 font-bold">
-                    ${lp.subtotal}
+                    {formatCurrency(lp.subtotal, 'es-AR', 'ARS')}
                   </span>
                 </div>
 
                 <div className="text-right">
                   <p className="text-sm font-bold">Cant: {lp.cantidad}</p>
-                  <p className="text-sm font-bold">Precio: ${(lp.producto._price * lp.cantidad).toFixed(2)}</p>
+                  <p className="text-sm font-bold">Precio: {formatCurrency(lp.producto._price * lp.cantidad, 'es-AR', 'ARS')}</p>
                 </div>
               </div>
 
@@ -202,8 +204,8 @@ export default function ConfirmOrder() {
                           <TableCell>{lp.producto._name}</TableCell>
                           <TableCell>{lp.producto._description}</TableCell>
                           <TableCell align="right">{lp.cantidad}</TableCell>
-                          <TableCell align="right">${lp.producto._price}</TableCell>
-                          <TableCell align="right">${lp.subtotal.toFixed(2)}</TableCell>
+                          <TableCell align="right">{formatCurrency(lp.producto._price, 'es-AR', 'ARS')}</TableCell>
+                          <TableCell align="right">{formatCurrency(lp.subtotal, 'es-AR', 'ARS')}</TableCell>
                           <TableCell align="center">
                               <div
                                 className="self-center border rounded-md 

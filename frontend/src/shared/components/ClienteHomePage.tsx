@@ -1,6 +1,7 @@
 import React from 'react';
 import useAuth from '../hooks/useAuth';
 import { NavLink } from 'react-router';
+import RestaurantImage from '../utils/assets/RestaurantGreen.jpg';
 
 const ClipboardListIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg
@@ -105,7 +106,10 @@ export default function App() {
 
   return (
     <div className="relative w-full flex-1 overflow-hidden bg-black">
-      <div className="absolute inset-0 bg-[url('/src/shared/assets/rest.jpg')] bg-cover bg-center bg-no-repeat blur-xs brightness-110"></div>
+      <div 
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat blur-xs brightness-110"
+        style={{ backgroundImage: `url(${RestaurantImage})` }}
+      />
       <div className="relative mx-auto px-4 py-16 sm:py-24 text-center">
         <h1 className="text-4xl md:text-5xl font-bold text-white">
           ¡Hola, {user?.username}!

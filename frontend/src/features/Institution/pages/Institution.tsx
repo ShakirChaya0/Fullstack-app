@@ -18,7 +18,7 @@ export default function Institution() {
     );
     
     return(
-        <section className="flex flex-col items-center w-full sm:p-4 gap-6 sm:py-8">
+        <section className="flex flex-col items-center w-full sm:p-4 gap-6 sm:py-8 py-8 mb-12">
             <EntitySelector entity={entity} setEntity={setEntity} />
             {isLoading && <div>Cargando...</div>}
             {isError && <div>Error al cargar los datos</div>}

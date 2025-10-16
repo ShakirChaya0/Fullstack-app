@@ -30,7 +30,6 @@ export default function KitchenFooter() {
         px: { xs: 4, md: 8 },
         width: "100%",
         textAlign: "center",
-        mt: { xs: 6, md: 10 },
       }}
     >
       <Box 

@@ -5,6 +5,7 @@ import ControlPointIcon from '@mui/icons-material/ControlPoint';
 import { useOrderActions } from '../../../shared/hooks/useOrderActions';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import { useAppSelector } from '../../../shared/hooks/store';
+import { formatCurrency } from '../../../shared/utils/formatCurrency';
 
 type Props = {
     product: Comida | Bebida
@@ -39,7 +40,7 @@ const ProductsCard: React.FC<Props> = ({product}) => {
             <div className='flex flex-col justify-evenly'>
               <h1 className='text-xl font-medium'>{product._name}</h1>
               <p>{product._description}</p>
-              <p className='text-orange-500 font-bold'>${product._price}</p>
+              <p className='text-orange-500 font-bold'>{formatCurrency(product._price, 'es-AR', 'ARS')}</p>
               <div 
               className='
               self-start border rounded-md 

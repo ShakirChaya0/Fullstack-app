@@ -8,6 +8,7 @@ import { useWebSocket } from "../../../shared/hooks/useWebSocket"
 import { useEffect, useRef } from "react"
 import { useOrderActions } from "../../../shared/hooks/useOrderActions"
 import type { OrderClientInfo, OrderStatus } from "../../Order/interfaces/Order"
+import { formatCurrency } from "../../../shared/utils/formatCurrency"
 
 
 export default function FinishedOrder() {
@@ -92,11 +93,11 @@ export default function FinishedOrder() {
                     className="md:border flex flex-col py-4 md:border-gray-300 md:shadow-2xl 
                     w-full max-w-3xl md:rounded-2xl"
                 >
-                    <div className="flex flex-row justify-between mx-5 my-3">
-                        <h1 className="text-2xl font-bold text-center text-gray-800">Mi Pedido</h1>
-                        <div className="flex">
-                            <span className="text-gray-800 font-bold text-2xl">Total:</span>
-                            <span className="text-orange-500 font-bold text-2xl ml-1">${OrderTotalAmount(order.lineasPedido).toFixed(2)}</span>
+                    <div className="flex flex-col md:flex-row md:justify-between gap-2 md:gap-0 mx-5 mb-3 md:items-center">
+                        <h1 className="text-2xl md:text-2xl font-bold text-gray-800">Mi Pedido</h1>
+                        <div className="flex gap-1 md:gap-2">
+                            <span className="text-gray-800 font-bold text-lg md:text-2xl">Total:</span>
+                            <span className="text-orange-500 font-bold text-lg md:text-2xl">{formatCurrency(OrderTotalAmount(order.lineasPedido), 'es-AR', 'ARS')}</span>
                         </div>
                     </div>
 
@@ -110,11 +111,11 @@ export default function FinishedOrder() {
                                     <div className="flex flex-col max-w-[200px]">
                                         <span className="font-semibold">{lp.producto._name}</span>
                                         <span className="text-sm text-gray-600 pr-1">{lp.producto._name}</span>
-                                        <span className="text-orange-600 font-bold">${lp.subtotal.toFixed(2)}</span>
+                                        <span className="text-orange-600 font-bold">{formatCurrency(lp.subtotal, 'es-AR', 'ARS')}</span>
                                     </div>
                                     <div className="text-right">
                                         <p className="text-sm font-bold">Cant: {lp.cantidad}</p>
-                                        <p className="text-sm font-bold">Precio: ${(lp.producto._price * lp.cantidad).toFixed(2)}</p>
+                                        <p className="text-sm font-bold">Precio: {formatCurrency(lp.producto._price * lp.cantidad, 'es-AR', 'ARS')}</p>
                                     </div>
                                 </div>
                             </div>

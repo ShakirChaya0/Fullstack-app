@@ -239,11 +239,11 @@ export default function ModifyOrder() {
         <section className="p-4 flex flex-col w-full items-center justify-center">
             <div className="md:border flex flex-col justify-between py-4 md:border-gray-300 md:shadow-2xl min-h-[500px] w-full max-w-3xl md:rounded-2xl">
 
-                <div className="flex flex-row justify-between mx-5 mb-3">
-                    <h1 className="text-2xl font-bold text-center text-gray-800">Modificar Pedido</h1>
-                    <div className="flex">
-                        <span className="text-gray-800 font-bold text-2xl">Total:</span>
-                        <span className="text-orange-500 font-bold text-2xl ml-1">{formatCurrency(OrderTotalAmount(order.lineasPedido), 'es-AR', 'ARS')}</span>
+                <div className="flex flex-col md:flex-row md:justify-between gap-2 md:gap-0 mx-5 mb-3 md:items-center">
+                    <h1 className="text-xl sm:text-2xl font-bold text-gray-800">Modificar Pedido</h1>
+                    <div className="flex gap-1 md:gap-2">
+                        <span className="text-sm sm:text-xl md:text-2xl font-bold text-gray-800">Total:</span>
+                        <span className="text-sm sm:text-xl md:text-2xl font-bold text-orange-500">{formatCurrency(OrderTotalAmount(order.lineasPedido), 'es-AR', 'ARS')}</span>
                     </div>
                 </div>
 

@@ -9,8 +9,8 @@ import IceCream from '../../assets/ice-cream.png'
 
 
 const items = [
-  { href: "#Entrada", label: "Entradas", Icon: Cutlery },
-  { href: "#Plato_Principal", label: "Principal", Icon: Fries },
+  { href: "#Entrada", label: "Entradas", Icon: Fries },
+  { href: "#Plato_Principal", label: "Principal", Icon: Cutlery },
   { href: "#Postre", label: "Postres", Icon: IceCream },
   { href: "#Vegetariana", label: "Vegetariana", Icon: Vegetarian },
   { href: "#Vegana", label: "Vegana", Icon: Vegan },

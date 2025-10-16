@@ -9,6 +9,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import type { LineaPedido } from "../../Order/interfaces/Order";
 import LocalGroceryStoreIcon from '@mui/icons-material/LocalGroceryStore';
 import { OrderTotalAmount } from "../utils/OrderTotalAmount";
+import { formatCurrency } from "../../../shared/utils/formatCurrency";
 
 export function OrderList () {
   const [isOpen, setOpen] = useState(false)
@@ -142,7 +143,7 @@ export function OrderList () {
                                   </div>
                                   <div className="flex justify-between items-end gap-2 mb-3">
                                     <p className="text-sm md:text-lg">{lp.producto._description}</p>
-                                    <p className="text-orange-500 font-bold">${lp.subtotal.toFixed(2)}</p>
+                                    <p className="text-orange-500 font-bold">{formatCurrency(lp.subtotal, 'es-AR', 'ARS')}</p>
                                   </div>
                                 </div>
                               </motion.div>
@@ -152,7 +153,7 @@ export function OrderList () {
 
                         <div className="flex justify-between md:justify-around">
                           <span className="text-orange-500 font-bold text-2xl">Total: </span>
-                          <span className="text-orange-500 font-bold text-2xl">${OrderTotalAmount(order.lineasPedido).toFixed(2)}</span>
+                          <span className="text-orange-500 font-bold text-2xl">{formatCurrency(OrderTotalAmount(order.lineasPedido), 'es-AR', 'ARS')}</span>
                         </div>
                       
                         <div className="p-4">
