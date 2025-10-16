@@ -3,7 +3,10 @@ export default async function deleteWaiter (apiCall: (url: string, options?: Req
         method: "DELETE"
     })
     
-    if(!response.ok) throw new Error("Error al conseguir los datos")
+    if (!response.ok) {
+        const error = await response.json()
+        throw new Error(error.message)
+    }   
 
     return 
 }

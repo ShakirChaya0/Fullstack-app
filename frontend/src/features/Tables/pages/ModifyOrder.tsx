@@ -31,7 +31,7 @@ type PedidoBackend = {
 };
 
 export default function ModifyOrder() {
-    const { data: products, isError, isLoading } = useProducts();
+    const { data: products } = useProducts();
     const [selectedProduct, setSelectedProduct] = useState<Comida | Bebida | null>(null);
     const [quantity, setQuantity] = useState<number>(1);
     const nroMesa = useParams()
@@ -58,16 +58,22 @@ export default function ModifyOrder() {
         return () => {
             offEvent("modifiedOrderLine", (data) => {
                 console.log("salio bien: ", localStorage.setItem("modifyOrder", JSON.stringify(data)))
+                setExistingOrder(data)
+                toast.success("Se modifico con exito su Pedido")
             })
             offEvent("deletedOrderLine", (data) => {
                 console.log("hola: ", localStorage.setItem("modifyOrder", JSON.stringify(data)))
+                setExistingOrder(data)
+                toast.success("Se elimino con exito la linea de pedido")
             })
             offEvent("addedOrderLine", (data) => {
                 console.log("hola: ", localStorage.setItem("modifyOrder", JSON.stringify(data)))
+                setExistingOrder(data)
+                toast.success("Se agrego con exito la nueva linea de pedido")
             })
         }
 
-    }, [isError, isLoading, products])
+    }, [])
 
     const handleAddProduct = (): void => {
         if (selectedProduct && quantity > 0) {
@@ -97,7 +103,7 @@ export default function ModifyOrder() {
 
             const isPrep = existingOrder?.lineasPedido.some((lp) => (lp.nombreProducto === selectedProduct._name) && (lp.estado === "Pendiente"))
             const linea = existingOrder?.lineasPedido.find((lp) => (lp.nombreProducto === selectedProduct._name) && (lp.estado === "Pendiente"))
-            console.log("hola:, ",isPrep)
+
             if (!isPrep) {
                 sendEvent("addOrderLine", {orderId: existingOrder?.idPedido, orderLines: orderLines})
             }

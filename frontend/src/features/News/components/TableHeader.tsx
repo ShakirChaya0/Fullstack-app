@@ -12,7 +12,7 @@ export default function TableHeader () {
             <h1 className="font-medium text-center md:text-left md:font-bold md:text-4xl">Gestor de Novedades</h1>
             <div className="flex gap-4 lg:gap-0 lg:flex-row flex-col items-center lg:justify-between w-full">
                 <FilterBar />
-                <ModalProvider fn={createNews} msgs={{SuccessMsg: "Novedad creada con exito", ErrorMsg: "Error al crear la novedad"}} ButtonName="Crear Novedad">
+                <ModalProvider fn={createNews} msgs={{SuccessMsg: "Novedad creada con éxito", ErrorMsg: "Error al crear la novedad"}} ButtonName="Crear Novedad">
                     <ModalNews />
                 </ModalProvider>
             </div>

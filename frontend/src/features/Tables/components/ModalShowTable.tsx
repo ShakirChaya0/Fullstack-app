@@ -4,6 +4,7 @@ import type { ITable } from '../interfaces/ITable';
 import { useNavigate } from 'react-router';
 import ModalQR from './ModalQR';
 import { useTableMutation } from '../hooks/useTableMutation';
+import SelectMethodModal from './SelectMethodModal';
 
 // --- Icono de Cierre (SVG) ---
 const CloseIcon: FC<{ className?: string }> = ({ className }) => (
@@ -33,9 +34,8 @@ interface ModalShowTableProps {
 export const ModalShowTable: FC<ModalShowTableProps> = ({ open, onClose, title, currentTable }) => {
   const navigate = useNavigate()
   const { mutate, isPending } = useTableMutation()
-  const isModify = currentTable._orders?.find((o) => ((o.idMozo) && ( o.estado !== "Pagado" && o.estado !== "Pendiente_De_Pago" && o.estado !== "Pendiente_De_Cobro")))
-
-  console.log("table: ", isModify)
+  const isModify = currentTable._orders?.find((o) => ((o.idMozo) && ( o.estado !== "Completado" && o.estado !== "Pagado" && o.estado !== "Pendiente_De_Pago" && o.estado !== "Pendiente_De_Cobro")))
+  const isRealease =  (currentTable._orders?.at(-1) === undefined) || (currentTable._orders?.at(-1)?.estado === "Pagado")
 
   const modalVariants: Variants = {
     hidden: { x: '-100%', opacity: 0 },
@@ -125,22 +125,29 @@ export const ModalShowTable: FC<ModalShowTableProps> = ({ open, onClose, title, 
                 <ModalQR tableNum={currentTable._tableNum}/>
                 <button 
                     onClick={handleFreeTable}
-                    disabled={isPending}
-                    className="w-full px-4 py-4 text-sm mt-5 font-medium text-white bg-amber-600 
-                    rounded-lg hover:bg-amber-700 active:scale-95 active:bg-amber-800 cursor-pointer transition-all"
+                    disabled={(!isRealease || isPending)}
+                    className={`w-full px-4 py-4 text-sm mt-5 font-medium text-white 
+                    ${!isRealease ? "bg-amber-950/30" : "bg-amber-600 hover:bg-amber-700 active:scale-95 active:bg-amber-800 cursor-pointer"}
+                    rounded-lg transition-all`}
                 >
                     Liberar Mesa
                 </button>
               </div>
                         
-              <div className="mt-8">
-                <button 
-                    onClick={handleCreateOrder}
-                    className="w-full px-4 py-3 text-sm font-medium text-white bg-blue-600 
-                    rounded-lg hover:bg-blue-700 active:scale-95 active:bg-blue-800 cursor-pointer transition-all"
-                >
-                    { !isModify ? "Agregar Pedido" : "Modificar Pedido"}
-                </button>
+              <div className="mt-auto flex flex-col gap-3">
+                    { currentTable._orders && (currentTable._orders.at(-1)?.estado === "Pendiente_De_Cobro" || currentTable._orders.at(-1)?.estado === "Pendiente_De_Pago") && 
+                      <SelectMethodModal currentTable={currentTable}/>
+                    }
+                    {
+                      currentTable._orders && (currentTable._orders.at(-1)?.estado !== "Pendiente_De_Cobro" && currentTable._orders.at(-1)?.estado !== "Pendiente_De_Pago") &&
+                      <button 
+                          onClick={handleCreateOrder}
+                          className="w-full px-4 py-3 text-sm font-medium text-white bg-blue-600 
+                          rounded-lg hover:bg-blue-700 active:scale-95 active:bg-blue-800 cursor-pointer transition-all"
+                      >
+                          { !isModify ? "Agregar Pedido" : "Modificar Pedido"}
+                      </button>
+                    }
               </div>
             </div>
           </motion.div>

@@ -6,7 +6,10 @@ export const fetchNews = async (apiCall: (url: string, options?: RequestInit) =>
     if (query === ""){
         const response = await apiCall(`novedades?page=${page}&status=${filter}`);
         
-        if(!response.ok) throw new Error("Error al conseguir los datos")
+        if (!response.ok) {
+            const error = await response.json()
+            throw new Error(error.message)
+        }   
     
         const data = await response.json();
     
@@ -15,7 +18,10 @@ export const fetchNews = async (apiCall: (url: string, options?: RequestInit) =>
     else{
         const response = await apiCall(`novedades/title/${query}?page=${page}&status=${filter}`);
     
-        if(!response.ok) throw new Error("Error al conseguir los datos")
+        if (!response.ok) {
+            const error = await response.json()
+            throw new Error(error.message)
+        }   
         
         const data = await response.json();
     

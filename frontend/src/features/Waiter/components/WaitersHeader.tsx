@@ -10,7 +10,7 @@ export default function WaitersHeader () {
             <h1 className="font-medium text-center md:text-left md:text-4xl md:font-bold">Gestor de Mozos</h1>
             <div className="flex gap-4 lg:gap-0 lg:flex-row flex-col items-center lg:justify-between w-full">
                 <FilterBar />
-                <ModalProvider fn={createWaiter} msgs={{SuccessMsg: "Mozo creado con exito", ErrorMsg: "Error al crear un mozo"}} ButtonName={"Crear Mozo"}>
+                <ModalProvider fn={createWaiter} msgs={{SuccessMsg: "Mozo creado con éxito", ErrorMsg: "Error al crear un mozo"}} ButtonName={"Crear Mozo"}>
                     <ModalWaiters/>
                 </ModalProvider>
             </div>

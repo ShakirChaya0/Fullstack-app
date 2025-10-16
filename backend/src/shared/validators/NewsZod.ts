@@ -1,15 +1,23 @@
 import z from 'zod'
 import { ValidationError } from '../exceptions/ValidationError.js';
 
+function parseDDMMYYYY(value: string): Date | null {
+  const parts = value.split("-");
+  if (parts.length !== 3) return null;
+  const [day, month, year] = parts.map(Number);
+  if (!day || !month || !year) return null;
+  return new Date(year, month - 1, day, 0, 0, 0, 0); // local midnight
+}
+
 const newsSchema = z.object({
     titulo: z.string({message: "El titulo debe ser un string"}).nonempty({message: "Este campo es requerido"}).min(6),
     descripcion: z.string({message: "La descripcion debe ser un string"}).nonempty({message: "Este campo es requerido"}).min(12),
     fechaInicio: z.preprocess(val => {
     if (typeof val === "string") {
-      return new Date(val.replace(/\//g, "-"))
+      return parseDDMMYYYY(val);
     }
-    return val
-  }, z.date()),
+    return val;
+  }, z.date({ invalid_type_error: "Fecha inválida" })),
     fechaFin: z.preprocess(val => {
     if (typeof val === "string") {
       return new Date(val.replace(/\//g, "-"))

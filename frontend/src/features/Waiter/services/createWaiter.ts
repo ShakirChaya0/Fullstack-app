@@ -14,16 +14,10 @@ export default async function createWaiter (apiCall: (url: string, options?: Req
         })
     })
     
-    if(!response.ok) {
-        const errorData = await response.json().catch(() => null);
-        const errorMessage = errorData?.message
-        switch(response.status){
-            case 409:
-                throw new Error(errorMessage)
-            case 503:
-                throw new Error(errorMessage)
-        }
-    }
+    if (!response.ok) {
+        const error = await response.json()
+        throw new Error(error.message)
+    }   
 
     const data = await response.json()
     return data

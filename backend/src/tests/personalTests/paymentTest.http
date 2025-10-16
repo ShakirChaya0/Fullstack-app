@@ -9,7 +9,7 @@ POST http://localhost:3000/pagos/mp/37
 POST http://localhost:3000/pagos/tarjeta/1
 
 ### Registrar pago de la cuenta
-POST http://localhost:3000/pagos/pagado?idPedido=1&metodoPago=Credito
+POST http://localhost:3000/pagos/pagado?idPedido=15&metodoPago=Efectivo
 
 
 ### CRUD PAGOS

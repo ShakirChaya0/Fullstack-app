@@ -76,10 +76,10 @@ export default function WaitersTable ({waiters, handleResetPage}: {waiters: Back
             if (currentPage > 1 && (totalItems - 1) <= (currentPage - 1) * itemsPerPage) {
               handleResetPage(currentPage - 1);
             }
-            toast.success("La novedad se elimino con exito")
+            toast.success("El mozo se eliminó con éxito")
         },
         onError: (err, variables, context) => {
-            toast.error("Error al eliminar la novedad")
+            toast.error("Error al eliminar al mozo")
             if (context?.previousState) queryClient.setQueryData(["Waiters", currentPage, query], context.previousState)
             console.log(err)
           },
@@ -145,7 +145,7 @@ const WaitersRow = React.memo(function WaitersRow({ waiters, handleDeleteWaiter 
       <StyledTableCell align="center">{waiters.apellido}</StyledTableCell>
       <StyledTableCell align="center">{waiters.telefono}</StyledTableCell>
       <StyledTableCell align="center" sx={{ display: 'flex', gap: "5px", justifyContent: "center" }}>
-        <ModalProvider fn={updateWaiter} waiters={waiters} msgs={{SuccessMsg: "Mozo modificado con exito", ErrorMsg: "Error al modificar el mozo"}} ButtonName='Modificar'>
+        <ModalProvider fn={updateWaiter} waiters={waiters} msgs={{SuccessMsg: "Mozo modificado con éxito", ErrorMsg: "Error al modificar el mozo"}} ButtonName='Modificar'>
             <ModalWaiters/>
         </ModalProvider>
         <DeleteWaiterModal handleDeleteMozo={handleDeleteWaiter} Waiter={waiters}/>    
