@@ -13,6 +13,7 @@ import GlutenFreeImg from '../utils/GlutenFree.png';
 import VegetarianImg from '../utils/Vegetarian.png'
 import VeganImg from '../utils/Vegan.png'
 import { useNavigate } from "react-router";
+import { formatCurrency } from "../../../shared/utils/formatCurrency";
 
 
 export function ProductCards({ filteredProducts, handleOpenModifyModal }: ProductCardsProps) {
@@ -65,7 +66,7 @@ export function ProductCards({ filteredProducts, handleOpenModifyModal }: Produc
                     <div className="flex flex-row justify-between items-start mt-4">
                         <div className="flex flex-col justify-between h-24 mt-1">
                             <h3 className="text-teal-600 font-bold text-3xl">
-                                ${product.precio.toLocaleString()}
+                                {formatCurrency(product.precio, "es-AR", "ARS")}
                             </h3>
                             {/* Evaluando si es un comida o una bebida */}
                             {

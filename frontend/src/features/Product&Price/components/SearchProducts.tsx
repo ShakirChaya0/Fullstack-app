@@ -30,7 +30,7 @@ export function SearchProducts({ filtersToSearch, updateFilter }: SearchProducts
 
     return (
         <div className="flex flex-row justify-between gap-2 items-center my-3">
-            <div className="flex flex-row items-center w-[60%] sm:w-[60%] md:w-[70%] lg:w-[80%] rounded-lg bg-white transition-all duration-200 border border-gray-200
+            <div className="flex flex-row flex-1 items-center rounded-lg bg-white transition-all duration-200 border border-gray-200
             hover:border-cyan-500 hover:shadow-[0_0_5px_2px_rgba(14,116,144,0.5)]
             focus-within:border-cyan-500 focus-within:shadow-[0_0_5px_2px_rgba(14,116,144,0.5)] h-[40px]">
                 <SearchIcon className="text-gray-400 mx-2 text-[20px]"/>
@@ -61,8 +61,13 @@ export function SearchProducts({ filtersToSearch, updateFilter }: SearchProducts
                 className="flex items-center gap-2 bg-cyan-600 hover:bg-cyan-500 text-white px-4 py-2 
                 rounded-lg font-medium transition-colors duration-200 whitespace-nowrap h-[40px] hover:cursor-pointer"
             >
-                <span className="text-lg font-bold mb-1"><AddCircleIcon fontSize="small"/></span>
-                Nuevo Producto
+                <div className="block sm:hidden">
+                    <AddCircleIcon fontSize="small" sx={{mb: '0.1rem'}}/>
+                </div>
+                <span className="hidden sm:block">
+                    <AddCircleIcon fontSize="small" sx={{mr: '0.5rem', mb: '0.1rem'}}/>
+                    Nuevo Producto
+                </span>
             </button>
         </div>
     )

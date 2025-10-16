@@ -12,7 +12,7 @@ import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
 import { useAppSelector } from "../../../shared/hooks/store";
 import { OrderTotalAmount } from "../../Products/utils/OrderTotalAmount";
 import { useNavigate } from "react-router";
-import { PaymentConfirmationModal } from "../../Schedules/components/GoToPaymentConfirmationModal";
+import { PaymentConfirmationModal } from "../components/GoToPaymentConfirmationModal";
 import { useWebSocket } from "../../../shared/hooks/useWebSocket";
 import { useRef } from "react";
 import { useOrderActions } from "../../../shared/hooks/useOrderActions";

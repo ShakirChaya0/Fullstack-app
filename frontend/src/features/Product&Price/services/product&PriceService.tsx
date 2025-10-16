@@ -10,8 +10,6 @@ export const getProductsData = async (
 ) => {
   let response
   let isNumeric = false // Bandera para manejar respuestas sin formato de paginación (Endpoint busqueda por id)
-
-  console.log('Busqueda:', search)
   
   if (search && search.trim() !== '') {
     if (/^\d+$/.test(search.trim())) { 
@@ -20,12 +18,10 @@ export const getProductsData = async (
       response = await apiCall(`productos/id/${search.trim()}`)
     } else {
       // Es texto - buscar por nombre
-      console.log('Búsqueda por nombre:', search.trim())
       response = await apiCall(`productos/nombre/${search.trim()}?page=${page}&limit=${limit}`)
     }
   } else {
     // No hay búsqueda, usar paginación normal
-    console.log('Modo paginación:', { page, limit })
     response = await apiCall(`productos?page=${page}&limit=${limit}`)
   }
 
@@ -126,8 +122,7 @@ export const saveProductToBackend = async (
     }
 
   } catch (error) {
-    console.error('Error en saveProductToBackend:', error)
-    throw error
+    throw new Error('Error al registrar un producto ' + error)
   }
 }
 

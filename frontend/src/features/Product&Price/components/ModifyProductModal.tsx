@@ -262,7 +262,12 @@ export function ModifyProductModal({
                         '&:hover': { backgroundColor: '#047857' }
                     }}
                 >
-                    Modificar Producto
+                    <div className="block sm:hidden">
+                        <ModeEditIcon/>
+                    </div>
+                    <span className="hidden sm:block">
+                        Modificar Producto
+                    </span>
                 </Button>
             </DialogActions>
         </Dialog>

@@ -1,7 +1,7 @@
 import { Button } from "@mui/material";
 import { Link } from "react-router";
 import type { BackendSchedule } from "../types/scheduleTypes";
-
+import AddCircleIcon from '@mui/icons-material/AddCircle';
 
 export function RegisterSchedulesButton ({ schedules }: { schedules: BackendSchedule[]}) {
     
@@ -15,8 +15,8 @@ export function RegisterSchedulesButton ({ schedules }: { schedules: BackendSche
             disabled={schedules.length === 0 ? false : true}
             sx={{
                 textTransform: "none",
-                bgcolor: "#b12e1aff",
-                "&:hover": { bgcolor: "#561d03" },
+                bgcolor: "#0F766E",
+                "&:hover": { bgcolor: "#0F766E" },
                 borderRadius: 2,
                 minWidth: "120px",
                 flex: 1,
@@ -24,6 +24,7 @@ export function RegisterSchedulesButton ({ schedules }: { schedules: BackendSche
                 textAlign: "center"
             }}
         >
+            <span className="text-lg font-bold mb-1 mr-1"><AddCircleIcon fontSize="small"/></span>
             Registrar Horarios
         </Button>
     )

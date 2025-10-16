@@ -20,61 +20,71 @@ export function ProductTogglerRegistration({ productType, setProductType, newPro
     return (
         <>
             {/* Toggle para tipo de producto */}
-            <div className="w-full mb-4">
+            <div className="flex flex-col w-full mb-4">
                 <Typography variant="subtitle1" sx={{ color: '#4a5565', mb:'0.5rem' }}>
                     Tipo de producto <Typography variant="h6" sx={{ color: 'red', display: 'inline'}}>*</Typography>
                 </Typography>
-                <ToggleButtonGroup
-                    exclusive
-                    value={ productType }
-                    onChange={(_, newValue) => {
-                        if (newValue === 'Comida') {
-                            setNewProduct(prev => ({
-                                ...prev,
-                                esAlcoholica: undefined
-                            }));
-                        }
-                        if (newValue === 'Bebida') {
-                            setNewProduct(prev => ({
-                                ...prev,
-                                tipo: undefined,
-                                esSinGluten: undefined,
-                                esVegetariana: undefined,
-                                esVegana: undefined
-                            }));
-                        }
+                <div className="flex flex-col">
+                    <ToggleButtonGroup
+                        exclusive
+                        value={ productType }
+                        onChange={(_, newValue) => {
+                            if (newValue === 'Comida') {
+                                setNewProduct(prev => ({
+                                    ...prev,
+                                    esAlcoholica: undefined
+                                }));
+                            }
+                            if (newValue === 'Bebida') {
+                                setNewProduct(prev => ({
+                                    ...prev,
+                                    tipo: undefined,
+                                    esSinGluten: undefined,
+                                    esVegetariana: undefined,
+                                    esVegana: undefined
+                                }));
+                            }
 
-                        setProductType(newValue)
-                    }}
-                    fullWidth
-                    sx={{
-                        display: 'flex',
-                        '& .MuiToggleButton-root': {
-                            flex: 1,
-                            border: '2px solid #e5e7eb',
-                            borderRadius: '8px',
-                            '&:first-of-type': {
-                                marginRight: '8px',
+                            setProductType(newValue)
+                        }}
+                        fullWidth
+                        sx={{
+                            display: 'flex',
+                            gap: {
+                                xs: '0.5rem',
+                                md: '0rem'
                             },
-                            '&.Mui-selected': {
-                                backgroundColor: '#009689',
-                                color: 'white',
-                                '&:hover': {
-                                    backgroundColor: '#007b70',
+                            flexDirection: {
+                                xs: 'column',
+                                md: 'row'
+                            },
+                            '& .MuiToggleButton-root': {
+                                flex: 1,
+                                border: '2px solid #e5e7eb',
+                                borderRadius: '8px',
+                                '&:first-of-type': {
+                                    marginRight: '8px',
+                                },
+                                '&.Mui-selected': {
+                                    backgroundColor: '#009689',
+                                    color: 'white',
+                                    '&:hover': {
+                                        backgroundColor: '#007b70',
+                                    }
                                 }
                             }
-                        }
-                    }}
-                >
-                    <ToggleButton value="Comida" className="flex items-center">
-                        <RestaurantIcon />
-                        <span className="ml-1">Comida</span>
-                    </ToggleButton>
-                    <ToggleButton value="Bebida" className="flex items-center">
-                        <LocalBarIcon />
-                        <span className="ml-1">Bebida</span>
-                    </ToggleButton>
-                </ToggleButtonGroup>
+                        }}
+                    >
+                        <ToggleButton value="Comida" className="flex items-center">
+                            <RestaurantIcon />
+                            <span className="ml-1">Comida</span>
+                        </ToggleButton>
+                        <ToggleButton value="Bebida" className="flex items-center">
+                            <LocalBarIcon />
+                            <span className="ml-1">Bebida</span>
+                        </ToggleButton>
+                    </ToggleButtonGroup>
+                </div>
             </div>
 
             { productType &&
@@ -86,51 +96,49 @@ export function ProductTogglerRegistration({ productType, setProductType, newPro
                                 Características de la {productType.toLowerCase()} <Typography variant="subtitle1" sx={{ color: 'red', display: 'inline'}}>*</Typography> 
                             </Typography>
                             {/* Tipo de plato */}
-                            <div className="flex">
-                                <ToggleButtonGroup
-                                    exclusive
-                                    value={ newProduct.tipo }
-                                    onChange={(_, newValue) => newValue && 
-                                        setNewProduct(prev => {
-                                            const newProduct = {...prev}
-                                            const newType = newValue
-                                            newProduct.tipo = newType
-                                            return newProduct;
-                                        })
-                                    }
-                                    fullWidth
-                                    sx={{
-                                        display: 'flex',
-                                        flexDirection: {
-                                            xs: 'column',
-                                            md: 'row'
-                                        },
-                                        gap: '8px',
-                                        '& .MuiToggleButton-root': {
-                                            border: '1px solid #d1d5db',
-                                            borderRadius: '6px',
-                                            fontSize: '0.875rem',
-                                            '&.Mui-selected': {
-                                                backgroundColor: '#0BA6DF',
-                                                color: 'white',
-                                                '&:hover': {
-                                                    backgroundColor: '#0891b2',
-                                                }
+                            <ToggleButtonGroup
+                                exclusive
+                                value={ newProduct.tipo }
+                                onChange={(_, newValue) => newValue && 
+                                    setNewProduct(prev => {
+                                        const newProduct = {...prev}
+                                        const newType = newValue
+                                        newProduct.tipo = newType
+                                        return newProduct;
+                                    })
+                                }
+                                fullWidth
+                                sx={{
+                                    display: 'flex',
+                                    flexDirection: {
+                                        xs: 'column',
+                                        md: 'row'
+                                    },
+                                    gap: '8px',
+                                    '& .MuiToggleButton-root': {
+                                        border: '1px solid #d1d5db',
+                                        borderRadius: '6px',
+                                        fontSize: '0.875rem',
+                                        '&.Mui-selected': {
+                                            backgroundColor: '#009689',
+                                            color: 'white',
+                                            '&:hover': {
+                                                backgroundColor: '#007b70',
                                             }
                                         }
-                                    }}
-                                >
-                                    <ToggleButton value="Entrada">Entrada</ToggleButton>
-                                    <ToggleButton value="Plato_Principal">Plato Principal</ToggleButton>
-                                    <ToggleButton value="Postre">Postre</ToggleButton>
-                                </ToggleButtonGroup>
-                            </div>
-
+                                    }
+                                }}
+                            >
+                                <ToggleButton value="Entrada">Entrada</ToggleButton>
+                                <ToggleButton value="Plato_Principal">Plato Principal</ToggleButton>
+                                <ToggleButton value="Postre">Postre</ToggleButton>
+                            </ToggleButtonGroup>
+                            
                             <div>
                                 <Typography variant="subtitle2" sx={{ color: '#4a5565', mb:'0.5rem' }}>
                                     Especificaciones
                                 </Typography>
-                                <div className="flex flex-row justify-around">
+                                <div className="flex flex-col gap-2 sm:flex-row sm:justify-around sm:gap-0.5">
                                     <div className="flex flex-row">
                                         <FormControlLabel
                                             control={

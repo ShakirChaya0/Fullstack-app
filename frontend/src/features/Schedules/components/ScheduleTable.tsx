@@ -9,7 +9,7 @@ export function ScheduleTable ({ schedules }: { schedules: BackendSchedule[]}) {
             <Table sx={{ minWidth: 700 }} aria-label="customized table">
                 <TableHead 
                     sx={{
-                        bgcolor: "#e9ddc2"
+                        bgcolor: "#f3f4f6"
                     }}
                 >
                     <TableRow>

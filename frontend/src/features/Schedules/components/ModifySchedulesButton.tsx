@@ -1,6 +1,7 @@
 import { Button } from "@mui/material";
 import { Link } from "react-router";
 import type { BackendSchedule } from "../types/scheduleTypes";
+import ModeEditIcon from '@mui/icons-material/ModeEdit';
 
 export function ModifySchedulesButton ({ schedules }: { schedules: BackendSchedule[]}) {
     return (
@@ -20,6 +21,7 @@ export function ModifySchedulesButton ({ schedules }: { schedules: BackendSchedu
                 textAlign: "center"
             }}
         >
+            <span className="flex-shrink-0 mb-1 mr-1"><ModeEditIcon fontSize="small"/></span>
             Modificar Horarios
         </Button>
     )

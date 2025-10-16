@@ -13,16 +13,24 @@ export function ProductTogglerModification({ product, newProduct, setNewProduct}
     return (
         <>
             {/* Toggle para tipo de producto */}
-            <div className="w-full mb-4">
+            <div className="flex flex-col w-full mb-4">
                 <Typography variant="subtitle1" sx={{ color: '#4a5565', mb:'0.5rem' }}>
                     Tipo de producto <Typography variant="subtitle1" sx={{ color: 'red', display: 'inline'}}>*</Typography>
                 </Typography>
                 <ToggleButtonGroup
                     value={product.tipo ? 'Comida' : 'Bebida'}
                     exclusive
-                    fullWidth
+                    fullWidth                                     
                     sx={{
                         display: 'flex',
+                        flexDirection: {
+                            xs: 'column',
+                            md: 'row'
+                        },
+                        gap: {
+                            xs: '0.5rem',
+                            md: '0rem'
+                        },
                         '& .MuiToggleButton-root': {
                             flex: 1,
                             border: '2px solid #e5e7eb',
@@ -84,10 +92,10 @@ export function ProductTogglerModification({ product, newProduct, setNewProduct}
                                         borderRadius: '6px',
                                         fontSize: '0.875rem',
                                         '&.Mui-selected': {
-                                            backgroundColor: '#0BA6DF',
+                                            backgroundColor: '#009689',
                                             color: 'white',
                                             '&:hover': {
-                                                backgroundColor: '#0891b2',
+                                                backgroundColor: '#007b70',
                                             }
                                         }
                                     }
@@ -103,7 +111,7 @@ export function ProductTogglerModification({ product, newProduct, setNewProduct}
                             <Typography variant="subtitle2" sx={{ color: '#4a5565', mb:'0.5rem' }}>
                                 Especificaciones
                             </Typography>
-                            <div className="flex flex-row justify-around">
+                            <div className="flex flex-col gap-2 sm:flex-row sm:justify-around sm:gap-0.5">
                                 <div className="flex flex-row">
                                     <FormControlLabel
                                         control={

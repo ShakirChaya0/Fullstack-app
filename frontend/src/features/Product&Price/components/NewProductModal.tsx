@@ -221,7 +221,7 @@ export function NewProductModal() {
                         <Typography variant="subtitle1" sx={{ color: '#4a5565', mb:'0.5rem' }}>
                             Disponiblidad <Typography variant="h6" sx={{ color: 'red', display: 'inline'}}>*</Typography>
                         </Typography>
-                        <div className="flex flex-row justify-around">
+                        <div className="flex flex-col sm:flex-row sm:justify-around">
                             <FormControlLabel
                                     control={
                                         <Checkbox
@@ -300,8 +300,13 @@ export function NewProductModal() {
                         backgroundColor: '#059669',
                         '&:hover': { backgroundColor: '#047857' }
                     }}
-                >
-                    Crear Producto
+                >   
+                    <div className="block sm:hidden">
+                        <AddCircleIcon/>
+                    </div>
+                    <span className="hidden sm:block">
+                        Crear Producto
+                    </span>
                 </Button>
             </DialogActions>
         </Dialog>

@@ -7,9 +7,9 @@ import {
 } from "@mui/material"
 import { useScheduleStateRegister } from "../hooks/useScheduleState"
 import { BackButton } from "../../../shared/components/BackButton"
-import { SuccessNotification } from "../components/SuccessNotification"
 import { RegisterAndModifierTable } from "../components/RegisterAndModifierTable"
 import { useMutationRegistration } from "../hooks/useMutationRegistration"
+import { incompleteDays } from "../utils/incompleteDays"
 
 export default function RegisterSchedule () {
   // Custom hook para manejar el estado local de horarios
@@ -44,7 +44,7 @@ export default function RegisterSchedule () {
 
         {error && (
             <Alert severity="error" sx={{ mb: 3, border: "1px solid black" }}>
-                {error}
+                {error} {incompleteDays(schedules) && `- ${incompleteDays(schedules)}`}
             </Alert>
         )}
 
@@ -87,7 +87,6 @@ export default function RegisterSchedule () {
           { saveSchedulesMutation.isSuccess ? "Guardando..." : "Guardar" }
         </Button>
       </Box>
-      <SuccessNotification activation={ saveSchedulesMutation.isSuccess }></SuccessNotification>
     </Box>
   );
 }

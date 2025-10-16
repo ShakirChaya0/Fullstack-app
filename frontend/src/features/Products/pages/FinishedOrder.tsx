@@ -2,7 +2,7 @@
 import { useAppSelector } from "../../../shared/hooks/store"
 import { OrderTotalAmount } from "../utils/OrderTotalAmount"
 import { useNavigate } from "react-router"
-import { PaymentConfirmationModal } from "../../Schedules/components/GoToPaymentConfirmationModal"
+import { PaymentConfirmationModal } from "../../Order/components/GoToPaymentConfirmationModal"
 import { StatusIndicator } from "../../Order/components/StatusIndicator"
 import { useWebSocket } from "../../../shared/hooks/useWebSocket"
 import { useEffect, useRef } from "react"

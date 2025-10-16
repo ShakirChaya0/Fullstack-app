@@ -9,7 +9,6 @@ import { useQuery } from "@tanstack/react-query";
 import { useScheduleStateModify } from "../hooks/useScheduleState";
 import { getScheduleData } from "../shared/sheduleService";
 import { BackButton } from "../../../shared/components/BackButton"
-import { SuccessNotification } from "../components/SuccessNotification";
 import { LoadingSchedule } from "../components/LoadingSchedule";
 import { RegisterAndModifierTable } from "../components/RegisterAndModifierTable";
 import { useMutationModification } from "../hooks/useMutationModification";
@@ -119,7 +118,6 @@ export default function ModifySchedule () {
           { modifySchedulesMutation.isSuccess ? "Guardando..." : "Guardar"}
         </Button>
       </Box>
-      <SuccessNotification activation={ modifySchedulesMutation.isSuccess }></SuccessNotification>
     </Box>
   );
 }

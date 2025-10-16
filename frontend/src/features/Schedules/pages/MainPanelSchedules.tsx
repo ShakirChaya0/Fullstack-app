@@ -21,7 +21,8 @@ export default function MainPanelSchedules() {
 
     const { data: backendSchedules, isLoading: queryLoading, error: queryError } = useQuery({
         queryKey: ['schedules'],
-        queryFn: () => getScheduleData(apiCall)
+        queryFn: () => getScheduleData(apiCall),
+        retry: false
     });
 
     if (queryLoading) return <LoadingSchedule/>
@@ -34,7 +35,6 @@ export default function MainPanelSchedules() {
                 <Typography variant="h4" sx={{ color: "#561d03", fontWeight: 'bold' }}>
                     Gestión de Horarios
                 </Typography>
-                {/* Agregar button volver en caso de ser necesario */}
             </Box>
           <Alert severity="error">
             Error al cargar horarios
@@ -72,14 +72,21 @@ export default function MainPanelSchedules() {
             }
             <Box
                 display="flex"
-                justifyContent="space-between"
+                justifyContent="end"
                 alignItems="center"
                 marginTop="1rem"
                 marginX="1rem"
                 gap={2}
             >
-                <ModifySchedulesButton schedules={ schedules }></ModifySchedulesButton>
-                <RegisterSchedulesButton schedules={ schedules }></RegisterSchedulesButton>
+                { 
+                    schedules.length === 0 ?
+                    (
+                        <RegisterSchedulesButton schedules={ schedules }></RegisterSchedulesButton>
+                    ) :
+                    (
+                        <ModifySchedulesButton schedules={ schedules }></ModifySchedulesButton>
+                    )
+                }
             </Box>
         </Box>
     )
