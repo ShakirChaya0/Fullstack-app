@@ -18,7 +18,7 @@ export function TableList({ tables, onUpdate, onDelete , onAdd}: TableList) {
 
   return(  
     <>   
-      <h1 className="md:text-left md:text-4xl md:font-bold mb-4 mt-5">Gestor de Mesas</h1>
+      <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 mt-5 text-center md:text-left">Gestor de Mesas</h1>
       <TableContainer component={Paper} sx={{ width: "100%", boxShadow: 3, borderRadius: 2 }}>
         <Table>
           <TableHead>

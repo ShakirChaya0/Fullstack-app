@@ -142,7 +142,7 @@ export default function AvailableTable() {
                   type="checkbox"
                   checked={showOnlyFree}
                   onChange={(e) => setShowOnlyFree(e.target.checked)}
-                  className="h-5 w-5 rounded bg-gray-100 border-gray-300 text-teal-600 focus:ring-teal-500"
+                  className="cursor-pointer h-5 w-5 rounded bg-gray-100 border-gray-300 text-teal-600 focus:ring-teal-500"
                 />
                 <label htmlFor="showOnlyFree" className="ml-3 text-sm font-medium text-gray-800">
                   Mostrar solo mesas libres
@@ -164,9 +164,11 @@ export default function AvailableTable() {
         {/* Listado de Mesas */}
         {filteredTables.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {filteredTables.map(table => (
-              <TableCard key={table._tableNum} table={table} onOccupy={handleOccupyTable} />
-            ))}
+            {filteredTables.slice()
+              .sort((a,b) => a._tableNum - b._tableNum )
+              .map(table => (
+                <TableCard key={table._tableNum} table={table} onOccupy={handleOccupyTable} />
+              ))}
           </div>
         ) : (
           <div className="text-center py-16 px-6 bg-white rounded-lg">

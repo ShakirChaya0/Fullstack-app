@@ -1,5 +1,6 @@
 import React from 'react';
-import { useNavigate } from 'react-router';
+import { NavLink } from 'react-router';
+
 
 // --- Componentes de Íconos SVG ---
 const MenuIcon = () => (
@@ -48,110 +49,70 @@ type Props = {
 
 // --- Datos para las tarjetas de acceso rápido ---
 const quickAccessItems: Props[] = [
-  {
-    title: "Novedades",
-    description: "Gestiona las nuevas novedades que tenga el restaurante .",
-    icon: <MenuIcon />,
-    color: "blue",
-    href: "Novedades"
-  },
-  {
-    title: "Mozos",
-    description: "Gestiona las cuentas de los mozos del restaurante.",
-    icon: <StaffIcon />,
-    color: "green",
-    href: "Mozos"
-    
-  },
-  {
-    title: "Mesas",
-    description: "Controla el estado de las mesas, organiza reservas y asigna mozos.",
-    icon: <ReservationsIcon />,
-    color: "yellow",
-    href: "Mesas"
-  },
-  {
-    title: "Horarios",
-    description: "Configura los horarios de apertura, cierre y disponibilidad del restaurante.",
-    icon: <ClockIcon />,
-    color: "purple",
-    href: "Horarios"
-  },
-  {
-    title: "Productos",
-    description: "Administra el inventario, controla el stock y actualiza precios fácilmente.",
-    icon: <ProductIcon />,
-    color: "blue",
-    href: "Productos"
-  },
-  {
-    title: "Datos del Restaurante",
-    description: "Consulta datos esenciales del restaurante",
-    icon: <ReportsIcon />,
-    color: "purple",
-    href: "DatosRestaurantes"
-  }
+  { title: "Novedades", description: "Gestiona las nuevas novedades que tenga el restaurante .", icon: <MenuIcon />, color: "blue", href: "Novedades" },
+  { title: "Mozos", description: "Gestiona las cuentas de los mozos del restaurante.", icon: <StaffIcon />, color: "green", href: "Mozos" },
+  { title: "Mesas", description: "Controla el estado de las mesas, organiza reservas y asigna mozos.", icon: <ReservationsIcon />, color: "yellow", href: "Mesas" },
+  { title: "Horarios", description: "Configura los horarios de apertura, cierre y disponibilidad del restaurante.", icon: <ClockIcon />, color: "purple", href: "Horarios" },
+  { title: "Productos", description: "Administra el inventario, controla el stock y actualiza precios fácilmente.", icon: <ProductIcon />, color: "blue", href: "Productos" },
+  { title: "Datos del Restaurante", description: "Consulta datos esenciales del restaurante", icon: <ReportsIcon />, color: "purple", href: "DatosRestaurantes" }
 ];
 
 // --- Componente de Tarjeta reutilizable ---
 const QuickAccessCard = ({ title, description, icon, color, href }: Props) => {
-    const navigate = useNavigate()
-    const colorClasses = {
-        blue: 'bg-blue-100 text-blue-600',
-        green: 'bg-green-100 text-green-600',
-        yellow: 'bg-yellow-100 text-yellow-600',
-        purple: 'bg-purple-100 text-purple-600',
-    };
+  const colorClasses = {
+    blue: 'bg-blue-100 text-blue-600',
+    green: 'bg-green-100 text-green-600',
+    yellow: 'bg-yellow-100 text-yellow-600',
+    purple: 'bg-purple-100 text-purple-600',
+  };
 
-    return (
-        <div 
-            onClick={() => navigate(href)}
-            className="bg-white p-6 rounded-lg shadow-md duration-200 cursor-pointer hover:scale-105 transition-all ease-in-out">
-            <div className={`flex items-center justify-center h-16 w-16 rounded-full ${colorClasses[color]} mb-4`}>
-                {icon}
-            </div>
-            <h3 className="text-xl text-black font-bold mb-2">{title}</h3>
-            <p className="text-gray-600">{description}</p>
-        </div>
-    );
+  return (
+    <NavLink
+      to={href}
+      className={({ isActive }) =>
+        `block bg-white p-6 rounded-lg shadow-md duration-200 hover:scale-105 transition-all ease-in-out ${
+          isActive ? 'ring-2 ring-blue-500' : ''
+        }`
+      }
+    >
+      <div className={`flex items-center justify-center h-16 w-16 rounded-full ${colorClasses[color]} mb-4`}>
+        {icon}
+      </div>
+      <h3 className="text-xl text-black font-bold mb-2">{title}</h3>
+      <p className="text-gray-600">{description}</p>
+    </NavLink>
+  );
 };
 
+// --- Página Principal del Admin ---
 const AdminHomepage = () => {
-    return (
-        <>
-            <div className="relative w-full h-full overflow-hidden bg-black">
-                <div className="absolute inset-0 bg-[url('/src/shared/assets/rest.jpg')] bg-cover bg-center bg-no-repeat blur-xs brightness-110"></div>
-                <div className="relative z-10 container mx-auto p-6 md:p-10 text-white">
-                  <div className="mb-10">
-                    <h1 className="text-3xl md:text-4xl font-bold">
-                      ¡Bienvenido de nuevo, Administrador!
-                    </h1>
-                    <p className="text-lg mt-2">
-                      Desde aquí puedes gestionar todos los aspectos de tu restaurante de forma centralizada.
-                    </p>
-                  </div>
-                    
-                  <div>
-                    <h2 className="text-2xl font-semibold mb-6">Accesos Rápidos</h2>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                      {quickAccessItems.map((item, index) => (
-                        <QuickAccessCard
-                          key={index}
-                          title={item.title}
-                          description={item.description}
-                          icon={item.icon}
-                          color={item.color}
-                          href={item.href}
-                        />
-                      ))}
-                    </div>
-                  </div>
-                </div>
-            </div>
-        </>
-    );
+  return (
+    <div className="relative w-full h-full overflow-hidden bg-black">
+      <div className="absolute inset-0 bg-[url('/src/shared/assets/rest.jpg')] bg-cover bg-center bg-no-repeat blur-xs brightness-110"></div>
+      <div className="relative z-10 container mx-auto p-6 md:p-10 text-white">
+        <div className="mb-10">
+          <h1 className="text-3xl md:text-4xl font-bold">¡Bienvenido de nuevo, Administrador!</h1>
+          <p className="text-lg mt-2">Desde aquí puedes gestionar todos los aspectos de tu restaurante de forma centralizada.</p>
+        </div>
+
+        <div>
+          <h2 className="text-2xl font-semibold mb-6">Accesos Rápidos</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {quickAccessItems.map((item, index) => (
+              <QuickAccessCard
+                key={index}
+                title={item.title}
+                description={item.description}
+                icon={item.icon}
+                color={item.color}
+                href={item.href}
+              />
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 };
 
-export default function App() {
-    return <AdminHomepage />;
-}
+export default AdminHomepage;

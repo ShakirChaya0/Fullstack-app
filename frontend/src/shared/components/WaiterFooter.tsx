@@ -1,16 +1,18 @@
-import { Box, Typography, Link, List, ListItem } from "@mui/material"; 
+import { Box, Typography, List, ListItem } from "@mui/material"; 
 import EventSeatIcon from '@mui/icons-material/EventSeat';
 import TableRestaurantIcon from '@mui/icons-material/TableRestaurant';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
+import { NavLink } from "react-router";
+
 
 export function WaiterFooter() {
   const currentYear = new Date().getFullYear();
   const restaurantName = "Tu Restaurante";
 
   const quickLinks = [
-    { label: "Reserva del Día", url: "/ReservaDelDia/", icon: <CalendarTodayIcon sx={{ fontSize: 16, mr: 0.5 }} /> },
-    { label: "Mesas del Restaurante", url: "/MesasDelRestaurante/", icon: <TableRestaurantIcon sx={{ fontSize: 16, mr: 0.5 }} /> },
-    { label: "Mesas Disponibles", url: "/MesasDisponibles", icon: <EventSeatIcon sx={{ fontSize: 16, mr: 0.5 }} /> },
+    { label: "Reserva del Día", url: "/Mozo/ReservaDelDia", icon: <CalendarTodayIcon sx={{ fontSize: 16, mr: 0.5 }} /> },
+    { label: "Mesas del Restaurante", url: "/Mozo/Mesas", icon: <TableRestaurantIcon sx={{ fontSize: 16, mr: 0.5 }} /> },
+    { label: "Mesas Disponibles", url: "/Mozo/MesasDisponibles", icon: <EventSeatIcon sx={{ fontSize: 16, mr: 0.5 }} /> },
   ];
 
   return (
@@ -36,7 +38,6 @@ export function WaiterFooter() {
           mb: 3,
         }}
       >
-        
         <Box>
           <Typography 
             variant="h6" 
@@ -67,23 +68,21 @@ export function WaiterFooter() {
           <List sx={{ p: 0 }} className="space-y-1">
             {quickLinks.map((item) => (
               <ListItem key={item.label} disablePadding sx={{ py: 0, justifyContent: { xs: 'center', md: 'flex-start' } }}>
-                <Link
-                  href={item.url}
-                  color="inherit"
-                  underline="none"
-                  sx={{ 
-                    display: 'flex', 
-                    alignItems: 'center', 
-                    fontSize: '0.9rem', 
-                    color: '#B0B0B0',
+                <NavLink
+                  to={item.url}
+                  style={({ isActive }) => ({
+                    display: 'flex',
+                    alignItems: 'center',
+                    fontSize: '0.9rem',
+                    color: isActive ? '#FFC107' : '#B0B0B0',
+                    textDecoration: isActive ? 'underline' : 'none',
                     transition: 'color 0.2s ease',
-                    '&:hover': { color: '#FFC107', textDecoration: 'underline' }
-                  }}
+                  })}
                   className="hover:translate-x-1 duration-200"
                 >
                   {item.icon}
                   {item.label}
-                </Link>
+                </NavLink>
               </ListItem>
             ))}
           </List>

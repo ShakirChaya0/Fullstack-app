@@ -1,4 +1,4 @@
-import { Box, Typography, Link, IconButton, List, ListItem } from "@mui/material"; 
+import { Box, Typography, IconButton, List, ListItem } from "@mui/material"; 
 import FacebookIcon from '@mui/icons-material/Facebook';
 import InstagramIcon from '@mui/icons-material/Instagram';
 import TwitterIcon from '@mui/icons-material/X';
@@ -9,6 +9,8 @@ import PhoneIcon from '@mui/icons-material/Phone';
 import DashboardIcon from '@mui/icons-material/Dashboard'; 
 import HistoryIcon from '@mui/icons-material/History';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
+import { NavLink } from "react-router";
+
 
 export function ClientFooter() {
   const currentYear = new Date().getFullYear();
@@ -21,11 +23,10 @@ export function ClientFooter() {
   ];
 
   const quickLinks = [
-    { label: "Panel Principal", url: "/Cliente", icon: <DashboardIcon sx={{ fontSize: 16, mr: 0.5 }} /> },
-    { label: "Registrar Reserva", url: "/Cliente/Reserva", icon: <CalendarTodayIcon sx={{ fontSize: 16, mr: 0.5 }} /> },
-    { label: "Resgistro de Reservas", url: "/Cliente/Reserva/Historial", icon: <HistoryIcon sx={{ fontSize: 16, mr: 0.5 }} /> },
+    { label: "Panel Principal", url: "/Cliente", icon: <DashboardIcon sx={{ fontSize: 16, mr: 0.5 }} />, end: true },
+    { label: "Registrar Reserva", url: "/Cliente/Reserva", icon: <CalendarTodayIcon sx={{ fontSize: 16, mr: 0.5 }} />, end: true },
+    { label: "Registro de Reservas", url: "/Cliente/Reserva/Historial", icon: <HistoryIcon sx={{ fontSize: 16, mr: 0.5 }} />, end: true },
   ];
-
 
   return (
     <Box
@@ -50,30 +51,17 @@ export function ClientFooter() {
           mb: 4,
         }}
       >
-        
+        {/* --- Sección de Redes Sociales --- */}
         <Box>
-          <Typography 
-            variant="h6" 
-            component="div"
-            sx={{ fontWeight: 700, mb: 2, color: '#FFC107' }}
-          >
+          <Typography variant="h6" component="div" sx={{ fontWeight: 700, mb: 2, color: '#FFC107' }}>
             {restaurantName}
           </Typography>
 
-          <Typography 
-            variant="body2" 
-            sx={{ mb: 2, color: '#B0B0B0' }}
-            className="leading-relaxed"
-          >
+          <Typography variant="body2" sx={{ mb: 2, color: '#B0B0B0' }} className="leading-relaxed">
            Vive una experiencia gastronómica excepcional. Reserva fácilmente y descubre el mejor sabor con nuestro servicio personalizado.
           </Typography>
 
-          <Box sx={{ 
-            display: 'flex', 
-            justifyContent: { xs: 'center', md: 'flex-start' },
-            gap: { xs: 1, sm: 2 },
-            mt: 2
-          }}>
+          <Box sx={{ display: 'flex', justifyContent: { xs: 'center', md: 'flex-start' }, gap: { xs: 1, sm: 2 }, mt: 2 }}>
             {socialLinks.map((link) => (
               <IconButton 
                 key={link.name} 
@@ -96,47 +84,38 @@ export function ClientFooter() {
           </Box>
         </Box>
 
+        {/* --- Sección de Navegación --- */}
         <Box>
-          <Typography 
-            variant="subtitle1" 
-            component="p" 
-            sx={{ fontWeight: 600, mb: 2, color: '#FFFFFF' }}
-            className="uppercase tracking-wider"
-          >
+          <Typography variant="subtitle1" component="p" sx={{ fontWeight: 600, mb: 2, color: '#FFFFFF' }} className="uppercase tracking-wider">
             Navegación
           </Typography>
           <List sx={{ p: 0 }} className="space-y-1">
             {quickLinks.map((item) => (
               <ListItem key={item.label} disablePadding sx={{ py: 0, justifyContent: { xs: 'center', md: 'flex-start' } }}>
-                <Link
-                  href={item.url}
-                  color="inherit"
-                  underline="none"
-                  sx={{ 
-                    display: 'flex', 
-                    alignItems: 'center', 
-                    fontSize: '0.9rem', 
-                    color: '#B0B0B0',
+                <NavLink
+                  to={item.url}
+                  end={item.end} 
+                  style={({ isActive }) => ({
+                    display: 'flex',
+                    alignItems: 'center',
+                    fontSize: '0.9rem',
+                    color: isActive ? '#FFC107' : '#B0B0B0',
+                    textDecoration: isActive ? 'underline' : 'none',
                     transition: 'color 0.2s ease',
-                    '&:hover': { color: '#FFC107', textDecoration: 'underline' }
-                  }}
+                  })}
                   className="hover:translate-x-1 duration-200"
                 >
                   {item.icon}
                   {item.label}
-                </Link>
+                </NavLink>
               </ListItem>
             ))}
           </List>
         </Box>
 
+        {/* --- Sección de Contacto y Legal --- */}
         <Box>
-          <Typography 
-            variant="subtitle1" 
-            component="p" 
-            sx={{ fontWeight: 600, mb: 2, color: '#FFFFFF' }}
-            className="uppercase tracking-wider"
-          >
+          <Typography variant="subtitle1" component="p" sx={{ fontWeight: 600, mb: 2, color: '#FFFFFF' }} className="uppercase tracking-wider">
             Contacto & Legal
           </Typography>
           
@@ -151,46 +130,43 @@ export function ClientFooter() {
             </Typography>
           </Box>
 
-          <Box sx={{ 
-              display: 'flex', 
-              justifyContent: { xs: 'center', md: 'flex-start' }, 
-              gap: 2, 
-              flexWrap: 'wrap',
-              mt: 3 
-          }}>
-              <Link 
-                  href="#" 
-                  color="inherit" 
-                  underline="none" 
-                  sx={{ display: 'flex', alignItems: 'center', fontSize: '0.8rem', color: '#B0B0B0', '&:hover': { color: '#FFC107', textDecoration: 'underline' } }}
+          <Box sx={{ display: 'flex', justifyContent: { xs: 'center', md: 'flex-start' }, gap: 2, flexWrap: 'wrap', mt: 3 }}>
+              <NavLink
+                  to="#"
+                  style={({ isActive }) => ({
+                    display: 'flex',
+                    alignItems: 'center',
+                    fontSize: '0.8rem',
+                    color: isActive ? '#FFC107' : '#B0B0B0',
+                    textDecoration: isActive ? 'underline' : 'none',
+                    transition: 'color 0.2s ease',
+                  })}
               >
                   <PolicyIcon sx={{ fontSize: 14, mr: 0.5 }} />
                   Política de Privacidad
-              </Link>
-              <Link 
-                  href="#" 
-                  color="inherit" 
-                  underline="none" 
-                  sx={{ display: 'flex', alignItems: 'center', fontSize: '0.8rem', color: '#B0B0B0', '&:hover': { color: '#FFC107', textDecoration: 'underline' } }}
+              </NavLink>
+              <NavLink
+                  to="#"
+                  style={({ isActive }) => ({
+                    display: 'flex',
+                    alignItems: 'center',
+                    fontSize: '0.8rem',
+                    color: isActive ? '#FFC107' : '#B0B0B0',
+                    textDecoration: isActive ? 'underline' : 'none',
+                    transition: 'color 0.2s ease',
+                  })}
               >
                   <GavelIcon sx={{ fontSize: 14, mr: 0.5 }} />
                   Términos y Condiciones
-              </Link>
+              </NavLink>
           </Box>
         </Box>
       </Box>
 
-      <Box sx={{ 
-        width: '100%', 
-        height: '1px', 
-        bgcolor: '#333', 
-        mx: 'auto', 
-        my: { xs: 3, md: 4 } 
-      }} />
+      <Box sx={{ width: '100%', height: '1px', bgcolor: '#333', mx: 'auto', my: { xs: 3, md: 4 } }} />
 
       <Typography variant="caption" display="block" sx={{ color: '#909090', fontSize: '0.75rem' }}>
-        © {currentYear} {restaurantName}. Todos los derechos reservados. Desarrollado por C-R-I-S para la gestión de restaurantes
-.
+        © {currentYear} {restaurantName}. Todos los derechos reservados. Desarrollado por C-R-I-S para la gestión de restaurantes.
       </Typography>
     </Box>
   );

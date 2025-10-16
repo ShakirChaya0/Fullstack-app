@@ -3,7 +3,9 @@ import useEntity from "../../Institution/hooks/useEntity";
 import { fetchPolicy } from "../../Institution/services/fetchPolicy";
 import { ConfirmModal } from "../components/ModalConfirmReservation";
 import useReservationMutation from "../hooks/userReservationMutation";
-import ReservationForm, { type ReservationFormData } from "../components/ReservationForm";
+import type { ReservationFormData } from "../interfaces/IReservation";
+import ReservationForm from "../components/ReservationForm";
+
 
 export default function ReservationPage() {
   const [showModal, setShowModal] = useState(false);

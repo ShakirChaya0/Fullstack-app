@@ -18,3 +18,10 @@ export interface IReservation {
     _clientPublicInfo: ClientPublicInfo,
     _table: ITable[]
 }
+
+
+export interface ReservationFormData {
+  FechaReserva: string;
+  HoraReserva: string;
+  CantidadComensales: number;
+}

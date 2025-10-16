@@ -16,7 +16,7 @@ export default async function GetReservationToday(page: number, pageSize: number
   const response = await apiCall(`reservas/mozo/reservaDelDia?today=${hoy}&page=${page}&pageSize=${pageSize}`);
 
   if(!response.ok) {
-    if (response.status === 404) throw new Error("No se encontraron reservas para el dia de hoy");
+    if (response.status === 404) throw new Error("No se encontraron reservas para el día de hoy");
     throw new Error("error");
   }
 

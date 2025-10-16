@@ -2,7 +2,8 @@ import React from 'react';
 import useAuth from '../hooks/useAuth';
 import { NavLink } from 'react-router';
 
-const ClipboardListIcon = (props: React.SVGProps<SVGSVGElement>) => (
+// --- Iconos personalizados ---
+const LightbulbIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     width="24"
@@ -15,16 +16,13 @@ const ClipboardListIcon = (props: React.SVGProps<SVGSVGElement>) => (
     strokeLinejoin="round"
     {...props}
   >
-    <rect width="8" height="4" x="8" y="2" rx="1" ry="1" />
-    <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2" />
-    <path d="M12 11h4" />
-    <path d="M12 16h4" />
-    <path d="M8 11h.01" />
-    <path d="M8 16h.01" />
+    <path d="M9 18h6" />
+    <path d="M10 22h4" />
+    <path d="M12 2a6 6 0 0 0-6 6c0 2.5 1.5 4 3 5v3h6v-3c1.5-1 3-2.5 3-5a6 6 0 0 0-6-6z" />
   </svg>
 );
 
-const CalendarCheckIcon = (props: React.SVGProps<SVGSVGElement>) => (
+const ShoppingCartIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     width="24"
@@ -37,14 +35,13 @@ const CalendarCheckIcon = (props: React.SVGProps<SVGSVGElement>) => (
     strokeLinejoin="round"
     {...props}
   >
-    <path d="M8 2v4" />
-    <path d="M16 2v4" />
-    <rect width="18" height="18" x="3" y="4" rx="2" />
-    <path d="M3 10h18" />
-    <path d="M9 16l2 2 4-4" />
+    <circle cx="9" cy="21" r="1" />
+    <circle cx="20" cy="21" r="1" />
+    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
   </svg>
 );
 
+// --- Props de cada tarjeta ---
 type Props = {
   icon: React.FC<React.SVGProps<SVGSVGElement>>;
   title: string;
@@ -53,7 +50,7 @@ type Props = {
   href: string;
 };
 
-// --- Tarjeta de navegación ---
+// --- Componente tarjeta de navegación ---
 const NavigationCard = ({ icon: Icon, title, description, color, href }: Props) => {
   const colorClasses = {
     blue: { bg: 'bg-blue-100', text: 'text-blue-600', hoverBg: 'group-hover:bg-blue-500' },
@@ -83,23 +80,24 @@ const NavigationCard = ({ icon: Icon, title, description, color, href }: Props) 
   );
 };
 
-export default function App() {
+// --- Página principal Cocina ---
+export default function KitchenHomePage() {
   const { user } = useAuth();
 
   const navigationItems: Props[] = [
     {
-      icon: ClipboardListIcon,
-      title: "Registrar Reserva",
-      description: "Crea nuevas reservas fácilmente y gestiona los detalles de cada pedido.",
+      icon: LightbulbIcon,
+      title: "Sugerencias",
+      description: "Visualiza y gestiona las sugerencias de platos y mejoras propuestas por el equipo.",
       color: "blue",
-      href: "../Reserva"
+      href: "../Sugerencias"
     },
     {
-      icon: CalendarCheckIcon,
-      title: "Registro de Reservas",
-      description: "Consulta y administra todas las reservas existentes en el calendario del salón.",
+      icon: ShoppingCartIcon,
+      title: "Pedidos",
+      description: "Consulta, organiza y gestiona los pedidos activos en la cocina en tiempo real.",
       color: "green",
-      href: "../Reserva/Historial"
+      href: "../Pedidos"
     },
   ];
 
@@ -111,7 +109,7 @@ export default function App() {
           ¡Hola, {user?.username}!
         </h1>
         <p className="mt-4 text-lg text-white">
-          Bienvenida al sistema. Selecciona una opción para comenzar a gestionar.
+          Bienvenido al sistema de cocina. Selecciona una opción para comenzar a gestionar.
         </p>
 
         <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-3xl mx-auto">

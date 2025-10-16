@@ -1,6 +1,7 @@
 import React from 'react';
 import useAuth from '../hooks/useAuth';
-import { useNavigate } from 'react-router';
+import { NavLink } from 'react-router';
+
 
 const ReservationsIcon = () => (
   <svg
@@ -59,17 +60,15 @@ const RestaurantTablesIcon = () => (
 );
 
 type Props = {
-    icon: React.FC<React.SVGProps<SVGSVGElement>>;
-    title: string;
-    description: string;
-    color: "blue" | "purple" | "green" | "yellow";
-    link: string;
+  icon: React.FC<React.SVGProps<SVGSVGElement>>;
+  title: string;
+  description: string;
+  color: "blue" | "purple" | "green" | "yellow";
+  link: string;
 }
 
-// --- Tarjeta de navegación ---
+// --- Tarjeta de navegación con NavLink ---
 const QuickAccessCard = ({ icon: Icon, title, description, color, link }: Props) => {
-  const navigate = useNavigate();
-
   const colorClasses = {
     blue: {
       bg: 'bg-blue-100',
@@ -95,14 +94,10 @@ const QuickAccessCard = ({ icon: Icon, title, description, color, link }: Props)
 
   const selectedColor = colorClasses[color];
 
-  const handleClick = () => {
-    navigate(link);
-  };
-
   return (
-    <div
-      onClick={handleClick}
-      className="group cursor-pointer block p-8 bg-white rounded-xl shadow-md hover:shadow-lg hover:-translate-y-1 transition-all duration-300"
+    <NavLink
+      to={link}
+      className="group block p-8 bg-white rounded-xl shadow-md hover:shadow-lg hover:-translate-y-1 transition-all duration-300"
     >
       <div className="flex flex-col items-center justify-center">
         <div
@@ -113,7 +108,7 @@ const QuickAccessCard = ({ icon: Icon, title, description, color, link }: Props)
         <h2 className="text-xl font-semibold text-slate-800">{title}</h2>
         <p className="text-slate-500 mt-1 text-sm text-center">{description}</p>
       </div>
-    </div>
+    </NavLink>
   );
 };
 
@@ -123,7 +118,7 @@ export default function WaiterHomepage() {
   const quickAccessItems: Props[] = [
     {
       icon: ReservationsIcon,
-      title: "Reservas del dia",
+      title: "Reservas del día",
       description: "Consulta las reservas del día y prepárate para recibir a tus clientes con la mejor atención.",
       color: "purple",
       link: "/Mozo/ReservaDelDia"
@@ -140,7 +135,7 @@ export default function WaiterHomepage() {
       title: "Mesas del Restaurante",
       description: "Controla la disponibilidad de las mesas y organiza las mismas.",
       color: "yellow",
-      link: "/mozo/MesasDisponibles"
+      link: "/Mozo/MesasDisponibles"
     },
   ];
 

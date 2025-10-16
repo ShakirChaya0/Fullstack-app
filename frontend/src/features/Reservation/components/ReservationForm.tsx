@@ -2,12 +2,7 @@ import { useMemo } from "react";
 import { useForm } from "react-hook-form";
 import useAvailableSchedule from "../hooks/useAvailableSchedule";
 import  ReservationFormSkeleton  from "../pages/SkeletonReservationClient";
-
-export interface ReservationFormData {
-  FechaReserva: string;
-  HoraReserva: string;
-  CantidadComensales: number;
-}
+import type { ReservationFormData } from "../interfaces/IReservation";
 
 interface ReservationFormProps {
   onFormSubmit: (data: ReservationFormData, resetCallback?: () => void) => void;
@@ -23,12 +18,12 @@ interface ReservationFormProps {
     return new Date(year, month - 1, day, hours, minutes); // hora local
   }
 
-function getWeekdayLocal(dateStr: string): string {
-  if (!dateStr) return "";
-  const [year, month, day] = dateStr.split("-").map(Number);
-  const date = new Date(year, month - 1, day); // hora local
-  return date.toLocaleDateString("es-ES", { weekday: "long" });
-}
+  function getWeekdayLocal(dateStr: string): string {
+    if (!dateStr) return "";
+    const [year, month, day] = dateStr.split("-").map(Number);
+    const date = new Date(year, month - 1, day); // hora local
+    return date.toLocaleDateString("es-ES", { weekday: "long" });
+  }
 
 export default function ReservationForm({ onFormSubmit, isMutating }: ReservationFormProps) {
   const {

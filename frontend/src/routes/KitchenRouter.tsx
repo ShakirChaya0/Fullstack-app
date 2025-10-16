@@ -5,7 +5,8 @@ import { lazy, Suspense } from "react";
 const KitchenMainLayout = lazy(() => import("../shared/components/KitchenMainLayout"));
 const OrdersDashboard = lazy(() => import("../features/KitchenOrders/pages/OrdersDashboard"));
 const UserProfile = lazy(() => import("../features/Profile/pages/UserProfile"));
-const SuggestionsPage = lazy(() => import("../features/Suggestions/pages/SuggestionsPage"))
+const SuggestionsPage = lazy(() => import("../features/Suggestions/pages/SuggestionsPage")); 
+const KitchenHomePage = lazy(() => import("../shared/components/KitchenHomePage") )
 
 // Skeletons
 const ProfileCardSkeleton = lazy(() => import("../features/Profile/components/ProfileCardSkeleton"));
@@ -18,7 +19,7 @@ export default function KitchenRouter() {
 
       <Route element={<KitchenMainLayout/>}>
 
-        <Route path="/" element={<h1>Hola cocina</h1>}/>
+        <Route path="/" element={<KitchenHomePage />}/>
 
         <Route path="/Sugerencias" element={
           <Suspense fallback={<SuggestionSkeletonBody/>}>

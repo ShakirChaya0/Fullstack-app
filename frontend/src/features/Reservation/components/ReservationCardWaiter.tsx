@@ -85,10 +85,12 @@ export function ReservationCard({ reservation: initialReservation }: Reservation
         <button
           onClick={() => openModal('Asistida')}
           disabled={isFinalState}
-          className={`cursor-pointer px-3 py-2 font-medium text-white rounded-lg shadow-md transition active:scale-95 ${
-            isFinalState
-              ? 'opacity-50 cursor-not-allowed bg-amber-200'
-              : 'bg-amber-400 hover:bg-amber-600'
+          className={`px-3 py-2 font-medium text-white rounded-lg shadow-md transition active:scale-95 ${
+            reservation._status === 'Asistida'
+            ? 'opacity-50 cursor-not-allowed bg-amber-200'
+            : isFinalState
+            ? 'opacity-50 cursor-not-allowed bg-amber-200'
+            : 'cursor-pointer bg-amber-400 hover:bg-amber-600'
           }`}
           title="Marcar como Asistida"
         >
@@ -98,10 +100,12 @@ export function ReservationCard({ reservation: initialReservation }: Reservation
         <button
           onClick={() => openModal('No_Asistida')}
           disabled={isFinalState}
-          className={`cursor-pointer px-3 py-2 text-sm font-medium text-white rounded-lg shadow-md transition active:scale-95 ${
-            isFinalState
+          className={`px-3 py-2 text-sm font-medium text-white rounded-lg shadow-md transition active:scale-95 ${
+            reservation._status === 'No_Asistida'
               ? 'opacity-50 cursor-not-allowed bg-gray-300'
-              : 'bg-gray-400 hover:bg-gray-600'
+              : isFinalState
+              ? 'opacity-50 cursor-not-allowed bg-gray-300'
+              : 'cursor-pointer bg-gray-400 hover:bg-gray-600'
           }`}
           title="Marcar como No Asistida"
         >

@@ -193,11 +193,35 @@ export default function ClientHeader() {
                 <h1>Panel Cliente</h1>
               </div>
               <List>
+                <ListItem disablePadding key="/Cliente">
+                  <NavLink
+                    to="/Cliente"
+                    end
+                    style={{ textDecoration: "none", width: "100%" }}
+                  >
+                    {({ isActive }) => (
+                      <ListItemButton
+                        disableRipple
+                        sx={{
+                          bgcolor: isActive ? "black" : "transparent",
+                          color: isActive ? "white" : "inherit",
+                          transition: "background-color 0.2s ease, color 0.2s ease",
+                          "&:hover": {
+                             bgcolor: isActive ? "grey.900" : "rgba(0,0,0,0.1)",
+                          },
+                        }}
+                      >
+                        <ListItemText primary="Panel Principal" />
+                      </ListItemButton>
+                    )}
+                  </NavLink>
+                  </ListItem>
                 {navLinks.map((link) => (
                   <ListItem disablePadding>
                   <NavLink
                     key={link.path}
                     to={link.path}
+                    end
                     style={{ textDecoration: "none", color: "inherit" }}
                   >
                   {({ isActive }) => (

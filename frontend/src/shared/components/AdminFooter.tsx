@@ -1,4 +1,4 @@
-import { Box, Typography, Link, IconButton, List, ListItem } from "@mui/material"; 
+import { Box, Typography, IconButton, List, ListItem } from "@mui/material"; 
 import FacebookIcon from '@mui/icons-material/Facebook';
 import InstagramIcon from '@mui/icons-material/Instagram';
 import TwitterIcon from '@mui/icons-material/X';
@@ -13,6 +13,7 @@ import NewspaperIcon from '@mui/icons-material/Newspaper';
 import GroupIcon from '@mui/icons-material/Group';
 import TableBarIcon from '@mui/icons-material/TableBar';
 import InfoOutlineIcon from '@mui/icons-material/InfoOutline';
+import { NavLink } from "react-router";
 
 export function AdminFooter() {
   const currentYear = new Date().getFullYear();
@@ -25,15 +26,14 @@ export function AdminFooter() {
   ];
 
   const quickLinks = [
-    { label: "Panel Principal", url: "/Admin", icon: <DashboardIcon sx={{ fontSize: 16, mr: 0.5 }} /> },
-    { label: "Novedades", url: "/Admin/Novedades", icon: <NewspaperIcon sx={{ fontSize: 16, mr: 0.5 }} /> },
-    { label: "Mozos", url: "/Admin/Mozos", icon: <GroupIcon sx={{ fontSize: 16, mr: 0.5 }} /> },
-    { label: "Mesas", url: "/Admin/Mesas", icon: <TableBarIcon sx={{ fontSize: 16, mr: 0.5 }} /> },
-    { label: "Horarios", url: "/Admin/Horarios", icon: <ScheduleIcon sx={{ fontSize: 16, mr: 0.5 }} /> },
-    { label: "Productos", url: "/Admin/Productos", icon: <FastfoodIcon sx={{ fontSize: 16, mr: 0.5 }} /> },
-    { label: "Datos Restaurante", url: "/Admin/DatosRestaurantes", icon: <InfoOutlineIcon sx={{ fontSize: 16, mr: 0.5 }} /> }
+    { label: "Panel Principal", path: "/Admin", icon: <DashboardIcon sx={{ fontSize: 16, mr: 0.5 }} /> },
+    { label: "Novedades", path: "/Admin/Novedades", icon: <NewspaperIcon sx={{ fontSize: 16, mr: 0.5 }} /> },
+    { label: "Mozos", path: "/Admin/Mozos", icon: <GroupIcon sx={{ fontSize: 16, mr: 0.5 }} /> },
+    { label: "Mesas", path: "/Admin/Mesas", icon: <TableBarIcon sx={{ fontSize: 16, mr: 0.5 }} /> },
+    { label: "Horarios", path: "/Admin/Horarios", icon: <ScheduleIcon sx={{ fontSize: 16, mr: 0.5 }} /> },
+    { label: "Productos", path: "/Admin/Productos", icon: <FastfoodIcon sx={{ fontSize: 16, mr: 0.5 }} /> },
+    { label: "Datos Restaurante", path: "/Admin/DatosRestaurantes", icon: <InfoOutlineIcon sx={{ fontSize: 16, mr: 0.5 }} /> }
   ];
-
 
   return (
     <Box
@@ -58,7 +58,7 @@ export function AdminFooter() {
           mb: 4,
         }}
       >
-        
+        {/* Sección Info */}
         <Box>
           <Typography 
             variant="h6" 
@@ -76,12 +76,7 @@ export function AdminFooter() {
             Plataforma de administración para restaurantes y bares. Gestiona tu restaurante de manera eficiente con nosotros.
           </Typography>
 
-          <Box sx={{ 
-            display: 'flex', 
-            justifyContent: { xs: 'center', md: 'flex-start' },
-            gap: { xs: 1, sm: 2 },
-            mt: 2
-          }}>
+          <Box sx={{ display: 'flex', justifyContent: { xs: 'center', md: 'flex-start' }, gap: { xs: 1, sm: 2 }, mt: 2 }}>
             {socialLinks.map((link) => (
               <IconButton 
                 key={link.name} 
@@ -92,10 +87,7 @@ export function AdminFooter() {
                 sx={{ 
                   color: '#E0E0E0', 
                   transition: 'color 0.3s ease',
-                  '&:hover': {
-                    color: '#FFC107', 
-                    bgcolor: 'rgba(255, 255, 255, 0.05)'
-                  } 
+                  '&:hover': { color: '#FFC107', bgcolor: 'rgba(255, 255, 255, 0.05)' } 
                 }}
               >
                 {link.icon}
@@ -104,6 +96,7 @@ export function AdminFooter() {
           </Box>
         </Box>
 
+        {/* Sección Navegación */}
         <Box>
           <Typography 
             variant="subtitle1" 
@@ -116,28 +109,27 @@ export function AdminFooter() {
           <List sx={{ p: 0 }} className="space-y-1">
             {quickLinks.map((item) => (
               <ListItem key={item.label} disablePadding sx={{ py: 0, justifyContent: { xs: 'center', md: 'flex-start' } }}>
-                <Link
-                  href={item.url}
-                  color="inherit"
-                  underline="none"
-                  sx={{ 
-                    display: 'flex', 
-                    alignItems: 'center', 
-                    fontSize: '0.9rem', 
-                    color: '#B0B0B0',
-                    transition: 'color 0.2s ease',
-                    '&:hover': { color: '#FFC107', textDecoration: 'underline' }
-                  }}
-                  className="hover:translate-x-1 duration-200"
+                <NavLink
+                  to={item.path}
+                  end
+                  className={({ isActive }) =>
+                    `
+                    relative pb-1 transition-all duration-300 flex items-center
+                    ${isActive ? "text-white font-bold after:w-full after:left-0" : "text-white/70 font-normal after:w-0 after:left-1/2"}
+                    after:content-[''] after:absolute after:bottom-0 after:h-[2px] after:bg-white after:transition-all after:duration-300
+                    `
+                  }
+                  style={{ fontSize: '0.9rem' }}
                 >
                   {item.icon}
                   {item.label}
-                </Link>
+                </NavLink>
               </ListItem>
             ))}
           </List>
         </Box>
 
+        {/* Sección Contacto & Legal */}
         <Box>
           <Typography 
             variant="subtitle1" 
@@ -150,55 +142,44 @@ export function AdminFooter() {
           
           <Box sx={{ color: '#B0B0B0' }} className="space-y-2">
             <Typography variant="body2" sx={{ display: 'flex', alignItems: 'center', justifyContent: { xs: 'center', md: 'flex-start' } }}>
-                <EmailIcon sx={{ fontSize: 16, mr: 1 }} className="text-amber-400" />
-                admin@turestaurante.com
+              <EmailIcon sx={{ fontSize: 16, mr: 1 }} className="text-amber-400" />
+              admin@turestaurante.com
             </Typography>
             <Typography variant="body2" sx={{ display: 'flex', alignItems: 'center', justifyContent: { xs: 'center', md: 'flex-start' } }}>
-                <PhoneIcon sx={{ fontSize: 16, mr: 1 }} className="text-amber-400" />
-                (54) 11 5555-ADMIN
+              <PhoneIcon sx={{ fontSize: 16, mr: 1 }} className="text-amber-400" />
+              (54) 11 5555-ADMIN
             </Typography>
           </Box>
 
-          <Box sx={{ 
-              display: 'flex', 
-              justifyContent: { xs: 'center', md: 'flex-start' }, 
-              gap: 2, 
-              flexWrap: 'wrap',
-              mt: 3 
-          }}>
-              <Link 
-                  href="#" 
-                  color="inherit" 
-                  underline="none" 
-                  sx={{ display: 'flex', alignItems: 'center', fontSize: '0.8rem', color: '#B0B0B0', '&:hover': { color: '#FFC107', textDecoration: 'underline' } }}
-              >
-                  <PolicyIcon sx={{ fontSize: 14, mr: 0.5 }} />
-                  Política de Privacidad
-              </Link>
-              <Link 
-                  href="#" 
-                  color="inherit" 
-                  underline="none" 
-                  sx={{ display: 'flex', alignItems: 'center', fontSize: '0.8rem', color: '#B0B0B0', '&:hover': { color: '#FFC107', textDecoration: 'underline' } }}
-              >
-                  <GavelIcon sx={{ fontSize: 14, mr: 0.5 }} />
-                  Términos y Condiciones
-              </Link>
+          <Box sx={{ display: 'flex', justifyContent: { xs: 'center', md: 'flex-start' }, gap: 2, flexWrap: 'wrap', mt: 3 }}>
+            <NavLink
+              to="/Admin/PoliticaPrivacidad"
+              className={({ isActive }) =>
+                `flex items-center text-xs transition-colors duration-200 ${isActive ? 'text-amber-500 font-bold' : 'text-gray-400'}`
+              }
+              style={{ textDecoration: 'none' }}
+            >
+              <PolicyIcon sx={{ fontSize: 14, mr: 0.5 }} />
+              Política de Privacidad
+            </NavLink>
+            <NavLink
+              to="/Admin/TerminosCondiciones"
+              className={({ isActive }) =>
+                `flex items-center text-xs transition-colors duration-200 ${isActive ? 'text-amber-500 font-bold' : 'text-gray-400'}`
+              }
+              style={{ textDecoration: 'none' }}
+            >
+              <GavelIcon sx={{ fontSize: 14, mr: 0.5 }} />
+              Términos y Condiciones
+            </NavLink>
           </Box>
         </Box>
       </Box>
 
-      <Box sx={{ 
-        width: '100%', 
-        height: '1px', 
-        bgcolor: '#333', 
-        mx: 'auto', 
-        my: { xs: 3, md: 4 } 
-      }} />
+      <Box sx={{ width: '100%', height: '1px', bgcolor: '#333', mx: 'auto', my: { xs: 3, md: 4 } }} />
 
       <Typography variant="caption" display="block" sx={{ color: '#909090', fontSize: '0.75rem' }}>
-        © {currentYear} {restaurantName}. Todos los derechos reservados. Desarrollado por C-R-I-S para la gestión de restaurantes
-.
+        © {currentYear} {restaurantName}. Todos los derechos reservados. Desarrollado por C-R-I-S para la gestión de restaurantes.
       </Typography>
     </Box>
   );

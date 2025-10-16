@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import { hoy } from '../constants/constants';
 import { Autocomplete, TextField } from '@mui/material';
 import { AlertCircle, Loader2 } from 'lucide-react';
+import { useNavigate } from 'react-router';
 
 export default function ReservationsView() {
   const {
@@ -18,6 +19,8 @@ export default function ReservationsView() {
 
   const [searchTerm, setSearchTerm] = useState('');
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState('');
+  const navigate = useNavigate();
+  
 
   useEffect(() => {
     const handler = setTimeout(() => {
@@ -30,7 +33,7 @@ export default function ReservationsView() {
       return (
         <div className="flex flex-col items-center justify-center w-full min-h-screen bg-gradient-to-br from-indigo-50 to-gray-100">
           <div className="flex flex-col items-center space-y-4">
-            <Loader2 className="w-12 h-12 text-indigo-600 animate-spin" />
+            <Loader2 className="w-12 h-12 text-indigo-600 animate-spin transition-opacity duration-200 opacity-100" />
             <div className="text-center">
               <h2 className="text-xl font-semibold text-gray-800">Cargando reservas</h2>
               <p className="text-sm text-gray-500 mt-1">Obteniendo las reservas de hoy...</p>
@@ -43,24 +46,21 @@ export default function ReservationsView() {
   if (status === 'error') {
     return (
       <div className="flex flex-col items-center justify-center w-full min-h-screen bg-gradient-to-br from-red-50 to-gray-100 p-6">
-        <div className="bg-white rounded-lg shadow-lg p-8 max-w-md w-full border-l-4 border-red-500">
+        <div className="bg-white rounded-lg shadow-lg p-8 max-w-md w-full border-l-4 border-yellow-500">
           <div className="flex items-center space-x-3 mb-4">
             <div className="bg-red-100 rounded-full p-2">
-              <AlertCircle className="w-6 h-6 text-red-600" />
+              <AlertCircle className="w-6 h-6 text-yellow-600" />
             </div>
-            <h2 className="text-xl font-bold text-gray-800">Error al cargar</h2>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 leading-tight">¡Atención!</h2>
           </div>
           <p className="text-gray-600 mb-4">
-            No se pudieron cargar las reservas. Por favor, verifica tu conexión e intenta nuevamente.
+            No se econtrarón ningúna reserva para el dia de hoy.
           </p>
-          <div className="bg-gray-50 rounded-md p-3 mb-4">
-            <p className="text-sm text-gray-500 font-mono">{error.message}</p>
-          </div>
           <button
-            onClick={() => window.location.reload()}
-            className="cursor-pointer w-full bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded-md transition-colors duration-200"
+            onClick={() => navigate("/Mozo")}
+            className="cursor-pointer w-full bg-yellow-600 hover:bg-yellow-700 text-white font-medium py-2 px-4 rounded-md transition-colors duration-200"
           >
-            Reintentar
+            Aceptar
           </button>
         </div>
       </div>
@@ -91,33 +91,36 @@ export default function ReservationsView() {
           renderInput={(params) => (
             <TextField
               sx={{
-          '& .MuiOutlinedInput-root': {
-            borderRadius: 16, // redondeado
-            backgroundColor: '#f9fafb', // gris claro como fondo
-            paddingRight: 1,
-            '&:hover fieldset': {
-              borderColor: '#f59e0b', // borde ámbar al hover
-            },
-            '&.Mui-focused fieldset': {
-              borderColor: '#f59e0b', // borde ámbar al focus
-              boxShadow: '0 0 0 2px rgba(245,158,11,0.2)', // glow suave
-            },
-          },
-          '& .MuiInputLabel-root': {
-            color: '#374151', // gris oscuro label
-            fontWeight: 500,
-          },
-          '& .MuiInputBase-input': {
-            padding: '12px 14px', // más padding
-            fontSize: '0.95rem',
-            color: '#1f2937', // texto gris oscuro
-          },
-        }}
-              {...params}
-              label="Buscar por cliente"
-              variant="outlined"
-              fullWidth
-            />
+                '& .MuiOutlinedInput-root': {
+                  borderRadius: 16,
+                  backgroundColor: '#f9fafb',
+                  paddingRight: 1,
+                  '&:hover fieldset': {
+                    borderColor: '#9ca3af', 
+                  },
+                  '&.Mui-focused fieldset': {
+                    borderColor: '#6b7280', 
+                    boxShadow: '0 0 0 2px rgba(107,114,128,0.2)', 
+                  },
+                },
+                '& .MuiInputLabel-root': {
+                  color: '#6b7280', 
+                  fontWeight: 500,
+                  '&.Mui-focused': {
+                    color: '#6b7280', 
+                  },
+                },
+                '& .MuiInputBase-input': {
+                  padding: '12px 14px',
+                  fontSize: '0.95rem',
+                  color: '#1f2937',
+                },
+              }}
+                {...params}
+                label="Buscar por cliente"
+                variant="outlined"
+                fullWidth
+              />
           )}
         />
       </div>
@@ -144,7 +147,7 @@ export default function ReservationsView() {
           </div>
         ) : hasNextPage ? (
           <button
-            className="cursor-pointer px-6 py-2 bg-gray-600 text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 transition duration-150 ease-in-out active:scale-95 disabled:opacity-50"
+            className="cursor-pointer px-6 py-2 bg-gray-600 text-white font-semibold rounded-lg shadow-md hover:bg-gray-700 transition duration-150 ease-in-out active:scale-95 disabled:opacity-50"
             onClick={() => fetchNextPage()}
             disabled={isFetchingNextPage}
           >
