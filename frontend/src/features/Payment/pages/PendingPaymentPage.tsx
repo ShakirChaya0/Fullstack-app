@@ -5,8 +5,10 @@ import SuccessfulPaymentPage from "./SuccessfulPaymentPage";
 import { useCallback, useEffect, useState } from "react";
 import { useWebSocket } from "../../../shared/hooks/useWebSocket";
 import { useOrderActions } from "../../../shared/hooks/useOrderActions";
+import { useBlockNavigation } from "../../../shared/hooks/useBlockNavigation";
 
 export default function PendingPaymentPage() {
+    useBlockNavigation(true, "¿Seguro que quieres salir?") //Bloque de acciones para ir hacia atras
     const { handleRecoveyInitialState } = useOrderActions()
     const [paymentStatus, setPaymentStatus] = useState<"pending" | "success">('pending');
     const { onEvent, offEvent } = useWebSocket();

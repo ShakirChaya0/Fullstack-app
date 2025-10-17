@@ -10,10 +10,15 @@ import WaitingForQR from "../components/WaitingForQR";
 export default function Menu(){
     const [searchParams, setSearchParams] = useSearchParams()
     const { apiCall } = useApiClient()
+    const qrToken = searchParams?.get("qrToken");
+    const mesa = searchParams?.get("mesa");
+    const hasQrParams = (qrToken ? true : false) && (mesa ? true : false);
+
 
     const { isLoading, isError } = useQuery({
         queryKey: ['qr'],
-        queryFn: () =>  fetchQR(apiCall, searchParams?.get("qrToken") ?? "", Number(searchParams?.get("mesa"))),
+        queryFn: () =>  fetchQR(apiCall, searchParams.get("qrToken")!, Number(searchParams.get("mesa"))),
+        enabled: hasQrParams,
         staleTime: Infinity,
         retry: 0,
         refetchOnMount: false
@@ -28,7 +33,7 @@ export default function Menu(){
                     <OrderList/>
                 </div>
             }
-            {isError &&
+            {isError && hasQrParams && 
                 <div className="w-full max-w-md sm:max-w-lg md:max-w-2xl bg-gray-50 rounded-xl sm:rounded-2xl shadow-xl p-4 sm:p-6 md:p-8 text-center mx-auto my-4 sm:my-10">
         
                     <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-800">Escanear Código QR</h1>

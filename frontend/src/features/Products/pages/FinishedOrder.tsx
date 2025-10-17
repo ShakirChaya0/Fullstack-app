@@ -10,7 +10,6 @@ import { useOrderActions } from "../../../shared/hooks/useOrderActions"
 import type { OrderClientInfo, OrderStatus } from "../../Order/interfaces/Order"
 import { formatCurrency } from "../../../shared/utils/formatCurrency"
 
-
 export default function FinishedOrder() {
     const order = useAppSelector((state) => state.order)
     const { handleModifyOrderStatus } = useOrderActions()

@@ -3,7 +3,6 @@ import { lazy, Suspense } from "react";
 
 // Layouts and Pages
 const ClientMainLayout = lazy(() => import("../shared/components/ClientMainLayout"));
-const ProtectedPage = lazy(() => import("../shared/components/ProtectedPage"));
 const Menu = lazy(() => import("../features/Products/pages/Menu"));
 const DrinksList = lazy(() => import("../features/Products/pages/DrinksList"));
 const FoodsList = lazy(() => import("../features/Products/pages/FoodsList"));
@@ -67,9 +66,7 @@ export default function ClientRouter() {
 
         <Route path="/Menu/PedidoConfirmado" element={
           <Suspense fallback={<OrderSkeleton />}>
-            <ProtectedPage>
-              <FinishedOrder/>
-            </ProtectedPage>
+            <FinishedOrder/>
           </Suspense>
         }/>
 
@@ -97,9 +94,7 @@ export default function ClientRouter() {
 
         <Route path="/Pedido/Cuenta" element={
           <Suspense fallback={<CheckSkeleton />}>
-            <ProtectedPage>
-              <CheckPage />
-            </ProtectedPage>
+            <CheckPage />
           </Suspense>
         }/>
 
