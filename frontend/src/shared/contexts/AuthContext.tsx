@@ -17,7 +17,7 @@ interface AuthContextType {
     accessToken: string | null, 
     login: (email: string, password: string) => Promise<{ success: boolean; error?: undefined; } | { success: boolean; error: any; } | undefined>,
     logout: () => void,
-    refreshAccessToken: () => Promise<void>,
+    refreshAccessToken: () => Promise<string | null>,
     isLoading: boolean,
     isAuthenticated: boolean
 }
@@ -48,10 +48,17 @@ export const AuthProvider = ({ children }: { children: ReactElement }) => {
                 
                 const userData: JwtPayloadInterface = jwtDecode(data.token);
                 setUser(userData);
-            } 
+
+                return data.token
+            }
+
+            console.warn(data.message)
+
+            return null;
         } catch (error) {
             console.error('Error refreshing token:', error);
             logout();
+            return null;
         } finally {
             setIsLoading(false);
         }

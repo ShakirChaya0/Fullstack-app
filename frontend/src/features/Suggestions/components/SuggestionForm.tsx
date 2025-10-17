@@ -76,8 +76,9 @@ export default function SuggestionForm({ handleClose, suggestion }: SuggestionFo
 
                 <div className="flex flex-col sm:flex-row justify-between gap-6">
                     <div className="flex flex-col gap-2 w-full">
-                        <label className="font-semibold text-gray-800">Fecha Desde</label>
-                        <input 
+                        <label className="font-semibold text-gray-800" htmlFor="fechaDesde">Fecha Desde</label>
+                        <input
+                            id="fechaDesde"
                             type="date"
                             {...register("FechaDesde", {
                                 required: "La fecha desde es obligatoria",
@@ -90,8 +91,9 @@ export default function SuggestionForm({ handleClose, suggestion }: SuggestionFo
                     </div>
 
                     <div className="flex flex-col gap-2 w-full">
-                        <label className="font-semibold text-gray-800">Fecha Hasta</label>
+                        <label className="font-semibold text-gray-800" htmlFor="fechaHasta">Fecha Hasta</label>
                         <input 
+                            id="fechaHasta"
                             type="date"
                             {...register("FechaHasta", {
                                 required: "La fecha hasta es obligatoria",

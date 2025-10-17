@@ -6,7 +6,7 @@ export default function SuggestionsList({ suggestions }: { suggestions: Suggesti
     return (
         <motion.ul
             layout
-            className="flex flex-row flex-wrap justify-center gap-6 p-2"
+            className="flex flex-col sm:flex-row flex-wrap justify-center gap-6 p-4 sm:p-2"
             initial={false}
         >
             <AnimatePresence>

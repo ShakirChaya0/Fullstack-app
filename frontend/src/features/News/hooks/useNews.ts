@@ -12,8 +12,7 @@ export function useNews (query: string, filter: FilterProps, page?: number) {
         queryFn: () => fetchNews(apiCall, query, filter, page),
         staleTime: 1000 * 60 * 60,
         retry: 0
-        
     })
     
-    return {isLoading, isError, data}
+    return { isLoading, isError, data }
 }

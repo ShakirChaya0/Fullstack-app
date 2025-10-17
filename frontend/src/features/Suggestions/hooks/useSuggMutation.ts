@@ -41,7 +41,7 @@ export function useSuggMutation({ handleClose, handleError, suggestion }: UseSug
         },        
         onSuccess: async () => {
             await queryClient.invalidateQueries({ queryKey: ["suggestions"] });
-            toast.success(`Se ${suggestion ? "modificó" : "creó"} la sugerencia con exito`)
+            toast.success(`Se ${suggestion ? "modificó" : "creó"} la sugerencia con éxito`)
             handleError(null);
             handleClose();
         },

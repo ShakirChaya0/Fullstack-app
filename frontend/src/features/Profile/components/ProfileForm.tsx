@@ -49,7 +49,7 @@ export default function ProfileForm({ profile, editMode , onEditModeChange }: Pr
 
     return (
         <section className="w-full flex flex-col items-center">
-            <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col w-full pl-6 pr-6 pb-4 items-center justify-center gap-6">
+            <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col w-full sm:px-6 pb-4 items-center justify-center gap-6">
 
                 {fieldConfigs
                     .filter((f) => f.show(profile))

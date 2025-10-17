@@ -116,10 +116,9 @@ export default function OrdersDashboard() {
         );
     }
 
-
     if (!connected)
         return (
-            <section className="w-full bg-gray-100 min-h-screen font-sans">
+            <section className="flex flex-col justify-center items-center w-full bg-gray-100 min-h-screen font-sans">
                 <div className="bg-red-100 border border-red-300 text-red-700 rounded-lg p-6 max-w-md text-center shadow-md">
                     <h2 className="text-xl font-bold mb-2">Error</h2>
                     <p className="mb-4">No se pudo conectar al panel de pedidos activos. Por favor, intente nuevamente.</p>
@@ -135,7 +134,7 @@ export default function OrdersDashboard() {
 
     return (
         <section className="w-full bg-gray-100 min-h-screen font-sans">
-            <div className="bg-[#FFFFFF] shadow-md p-4">
+            <div className="bg-white shadow-md p-4">
                 <h1 className="text-3xl md:text-4xl font-bold text-gray-800 text-center">Panel de Cocina</h1>
             </div>
             
@@ -146,7 +145,7 @@ export default function OrdersDashboard() {
                             <OrderCard key={order.idPedido} order={order} onSelect={handleSelectOrder} />
                         ))
                     ) : (
-                        <div className="col-span-full text-center py-20 bg-[#FFFFFF] rounded-2xl shadow-lg">
+                        <div className="col-span-full text-center py-20 bg-white border-t-3 border-t-gray-200 rounded-2xl shadow-lg p-2">
                             <h2 className="text-2xl font-semibold text-[#6B6B6B]">¡Todo listo!</h2>
                             <p className="text-[#929292] mt-2">No hay pedidos activos en este momento.</p>
                         </div>

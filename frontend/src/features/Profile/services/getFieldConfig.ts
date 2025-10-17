@@ -9,13 +9,15 @@ export type FieldConfig = {
     component?: "controller" | "input";
 };
 
-export function getFieldConfigs(): FieldConfig[] { 
+export function getFieldConfigs(): FieldConfig[] {
     return [
         {
             name: "nombre",
             label: "Nombre",
             rules: {
                 required: "El nombre es obligatorio",
+                validate: (value: string) =>
+                    value.trim().length > 0 || "No puede contener solo espacios",
                 minLength: { value: 2, message: "Debe tener al menos 2 caracteres" },
             },
             show: (p) => "nombre" in p,
@@ -25,6 +27,8 @@ export function getFieldConfigs(): FieldConfig[] {
             label: "Apellido",
             rules: {
                 required: "El apellido es obligatorio",
+                validate: (value: string) =>
+                    value.trim().length > 0 || "No puede contener solo espacios",
                 minLength: { value: 2, message: "Debe tener al menos 2 caracteres" },
             },
             show: (p) => "apellido" in p,
@@ -34,8 +38,11 @@ export function getFieldConfigs(): FieldConfig[] {
             label: "DNI",
             rules: {
                 required: "El DNI es obligatorio",
-                validate: (value: string) =>
-                    /^\d{8,10}$/.test(value) || "Formato de DNI inválido (Ej: 12345678)",
+                validate: (value: string) => {
+                    if (value.trim().length === 0)
+                        return "No puede contener solo espacios";
+                    return /^\d{8}$/.test(value) || "Formato de DNI inválido (Ej: 12345678)";
+                },
             },
             show: (p) => "dni" in p,
         },
@@ -44,9 +51,14 @@ export function getFieldConfigs(): FieldConfig[] {
             label: "Teléfono",
             rules: {
                 required: "El teléfono es obligatorio",
-                validate: (value: string) =>
-                    /^(?:\+54|0)?\s?\d{2,4}[- ]?\d{6,8}$/.test(value) ||
-                    "Formato de Teléfono inválido (Ej: 123456789, +54 11 23456789)",
+                validate: (value: string) => {
+                    if (value.trim().length === 0)
+                        return "No puede contener solo espacios";
+                    return (
+                        /^\+?\d{5,15}$/.test(value) ||
+                        "Formato de Teléfono inválido (Ej: 123456789, +541123456789)"
+                    );
+                },
             },
             show: (p) => "telefono" in p,
         },
@@ -56,9 +68,14 @@ export function getFieldConfigs(): FieldConfig[] {
             type: "email",
             rules: {
                 required: "El Email es obligatorio",
-                validate: (value: string) =>
-                    /\S+@\S+\.\S+/.test(value) ||
-                    "Formato de Email inválido (Ej: tucorreo@ejemplo.com)",
+                validate: (value: string) => {
+                    if (value.trim().length === 0)
+                        return "No puede contener solo espacios";
+                    return (
+                        /\S+@\S+\.\S+/.test(value) ||
+                        "Formato de Email inválido (Ej: tucorreo@ejemplo.com)"
+                    );
+                },
             },
             show: (p) => "email" in p,
         },
@@ -77,6 +94,8 @@ export function getFieldConfigs(): FieldConfig[] {
             label: "Usuario",
             rules: {
                 required: "El Nombre de Usuario es obligatorio",
+                validate: (value: string) =>
+                    value.trim().length > 0 || "No puede contener solo espacios",
                 minLength: { value: 4, message: "Debe tener al menos 4 caracteres" },
             },
             show: () => true,

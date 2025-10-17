@@ -1,3 +1,4 @@
+import { toast } from 'react-toastify';
 import useAuth from './useAuth';
 
 export const useApiClient = () => {
@@ -19,19 +20,19 @@ export const useApiClient = () => {
         let response = await makeRequest(accessToken);
 
         if (response.status === 401) {
-            await refreshAccessToken();
-            const newAccessToken = accessToken 
+            const newAccessToken = await refreshAccessToken(); 
 
             if (newAccessToken) {
                 response = await makeRequest(newAccessToken);
+
+                console.log("REFRESH AUTOMATICO")
             } else {
                 logout();
-                throw new Error('Sesión expirada. Por favor, inicie sesión de nuevo.');
+                toast.warn('Sesión expirada. Por favor, inicie sesión de nuevo.');
             }
         }
 
         return response;
-
     };
 
     return { apiCall };

@@ -45,6 +45,12 @@ export default function ProductAutocomplete({ control, name, onSelect, product }
                         onSelect(newValue);
                     }}
                     onInputChange={(_, value) => setInputValue(value)}
+                    loadingText="Buscando productos..."
+                    noOptionsText={
+                        inputValue.length <= 1
+                            ? "Empieza a escribir para buscar"
+                            : "No se encontraron productos"
+                    }
                     renderInput={(params) => (
                         <TextField
                             {...params}

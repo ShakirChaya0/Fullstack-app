@@ -49,12 +49,12 @@ type Props = {
 
 // --- Datos para las tarjetas de acceso rápido ---
 const quickAccessItems: Props[] = [
-  { title: "Novedades", description: "Gestiona las nuevas novedades que tenga el restaurante .", icon: <MenuIcon />, color: "blue", href: "Novedades" },
+  { title: "Novedades", description: "Gestiona las nuevas novedades que tenga el restaurante.", icon: <MenuIcon />, color: "blue", href: "Novedades" },
   { title: "Mozos", description: "Gestiona las cuentas de los mozos del restaurante.", icon: <StaffIcon />, color: "green", href: "Mozos" },
-  { title: "Mesas", description: "Controla el estado de las mesas, organiza reservas y asigna mozos.", icon: <ReservationsIcon />, color: "yellow", href: "Mesas" },
+  { title: "Mesas", description: "Consulta, crea, modifica o elimina mesas del restaurante.", icon: <ReservationsIcon />, color: "yellow", href: "Mesas" },
   { title: "Horarios", description: "Configura los horarios de apertura, cierre y disponibilidad del restaurante.", icon: <ClockIcon />, color: "purple", href: "Horarios" },
-  { title: "Productos", description: "Administra el inventario, controla el stock y actualiza precios fácilmente.", icon: <ProductIcon />, color: "blue", href: "Productos" },
-  { title: "Datos del Restaurante", description: "Consulta datos esenciales del restaurante", icon: <ReportsIcon />, color: "purple", href: "DatosRestaurantes" }
+  { title: "Productos", description: "Administra el inventario y actualiza precios fácilmente.", icon: <ProductIcon />, color: "blue", href: "Productos" },
+  { title: "Datos del Restaurante", description: "Consulta datos esenciales del restaurante.", icon: <ReportsIcon />, color: "purple", href: "DatosRestaurantes" }
 ];
 
 // --- Componente de Tarjeta reutilizable ---

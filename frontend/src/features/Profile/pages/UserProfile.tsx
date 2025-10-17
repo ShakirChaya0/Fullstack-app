@@ -30,7 +30,7 @@ export default function UserProfile() {
 
     return (
         <div className="p-6 max-w-7xl w-3xl mx-auto">
-            <Paper elevation={8} className="flex flex-col p-6 h-full w-full">
+            <Paper elevation={8} className="flex flex-col p-4 sm:p-6 h-full w-full">
                 <div className="flex justify-between items-center">
                     <h1 className="text-2xl md:text-3xl font-bold text-gray-800 mb-6 mt-6 ml-6 max-w-7xl">Mi Perfil</h1>
                     {!editMode && (
