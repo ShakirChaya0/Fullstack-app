@@ -2,9 +2,22 @@ import z from 'zod'
 import { ValidationError } from '../exceptions/ValidationError.js';
 
 const kitchenSchema = z.object({
-    nombreUsuario: z.string({message: "El titulo debe ser un string"}).nonempty({message: "Este campo es requerido"}).min(6),
-    email: z.string({message: "La descripcion debe ser un string"}).nonempty({message: "Este campo es requerido"}).min(6).email({message: "Debe ser un email lo ingresado"}),
-    contrasenia: z.string({message: "La contraseña debe ser un string"}).nonempty({message: "Este campo es requerido"}).min(7),
+    nombreUsuario: z.string({ required_error: "El nombre de usuario es obligatorio" })
+        .trim()
+        .min(2, 'El nombre de usuario no puede tener menos de 2 caracteres')
+        .max(50, 'El nombre de usuario no puede exceder los 50 caracteres'),
+
+    email: z.string({ required_error: "El email es obligatorio" })
+        .trim()
+        .email('El correo electrónico debe ser válido')
+        .min(1, 'El correo electrónico es obligatorio')
+        .max(100, 'El correo electrónico no puede exceder los 100 caracteres'),
+
+    contrasenia: z.string({ required_error: "La contraseña es obligatoria" })
+        .trim()
+        .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{6,}$/, "La contraseña debe incluir una mayúscula, una minúscula y un número.")
+        .min(6, 'La contraseña debe tener al menos 6 caracteres')
+        .max(100, 'La contraseña no puede exceder los 100 caracteres'),
 });
 
 export type SchemaKitchen = z.infer<typeof kitchenSchema>

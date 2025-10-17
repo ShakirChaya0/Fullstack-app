@@ -16,7 +16,7 @@ export class RefreshUseCase {
         try{
             const token = await this.refreshTokenRepository.getRefreshToken(refreshToken)
 
-            if(!token || token.revocado) throw new UnauthorizedError('Token inválido o expirado')
+            if(!token || token.revocado) throw new UnauthorizedError('Token inválido o revocado')
 
             const payload = this.jwtService.verifyRefreshToken(refreshToken);
             

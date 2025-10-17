@@ -1,13 +1,11 @@
 import { Router } from 'express';
 import { InformationController } from '../controllers/InformationController.js';
-import { RoleMiddleware } from '../middlewares/RoleMiddleware.js';
-import { AuthMiddleware } from '../middlewares/AuthMiddleware.js';
 
 export function InformationRouter() {
     const informationRouter = Router();
     const informationController = new InformationController();
 
-    informationRouter.patch('/:idInformacion', (req, res, next) => { // AuthMiddleware, RoleMiddleware(["Administrador"])
+    informationRouter.patch('/:idInformacion', (req, res, next) => {
         informationController.updateInformation(req, res, next); 
     });
 

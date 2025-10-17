@@ -19,7 +19,8 @@ export async function AuthMiddleware(req: AuthenticatedRequest, res: Response, n
         const payload =  jwtService.verifyAccessToken(token);
         req.user = payload as JwtPayloadInterface;
         next();
-    } catch (error) {
+    } catch {
+        const error = new UnauthorizedError("Token expirado");
         next(error)
     }
 }

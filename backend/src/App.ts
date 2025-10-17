@@ -54,7 +54,7 @@ app.use("/novedades", AuthMiddleware, NewsRouter())
 
 app.use("/politicas", AuthMiddleware, RoleMiddleware(["Administrador"]), PolicyRouter()) 
 
-app.use('/informacion', InformationRouter())
+app.use('/informacion', AuthMiddleware, RoleMiddleware(["Administrador"]), InformationRouter())
 
 app.use('/horarios', HorariosRouter())
 
