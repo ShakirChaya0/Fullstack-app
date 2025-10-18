@@ -8,6 +8,7 @@ import useDebounce from "../hooks/useDebouncer";
 import { useQueryClient } from "@tanstack/react-query";
 import { FilterContext } from "../hooks/useFilter";
 import SkeletonNewsBody from "./SkeletonNewsBody";
+import { Alert } from "@mui/material";
 const NewsTable = lazy(() => import("../components/NewsTable"))
 
 export type FilterProps = "Todas" | "Activas"
@@ -57,10 +58,10 @@ export default function NewsCRUD () {
                         }
                         { (debouncedValue.length !== 0) && (data?.News.length === 0) && 
                             <div className="flex items-center w-full h-full justify-center">
-                                <h1 className="font-medium">No se encontraron los datos buscados</h1>
+                                <Alert severity="error" className="font-medium">No se encontraron los datos buscados</Alert>
                             </div>
                         }
-                        { isError && <p>Error</p> }
+                        { isError && <Alert severity="error">Error al cargar los datos</Alert> }
                         {
                             !isError && data?.totalItems !== 0 &&
                             <div className="flex flex-col items-center justify-center">

@@ -37,31 +37,36 @@ export default function ModifyOrder() {
     const nroMesa = useParams()
     const [existingOrder, setExistingOrder] = useState<PedidoBackend | null>(JSON.parse(localStorage.getItem("modifyOrder") ?? ""))
     const { sendEvent, onEvent, offEvent } = useWebSocket()
-    console.log("existingOrder: ", existingOrder)
 
     useEffect(() => {
         onEvent("modifiedOrderLine", (data) => {
+            localStorage.setItem("modifyOrder", data)
             setExistingOrder(data)
             toast.success("Se modificó con éxito su Pedido")
         })
         onEvent("deletedOrderLine", (data) => {
+            localStorage.setItem("modifyOrder", data)
             setExistingOrder(data)
             toast.success("Se eliminó con éxito la línea de pedido")
         })
         onEvent("addedOrderLine", (data) => {
+            localStorage.setItem("modifyOrder", data)
             setExistingOrder(data)
             toast.success("Se agregó con éxito la nueva línea de pedido")
         })
         return () => {
             offEvent("modifiedOrderLine", (data) => {
+                localStorage.setItem("modifyOrder", data)
                 setExistingOrder(data)
                 toast.success("Se modificó con éxito su Pedido")
             })
             offEvent("deletedOrderLine", (data) => {
+                localStorage.setItem("modifyOrder", data)
                 setExistingOrder(data)
                 toast.success("Se eliminó con éxito la línea de pedido")
             })
             offEvent("addedOrderLine", (data) => {
+                localStorage.setItem("modifyOrder", data)
                 setExistingOrder(data)
                 toast.success("Se agregó con éxito la nueva línea de pedido")
             })
@@ -122,8 +127,6 @@ export default function ModifyOrder() {
         const correspondingLine = existingOrder?.lineasPedido.filter(
             (lp) => (lp.nombreProducto === nameProduct) && (lp.nroLinea === lineNumber)).find((lp) => lp.estado === "Pendiente");
 
-    
-        console.log("corres: ", correspondingLine)
         if (!correspondingLine || correspondingLine.estado !== "Pendiente") {
             toast.warning("No se puede eliminar esta línea porque ya está en preparación o fue entregada");
             return;

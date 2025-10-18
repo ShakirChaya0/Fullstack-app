@@ -18,6 +18,7 @@ import type News from '../interfaces/News';
 import { ModalContext } from '../hooks/useModalProvider';
 import DeleteNewsModal from './DeleteNewsModal';
 import useApiClient from '../../../shared/hooks/useApiClient';
+import { Alert } from '@mui/material';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -122,7 +123,7 @@ export default function NewsTable ({data, handleResetPage}: {data: BackResults |
       </div>
       ) : (
       <div className="flex items-center w-full h-full justify-center">
-        <h1 className='text-center font-medium'>No hay novedades { filter === "Activas" ? "activas" : "cargadas" }</h1>
+        <Alert severity="error" className='text-center font-medium'>No hay novedades { filter === "Activas" ? "activas" : "cargadas" }</Alert>
       </div>
     )
     }

@@ -8,18 +8,18 @@ export function useMutationNews ({fn, SuccessMsg, ErrorMsg}: {fn: (apiCall: (url
     const queryClient = useQueryClient()
     const { apiCall } = useApiClient()
 
-    const { mutate, isPending: isLoading, failureReason } = useMutation({
+    const { mutate, isPending: isLoading, failureReason, isError } = useMutation({
       mutationFn: (data: News) => fn(apiCall, data),
       onSuccess: () => {
         toast.success(SuccessMsg)
       },
       onError: (err) => {
-        toast.error(ErrorMsg)
-        console.log(err)
+        toast.error(`${err}`)
+        console.log(ErrorMsg)
       },
       onSettled: async () => {
         await queryClient.invalidateQueries({queryKey: ["News"]})
       }
     });
-    return { mutate, isLoading, failureReason }
+    return { mutate, isLoading, failureReason, isError }
 }

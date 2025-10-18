@@ -100,7 +100,7 @@ export default function ShowWaiterTables() {
             {
                 !isLoading ? (
                     !isError ? (
-                        tables?.length === 0 ? (
+                        tables?.length !== 0 ? (
                             <div className="bg-gray-100 w-full font-sans text-gray-800 flex flex-col p-4 md:p-8">
                                 { open && <div className='absolute w-full h-full bg-black opacity-50 inset-0' onClick={handleToggleModal}></div>}
                                 { currentTable && <ModalShowTable onClose={handleToggleModal} open={open} currentTable={currentTable}/>}

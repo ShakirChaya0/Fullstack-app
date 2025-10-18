@@ -41,11 +41,11 @@ export default function ActionForm({handleClose}: {handleClose: () => void}) {
 
     const { fn, msgs, news, ButtonName } = useModalProvider()
 
-    const { mutate, isLoading, failureReason } = useMutationNews({fn, currentPage, SuccessMsg: msgs.SuccessMsg, ErrorMsg: msgs.ErrorMsg, query, filter})
+    const { mutate, isLoading, failureReason, isError } = useMutationNews({fn, currentPage, SuccessMsg: msgs.SuccessMsg, ErrorMsg: msgs.ErrorMsg, query, filter})
 
     const onSubmit =  (data: FormData) => {
       mutate({_newsId: news?._newsId, _title: data.Titulo.trim(), _description: data.Descripcion.trim(), _startDate: data.FechaInicio.trim(), _endDate: data.FechaFin.trim()})
-      handleClose()
+      if (!isError && !isLoading) handleClose()
     };
 
     const fechaInicioValue = watch("FechaInicio");
@@ -73,7 +73,7 @@ export default function ActionForm({handleClose}: {handleClose: () => void}) {
           <div className="flex flex-col gap-2">
             <label className="sm:text-lg font-semibold text-gray-800">Título</label>
             <input
-                {...register("Titulo", {required: "El Título es obligatorio"})}
+                {...register("Titulo", {required: "El Título es obligatorio", minLength: 6})}
                 placeholder="Escribe el título..."
                 className="px-2 py-1 sm:px-4 sm:py-3 sm:text-lg border border-gray-300 rounded-lg sm:rounded-xl shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
                 defaultValue={news?._title}
@@ -88,6 +88,7 @@ export default function ActionForm({handleClose}: {handleClose: () => void}) {
             <textarea
                 {...register("Descripcion", {
                   required: "La descripción es obligatoria",
+                  minLength: 12
                 })}
                 placeholder="Escribe la descripción..."
                 rows={3}

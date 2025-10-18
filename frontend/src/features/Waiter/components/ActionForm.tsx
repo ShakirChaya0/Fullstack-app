@@ -24,14 +24,14 @@ export default function ActionForm({handleClose}: {handleClose: () => void}) {
 
     const {fn, msgs, waiters, ButtonName} = useModalProvider()
 
-    const { mutate, isLoading, failureReason } = useMutationWaiter({fn: fn, currentPage: currentPage, SuccessMsg: msgs.SuccessMsg, ErrorMsg: msgs.ErrorMsg, query: query})
+    const { mutate, isLoading, failureReason, isError } = useMutationWaiter({fn: fn, currentPage: currentPage, SuccessMsg: msgs.SuccessMsg, ErrorMsg: msgs.ErrorMsg, query: query})
 
     const onSubmit = (data: FormData) => {
         mutate({idMozo: waiters?.idMozo, nombreUsuario: data.nombreUsuario.trim(), 
             contrasenia: data.contrasenia.trim(), email: data.email.trim(), 
             nombre: data.nombre.trim(), apellido: data.apellido.trim(), 
             dni: data.dni.trim(), telefono: data.telefono.trim()})
-          handleClose()
+        if (!isError && !isLoading) handleClose()
     }
 
 return (

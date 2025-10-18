@@ -1,6 +1,6 @@
 import { lazy, Suspense, useCallback, useState, type ChangeEvent } from "react"
 import { useWaiters } from "../hooks/useWaiters"
-import { CircularProgress, Pagination } from "@mui/material"
+import { Alert, CircularProgress, Pagination } from "@mui/material"
 import SkeletonBodyWaiters from "./SkeletonBodyWaiters"
 import WaitersHeader from "../components/WaitersHeader"
 import { PageContext } from "../hooks/usePage"
@@ -44,10 +44,10 @@ export default function WaitersCRUD () {
                                     }
                                     { (debouncedValue.length !== 0) && (data?.Waiters.length === 0) && 
                                         <div className="flex justify-center items-center h-full w-full">
-                                            <h1 className="font-medium">No se encontraron los datos buscados</h1>
+                                            <Alert severity="error" className="font-medium">No se encontraron los datos buscados</Alert>
                                         </div>
                                     }
-                                    { isError && <p>Error al cargar los datos</p>}
+                                    { isError && <Alert severity="error">Error al cargar los datos</Alert>}
                                     {
                                         !isError && data?.totalItems !== 0 &&
                                         <div className="flex flex-col items-center justify-center">
