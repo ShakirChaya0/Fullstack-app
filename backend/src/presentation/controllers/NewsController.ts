@@ -6,6 +6,7 @@ import { ValidationError } from "../../shared/exceptions/ValidationError.js";
 import { GetByTitleNewsUseCase } from "../../application/use_cases/NewsUseCases/GetByTitleNewsUseCase.js";
 import { GetAllNewsUseCase } from "../../application/use_cases/NewsUseCases/GetAllNewsUseCase.js";
 import { DeleteNewsUseCase } from "../../application/use_cases/NewsUseCases/DeleteNewsUseCase.js";
+import { ActiveNewsUseCase } from "../../application/use_cases/NewsUseCases/ActiveNewsUseCase.js";
 
 export class NewsController {
     constructor(
@@ -14,7 +15,17 @@ export class NewsController {
         private readonly getoneNewsUC = new GetByTitleNewsUseCase(),
         private readonly getAllNewsUC = new GetAllNewsUseCase(),
         private readonly deleteNewsUC = new DeleteNewsUseCase(),
+        private readonly activeNewsUC = new ActiveNewsUseCase()
     ){}
+
+    async actives(req: Request, res: Response, next: NextFunction) {
+        try{
+            const news = await this.activeNewsUC.execute()
+            res.status(200).json(news)
+        }catch(error) {
+            next(error)
+        }
+    }
 
     async create(req: Request, res: Response, next: NextFunction) {
         try{

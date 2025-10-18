@@ -17,5 +17,7 @@ export function NewsRouter(){
     
     newsRouter.patch("/:newsId", RoleMiddleware(["Administrador"]), (req, res, next) => { newsController.modify(req, res, next) }) 
 
+    newsRouter.get("/actives", (req, res, next) => { newsController.actives(req, res, next)})
+
     return newsRouter
 }

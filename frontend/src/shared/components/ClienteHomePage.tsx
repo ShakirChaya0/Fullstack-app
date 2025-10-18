@@ -2,6 +2,12 @@ import React from 'react';
 import useAuth from '../hooks/useAuth';
 import { NavLink } from 'react-router';
 import RestaurantImage from '../utils/assets/RestaurantGreen.jpg';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import "swiper/css"
+import "swiper/css/navigation"
+import { Navigation } from 'swiper/modules';
+import type News from '../../features/News/interfaces/News';
+import { useActiveNews } from '../../features/News/hooks/useActiveNews';
 
 const ClipboardListIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg
@@ -84,8 +90,74 @@ const NavigationCard = ({ icon: Icon, title, description, color, href }: Props) 
   );
 };
 
+const NewsCarroussel = ({news}: {news: News[]}) => {
+  const formatDate = (dateString: string) => {
+      try {
+          const options: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'long', day: 'numeric' };
+          return new Date(dateString).toLocaleDateString('es-ES', options);
+      } catch (e) {
+          console.log(e)
+          return dateString; 
+      }
+  };
+  
+
+  return (
+    <Swiper
+      modules={[Navigation]}
+      navigation
+      spaceBetween={20}
+      slidesPerView={1}
+      breakpoints={{
+        1000: { slidesPerView: news.length >= 2 ? 2 : 1 },
+      }}
+      className="px-8 max-w-7xl"
+    >
+      {news?.map((n) => (
+        <SwiperSlide
+          key={n._title}
+          className="flex justify-center items-center" 
+        >
+          <div className="h-[28rem] mx-auto sm:h-[26rem] md:h-[24rem] flex flex-col justify-between max-w-2xl w-full p-4 sm:p-6 md:p-8 bg-white rounded-2xl shadow-xl border-l-8 border-orange-500">
+            {/* Encabezado y Título */}
+            <div>
+              <div className="flex justify-between items-start border-b pb-3 sm:pb-4 mb-3 sm:mb-4">
+                <h2 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold text-slate-900 line-clamp-2">
+                  {n._title}
+                </h2>
+                <span className="items-center rounded-full bg-red-100 px-2 sm:px-3 py-0.5 sm:py-1 text-xs sm:text-sm font-semibold text-orange-500 shadow-sm">
+                  ✨ Nuevo
+                </span>
+              </div>
+              <div className='flex items-center justify-center flex-1'>
+                <p className="text-slate-700 text-base sm:text-lg mb-4 sm:mb-6 leading-relaxed flex items-center justify-center text-center min-h-[6rem]">
+                  {n._description}
+                </p>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 text-xs sm:text-sm text-slate-600 bg-slate-50 p-3 sm:p-4 rounded-lg">
+              <div className="flex flex-col">
+                <span className="font-semibold text-slate-800">Inicio de Vigencia</span>
+                <span className="text-orange-500 font-medium mt-1">{formatDate(n._startDate)}</span>
+              </div>
+              <div className="flex flex-col">
+                <span className="font-semibold text-slate-800">Fin de Vigencia</span>
+                <span className="text-orange-500 font-medium mt-1">
+                  {n._startDate === n._endDate ? 'Evento Único' : formatDate(n._endDate)}
+                </span>
+              </div>
+            </div>
+          </div>
+        </SwiperSlide>
+      ))}
+    </Swiper>
+  )
+}
+
 export default function App() {
   const { user } = useAuth();
+  const { data, isError, isLoading } = useActiveNews()
 
   const navigationItems: Props[] = [
     {
@@ -117,7 +189,8 @@ export default function App() {
         <p className="mt-4 text-lg text-white">
           Bienvenida al sistema. Selecciona una opción para comenzar a gestionar.
         </p>
-
+        <h2 className='text-3xl my-2 text-white'>Novedades del restaurante</h2>
+        <NewsCarroussel news={data ?? []}/>
         <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-3xl mx-auto">
           {navigationItems.map((item, index) => (
             <NavigationCard

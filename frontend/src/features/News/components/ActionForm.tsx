@@ -73,7 +73,7 @@ export default function ActionForm({handleClose}: {handleClose: () => void}) {
           <div className="flex flex-col gap-2">
             <label className="sm:text-lg font-semibold text-gray-800">Título</label>
             <input
-                {...register("Titulo", {required: "El Título es obligatorio", minLength: 6})}
+                {...register("Titulo", {required: "El Título es obligatorio", minLength: {value: 6, message: "El titulo debe tener 6 caracteres como minimo"}})}
                 placeholder="Escribe el título..."
                 className="px-2 py-1 sm:px-4 sm:py-3 sm:text-lg border border-gray-300 rounded-lg sm:rounded-xl shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
                 defaultValue={news?._title}
@@ -88,7 +88,7 @@ export default function ActionForm({handleClose}: {handleClose: () => void}) {
             <textarea
                 {...register("Descripcion", {
                   required: "La descripción es obligatoria",
-                  minLength: 12
+                  minLength: {value: 12, message: "La descripcion debe tener 12 caracteres como minimo"}
                 })}
                 placeholder="Escribe la descripción..."
                 rows={3}

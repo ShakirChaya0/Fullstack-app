@@ -12,6 +12,22 @@ const hoy = new Date();
 hoy.setHours(0, 0, 0, 0);
 
 export class NewsRepository implements INewsRepository{
+    async actives (): Promise<NewsClass[]> {
+        try {
+            const news = await prisma.novedad.findMany({
+                where: {
+                    fechaInicio: { lte: hoy},
+                    fechaFin: { gte: hoy }
+                }
+            })
+            return news.map((n) => {
+                return new NewsClass(n.idNovedad, n.titulo, n.descripcion, n.fechaInicio, n.fechaFin)
+            })
+        }catch(error: any) {
+            throw new ServiceError(`Error al registrar la novedad en la base de datos: ${error}`)
+        }
+    }
+
     async register (data: SchemaNews): Promise<NewsClass>{
         try{
             const novedad = await prisma.novedad.create({

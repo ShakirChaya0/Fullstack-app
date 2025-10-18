@@ -87,7 +87,7 @@ const QuickAccessCard = ({ title, description, icon, color, href }: Props) => {
 // --- Página Principal del Admin ---
 const AdminHomepage = () => {
   return (
-    <div className="relative w-full h-full overflow-hidden bg-black">
+    <div className="relative w-full min-h-full overflow-hidden bg-black">
       <div 
         className="absolute inset-0 bg-cover bg-center bg-no-repeat blur-xs brightness-110"
         style={{ backgroundImage: `url(${RestaurantImage})` }}

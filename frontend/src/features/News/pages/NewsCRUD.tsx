@@ -42,7 +42,7 @@ export default function NewsCRUD () {
     return (
         <>
             <section className="flex flex-col items-center justify-center w-full p-4 min-h-[600px]">
-                <div className="flex flex-col bg-[var(--admin-bg-200)] gap-5 sm:p-16 sm:rounded-2xl sm:shadow-2xl sm:border sm:border-gray-300 w-full max-w-[1600px] min-h-[600px]">
+                <div className="flex flex-col bg-white gap-5 sm:p-16 sm:rounded-2xl sm:shadow-2xl sm:border sm:border-gray-300 w-full max-w-[1600px] min-h-[600px]">
                     <PageContext.Provider value={{currentPage: currentPage, query: debouncedValue, filter: filter}}>
                         <FilterContext.Provider value={{filter: filter, handleSearch: handleSearch, isDebouncing: isDebouncing, query: query, handleChangeFilter: handleChangeFilter}}>
                             <TableHeader/>
