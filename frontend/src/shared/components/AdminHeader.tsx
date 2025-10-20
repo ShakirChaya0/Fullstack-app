@@ -135,6 +135,29 @@ export default function AdminHeader() {
               <h1>Panel Administrador</h1>
             </div>
             <List>
+              <ListItem disablePadding key="/Admin">
+                <NavLink
+                  to="/Admin"
+                  end
+                  style={{ textDecoration: "none", width: "100%" }}
+                >
+                  {({ isActive }) => (
+                    <ListItemButton
+                      disableRipple
+                      sx={{
+                        bgcolor: isActive ? "black" : "transparent",
+                        color: isActive ? "white" : "inherit",
+                        transition: "background-color 0.2s ease, color 0.2s ease",
+                        "&:hover": {
+                           bgcolor: isActive ? "grey.900" : "rgba(0,0,0,0.1)",
+                        },
+                      }}
+                    >
+                      <ListItemText primary="Panel Principal" />
+                    </ListItemButton>
+                  )}
+                </NavLink>
+              </ListItem>
               {navLinks.map(link => (
                 <NavLink
                   key={link.path}

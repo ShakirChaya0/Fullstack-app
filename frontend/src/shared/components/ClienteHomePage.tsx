@@ -92,13 +92,15 @@ const NavigationCard = ({ icon: Icon, title, description, color, href }: Props) 
 
 const NewsCarroussel = ({news}: {news: News[]}) => {
   const formatDate = (dateString: string) => {
-      try {
-          const options: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'long', day: 'numeric' };
-          return new Date(dateString).toLocaleDateString('es-ES', options);
-      } catch (e) {
-          console.log(e)
-          return dateString; 
-      }
+    try {
+      const date = new Date(dateString);
+      date.setMinutes(date.getMinutes() + date.getTimezoneOffset()); // corregir diferencia UTC
+      const options: Intl.DateTimeFormatOptions = { year: 'numeric', month: 'long', day: 'numeric' };
+      return date.toLocaleDateString('es-ES', options);
+    } catch (e) {
+      console.error(e);
+      return dateString;
+    }
   };
   
 
@@ -120,7 +122,7 @@ const NewsCarroussel = ({news}: {news: News[]}) => {
         >
           <div className="h-[28rem] mx-auto sm:h-[26rem] md:h-[24rem] flex flex-col justify-between max-w-2xl w-full p-4 sm:p-6 md:p-8 bg-white rounded-2xl shadow-xl border-l-8 border-orange-500">
             {/* Encabezado y Título */}
-            <div>
+            <div className='flex-1'>
               <div className="flex justify-between items-start border-b pb-3 sm:pb-4 mb-3 sm:mb-4">
                 <h2 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold text-slate-900 line-clamp-2">
                   {n._title}
@@ -129,8 +131,8 @@ const NewsCarroussel = ({news}: {news: News[]}) => {
                   ✨ Nuevo
                 </span>
               </div>
-              <div className='flex items-center justify-center flex-1'>
-                <p className="text-slate-700 text-base sm:text-lg mb-4 sm:mb-6 leading-relaxed flex items-center justify-center text-center min-h-[6rem]">
+              <div className='flex w-full items-center justify-center'>
+                <p className="text-slate-700 text-base sm:text-lg whitespace-normal break-words line-clamp-9 sm:line-clamp-3 text-center w-full h-full">
                   {n._description}
                 </p>
               </div>
@@ -157,7 +159,7 @@ const NewsCarroussel = ({news}: {news: News[]}) => {
 
 export default function App() {
   const { user } = useAuth();
-  const { data, isError, isLoading } = useActiveNews()
+  const { data, isError } = useActiveNews()
 
   const navigationItems: Props[] = [
     {
@@ -189,8 +191,13 @@ export default function App() {
         <p className="mt-4 text-lg text-white">
           Bienvenida al sistema. Selecciona una opción para comenzar a gestionar.
         </p>
-        <h2 className='text-3xl my-2 text-white'>Novedades del restaurante</h2>
-        <NewsCarroussel news={data ?? []}/>
+        {
+          !isError && data && data?.length > 0 && 
+          <>
+            <h2 className='text-3xl my-2 text-white'>Novedades del restaurante</h2>
+            <NewsCarroussel news={data}/>
+          </>
+        }
         <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-3xl mx-auto">
           {navigationItems.map((item, index) => (
             <NavigationCard
