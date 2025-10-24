@@ -176,7 +176,6 @@ export class OrderRepository implements IOrderRepository {
 
     public async modifyOrder(orderId: number, lineNumber: number[] | undefined, data: Partial<PartialOrderMinimal>): Promise<Order> {
         const itemsToProcess = data.items ?? [];
-        console.log("order: ", orderId, "line: ", lineNumber, "cantidad: ", itemsToProcess[0].cantidad)
         const updatedOrder = await prisma.pedido.update({
             where: { idPedido: orderId },
             data: {

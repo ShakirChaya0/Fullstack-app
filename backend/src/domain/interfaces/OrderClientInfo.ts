@@ -3,6 +3,7 @@ interface OrderLineClientInfo {
     nombreProducto: string,
     cantidad: number,
     estado: string,
+    nroLinea?: number
 }
 
 

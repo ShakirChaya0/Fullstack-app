@@ -58,9 +58,8 @@ export const orderSlice = createSlice({
             state.comensales = comensales
             state.observaciones = observaciones
         },
-        recoveryInitialState: (state) => {
-            //Actualizamos estado de Redux
-            Object.assign(state, defaultState);
+        recoveryCurrentState: (state, action: PayloadAction<Pedido>) => {
+            return action.payload;
         },
         assignOrderId: (state, action: PayloadAction<number>) => {
             console.log('Estoy en orderSlice')
@@ -90,4 +89,4 @@ export const orderSlice = createSlice({
 
 export default orderSlice.reducer
 
-export const { addToCart, removeFromCart, confirmOrder, recoveryInitialState, assignOrderId, assignLineNumber, modifyStatus} = orderSlice.actions
+export const { addToCart, removeFromCart, confirmOrder, recoveryCurrentState, assignOrderId, assignLineNumber, modifyStatus} = orderSlice.actions

@@ -126,7 +126,8 @@ export class Order {
                     nombreProducto: ol.productoVO.productName,
                     tipoComida: ol.productoVO.foodType,
                     cantidad: ol.amount,
-                    estado: ol.status
+                    estado: ol.status,
+                    nroLinea: ol.lineNumber
                 }
             }),
             estado: this._status,

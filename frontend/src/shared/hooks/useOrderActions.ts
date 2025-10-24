@@ -1,6 +1,6 @@
-import type { OrderLineClientInfo, OrderStatus } from "../../features/Order/interfaces/Order"
+import type { OrderLineClientInfo, OrderStatus, Pedido } from "../../features/Order/interfaces/Order"
 import type { Bebida, Comida } from "../../features/Products/interfaces/products"
-import { addToCart, assignLineNumber, assignOrderId, confirmOrder, modifyStatus, recoveryInitialState, removeFromCart } from "../../store/slices/orderSlice"
+import { addToCart, assignLineNumber, assignOrderId, confirmOrder, modifyStatus, recoveryCurrentState, removeFromCart } from "../../store/slices/orderSlice"
 import { useAppDispatch } from "./store"
 
 
@@ -19,8 +19,8 @@ export const useOrderActions = () => {
         dispatch(confirmOrder({comensales: comensales, observaciones: observaciones}))
     }
 
-    const handleRecoveyInitialState = () => {
-        dispatch(recoveryInitialState())
+    const handleRecoveryCurrentState = ({ updatedPreviousOrder }: {updatedPreviousOrder: Pedido}) => {
+        dispatch(recoveryCurrentState(updatedPreviousOrder))
     }
 
     const handleAssignOrderId = (orderId: number) => {
@@ -36,5 +36,5 @@ export const useOrderActions = () => {
     }
 
 
-    return { handleAddToCart, hanldeRemoveFromCart, handleConfirmOrder, handleRecoveyInitialState, handleAssignOrderId, handleModifyOrderStatus, handleAssignLineNumber}
+    return { handleAddToCart, hanldeRemoveFromCart, handleConfirmOrder, handleRecoveryCurrentState, handleAssignOrderId, handleModifyOrderStatus, handleAssignLineNumber}
 }

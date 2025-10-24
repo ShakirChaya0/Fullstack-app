@@ -40,6 +40,7 @@ export interface OrderLineClientInfo {
     tipo: FoodType | null,
     cantidad: number,
     estado: string,
+    nroLinea?: number
 }
 
 export interface OrderClientInfo {

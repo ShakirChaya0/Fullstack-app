@@ -14,7 +14,7 @@ export default function FinishedOrder() {
     const order = useAppSelector((state) => state.order)
     const { handleModifyOrderStatus } = useOrderActions()
     const navigate = useNavigate()
-    const { onEvent, offEvent, sendEvent} = useWebSocket();
+    const { onEvent, offEvent } = useWebSocket();
 
 
     const handleStatusChangeRef = useRef<(data: OrderClientInfo) => void>(() => {});

@@ -10,7 +10,7 @@ import { useBlockNavigation } from "../../../shared/hooks/useBlockNavigation";
 const CheckPDF = lazy(() => import("../components/CheckPDF"));
 
 export default function CheckPage() {
-  useBlockNavigation(true, "¿Seguro que quieres salir?")
+  useBlockNavigation(true)
   const { data: check, isLoading, isError } = useCheck();
 
   return (
