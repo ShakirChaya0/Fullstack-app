@@ -5,25 +5,25 @@ export const consolidateOrderLines = (orderLines: OrderLineClientInfo[]) => {
     const nonConsolidatedLines: OrderLineClientInfo[] = [];
     
     orderLines.forEach(line => {
-        // Si está en preparación, no consolidar - agregar directamente
-        if (line.estado === 'En_Preparacion') {
+        // Solo consolidar Pendiente y Completada
+        const shouldConsolidate = line.estado === 'Pendiente' || line.estado === 'Terminada';
+        
+        if (!shouldConsolidate) {
+            // En_Preparacion y otros estados: no consolidar
             nonConsolidatedLines.push({ ...line });
             return;
         }
         
-        // Para otros estados, consolidar normalmente
+        // Para Pendiente y Completada, consolidar normalmente
         const key = `${line.nombreProducto}_${line.estado}`;
         
         if (consolidatedMap.has(key)) {
-            // Si ya existe, sumar la cantidad
             const existingLine = consolidatedMap.get(key)!;
             existingLine.cantidad += line.cantidad;
         } else {
-            // Si no existe, crear nueva entrada (copia para no mutar el original)
             consolidatedMap.set(key, { ...line });
         }
     });
     
-    // Combinar líneas consolidadas con las no consolidadas
     return [...Array.from(consolidatedMap.values()), ...nonConsolidatedLines];
 };

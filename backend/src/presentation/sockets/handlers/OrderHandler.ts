@@ -19,7 +19,7 @@ export function registerOrderHandlers(io: Server, socket: AuthenticatedSocket) {
     try {
       console.log(`🔄 Ejecutando updateOrderLineStatus...`);
       await orderController.updateOrderLineStatus(idPedido, nroLinea, estadoLP);
-      console.log(`✅ updateOrderLineStatus completado exitosamente`);
+      console.log(`  updateOrderLineStatus completado exitosamente`);
     } catch (error: any) {
       console.error(`❌ Error en updateLineStatus:`, error.message);
       console.error(`   Stack:`, error.stack);
@@ -31,7 +31,7 @@ export function registerOrderHandlers(io: Server, socket: AuthenticatedSocket) {
     console.log(`📥 Evento recibido: addOrderLine - Order: ${orderId}`);
     try {
       await orderController.addOrderLine(orderId, orderLines);
-      console.log(`✅ addOrderLine completado`);
+      console.log(`  addOrderLine completado`);
     } catch (error: any) {
       console.error(`❌ Error en addOrderLine:`, error.message);
       HandleSocketError(socket, error);
@@ -44,7 +44,7 @@ export function registerOrderHandlers(io: Server, socket: AuthenticatedSocket) {
     console.log(data)
     try {
       await orderController.updateOrder(orderId, lineNumbers, data);
-      console.log(`✅ modifyOrder completado`);
+      console.log(`  modifyOrder completado`);
     } catch (error: any) {
       console.error(`❌ Error en modifyOrder:`, error.message);
       HandleSocketError(socket, error);
@@ -55,12 +55,12 @@ export function registerOrderHandlers(io: Server, socket: AuthenticatedSocket) {
     console.log(`📥 Evento recibido: deleteOrderLine - Order: ${orderId}, Line: ${lineNumber}`);
     try {
       await orderController.deleteOrderLine(orderId, lineNumber);
-      console.log(`✅ deleteOrderLine completado`);
+      console.log(`  deleteOrderLine completado`);
     } catch (error: any) {
       console.error(`❌ Error en deleteOrderLine:`, error.message);
       HandleSocketError(socket, error);
     }
   });
 
-  console.log(`✅ Handlers registrados para socket: ${socket.id}`);
+  console.log(`  Handlers registrados para socket: ${socket.id}`);
 }

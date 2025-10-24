@@ -87,7 +87,7 @@ export default function VerifyEmail() {
                     <>
                         <CheckCircleOutlineIcon className="text-6xl text-teal-600 mb-4" />
                         <h3 className="text-2xl font-bold text-gray-800 mb-3">
-                            ¡Correo Verificado! ✅
+                            ¡Correo Verificado!  
                         </h3>
                         <p className="text-gray-600 text-sm mb-8">
                             Tu dirección de correo ha sido confirmada. Ya puedes iniciar sesión.

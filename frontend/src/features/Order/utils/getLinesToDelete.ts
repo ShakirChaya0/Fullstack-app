@@ -1,27 +1,33 @@
 import type { OrderLineClientInfo } from "../interfaces/Order";
 
-export const getLineasDuplicadasParaEliminar = (originalLines: OrderLineClientInfo[], consolidatedLines: OrderLineClientInfo[]) => {
-    const lineasParaEliminar: number[] = [];
+export const getLinesToDelete = (
+    originalLines: OrderLineClientInfo[],
+    consolidatedOrderLines: OrderLineClientInfo[]
+) => {
+    const linesToDelete: number[] = [];
     
-    // Solo procesar líneas que NO están En_Preparación (porque esas sí se consolidaron)
-    const lineasConsolidadasReales = consolidatedLines.filter(line => line.estado !== 'En_Preparacion');
+    // Solo procesar líneas que FUERON consolidadas (Pendiente y Completada)
+    const consolidatedStatuses = ['Pendiente', 'Completada'];
     
-    lineasConsolidadasReales.forEach(consolidated => {
-        // Encontrar todas las líneas originales que contribuyeron a esta consolidada
-        const lineasOriginalesDelMismoProductoYEstado = originalLines.filter(original => 
-            original.nombreProducto === consolidated.nombreProducto && 
-            original.estado === consolidated.estado
+    consolidatedOrderLines.forEach(consolidated => {
+        if (!consolidatedStatuses.includes(consolidated.estado)) {
+            return; // Saltar líneas no consolidadas (En_Preparacion)
+        }
+        
+        // Encontrar todas las líneas originales del mismo producto
+        const originalLinesForProduct = originalLines.filter(
+            line => line.nombreProducto === consolidated.nombreProducto &&
+                    consolidatedStatuses.includes(line.estado) &&
+                    line.estado === consolidated.estado
         );
         
-        // Si hay más de una línea original para el mismo producto+estado,
-        // eliminar todas excepto la primera (que se mantiene con cantidad consolidada)
-        if (lineasOriginalesDelMismoProductoYEstado.length > 1) {
-            // Eliminar todas excepto la primera
-            lineasOriginalesDelMismoProductoYEstado.slice(1).forEach(lineaAEliminar => {
-                lineasParaEliminar.push(lineaAEliminar.nroLinea!);
+        // Si hay más de una, eliminar todas excepto la primera (que mantiene cantidad consolidada)
+        if (originalLinesForProduct.length > 1) {
+            originalLinesForProduct.slice(1).forEach(lineToDelete => {
+                linesToDelete.push(lineToDelete.nroLinea!);
             });
         }
     });
     
-    return lineasParaEliminar;
+    return linesToDelete;
 };

@@ -45,7 +45,7 @@ export function SocketServerConnection(server: Http2Server) {
     else if (socket.qrToken) {
         const room = `comensal:${socket.qrToken}`;
         socket.join(room);
-        console.log(`🍽️ Socket unido a sala: ${room}`); // ✅ IMPORTANTE
+        console.log(`🍽️ Socket unido a sala: ${room}`); //   IMPORTANTE
         // Ver si corresponde recuperar su pedido solicitado
     } else {
         console.warn('⚠️ Socket sin tipo de usuario ni qrToken');
@@ -77,7 +77,7 @@ ioConnection.on('connection', async (socket: AuthenticatedSocket) => {
     else if (socket.qrToken) {
         const room = `comensal:${socket.qrToken}`;
         socket.join(room);
-        console.log(`🍽️ Socket unido a sala: ${room}`); // ✅ IMPORTANTE
+        console.log(`🍽️ Socket unido a sala: ${room}`); //   IMPORTANTE
         // ... resto del código
     } else {
         console.warn('⚠️ Socket sin tipo de usuario ni qrToken');

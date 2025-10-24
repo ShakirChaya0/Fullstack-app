@@ -1,12 +1,4 @@
-import {
-    Table,
-    TableBody,
-    TableCell,
-    TableContainer,
-    TableHead,
-    TableRow,
-    Paper,
-} from "@mui/material";
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from "@mui/material";
 import ControlPointIcon from "@mui/icons-material/ControlPoint";
 import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
 import { useAppSelector } from "../../../shared/hooks/store";
@@ -22,7 +14,9 @@ import { formatCurrency } from "../../../shared/utils/formatCurrency";
 import EmptyOrder from "../../Products/assets/empty-order.svg"
 import type { FoodType } from "../../Product&Price/types/product&PriceTypes";
 import { consolidateOrderLines } from "../utils/consolidateOrderLines";
-import { getLineasDuplicadasParaEliminar } from "../utils/getLinesToDelete";
+import { getLinesToDelete } from "../utils/getLinesToDelete";
+import { rebuildOrderWithConsolidatedLines } from "../utils/rebuildOrderWithConsolidatedLines";
+import { getConsolidatedLinesToModify } from "../utils/getConsolidatedLinesToModify";
 
 export default function ModifyOrder() {
     const navigate = useNavigate();
@@ -34,7 +28,7 @@ export default function ModifyOrder() {
         handleModifyOrderStatus,
         handleRecoveryCurrentState
     } = useOrderActions();
-    const { onEvent, offEvent } = useWebSocket();
+    const { onEvent, offEvent, sendEvent } = useWebSocket();
     
     useEffect(() => {
         const handleOrderUpdate = (data: OrderClientInfo) => {
@@ -46,70 +40,60 @@ export default function ModifyOrder() {
         };
 
         const handleOrderUpdateByKitchen = (data: OrderClientInfo) => {
-            console.log('📨 Actualización recibida en modifyOrder:', data);
+            console.log('📨 Data recibida:', data);
+            console.log('📨 lineasPedido:', data.lineasPedido); // Ver estructura exacta
+            
             const previousOrder: Pedido = JSON.parse(localStorage.getItem('previousOrder')!);
-
-            //Metodo para agrupe las líneas por nombreProducto y estado, sumando las cantidades cuando hay duplicado
-            const consolidatedOrderLines = consolidateOrderLines(data.lineasPedido) 
-
-            // Actualizar el previousOrder con los nuevos estados de la cocina
-            const updatedPreviousOrder: Pedido = {
-                ...previousOrder,
-                idPedido: data.idPedido,
-                estado: data.estado,
-                observaciones: data.observaciones,
-                lineasPedido: consolidatedOrderLines.flatMap(consolidatedLine => {
-                    // Buscar la primera línea correspondiente en previousOrder para obtener la estructura completa
-                    const matchingPrevLine = previousOrder.lineasPedido.find(prevLine => 
-                        prevLine.producto._name === consolidatedLine.nombreProducto &&
-                        prevLine.estado === consolidatedLine.estado
-                    );
-
-                    if (matchingPrevLine) {
-                        // Usar la estructura de previousOrder pero con los datos consolidados actualizados
-                        return [{
-                            ...matchingPrevLine,
-                            cantidad: consolidatedLine.cantidad,
-                            estado: consolidatedLine.estado,
-                            subtotal: matchingPrevLine.producto._price * consolidatedLine.cantidad,
-                        }];
-                    }
+            const consolidatedOrderLines = consolidateOrderLines(data.lineasPedido);
+            
+            console.log('📊 Consolidadas:', consolidatedOrderLines); // Ver qué se consolida
+            
+            // Verificar estados antes de reconstruir
+            consolidatedOrderLines.forEach(line => {
+                console.log(`Línea ${line.nroLinea}: ${line.nombreProducto} - Estado: "${line.estado}" - Cantidad: ${line.cantidad}`);
+            });
+            
+            const updatedPreviousOrder = rebuildOrderWithConsolidatedLines(
+                previousOrder,
+                consolidatedOrderLines
+            );
+            
+            console.log('📋 updatedPreviousOrder.lineasPedido:', updatedPreviousOrder.lineasPedido); // Ver líneas finales
+            
                     
-                    // Si no encuentra coincidencia, omitir esta línea
-                    return [];
-                })
-            };
+            updatedPreviousOrder.idPedido = data.idPedido;
+            updatedPreviousOrder.estado = data.estado;
+            updatedPreviousOrder.observaciones = data.observaciones;
 
-            //Emits para corregir el estado de la BD
-            const lineasAModificar = consolidatedOrderLines.filter(line => line.estado !== 'En_Preparacion');
-            sendEvent("modifyOrder", {
-                orderId: order.idPedido,
-                lineNumbers: lineasAModificar.map(lp => lp.nroLinea),
-                data: {
-                    items: lineasAModificar.map(lp => ({ cantidad: lp.cantidad }))
-                }
+            // Emits: solo Pendiente y Completada
+            const lineasAModificar = getConsolidatedLinesToModify(consolidatedOrderLines);
+            if (lineasAModificar.length > 0) {
+                sendEvent("modifyOrder", {
+                    orderId: order.idPedido,
+                    lineNumbers: lineasAModificar.map(lp => lp.nroLinea),
+                    data: {
+                        items: lineasAModificar.map(lp => ({ cantidad: lp.cantidad }))
+                    }
+                });
+            }
+
+            // Líneas duplicadas a eliminar de la BD
+            const lineasAEliminar = getLinesToDelete(data.lineasPedido, consolidatedOrderLines);
+            lineasAEliminar.forEach(nroLinea => {
+                sendEvent("deleteOrderLine", {
+                    orderId: order.idPedido,
+                    lineNumber: nroLinea
+                });
             });
 
-            // const nrosLineasAEliminar = getLineasDuplicadasParaEliminar(data.lineasPedido, consolidatedOrderLines);
-
-            // // 2. Eliminar líneas duplicadas
-            // nrosLineasAEliminar.forEach(nroLinea => {
-            //     sendEvent("deleteOrderLine", {
-            //         orderId: order.idPedido,
-            //         lineNumber: nroLinea
-            //     });
-            // });
-
-            handleRecoveryCurrentState({ updatedPreviousOrder }) // <-- Cambia el estado global
-
-            toast.warning('La cocina ha actualizado su pedido, no se aplico su modificación')
-
-            localStorage.removeItem('previousOrder')
-            localStorage.removeItem('modification')
+            handleRecoveryCurrentState({ updatedPreviousOrder });
+            toast.warning('La cocina ha actualizado su pedido, no se aplicó su modificación');
             
-            navigate(`/Cliente/Menu/PedidoConfirmado/`)
+            localStorage.removeItem('previousOrder');
+            localStorage.removeItem('modification');
+            navigate(`/Cliente/Menu/PedidoConfirmado/`);
         };
-
+  
         // Mismos eventos que FinishedOrder
         onEvent("updatedOrderLineStatus", handleOrderUpdateByKitchen);
         onEvent("addedOrderLine", handleOrderUpdate);
@@ -135,8 +119,6 @@ export default function ModifyOrder() {
         hanldeRemoveFromCart({ nombreProducto: name });
     };
 
-    const { sendEvent } = useWebSocket();
-    
     const handleAddProduct = () => {
         localStorage.setItem('modification', 'true')
         navigate('/Cliente/Menu/')
@@ -149,7 +131,7 @@ export default function ModifyOrder() {
             observaciones: observacionesRef.current?.value || ''
         };
         
-        // ✅ Validar los datos propuestos
+        //   Validar los datos propuestos
         if(newOrderData.comensales <= 0) {
             toast.error('Cantidad de comensales invalida');
             return; // No actualizar nada
@@ -239,7 +221,7 @@ export default function ModifyOrder() {
         console.log('📝 Observaciones cambiadas:', newOrderData.observaciones !== previousOrder.observaciones);
         console.log('🔄 Estado actual del pedido:', newOrderData.estado);
 
-        // ✅ LÓGICA CORREGIDA: Solo cambiar estado si hay cambios en productos
+        //   LÓGICA CORREGIDA: Solo cambiar estado si hay cambios en productos
         const calcularEstadoFinalPedido = (): OrderStatus=> {
             console.log('🧮 Calculando estado final del pedido...');
             
@@ -287,7 +269,7 @@ export default function ModifyOrder() {
         
         const estadoFinalCalculado = calcularEstadoFinalPedido();
         
-        // ✅ OPTIMISTIC UPDATE: Actualizar estado solo si cambia
+        //   OPTIMISTIC UPDATE: Actualizar estado solo si cambia
         if (newOrderData.estado !== estadoFinalCalculado) {
             console.log(`🚀 Actualizando estado optimísticamente: ${newOrderData.estado} → ${estadoFinalCalculado}`);
             handleModifyOrderStatus({
@@ -301,7 +283,7 @@ export default function ModifyOrder() {
                 }))
             });
         } else {
-            console.log('✅ Estado no cambia, mantieniendo:', newOrderData.estado);
+            console.log('  Estado no cambia, mantieniendo:', newOrderData.estado);
         }
 
         if (productosNuevos.length > 0) {

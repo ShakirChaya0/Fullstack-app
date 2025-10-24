@@ -24,7 +24,7 @@ export class UpdateOrderUseCase {
             console.log('❌ [UpdateOrderUseCase] Orden no encontrada');
             throw new NotFoundError("Pedido no encontradó");
         }
-        console.log('✅ [UpdateOrderUseCase] Orden encontrada, estado:', order.status);
+        console.log('  [UpdateOrderUseCase] Orden encontrada, estado:', order.status);
 
         console.log('🔍 [UpdateOrderUseCase] Paso 2: Verificando líneas en preparación...');
         const isInProcess =  order.orderLines.some(line => {
@@ -99,7 +99,7 @@ export class UpdateOrderUseCase {
 
         try {
             const updatedOrder = await this.orderRepository.modifyOrder(orderId, lineNumbers, data);
-            console.log('✅ [UpdateOrderUseCase] Repository exitoso');
+            console.log('  [UpdateOrderUseCase] Repository exitoso');
             return updatedOrder;
         } catch (error: any) {
             console.log('❌ [UpdateOrderUseCase] Error en repository:', error.message);

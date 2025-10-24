@@ -7,25 +7,108 @@ import { StatusIndicator } from "../../Order/components/StatusIndicator"
 import { useWebSocket } from "../../../shared/hooks/useWebSocket"
 import { useEffect, useRef } from "react"
 import { useOrderActions } from "../../../shared/hooks/useOrderActions"
-import type { OrderClientInfo, OrderStatus } from "../../Order/interfaces/Order"
+import type { OrderClientInfo, OrderStatus, Pedido } from "../../Order/interfaces/Order"
 import { formatCurrency } from "../../../shared/utils/formatCurrency"
+import { consolidateOrderLines } from "../../Order/utils/consolidateOrderLines";
+import { rebuildOrderWithConsolidatedLines } from "../../Order/utils/rebuildOrderWithConsolidatedLines";
+import { getConsolidatedLinesToModify } from "../../Order/utils/getConsolidatedLinesToModify";
+import { getLinesToDelete } from "../../Order/utils/getLinesToDelete";
+import { toast } from "react-toastify";
 
 export default function FinishedOrder() {
     const order = useAppSelector((state) => state.order)
-    const { handleModifyOrderStatus } = useOrderActions()
+    const { handleModifyOrderStatus, handleRecoveryCurrentState } = useOrderActions()
     const navigate = useNavigate()
-    const { onEvent, offEvent } = useWebSocket();
-
+    const { onEvent, offEvent, sendEvent } = useWebSocket();
 
     const handleStatusChangeRef = useRef<(data: OrderClientInfo) => void>(() => {});
     const orderStatusRef = useRef<OrderStatus>(order.estado);
+    
+    useEffect(() => {
+        const handleOrderUpdate = (data: OrderClientInfo) => {
+            console.log('📨 Actualización recibida en modifyOrder:', data);
+            handleStatusChangeRef.current(data);
+            handleModifyOrderStatus({
+                newOrderStatus: data.estado, 
+                orderLinesData: data.lineasPedido
+            });
+        };
+
+        const handleOrderUpdateByKitchen = (data: OrderClientInfo) => {
+            console.log('📨 Data recibida:', data);
+            console.log('📨 lineasPedido:', data.lineasPedido); // Ver estructura exacta
+            
+            const previousOrder: Pedido = JSON.parse(localStorage.getItem('order')!);
+            const consolidatedOrderLines = consolidateOrderLines(data.lineasPedido);
+            
+            console.log('📊 Consolidadas:', consolidatedOrderLines); // Ver qué se consolida
+            
+            // Verificar estados antes de reconstruir
+            consolidatedOrderLines.forEach(line => {
+                console.log(`Línea ${line.nroLinea}: ${line.nombreProducto} - Estado: "${line.estado}" - Cantidad: ${line.cantidad}`);
+            });
+            
+            const updatedPreviousOrder = rebuildOrderWithConsolidatedLines(
+                previousOrder,
+                consolidatedOrderLines
+            );
+            
+            console.log('📋 updatedPreviousOrder.lineasPedido:', updatedPreviousOrder.lineasPedido); // Ver líneas finales
+            
+                    
+            updatedPreviousOrder.idPedido = data.idPedido;
+            updatedPreviousOrder.estado = data.estado;
+            updatedPreviousOrder.observaciones = data.observaciones;
+
+            // Emits: solo Pendiente y Completada
+            const lineasAModificar = getConsolidatedLinesToModify(consolidatedOrderLines);
+            if (lineasAModificar.length > 0) {
+                sendEvent("modifyOrder", {
+                    orderId: order.idPedido,
+                    lineNumbers: lineasAModificar.map(lp => lp.nroLinea),
+                    data: {
+                        items: lineasAModificar.map(lp => ({ cantidad: lp.cantidad }))
+                    }
+                });
+            }
+
+            // Líneas duplicadas a eliminar de la BD
+            const lineasAEliminar = getLinesToDelete(data.lineasPedido, consolidatedOrderLines);
+            lineasAEliminar.forEach(nroLinea => {
+                sendEvent("deleteOrderLine", {
+                    orderId: order.idPedido,
+                    lineNumber: nroLinea
+                });
+            });
+
+            handleRecoveryCurrentState({ updatedPreviousOrder });
+            toast.warning('La cocina ha actualizado su pedido, no se aplicó su modificación');
+            
+            localStorage.removeItem('previousOrder');
+            localStorage.removeItem('modification');
+            navigate(`/Cliente/Menu/PedidoConfirmado/`);
+        };
+  
+        // Mismos eventos que FinishedOrder
+        onEvent("updatedOrderLineStatus", handleOrderUpdateByKitchen);
+        onEvent("addedOrderLine", handleOrderUpdate);
+        onEvent("deletedOrderLine", handleOrderUpdate);
+        onEvent("modifiedOrderLine", handleOrderUpdate);
+
+        return () => {
+            offEvent("updatedOrderLineStatus", handleOrderUpdateByKitchen);
+            offEvent("addedOrderLine", handleOrderUpdate);
+            offEvent("deletedOrderLine", handleOrderUpdate);
+            offEvent("modifiedOrderLine", handleOrderUpdate);
+        };
+    }, []);
 
     // Sincronizar ref cuando Redux cambie
     useEffect(() => {
         orderStatusRef.current = order.estado;
-    }, [order.estado]); // ✅ Se actualiza cuando Redux cambia
+    }, [order.estado]); //   Se actualiza cuando Redux cambia
 
-    // ✅ Actualizar el ref si las dependencias cambian
+    //   Actualizar el ref si las dependencias cambian
     useEffect(() => {
         handleStatusChangeRef.current = (data: OrderClientInfo) => {
             console.log('📨 Data recibida del WebSocket:', data);
@@ -33,31 +116,7 @@ export default function FinishedOrder() {
             orderStatusRef.current = data.estado
         };
     }, [handleModifyOrderStatus]);
-
-    // ✅ Efecto separado para listeners - se ejecuta UNA SOLA VEZ
-    useEffect(() => {
-        console.log('🎯 Configurando listeners para eventos de orden');
-
-        // Handler único para todos los eventos ya que el backend siempre envía Order.toClientInfo()
-        const handleOrderUpdate = (data: OrderClientInfo) => {
-            console.log('📨 Evento de orden recibido:', data);
-            handleStatusChangeRef.current(data);
-        };
-
-        // Registrar el mismo handler para todos los eventos que devuelven Order.toClientInfo()
-        onEvent("updatedOrderLineStatus", handleOrderUpdate);
-        onEvent("addedOrderLine", handleOrderUpdate);
-        onEvent("deletedOrderLine", handleOrderUpdate);
-        onEvent("modifiedOrderLine", handleOrderUpdate);
-
-        return () => {
-            console.log('🧹 Limpiando listeners de orden');
-            offEvent("updatedOrderLineStatus", handleOrderUpdate);
-            offEvent("addedOrderLine", handleOrderUpdate);
-            offEvent("deletedOrderLine", handleOrderUpdate);
-            offEvent("modifiedOrderLine", handleOrderUpdate);
-        };
-    }, []); 
+    
 
     const handleModify = () => {
         localStorage.setItem("previousOrder", JSON.stringify(order))

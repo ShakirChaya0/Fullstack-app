@@ -15,7 +15,7 @@ export async function AuthSocketMiddleware(socket: Socket, next: (err?: Error) =
     let qrToken = socket.handshake.auth.qrToken;
 
     // 🔍 Debug: ver qué llega
-    console.log('🔐 Auth Middleware - JWT:', jwt ? '✅ Presente' : '❌ Ausente');
+    console.log('🔐 Auth Middleware - JWT:', jwt ? '  Presente' : '❌ Ausente');
     console.log('🎫 Auth Middleware - qrToken inicial:', qrToken);
     
     // Si no está en auth, intentar leerlo desde las cookies
@@ -27,7 +27,7 @@ export async function AuthSocketMiddleware(socket: Socket, next: (err?: Error) =
             const qrCookie = cookieArray.find(cookie => cookie.trim().startsWith('QrToken='));
             if (qrCookie) {
                 qrToken = qrCookie.split('=')[1];
-                console.log('✅ qrToken extraído de cookie:', qrToken);
+                console.log('  qrToken extraído de cookie:', qrToken);
             }
         }
     }
@@ -43,7 +43,7 @@ export async function AuthSocketMiddleware(socket: Socket, next: (err?: Error) =
     }
 
     (socket as AuthenticatedSocket).qrToken = qrToken;
-    console.log('✅ Socket autenticado - qrToken final:', qrToken);
+    console.log('  Socket autenticado - qrToken final:', qrToken);
     next();
 }
 
