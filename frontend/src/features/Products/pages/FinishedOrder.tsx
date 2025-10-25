@@ -82,7 +82,7 @@ export default function FinishedOrder() {
             });
 
             handleRecoveryCurrentState({ updatedPreviousOrder });
-            toast.warning('La cocina ha actualizado su pedido, no se aplicó su modificación');
+            toast.info('La cocina ha actualizado su pedido, no se aplicó su modificación');
             
             localStorage.removeItem('previousOrder');
             localStorage.removeItem('modification');

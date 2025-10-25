@@ -14,6 +14,7 @@ export default function OrdersDashboard() {
 
     const handleUpdatedOrder = useCallback((updatedOrder: KitchenOrder) => {
         setOrders(prev => prev.map(order => order.idPedido === updatedOrder.idPedido ? updatedOrder : order));
+        console.log('Updated Order Received:', updatedOrder.lineasPedido[0]);
         setSelectedOrder(prev => prev && prev.idPedido === updatedOrder.idPedido ? updatedOrder : prev);
     }, []);
 
