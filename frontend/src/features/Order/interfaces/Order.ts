@@ -1,3 +1,4 @@
+import type { OrderLineStatus } from "../../KitchenOrders/types/SharedTypes";
 import type { FoodType } from "../../Product&Price/types/product&PriceTypes";
 import type { Bebida, Comida } from "../../Products/interfaces/products"
 
@@ -6,7 +7,7 @@ export type OrderStatus = "Solicitado" | "En_Preparacion" | "Completado" | "Pend
 export type LineaPedido = {
     producto: Comida | Bebida,
     cantidad: number,
-    estado: string,
+    estado: OrderLineStatus,
     subtotal: number;
     lineNumber?: number;
     tipo?: string;

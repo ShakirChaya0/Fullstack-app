@@ -8,6 +8,7 @@ import useAuth from '../../../shared/hooks/useAuth';
 import { useWebSocket } from '../../../shared/hooks/useWebSocket';
 import type { OrderStatus, WaiterOrder } from '../../Order/interfaces/Order';
 import { useWaitersTables } from '../hooks/useWaitersTable';
+import { useQueryClient } from '@tanstack/react-query';
 
 interface TableProps {
     tableData: ITable;
@@ -64,6 +65,7 @@ export default function ShowWaiterTables() {
     const [orders, setOrders] = useState<WaiterOrder[] | null>(null)
     const { onEvent, offEvent } = useWebSocket()
     const { user } = useAuth()
+    const queryClient = useQueryClient()
 
     const tables = data?.filter((t) => {
           const orders = t._orders ?? []
@@ -84,9 +86,15 @@ export default function ShowWaiterTables() {
 
     useEffect(() => {
         onEvent("waiterOrders", (data) => setOrders(data))
+        onEvent("updatedOrderLineStatus", async () => {
+            await queryClient.invalidateQueries({queryKey: ["waitersTable"]})
+        })
 
         return () => {
             offEvent("waiterOrders", (data) => setOrders(data))
+            offEvent("updatedOrderLineStatus", async () => {
+                await queryClient.invalidateQueries({queryKey: ["waitersTable"]})
+            })
         }
     }, [])
 

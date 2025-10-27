@@ -4,69 +4,118 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import { useProducts } from '../../Products/hooks/useProducts';
-import type { Bebida, Comida, TipoComida } from '../../Products/interfaces/products';
-import { useParams } from 'react-router';
-import type { OrderStatus } from '../../Order/interfaces/Order';
+import type { Bebida, Comida } from '../../Products/interfaces/products';
+import { useNavigate, useParams } from 'react-router';
 import { toast } from 'react-toastify';
-import type { OrderLineStatus } from '../../KitchenOrders/types/SharedTypes';
 import { useWebSocket } from '../../../shared/hooks/useWebSocket';
-
-type LineaPedido = {
-  nombreProducto: string;
-  cantidad: number;
-  estado: OrderLineStatus;
-  nroLinea: number;
-  tipo?: TipoComida  
-};
-
-type PedidoBackend = {
-  idPedido: number;
-  idMozo: string;
-  nroMesa: number;
-  cantidadCubiertos: number;
-  horaInicio: string;
-  estado: OrderStatus;
-  observaciones: string;
-  lineasPedido: LineaPedido[];
-};
+import type { PedidoBackend } from '../interfaces/OrderTable';
+import { getConsolidatedLinesToModify } from '../../Order/utils/getConsolidatedLinesToModify';
+import { consolidateOrderLines, rebuildOrderWithConsolidatedLines } from '../utils/joinUpdatedOrderLines';
+import { getLinesToDelete } from '../../Order/utils/getLinesToDelete';
+import { useQueryClient } from '@tanstack/react-query';
 
 export default function ModifyOrder() {
     const { data: products } = useProducts();
+    const navigate = useNavigate()
     const [selectedProduct, setSelectedProduct] = useState<Comida | Bebida | null>(null);
     const [quantity, setQuantity] = useState<number>(1);
     const nroMesa = useParams()
     const [existingOrder, setExistingOrder] = useState<PedidoBackend | null>(JSON.parse(localStorage.getItem("modifyOrder") ?? ""))
     const { sendEvent, onEvent, offEvent } = useWebSocket()
+    const queryClient = useQueryClient()
 
     useEffect(() => {
+        const handleOrderUpdateByKitchen = (data: PedidoBackend) => {
+            const consolidatedOrderLines = consolidateOrderLines(data.lineasPedido)
+            const price = products?.find((p) => {
+                existingOrder?.lineasPedido.find((lp) => lp.nombreProducto === p._name)
+            })?._price ?? 1
+
+            if (existingOrder) {
+                const updatedPreviousOrder = rebuildOrderWithConsolidatedLines(existingOrder, consolidatedOrderLines, price)
+                updatedPreviousOrder.idPedido = data.idPedido
+                updatedPreviousOrder.estado = data.estado
+                updatedPreviousOrder.observaciones = data.observaciones
+    
+                const lineasAModificar = getConsolidatedLinesToModify(consolidatedOrderLines);
+                if (lineasAModificar.length > 0) {
+                    sendEvent("modifyOrder", {
+                        orderId: existingOrder.idPedido,
+                        lineNumbers: lineasAModificar.map(lp => lp.nroLinea),
+                        data: {
+                            items: lineasAModificar.map(lp => ({ cantidad: lp.cantidad }))
+                        }
+                    });
+                }
+
+                const lineasAEliminar = getLinesToDelete(data.lineasPedido, consolidatedOrderLines);
+                lineasAEliminar.forEach(nroLinea => {
+                    sendEvent("deleteOrderLine", {
+                        orderId: existingOrder.idPedido,
+                        lineNumber: nroLinea
+                    });
+                });
+
+                localStorage.setItem("modifyOrder", JSON.stringify(updatedPreviousOrder))
+                setExistingOrder({
+                    ...updatedPreviousOrder,
+                    lineasPedido: updatedPreviousOrder.lineasPedido.map((lp) => {
+                        return {
+                            nombreProducto: lp.nombreProducto,
+                            cantidad: lp.cantidad,
+                            nroLinea: lp.nroLinea,
+                            tipo: lp.tipo,
+                            estado: lp.estado,
+                            
+                        }
+                    })
+                })
+                toast.info('La cocina ha actualizado su pedido, no se aplicó su modificación');
+            }
+        }
+
+
+
+        onEvent("updatedOrderLineStatus", async (data) => {
+            console.log("cocina modifico")
+            await queryClient.invalidateQueries({queryKey: ["waitersTable"]})
+            handleOrderUpdateByKitchen(data)
+            navigate("/Mozo/Mesas/")
+        })
         onEvent("modifiedOrderLine", (data) => {
-            localStorage.setItem("modifyOrder", data)
+            localStorage.setItem("modifyOrder", JSON.stringify(data))
             setExistingOrder(data)
             toast.success("Se modificó con éxito su Pedido")
         })
         onEvent("deletedOrderLine", (data) => {
-            localStorage.setItem("modifyOrder", data)
+            localStorage.setItem("modifyOrder", JSON.stringify(data))
             setExistingOrder(data)
             toast.success("Se eliminó con éxito la línea de pedido")
         })
         onEvent("addedOrderLine", (data) => {
-            localStorage.setItem("modifyOrder", data)
+            localStorage.setItem("modifyOrder", JSON.stringify(data))
             setExistingOrder(data)
             toast.success("Se agregó con éxito la nueva línea de pedido")
         })
         return () => {
+            offEvent("updatedOrderLineStatus", async (data) => {
+                console.log("cocina modifico")
+                await queryClient.invalidateQueries({queryKey: ["waitersTable"]})
+                handleOrderUpdateByKitchen(data)
+                navigate("/Mozo/Mesas/")
+            })
             offEvent("modifiedOrderLine", (data) => {
-                localStorage.setItem("modifyOrder", data)
+                localStorage.setItem("modifyOrder", JSON.stringify(data))
                 setExistingOrder(data)
                 toast.success("Se modificó con éxito su Pedido")
             })
             offEvent("deletedOrderLine", (data) => {
-                localStorage.setItem("modifyOrder", data)
+                localStorage.setItem("modifyOrder", JSON.stringify(data))
                 setExistingOrder(data)
                 toast.success("Se eliminó con éxito la línea de pedido")
             })
             offEvent("addedOrderLine", (data) => {
-                localStorage.setItem("modifyOrder", data)
+                localStorage.setItem("modifyOrder", JSON.stringify(data))
                 setExistingOrder(data)
                 toast.success("Se agregó con éxito la nueva línea de pedido")
             })
@@ -111,7 +160,7 @@ export default function ModifyOrder() {
                     orderId: existingOrder?.idPedido,
                     lineNumbers: [linea?.nroLinea],
                     data: {
-                        cantidadCubiertos: existingOrder?.cantidadCubiertos,
+                        cantidadCubiertos: existingOrder?.comensales,
                         observacion: existingOrder?.observaciones,
                         items: orderLines
                     }
@@ -184,7 +233,6 @@ export default function ModifyOrder() {
         }
         sendEvent("modifyOrder", order)
     };
-
 
     return (
         <Box sx={{ p: { xs: 2, sm: 3 }, backgroundColor: '#f9fafb', borderRadius: 4, boxShadow: '0 4px 12px rgba(0,0,0,0.05)', width: "100%", display: "flex", alignItems: "center", flexDirection: "column"}}>
@@ -285,7 +333,7 @@ export default function ModifyOrder() {
                                         type="number"
                                         margin="normal"
                                         name='comensales'
-                                        defaultValue={existingOrder?.cantidadCubiertos}
+                                        defaultValue={existingOrder?.comensales}
                                     />
                                     <TextField
                                         fullWidth
