@@ -85,6 +85,7 @@ export default function ShowWaiterTables() {
     }, [setOpen, open])
 
     useEffect(() => {
+        localStorage.removeItem("modifyOrder")
         onEvent("waiterOrders", (data) => setOrders(data))
         onEvent("updatedOrderLineStatus", async () => {
             await queryClient.invalidateQueries({queryKey: ["waitersTable"]})

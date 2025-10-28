@@ -1,4 +1,4 @@
-import React, { useEffect, useState, type FormEvent } from 'react';
+import React, { useEffect, useRef, useState, type FormEvent } from 'react';
 import { Autocomplete, TextField, Button, List, ListItem, ListItemText, IconButton, Card, CardContent, Typography, Grid, Box, Divider } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
@@ -20,6 +20,7 @@ export default function ModifyOrder() {
     const [selectedProduct, setSelectedProduct] = useState<Comida | Bebida | null>(null);
     const [quantity, setQuantity] = useState<number>(1);
     const nroMesa = useParams()
+    const isModifyByWaiter = useRef(false)
     const [existingOrder, setExistingOrder] = useState<PedidoBackend | null>(JSON.parse(localStorage.getItem("modifyOrder") ?? ""))
     const { sendEvent, onEvent, offEvent } = useWebSocket()
     const queryClient = useQueryClient()
@@ -56,7 +57,6 @@ export default function ModifyOrder() {
                     });
                 });
 
-                localStorage.setItem("modifyOrder", JSON.stringify(updatedPreviousOrder))
                 setExistingOrder({
                     ...updatedPreviousOrder,
                     lineasPedido: updatedPreviousOrder.lineasPedido.map((lp) => {
@@ -77,15 +77,22 @@ export default function ModifyOrder() {
 
 
         onEvent("updatedOrderLineStatus", async (data) => {
-            console.log("cocina modifico")
+            console.log("La cocina modificó el estado del pedido")
             await queryClient.invalidateQueries({queryKey: ["waitersTable"]})
             handleOrderUpdateByKitchen(data)
             navigate("/Mozo/Mesas/")
         })
         onEvent("modifiedOrderLine", (data) => {
-            localStorage.setItem("modifyOrder", JSON.stringify(data))
             setExistingOrder(data)
-            toast.success("Se modificó con éxito su Pedido")
+            if (isModifyByWaiter.current) {
+                toast.success("Se modificó con éxito su Pedido")
+            }
+            else {
+                toast.info("El cliente modificó el pedido")
+            }
+            isModifyByWaiter.current = false
+            navigate("/Mozo/Mesas/")
+
         })
         onEvent("deletedOrderLine", (data) => {
             localStorage.setItem("modifyOrder", JSON.stringify(data))
@@ -99,7 +106,7 @@ export default function ModifyOrder() {
         })
         return () => {
             offEvent("updatedOrderLineStatus", async (data) => {
-                console.log("cocina modifico")
+                console.log("La cocina modificó el estado del pedido")
                 await queryClient.invalidateQueries({queryKey: ["waitersTable"]})
                 handleOrderUpdateByKitchen(data)
                 navigate("/Mozo/Mesas/")
@@ -107,7 +114,14 @@ export default function ModifyOrder() {
             offEvent("modifiedOrderLine", (data) => {
                 localStorage.setItem("modifyOrder", JSON.stringify(data))
                 setExistingOrder(data)
-                toast.success("Se modificó con éxito su Pedido")
+                if (isModifyByWaiter.current) {
+                    toast.success("Se modificó con éxito su Pedido")
+                }
+                else {
+                    toast.info("El cliente modificó el pedido")
+                }
+                isModifyByWaiter.current = false
+                navigate("/Mozo/Mesas/")
             })
             offEvent("deletedOrderLine", (data) => {
                 localStorage.setItem("modifyOrder", JSON.stringify(data))
@@ -124,6 +138,7 @@ export default function ModifyOrder() {
     }, [])
 
     const handleAddProduct = (): void => {
+        isModifyByWaiter.current = true
         if (selectedProduct && quantity > 0) {
             const existingItemIndex = existingOrder?.lineasPedido.findIndex((lp) => (lp.nombreProducto === selectedProduct._name) && lp.estado === "Pendiente") ?? 0
             let orderLines;
@@ -173,6 +188,7 @@ export default function ModifyOrder() {
     };
 
     const handleRemoveItem = (indexToRemove: number, nameProduct: string, lineNumber: number | undefined): void => {
+        isModifyByWaiter.current = true
         const correspondingLine = existingOrder?.lineasPedido.filter(
             (lp) => (lp.nombreProducto === nameProduct) && (lp.nroLinea === lineNumber)).find((lp) => lp.estado === "Pendiente");
 
@@ -192,6 +208,7 @@ export default function ModifyOrder() {
     };
 
     const handleSubmitOrder = (e: FormEvent<HTMLFormElement>) => {
+        isModifyByWaiter.current = true
         e.preventDefault()
         const form = new FormData(e.currentTarget)
         const data = Object.fromEntries(form.entries())
