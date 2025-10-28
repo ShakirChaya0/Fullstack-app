@@ -221,56 +221,79 @@ export default function ModifyOrder() {
         console.log('🔄 Estado actual del pedido:', newOrderData.estado);
 
         //   LÓGICA CORREGIDA: Solo cambiar estado si hay cambios en productos
-        const calcularEstadoFinalPedido = (): OrderStatus=> {
+        const calcularEstadoFinalPedido = (): OrderStatus => {
             console.log('🧮 Calculando estado final del pedido...');
             
             // Solo calcular nuevo estado si hay cambios en productos
-            const hayCambiosEnProductos = productosNuevos.length > 0 || productosEliminados.length > 0 || productosModificados.length > 0;
+            const hayCambiosEnProductos = 
+                productosNuevos.length > 0 || 
+                productosEliminados.length > 0 || 
+                productosModificados.length > 0;
             
             if (!hayCambiosEnProductos) {
                 console.log('🔒 Sin cambios en productos - manteniendo estado:', newOrderData.estado);
-                return newOrderData.estado; // Mantener estado actual
+                return newOrderData.estado;
             }
             
             // Simular el estado final después de todas las modificaciones
             let lineasFinales = [...newOrderData.lineasPedido];
             console.log('📋 Líneas iniciales:', lineasFinales.length);
             
-            // Simular eliminación de productos 
+            // Eliminar productos (sin importar su estado)
             productosEliminados.forEach(producto => {
                 lineasFinales = lineasFinales.filter(lp => 
-                    !(lp.producto._name === producto.producto._name && lp.estado === 'Pendiente')
+                    lp.producto._name !== producto.producto._name
                 );
                 console.log(`➖ Eliminado ${producto.producto._name}, líneas restantes:`, lineasFinales.length);
             });
             
-            // Contar líneas pendientes finales
-            const lineasPendientesFinales = lineasFinales.filter(lp => lp.estado === 'Pendiente').length;
-            console.log('⏳ Líneas pendientes finales:', lineasPendientesFinales);
+            // Validar que no queden líneas vacías
+            if (lineasFinales.length === 0) {
+                console.log('⚠️ No hay líneas finales, pedido vacío');
+                return 'Solicitado'; // O manejar como error
+            }
             
-            // Determinar estado final basado en productos
-            let nuevoEstado: OrderStatus = 'Solicitado';
-            if (lineasPendientesFinales > 0) {
-                // Si hay productos nuevos o modificados, va a preparación
-                if (productosNuevos.length > 0) {
-                    nuevoEstado = 'En_Preparacion';
-                } else {
-                    // Si solo hay modificaciones de cantidad, mantener estado o ir a preparación
-                    nuevoEstado = newOrderData.estado === 'Solicitado' ? 'En_Preparacion' : newOrderData.estado;
-                }
-            } else {
+            // Analizar estados de las líneas finales
+            const estadosPresentes = {
+                pendiente: lineasFinales.some(lp => lp.estado === 'Pendiente'),
+                enPreparacion: lineasFinales.some(lp => lp.estado === 'En_Preparacion'),
+                terminada: lineasFinales.some(lp => lp.estado === 'Terminada'),
+            };
+            
+            console.log('📊 Estados presentes:', estadosPresentes);
+            
+            // Aplicar jerarquía de estados
+            // Prioridad: En_Preparacion > Terminada > Pendiente
+            let nuevoEstado: OrderStatus;
+            
+            if (estadosPresentes.enPreparacion) {
+                // Si hay AL MENOS UNA línea en preparación
+                nuevoEstado = 'En_Preparacion';
+                console.log('🍳 Hay líneas en preparación -> En_Preparacion');
+            } else if (estadosPresentes.terminada && !estadosPresentes.pendiente) {
+                // Si TODAS están terminadas
                 nuevoEstado = 'Completado';
+                console.log('✅ Todas las líneas terminadas -> Completado');
+            } else if (estadosPresentes.pendiente && !estadosPresentes.terminada) {
+                // Si TODAS están pendientes
+                nuevoEstado = 'Solicitado';
+                console.log('⏳ Todas las líneas pendientes -> Solicitado');
+            } else {
+                // Estado mixto (pendiente + terminada, sin preparación)
+                // Depende de tu lógica, pero generalmente sería En_Preparacion o Solicitado
+                nuevoEstado = 'En_Preparacion';
+                console.log('🔀 Estado mixto -> En_Preparacion (por defecto)');
             }
             
             console.log('🎯 Estado calculado:', nuevoEstado);
             return nuevoEstado;
         };
-        
+
         const estadoFinalCalculado = calcularEstadoFinalPedido();
-        
-        //   OPTIMISTIC UPDATE: Actualizar estado solo si cambia
+
+        // OPTIMISTIC UPDATE: Actualizar estado solo si cambia
         if (newOrderData.estado !== estadoFinalCalculado) {
-            console.log(`🚀 Actualizando estado optimísticamente: ${newOrderData.estado} → ${estadoFinalCalculado}`);
+            console.log(`🚀 Actualizando estado: ${newOrderData.estado} → ${estadoFinalCalculado}`);
             handleModifyOrderStatus({
                 newOrderStatus: estadoFinalCalculado,
                 orderLinesData: newOrderData.lineasPedido.map(lp => ({
@@ -282,7 +305,7 @@ export default function ModifyOrder() {
                 }))
             });
         } else {
-            console.log('  Estado no cambia, mantieniendo:', newOrderData.estado);
+            console.log('✨ Estado no cambia, manteniendo:', newOrderData.estado);
         }
 
         if (productosNuevos.length > 0) {

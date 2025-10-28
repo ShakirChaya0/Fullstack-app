@@ -19,42 +19,6 @@ import useApiClient from "../../../shared/hooks/useApiClient"
 import { requestProductInfo } from "../../Order/services/requestProductInfo"
 import type { Bebida, Comida } from "../interfaces/products"
 
-/*
-export interface OrderLineClientInfo {
-    nombreProducto: string,
-    tipo: FoodType | null,
-    cantidad: number,
-    estado: string,
-    nroLinea?: number
-}
-
-export interface OrderClientInfo {
-    idPedido: number
-    lineasPedido: OrderLineClientInfo[],
-    estado: OrderStatus,
-    observaciones: string
-}
-
-export type LineaPedido = {
-    producto: Comida | Bebida,
-    cantidad: number,
-    estado: OrderLineStatus,
-    subtotal: number;
-    lineNumber?: number;
-    tipo?: string;
-    esAlcoholica?: boolean
-}
-
-export type Pedido = {
-    idPedido: number,
-    lineasPedido: LineaPedido[],
-    estado: OrderStatus,
-    observaciones: string,
-    comensales: number
-}
-
-*/
-
 export default function FinishedOrder() {
     const order = useAppSelector((state) => state.order)
     const { handleAddToCart, hanldeRemoveFromCart, handleModifyObservation, handleModifyCutleryAmount, handleModifyOrderStatus, handleRecoveryCurrentState } = useOrderActions()
