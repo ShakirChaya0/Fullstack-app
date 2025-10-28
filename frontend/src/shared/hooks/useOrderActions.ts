@@ -1,6 +1,6 @@
 import type { OrderLineClientInfo, OrderStatus, Pedido } from "../../features/Order/interfaces/Order"
 import type { Bebida, Comida } from "../../features/Products/interfaces/products"
-import { addToCart, assignLineNumber, assignOrderId, confirmOrder, modifyStatus, recoveryCurrentState, removeFromCart } from "../../store/slices/orderSlice"
+import { addToCart, assignLineNumber, assignOrderId, confirmOrder, modifyCutleryAmount, modifyObservation, modifyStatus, recoveryCurrentState, removeFromCart } from "../../store/slices/orderSlice"
 import { useAppDispatch } from "./store"
 
 
@@ -17,6 +17,14 @@ export const useOrderActions = () => {
 
     const handleConfirmOrder = ({comensales, observaciones}: {comensales: number, observaciones: string}) => {
         dispatch(confirmOrder({comensales: comensales, observaciones: observaciones}))
+    }
+
+    const handleModifyObservation = (observaciones: string) => {
+        dispatch(modifyObservation(observaciones))
+    }
+
+    const handleModifyCutleryAmount = (comensales: number) => {
+        dispatch(modifyCutleryAmount(comensales))
     }
 
     const handleRecoveryCurrentState = ({ updatedPreviousOrder }: {updatedPreviousOrder: Pedido}) => {
@@ -36,5 +44,5 @@ export const useOrderActions = () => {
     }
 
 
-    return { handleAddToCart, hanldeRemoveFromCart, handleConfirmOrder, handleRecoveryCurrentState, handleAssignOrderId, handleModifyOrderStatus, handleAssignLineNumber}
+    return { handleAddToCart, hanldeRemoveFromCart, handleConfirmOrder, handleModifyObservation, handleModifyCutleryAmount, handleRecoveryCurrentState, handleAssignOrderId, handleModifyOrderStatus, handleAssignLineNumber}
 }

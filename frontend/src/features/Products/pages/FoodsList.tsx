@@ -1,4 +1,4 @@
-import { lazy, Suspense, useCallback, useEffect, useMemo, useState } from "react";
+import { lazy, Suspense, useCallback, useMemo, useState } from "react";
 import { useFoods } from "../hooks/useFoods";
 import FilterProducts from "../components/foods/filterFoods";
 import SkeletonBody from "./skeletonBody";

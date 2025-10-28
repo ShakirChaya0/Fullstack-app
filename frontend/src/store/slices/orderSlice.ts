@@ -1,6 +1,7 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import type { OrderLineClientInfo, OrderStatus, Pedido } from "../../features/Order/interfaces/Order";
 import type { Bebida, Comida } from "../../features/Products/interfaces/products";
+import type { OrderLineStatus } from "../../features/KitchenOrders/types/SharedTypes";
 
 const defaultState = { idPedido: 0, lineasPedido: [], estado: "Solicitado", observaciones: "", comensales: 0 }
 
@@ -58,14 +59,17 @@ export const orderSlice = createSlice({
             state.comensales = comensales
             state.observaciones = observaciones
         },
+        modifyObservation: (state, action: PayloadAction<string>) => {
+            state.observaciones = action.payload
+        },
+        modifyCutleryAmount: (state, action: PayloadAction<number>) => {
+            state.comensales = action.payload
+        },
         recoveryCurrentState: (state, action: PayloadAction<Pedido>) => {
-            return action.payload;
+            return action.payload; //Se utiliza el return ya que se esta sobreescribiendo el estado global de forma completa
         },
         assignOrderId: (state, action: PayloadAction<number>) => {
-            console.log('Estoy en orderSlice')
-            console.log(action.payload)
             state.idPedido = action.payload
-            return state
         },
         assignLineNumber: (state, action: PayloadAction<{ nombreProducto: string, lineNumber: number }>) => {
             const index = state.lineasPedido.findIndex((lp) => lp.producto._name === action.payload.nombreProducto)
@@ -80,7 +84,7 @@ export const orderSlice = createSlice({
 
             state.lineasPedido.forEach((each, index) => {
                 if (orderLinesData[index] && each.estado !== orderLinesData[index].estado) {
-                    each.estado = orderLinesData[index].estado;
+                    each.estado = orderLinesData[index].estado as OrderLineStatus;
                 }
             })
         },
@@ -89,4 +93,4 @@ export const orderSlice = createSlice({
 
 export default orderSlice.reducer
 
-export const { addToCart, removeFromCart, confirmOrder, recoveryCurrentState, assignOrderId, assignLineNumber, modifyStatus} = orderSlice.actions
+export const { addToCart, removeFromCart, confirmOrder, modifyObservation, modifyCutleryAmount, recoveryCurrentState, assignOrderId, assignLineNumber, modifyStatus} = orderSlice.actions

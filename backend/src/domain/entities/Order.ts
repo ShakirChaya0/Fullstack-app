@@ -131,6 +131,7 @@ export class Order {
                 }
             }),
             estado: this._status,
+            comensales: this._cutleryAmount,
             observaciones: this._observation
         }
     }

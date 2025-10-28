@@ -14,27 +14,147 @@ import { rebuildOrderWithConsolidatedLines } from "../../Order/utils/rebuildOrde
 import { getConsolidatedLinesToModify } from "../../Order/utils/getConsolidatedLinesToModify";
 import { getLinesToDelete } from "../../Order/utils/getLinesToDelete";
 import { toast } from "react-toastify";
+import { determineAmountModificationProductLines } from "../../Order/utils/determineAmountModificationProductLines"
+import useApiClient from "../../../shared/hooks/useApiClient"
+import { requestProductInfo } from "../../Order/services/requestProductInfo"
+import type { Bebida, Comida } from "../interfaces/products"
+
+/*
+export interface OrderLineClientInfo {
+    nombreProducto: string,
+    tipo: FoodType | null,
+    cantidad: number,
+    estado: string,
+    nroLinea?: number
+}
+
+export interface OrderClientInfo {
+    idPedido: number
+    lineasPedido: OrderLineClientInfo[],
+    estado: OrderStatus,
+    observaciones: string
+}
+
+export type LineaPedido = {
+    producto: Comida | Bebida,
+    cantidad: number,
+    estado: OrderLineStatus,
+    subtotal: number;
+    lineNumber?: number;
+    tipo?: string;
+    esAlcoholica?: boolean
+}
+
+export type Pedido = {
+    idPedido: number,
+    lineasPedido: LineaPedido[],
+    estado: OrderStatus,
+    observaciones: string,
+    comensales: number
+}
+
+*/
 
 export default function FinishedOrder() {
     const order = useAppSelector((state) => state.order)
-    const { handleModifyOrderStatus, handleRecoveryCurrentState } = useOrderActions()
+    const { handleAddToCart, hanldeRemoveFromCart, handleModifyObservation, handleModifyCutleryAmount, handleModifyOrderStatus, handleRecoveryCurrentState } = useOrderActions()
     const navigate = useNavigate()
     const { onEvent, offEvent, sendEvent } = useWebSocket();
+    const { apiCall } = useApiClient();
 
     const handleStatusChangeRef = useRef<(data: OrderClientInfo) => void>(() => {});
     const orderStatusRef = useRef<OrderStatus>(order.estado);
     
     useEffect(() => {
         const handleOrderUpdate = (data: OrderClientInfo) => {
-            console.log('📨 Actualización recibida en modifyOrder:', data);
+            console.log('📨 Actualización de modificación recibida:', data);
             handleStatusChangeRef.current(data);
-            handleModifyOrderStatus({
-                newOrderStatus: data.estado, 
-                orderLinesData: data.lineasPedido
-            });
+
+            // Evaluamos lineas modificadas
+            const productosModificados = determineAmountModificationProductLines(data.lineasPedido, order.lineasPedido)
+            
+            productosModificados.forEach(lpToModify => {
+                if(lpToModify.diferencia > 0) { //Cantidad a agregar
+                    for (let index = 0; index < lpToModify.diferencia; index++) {
+                        handleAddToCart(lpToModify.producto.producto)
+                    }
+                } else if (lpToModify.diferencia < 0) { // Cantidad a eliminar
+                    for (let index = 0; index < lpToModify.diferencia; index++) {
+                        hanldeRemoveFromCart({ nombreProducto: lpToModify.producto.producto._name })
+                    }
+                }
+            })
+
+            //Evaluamos modificación de observación
+            if(data.observaciones !== order.observaciones) {
+                handleModifyObservation(data.observaciones)
+            }
+
+            //Evaluamos modificación de cantidad de cubiertos
+            if(data.comensales !== order.comensales) {
+                handleModifyCutleryAmount(data.comensales)
+            }
+
+            toast.info('El mozo ha modificado su pedido')
         };
 
-        const handleOrderUpdateByKitchen = (data: OrderClientInfo) => {
+        const handleOrderAdd = async (data: OrderClientInfo) => {
+            console.log('📨 Actualización de add recibida:', data);
+            handleStatusChangeRef.current(data);
+            
+            //Evaluamos los nuevos productos
+            const lineasPendientesActuales = data.lineasPedido.filter(lp => lp.estado === 'Pendiente')
+
+            // Filtrar las que NO existían en el pedido previo
+            const productosAdicionales = lineasPendientesActuales.filter(lp => {
+                const isValid = order.lineasPedido.find(existingLp => 
+                    existingLp.producto._name === lp.nombreProducto && 
+                    existingLp.estado === 'Pendiente'
+                )
+                if(!isValid) return true
+                else return false
+            });
+
+            //Service para obtener la data
+            try {
+                const productosPromises = productosAdicionales.map(nuevoProducto => 
+                    requestProductInfo(apiCall, nuevoProducto.nombreProducto)
+                )
+                const productosData: (Comida | Bebida)[] = await Promise.all(productosPromises)
+
+                productosData.forEach(dataProducto => {
+                    handleAddToCart(dataProducto)
+                })
+            } catch (error) {
+                console.error('Error al obtener productos:', error)
+                toast.error('Error al agregar algunos productos')
+            }
+
+            toast.info('El mozo ha añadido nuevas lineas a su pedido')
+        };
+
+        const handleOrderDelete = (data: OrderClientInfo) => {
+            console.log('📨 Actualización de delete recibida:', data);
+            handleStatusChangeRef.current(data);
+
+            //Evaluamos los nuevos productos a borrar
+            const lineasPosiblesAEliminar = order.lineasPedido.filter(lp => lp.estado === 'Pendiente')
+
+            const productoAEliminar = lineasPosiblesAEliminar.filter(lp => {
+                const existsInServer = data.lineasPedido.filter(lp => lp.estado === 'Pendiente').find(serverLp => 
+                    serverLp.nombreProducto === lp.producto._name
+                );
+                return !existsInServer;
+            });
+
+            productoAEliminar.forEach(lpAEliminar => {
+                hanldeRemoveFromCart({ nombreProducto: lpAEliminar.producto._name })
+            })
+
+            toast.info('El mozo ha eliminado lineas de su pedido')
+        };
+
+        const handleOrderUpdateByKitchen = (data: OrderClientInfo) => { 
             console.log('📨 Data recibida:', data);
             console.log('📨 lineasPedido:', data.lineasPedido); // Ver estructura exacta
             
@@ -54,7 +174,6 @@ export default function FinishedOrder() {
             );
             
             console.log('📋 updatedPreviousOrder.lineasPedido:', updatedPreviousOrder.lineasPedido); // Ver líneas finales
-            
                     
             updatedPreviousOrder.idPedido = data.idPedido;
             updatedPreviousOrder.estado = data.estado;
@@ -83,22 +202,18 @@ export default function FinishedOrder() {
 
             handleRecoveryCurrentState({ updatedPreviousOrder });
             toast.info('La cocina ha actualizado su pedido, no se aplicó su modificación');
-            
-            localStorage.removeItem('previousOrder');
-            localStorage.removeItem('modification');
-            navigate(`/Cliente/Menu/PedidoConfirmado/`);
         };
   
         // Mismos eventos que FinishedOrder
         onEvent("updatedOrderLineStatus", handleOrderUpdateByKitchen);
-        onEvent("addedOrderLine", handleOrderUpdate);
-        onEvent("deletedOrderLine", handleOrderUpdate);
+        onEvent("addedOrderLine", handleOrderAdd);
+        onEvent("deletedOrderLine", handleOrderDelete);
         onEvent("modifiedOrderLine", handleOrderUpdate);
 
         return () => {
             offEvent("updatedOrderLineStatus", handleOrderUpdateByKitchen);
-            offEvent("addedOrderLine", handleOrderUpdate);
-            offEvent("deletedOrderLine", handleOrderUpdate);
+            offEvent("addedOrderLine", handleOrderAdd);
+            offEvent("deletedOrderLine", handleOrderDelete);
             offEvent("modifiedOrderLine", handleOrderUpdate);
         };
     }, []);
@@ -113,7 +228,6 @@ export default function FinishedOrder() {
         handleStatusChangeRef.current = (data: OrderClientInfo) => {
             console.log('📨 Data recibida del WebSocket:', data);
             handleModifyOrderStatus({newOrderStatus: data.estado, orderLinesData: data.lineasPedido});
-            orderStatusRef.current = data.estado
         };
     }, [handleModifyOrderStatus]);
     

@@ -160,7 +160,7 @@ export default function ModifyOrder() {
                     orderId: existingOrder?.idPedido,
                     lineNumbers: [linea?.nroLinea],
                     data: {
-                        cantidadCubiertos: existingOrder?.comensales,
+                        cantidadCubiertos: existingOrder?.cantidadCubiertos,
                         observacion: existingOrder?.observaciones,
                         items: orderLines
                     }
@@ -333,7 +333,7 @@ export default function ModifyOrder() {
                                         type="number"
                                         margin="normal"
                                         name='comensales'
-                                        defaultValue={existingOrder?.comensales}
+                                        defaultValue={existingOrder?.cantidadCubiertos}
                                     />
                                     <TextField
                                         fullWidth

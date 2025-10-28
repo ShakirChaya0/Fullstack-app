@@ -14,7 +14,7 @@ export type PedidoBackend = {
   idPedido: number;
   idMozo: string;
   nroMesa: number;
-  comensales: number;
+  cantidadCubiertos: number;
   horaInicio: string;
   estado: OrderStatus;
   observaciones: string;

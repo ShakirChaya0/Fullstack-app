@@ -11,5 +11,6 @@ export interface OrderClientInfo {
     idPedido: number
     lineasPedido: OrderLineClientInfo[],
     estado: string,
+    comensales: number,
     observaciones: string
 }

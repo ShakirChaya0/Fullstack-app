@@ -41,12 +41,12 @@ export default function ModifyOrder() {
 
         const handleOrderUpdateByKitchen = (data: OrderClientInfo) => {
             console.log('📨 Data recibida:', data);
-            console.log('📨 lineasPedido:', data.lineasPedido); // Ver estructura exacta
+            console.log('📨 lineasPedido:', data.lineasPedido);
             
             const previousOrder: Pedido = JSON.parse(localStorage.getItem('previousOrder')!);
             const consolidatedOrderLines = consolidateOrderLines(data.lineasPedido);
             
-            console.log('📊 Consolidadas:', consolidatedOrderLines); // Ver qué se consolida
+            console.log('📊 Consolidadas:', consolidatedOrderLines); 
             
             // Verificar estados antes de reconstruir
             consolidatedOrderLines.forEach(line => {
@@ -59,8 +59,7 @@ export default function ModifyOrder() {
             );
             
             console.log('📋 updatedPreviousOrder.lineasPedido:', updatedPreviousOrder.lineasPedido); // Ver líneas finales
-            
-                    
+              
             updatedPreviousOrder.idPedido = data.idPedido;
             updatedPreviousOrder.estado = data.estado;
             updatedPreviousOrder.observaciones = data.observaciones;
