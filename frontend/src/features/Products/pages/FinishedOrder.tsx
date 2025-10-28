@@ -165,7 +165,12 @@ export default function FinishedOrder() {
             });
 
             handleRecoveryCurrentState({ updatedPreviousOrder });
+            handleStatusChangeRef.current(data);
             toast.info('La cocina ha actualizado su pedido, no se aplicó su modificación');
+
+            localStorage.removeItem('previousOrder');
+            localStorage.removeItem('modification');
+            navigate(`/Cliente/Menu/PedidoConfirmado/`);
         };
   
         // Mismos eventos que FinishedOrder
