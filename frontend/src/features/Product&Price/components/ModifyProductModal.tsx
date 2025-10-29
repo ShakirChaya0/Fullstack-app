@@ -141,7 +141,7 @@ export function ModifyProductModal({
                                 placeholder="Ej: Salmón a la Parrilla"
                                 maxLength={30}
                                 className="w-full px-3 py-2 h-[50px] border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 placeholder-gray-400"
-                                value={ newProduct.nombre }
+                                defaultValue={ newProduct.nombre }
                                 onChange={(e) => {
                                     if (e.currentTarget.value.trim() == '' && e.currentTarget.value.startsWith(' ')) {
                                         e.currentTarget.value = ''
@@ -165,7 +165,7 @@ export function ModifyProductModal({
                                 placeholder="Describe tu producto..."
                                 rows={3}
                                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 placeholder-gray-400 resize-vertical"
-                                value={ newProduct.descripcion }
+                                defaultValue={ newProduct.descripcion }
                                 onChange={(e) => {
                                     if (e.currentTarget.value.trim() == '' && e.currentTarget.value.startsWith(' ')) {
                                         e.currentTarget.value = ''

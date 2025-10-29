@@ -4,6 +4,7 @@ import { useNavigate } from "react-router";
 import { useAppSelector } from "../../../shared/hooks/store";
 import { OrderTotalAmount } from "../../Products/utils/OrderTotalAmount";
 import { toast } from "react-toastify";
+import { formatCurrency } from "../../../shared/utils/formatCurrency";
 
 
 export function PaymentConfirmationModal() {
@@ -77,7 +78,7 @@ export function PaymentConfirmationModal() {
                     </div>
                     <div className="flex flex-col justify-center items-center bg-gray-50 rounded-lg p-4">
                         <p className="text-sm text-gray-600">Total a pagar antes de impuestos:</p>
-                        <p className="text-4xl font-bold text-gray-900 mt-1">${OrderTotalAmount(order.lineasPedido).toFixed(2)}</p>
+                        <p className="text-4xl font-bold text-gray-900 mt-1">{formatCurrency(OrderTotalAmount(order.lineasPedido), "es-AR", "ARS")}</p>
                     </div>
                 </div>
             </DialogContent>

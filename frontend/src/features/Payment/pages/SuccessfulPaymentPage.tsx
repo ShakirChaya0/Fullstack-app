@@ -5,11 +5,11 @@ import { useOrderActions } from "../../../shared/hooks/useOrderActions";
 import { useBlockNavigation } from "../../../shared/hooks/useBlockNavigation";
 
 export default function SuccessfulPaymentPage() {
-    useBlockNavigation(true, "¿Seguro que quieres salir?")
-    const { handleRecoveyInitialState } = useOrderActions()
+    // useBlockNavigation(true, "¿Seguro que quieres salir?")
+    // const { handleRecoveyInitialState } = useOrderActions()
     const navigate = useNavigate();
-    handleRecoveyInitialState()
-
+    // handleRecoveyInitialState()
+    
     const handleClick = () => {
         navigate("/") // poner la ruta de la landing page cuando la implementemos
     }
