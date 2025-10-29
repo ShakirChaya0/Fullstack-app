@@ -95,15 +95,15 @@ export default function ModifyOrder() {
   
         // Mismos eventos que FinishedOrder
         onEvent("updatedOrderLineStatus", handleOrderUpdateByKitchen);
-        onEvent("addedOrderLine", handleOrderUpdate);
-        onEvent("deletedOrderLine", handleOrderUpdate);
-        onEvent("modifiedOrderLine", handleOrderUpdate);
+        // onEvent("addedOrderLine", handleOrderUpdate);
+        // onEvent("deletedOrderLine", handleOrderUpdate);
+        // onEvent("modifiedOrderLine", handleOrderUpdate);
 
         return () => {
             offEvent("updatedOrderLineStatus", handleOrderUpdateByKitchen);
-            offEvent("addedOrderLine", handleOrderUpdate);
-            offEvent("deletedOrderLine", handleOrderUpdate);
-            offEvent("modifiedOrderLine", handleOrderUpdate);
+            // offEvent("addedOrderLine", handleOrderUpdate);
+            // offEvent("deletedOrderLine", handleOrderUpdate);
+            // offEvent("modifiedOrderLine", handleOrderUpdate);
         };
     }, []);
 

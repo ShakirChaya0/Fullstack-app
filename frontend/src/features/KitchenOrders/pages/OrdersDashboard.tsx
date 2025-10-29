@@ -62,15 +62,17 @@ export default function OrdersDashboard() {
         setSelectedOrder(null);
     }, []);
 
-    const handleUpdateLineStatus = useCallback((orderId: number, lineIndex: number, newStatus: OrderLineStatus) => {
+    const handleUpdateLineStatus = useCallback((orderId: number, lineNumber: number, newStatus: OrderLineStatus) => {
         setOrders(prevOrders => {
             const newOrders = prevOrders.map(order => {
                 if (order.idPedido === orderId) {
                     const updatedLines = [...order.lineasPedido];
-                    updatedLines[lineIndex] = {
-                        ...updatedLines[lineIndex],
-                        estado: newStatus
-                    };
+
+                    updatedLines.forEach(l => {
+                        if(l.nroLinea === lineNumber) {
+                            l.estado = newStatus;
+                        }
+                    })
 
                     const allFinished = updatedLines.every(l => l.estado === 'Terminada');
                     const anyInProgress = updatedLines.some(l => l.estado === 'En_Preparacion');
@@ -81,6 +83,8 @@ export default function OrdersDashboard() {
                     else if (anyInProgress || anyFinished) newOrderStatus = 'En_Preparacion';
                     else newOrderStatus = 'Solicitado';
 
+                    console.log(updatedLines)
+
                     return { ...order, lineasPedido: updatedLines, estado: newOrderStatus };
                 }
 
@@ -90,10 +94,12 @@ export default function OrdersDashboard() {
             return newOrders;
         });
 
+  
+
         setSelectedOrder(prev => prev && prev.idPedido === orderId ? {
                 ...prev,
-                lineasPedido: prev.lineasPedido.map((l, i) =>
-                    i === lineIndex ? { ...l, estado: newStatus } : l
+                lineasPedido: prev.lineasPedido.map(l =>
+                    l.nroLinea === lineNumber ? { ...l, estado: newStatus } : l
                 ),
                 estado: 
                     prev.lineasPedido.every(l => l.estado === 'Terminada') ? 'Completado'
@@ -103,7 +109,10 @@ export default function OrdersDashboard() {
             : prev
         );
 
-        sendEvent("updateLineStatus", { idPedido: orderId, nroLinea: lineIndex + 1, estadoLP: newStatus });
+        console.log(selectedOrder)
+
+
+        sendEvent("updateLineStatus", { idPedido: orderId, nroLinea: lineNumber, estadoLP: newStatus });
     }, [sendEvent]);
 
     if (connecting) {

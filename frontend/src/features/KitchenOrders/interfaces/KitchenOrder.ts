@@ -9,9 +9,9 @@ export interface KitchenOrder {
 }
 
 export interface OrderLine {
+    nroLinea: number,
     nombreProducto: string,
     tipoComida: FoodType,
     cantidad: number,
-    estado: OrderLineStatus,
-    nroLinea: number
+    estado: OrderLineStatus
 }

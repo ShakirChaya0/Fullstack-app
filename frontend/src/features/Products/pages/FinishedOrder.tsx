@@ -175,15 +175,15 @@ export default function FinishedOrder() {
   
         // Mismos eventos que FinishedOrder
         onEvent("updatedOrderLineStatus", handleOrderUpdateByKitchen);
-        onEvent("addedOrderLine", handleOrderAdd);
-        onEvent("deletedOrderLine", handleOrderDelete);
-        onEvent("modifiedOrderLine", handleOrderUpdate);
+        // onEvent("addedOrderLine", handleOrderAdd);
+        // onEvent("deletedOrderLine", handleOrderDelete);
+        // onEvent("modifiedOrderLine", handleOrderUpdate);
 
         return () => {
             offEvent("updatedOrderLineStatus", handleOrderUpdateByKitchen);
-            offEvent("addedOrderLine", handleOrderAdd);
-            offEvent("deletedOrderLine", handleOrderDelete);
-            offEvent("modifiedOrderLine", handleOrderUpdate);
+            // offEvent("addedOrderLine", handleOrderAdd);
+            // offEvent("deletedOrderLine", handleOrderDelete);
+            // offEvent("modifiedOrderLine", handleOrderUpdate);
         };
     }, []);
 

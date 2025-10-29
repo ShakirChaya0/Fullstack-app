@@ -1,5 +1,6 @@
 
 interface OrderLinesKitchenInfo {
+    nroLinea: number,
     nombreProducto: string,
     tipoComida: string | null,
     cantidad: number,

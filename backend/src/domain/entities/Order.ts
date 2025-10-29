@@ -6,7 +6,6 @@ import { WaiterPublicInfo } from "../interfaces/WaiterPublicInfo.js";
 import { OrderLine } from "./OrderLine.js";
 import { Table } from "./Table.js";
 
-
 export class Order {
     constructor(
         private readonly _orderId: number,
@@ -88,6 +87,7 @@ export class Order {
             horaInicio: this._startHour,
             lineasPedido: this._orderLines.map(ol => {
                 return {
+                    nroLinea: ol.lineNumber,
                     nombreProducto: ol.productoVO.productName,
                     tipoComida: ol.productoVO.foodType,
                     cantidad: ol.amount,

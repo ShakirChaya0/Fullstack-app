@@ -3,17 +3,17 @@ import type { OrderLineStatus } from "../types/SharedTypes";
 
 type OrderLineItemProps = {
     line: {
+        nroLinea: number,
         nombreProducto: string,
         tipoComida?: string
         cantidad: number,
         estado: OrderLineStatus,
     },
     orderId: number,
-    lineIndex: number,
-    onUpdateStatus: (orderId: number, lineIndex: number, newStatus: OrderLineStatus) => void
+    onUpdateStatus: (orderId: number, lineNumber: number, newStatus: OrderLineStatus) => void
 }
 
-export default function OrderLineItem({ line, orderId, lineIndex, onUpdateStatus }: OrderLineItemProps) {
+export default function OrderLineItem({ line, orderId, onUpdateStatus }: OrderLineItemProps) {
     const { nombreProducto, cantidad, estado } = line;
     const colors = statusColors[estado];
 
@@ -37,7 +37,7 @@ export default function OrderLineItem({ line, orderId, lineIndex, onUpdateStatus
                     return (
                         <button
                             key={status}
-                            onClick={() => onUpdateStatus(orderId, lineIndex, status)}
+                            onClick={() => onUpdateStatus(orderId, line.nroLinea, status)}
                             className={`
                                 cursor-pointer px-2 py-1 md:px-3 text-xs md:text-sm font-semibold rounded-md transition-all duration-200
                                 focus:outline-none focus:ring-2 focus:ring-offset-2

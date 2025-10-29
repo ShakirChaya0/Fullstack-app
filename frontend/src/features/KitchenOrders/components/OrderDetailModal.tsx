@@ -6,11 +6,13 @@ import OrderLineItem from "./OrderLineItem";
 type OrderDetailModalProps = {
     order: KitchenOrder | null,
     onClose: () => void,
-    onUpdateLineStatus: (orderId: number, lineIndex: number, newStatus: OrderLineStatus) => void
+    onUpdateLineStatus: (orderId: number, lineNumber: number, newStatus: OrderLineStatus) => void
 }
 
 export default function OrderDetailModal({ order, onClose, onUpdateLineStatus }: OrderDetailModalProps) {
     if (!order) return null;
+
+    console.log('Rendering OrderDetailModal for Order ID:', order);
 
     const groupedLines = order.lineasPedido.reduce<Record<string, typeof order.lineasPedido>>((acc, line) => {
         const type = line.tipoComida || 'Otros';
@@ -53,7 +55,6 @@ export default function OrderDetailModal({ order, onClose, onUpdateLineStatus }:
                                             key={`${line.nombreProducto}-${index}`}
                                             line={line}
                                             orderId={order.idPedido}
-                                            lineIndex={order.lineasPedido.findIndex(originalLine => originalLine === line)}
                                             onUpdateStatus={onUpdateLineStatus}
                                         />
                                     ))}
