@@ -28,15 +28,15 @@ type ReservationWithClient = Prisma.ReservaGetPayload<{
 export class ReservationRepository implements IReservationRepository {
   
   public async getExistingReservation(clientId: string, reservation: SchemaReservation): Promise<Reservation | null> {
-    const [hours, minutes] = reservation.reserveTime.split(':').map(Number);
+    // const [hours, minutes] = reservation.reserveTime.split(':').map(Number);
 
-    const timeAsDate = new Date(Date.UTC(1970, 0, 1, hours, minutes, 0, 0));
+    // const timeAsDate = new Date(Date.UTC(1970, 0, 1, hours, minutes, 0, 0));
 
     const existingReservation = await prisma.reserva.findFirst({
       where: {
         idCliente: clientId, 
         fechaReserva : reservation.reserveDate, 
-        horarioReserva: timeAsDate, 
+        //horarioReserva: timeAsDate, 
         estado: "Realizada"
       }, 
       include: {

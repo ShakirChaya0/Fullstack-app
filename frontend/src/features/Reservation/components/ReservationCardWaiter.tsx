@@ -7,6 +7,8 @@ import {
   modalMessageNoAsistencia 
 } from '../constants/constants';
 import useReservationMutation from '../hooks/userReservationMutation';
+import { toast } from 'react-toastify'; 
+import { useTableMutation } from '../../Tables/hooks/useTableMutation';
 
 interface ReservationCardProps {
   reservation: IReservation;
@@ -17,24 +19,65 @@ export function ReservationCard({ reservation: initialReservation }: Reservation
   const [showModal, setShowModal] = useState(false);
   const [pendingStatus, setPendingStatus] = useState<'Asistida' | 'No_Asistida' | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [isProcessing, setIsProcessing] = useState(false);
 
   const { bg, border } = getStatusClasses(reservation._status);
   const handleError = (message: string | null) => setErrorMessage(message);
 
-  const { mutate } = useReservationMutation({ handleError });
+  const { mutate: mutateReservation } = useReservationMutation({ handleError });
+  const { mutateAsync: updateTable } = useTableMutation(); 
 
-  const handleConfirm = () => {
+  const handleConfirm = async () => {
     if (!pendingStatus) return;
 
-    mutate({
+    setIsProcessing(true);
+
+    mutateReservation({
       _reservationId: reservation._reserveId,
       _reserveDate: new Date(reservation._reserveDate),
       _reserveTime: reservation._reserveTime,
       _commensalsNumber: reservation._commensalsNumber,
       _status: pendingStatus,
+    }, {
+      onSuccess: async () => {
+        if (pendingStatus === 'Asistida' && reservation._table.length > 0) {
+          try {
+            // Actualizar cada mesa asignada a "Ocupada"
+            const updatePromises = reservation._table.map(table =>
+              updateTable({
+                action: "updateState",
+                _tableNum: table._tableNum,
+                _state: "Ocupada"
+              })
+            );
+            
+            await Promise.all(updatePromises);
+            
+            toast.success(`Mesa(s) ${reservation._table.map(t => t._tableNum).join(', ')} ocupada(s) automáticamente`);
+          } catch (error) {
+            console.error('Error al actualizar mesas:', error);
+            toast.error('La reserva se actualizó pero hubo un error al ocupar las mesas');
+          }
+        }
+        
+        if (pendingStatus === 'No_Asistida' && reservation._table.length > 0) {
+          try {
+            const updatePromises = reservation._table.map(table =>
+              updateTable({
+                action: "updateState",
+                _tableNum: table._tableNum,
+                _state: "Libre"
+              })
+            );
+            
+            await Promise.all(updatePromises);
+          } catch (error) {
+            console.error('Error al liberar mesas:', error);
+          }
+        }
+      }
     });
 
-    // Actualizamos visualmente la tarjeta
     setReservation((prev) => ({ ...prev, _status: pendingStatus }));
     setShowModal(false);
     setPendingStatus(null);
@@ -51,7 +94,6 @@ export function ReservationCard({ reservation: initialReservation }: Reservation
     setShowModal(true);
   };
 
-  // Bloquea los botones si la reserva ya tiene un estado final
   const isFinalState = 
     reservation._status === 'Asistida' || 
     reservation._status === 'No_Asistida' || 

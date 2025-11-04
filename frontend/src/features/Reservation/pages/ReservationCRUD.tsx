@@ -5,11 +5,13 @@ import { ConfirmModal } from "../components/ModalConfirmReservation";
 import useReservationMutation from "../hooks/userReservationMutation";
 import type { ReservationFormData } from "../interfaces/IReservation";
 import ReservationForm from "../components/ReservationForm";
+import { useNavigate } from "react-router";
 
 
 export default function ReservationPage() {
   const [showModal, setShowModal] = useState(false);
   const [pendingData, setPendingData] = useState<ReservationFormData | null>(null);
+  const navigate = useNavigate(); 
 
   const [, , policyData] = useEntity("Policy", fetchPolicy);
 
@@ -18,6 +20,9 @@ export default function ReservationPage() {
     handleError: (errorMessage) => {
       console.error(errorMessage);
     },
+    onSuccess: () =>{
+      navigate("/Cliente/Reserva/Historial")
+    }
   });
 
   const handleFormSubmit = (data: ReservationFormData) => {

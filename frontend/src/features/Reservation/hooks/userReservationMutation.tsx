@@ -15,9 +15,10 @@ interface ReservationPayLoad {
 
 interface UseResMutationParams {
   handleError: (message: string | null) => void;
+  onSuccess?: () => void;
 }
 
-export default function useReservationMutation({ handleError }: UseResMutationParams) {
+export default function useReservationMutation({ handleError, onSuccess }: UseResMutationParams) {
   const queryClient = useQueryClient();
   const { apiCall } = useApiClient();
 
@@ -55,6 +56,8 @@ export default function useReservationMutation({ handleError }: UseResMutationPa
       }
 
       handleError(null);
+      
+      if (onSuccess) onSuccess();
     },
 
     onError: (err) => {
