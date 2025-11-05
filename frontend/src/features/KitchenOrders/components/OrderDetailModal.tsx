@@ -12,8 +12,6 @@ type OrderDetailModalProps = {
 export default function OrderDetailModal({ order, onClose, onUpdateLineStatus }: OrderDetailModalProps) {
     if (!order) return null;
 
-    console.log('Rendering OrderDetailModal for Order ID:', order);
-
     const groupedLines = order.lineasPedido.reduce<Record<string, typeof order.lineasPedido>>((acc, line) => {
         const type = line.tipoComida || 'Otros';
         if (!acc[type]) acc[type] = [];

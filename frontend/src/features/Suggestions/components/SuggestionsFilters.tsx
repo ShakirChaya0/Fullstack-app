@@ -6,10 +6,7 @@ interface SortBySelectProps {
   onFilterChange: (newFilter: SuggFilters) => void;
 }
 
-export default function SuggestionsFilters({
-  filter,
-  onFilterChange,
-}: SortBySelectProps) {
+export default function SuggestionsFilters({ filter, onFilterChange }: SortBySelectProps) {
   return (
     <section aria-label="filtros">
       <div className="flex flex-row justify-center items-center gap-4 w-full h-full">
@@ -18,12 +15,10 @@ export default function SuggestionsFilters({
           aria-label="filtros de sugerencias"
           className="h-full"
           sx={{
-            // Aplica a TODOS los botones hijos del group y anula outline/box-shadow insistente
             "& .MuiButton-root": {
               outline: "none !important",
               boxShadow: "none !important",
               borderColor: "#0F766E !important",
-              // anular el focus visible del navegador y de MUI
               "&:focus": {
                 outline: "none !important",
                 boxShadow: "none !important",
@@ -34,10 +29,8 @@ export default function SuggestionsFilters({
                 boxShadow: "none !important",
                 borderColor: "#0F766E !important",
               },
-              // Firefox inner focus
               "::-moz-focus-inner": { border: 0 },
             },
-            // en caso el group reciba foco
             "&:focus": {
               outline: "none !important",
               boxShadow: "none !important",

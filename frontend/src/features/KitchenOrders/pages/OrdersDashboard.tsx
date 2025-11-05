@@ -14,7 +14,6 @@ export default function OrdersDashboard() {
 
     const handleUpdatedOrder = useCallback((updatedOrder: KitchenOrder) => {
         setOrders(prev => prev.map(order => order.idPedido === updatedOrder.idPedido ? updatedOrder : order));
-        console.log('Updated Order Received:', updatedOrder.lineasPedido[0]);
         setSelectedOrder(prev => prev && prev.idPedido === updatedOrder.idPedido ? updatedOrder : prev);
     }, []);
 
@@ -83,8 +82,6 @@ export default function OrdersDashboard() {
                     else if (anyInProgress || anyFinished) newOrderStatus = 'En_Preparacion';
                     else newOrderStatus = 'Solicitado';
 
-                    console.log(updatedLines)
-
                     return { ...order, lineasPedido: updatedLines, estado: newOrderStatus };
                 }
 
@@ -93,8 +90,6 @@ export default function OrdersDashboard() {
 
             return newOrders;
         });
-
-  
 
         setSelectedOrder(prev => prev && prev.idPedido === orderId ? {
                 ...prev,
@@ -108,9 +103,6 @@ export default function OrdersDashboard() {
                 }
             : prev
         );
-
-        console.log(selectedOrder)
-
 
         sendEvent("updateLineStatus", { idPedido: orderId, nroLinea: lineNumber, estadoLP: newStatus });
     }, [sendEvent]);

@@ -52,8 +52,6 @@ export const AuthProvider = ({ children }: { children: ReactElement }) => {
                 return data.token
             }
 
-            console.warn(data.message)
-
             return null;
         } catch (error) {
             console.error('Error refreshing token:', error);
