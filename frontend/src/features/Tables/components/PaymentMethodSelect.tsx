@@ -5,16 +5,15 @@ import { type FormEvent } from "react";
 import { CircularProgress } from "@mui/material";
 import { toast } from "react-toastify";
 import { usePaymentMutation } from "../hooks/usePaymentMutation";
-import type { ITable } from "../interfaces/ITable";
 import type { PaymentMethod } from "../../Payment/types/PaymentSharedTypes";
 
 type PaymentMethodSelectorProps = {
     onClose: () => void;
-    currentTable: ITable
+    currentTable: number | undefined
 };
 
 export default function PaymentMethodSelector({ onClose, currentTable }: PaymentMethodSelectorProps) {
-    const { mutate, isPending, isSuccess } = usePaymentMutation(currentTable._orders?.at(-1)?.idPedido ?? 1);
+    const { mutate, isPending, isSuccess } = usePaymentMutation(currentTable ?? 1);
 
     if (isSuccess) onClose()
 
@@ -28,7 +27,6 @@ export default function PaymentMethodSelector({ onClose, currentTable }: Payment
             return
         }
 
-        console.log(data.paymentMethod)
 
         mutate((data.paymentMethod as PaymentMethod))
     }

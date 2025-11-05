@@ -10,8 +10,10 @@ const WaiterMainLayout = lazy(() => import("../shared/components/WaiterMainLayou
 const WaiterHomepage = lazy(() => import("../shared/components/WaiterHomePage"));
 const UserProfile = lazy(() => import("../features/Profile/pages/UserProfile"));
 const ModifyOrder = lazy(() => import("../features/Tables/pages/ModifyOrder"))
+const Check = lazy(() => import("../features/Payment/pages/CheckPage"))
 
 // Skeletons
+const CheckSKeleton = lazy(() => import("../features/Payment/pages/CheckSkeleton"));
 const ProfileCardSkeleton = lazy(() => import("../features/Profile/components/ProfileCardSkeleton"));
 const SkeletonCreateOrder = lazy(() => import("../features/Tables/pages/CreateOrderSkeletonBody"))
 
@@ -37,6 +39,13 @@ export default function WaiterRouter() {
                         <ModifyOrder/>
                     </Suspense>
                 }/>
+
+                <Route path="/Pedido/Cuenta/:idPedido" element={
+                    <Suspense fallback={<CheckSKeleton/>}>
+                        <Check/>
+                    </Suspense>
+                }/>
+
                 <Route path="/MesasDisponibles" element={<AvailableTable />} />
 
                 <Route path="/Perfil" element={

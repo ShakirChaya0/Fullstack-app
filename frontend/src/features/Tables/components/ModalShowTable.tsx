@@ -1,10 +1,11 @@
-import { type FC, Fragment } from 'react';
+import { type FC, Fragment, useEffect } from 'react';
 import { motion, AnimatePresence, type Variants } from 'framer-motion';
 import type { ITable } from '../interfaces/ITable';
 import { useNavigate } from 'react-router';
 import ModalQR from './ModalQR';
 import { useTableMutation } from '../hooks/useTableMutation';
 import SelectMethodModal from './SelectMethodModal';
+import { useQueryClient } from '@tanstack/react-query';
 
 // --- Icono de Cierre (SVG) ---
 const CloseIcon: FC<{ className?: string }> = ({ className }) => (
@@ -36,6 +37,15 @@ export const ModalShowTable: FC<ModalShowTableProps> = ({ open, onClose, title, 
   const { mutate, isPending } = useTableMutation()
   const isModify = currentTable._orders?.find((o) => ((o.idMozo) && ( o.estado !== "Completado" && o.estado !== "Pagado" && o.estado !== "Pendiente_De_Pago" && o.estado !== "Pendiente_De_Cobro")))
   const isRealease =  (currentTable._orders?.at(-1) === undefined) || (currentTable._orders?.at(-1)?.estado === "Pagado")
+  const queryClient = useQueryClient()
+
+  useEffect(() => {
+    (
+      async () => {
+        await queryClient.invalidateQueries({queryKey: ["waitersTable"]})
+      }
+    )()
+  }, [currentTable._tableNum])
 
   const modalVariants: Variants = {
     hidden: { x: '-100%', opacity: 0 },
@@ -50,6 +60,10 @@ export const ModalShowTable: FC<ModalShowTableProps> = ({ open, onClose, title, 
       transition: { duration: 0.2 }
     },
   };
+
+  const handleGenerateCheck = async () => {
+    navigate(`/Mozo/Pedido/Cuenta/${currentTable._orders?.at(-1)?.idPedido}`)
+  }
 
   const overlayVariants: Variants = {
     hidden: { opacity: 0 },
@@ -135,8 +149,19 @@ export const ModalShowTable: FC<ModalShowTableProps> = ({ open, onClose, title, 
               </div>
                         
               <div className="mt-auto flex flex-col gap-3">
-                    { currentTable._orders && (currentTable._orders.at(-1)?.estado === "Pendiente_De_Cobro" || currentTable._orders.at(-1)?.estado === "Pendiente_De_Pago") && 
-                      <SelectMethodModal currentTable={currentTable}/>
+                    {
+                      currentTable._orders && (currentTable._orders.at(-1)?.estado === "Pendiente_De_Cobro" || currentTable._orders.at(-1)?.estado === "Pendiente_De_Pago" || currentTable._orders.at(-1)?.estado === "Completado") && 
+                      <button 
+                          className="w-full px-4 py-3 text-sm font-medium text-white bg-teal-600 
+                          rounded-lg hover:bg-teal-700 active:scale-95 active:bg-teal-800 cursor-pointer transition-all"
+                          onClick={handleGenerateCheck}
+                      >
+                        Generar Cuenta
+                      </button>
+                    }
+                    { 
+                      currentTable._orders && (currentTable._orders.at(-1)?.estado === "Pendiente_De_Cobro" || currentTable._orders.at(-1)?.estado === "Pendiente_De_Pago") && 
+                      <SelectMethodModal currentTable={currentTable._orders.at(-1)?.idPedido}/>
                     }
                     {
                       currentTable._orders && (currentTable._orders.at(-1)?.estado !== "Pendiente_De_Cobro" && currentTable._orders.at(-1)?.estado !== "Pendiente_De_Pago") &&

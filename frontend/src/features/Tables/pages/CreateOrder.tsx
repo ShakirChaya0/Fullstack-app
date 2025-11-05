@@ -67,7 +67,7 @@ export default function CreateOrder() {
         }
 
         const lineasDePedido = orderItems.map((p): LineaPedido => {
-            return {producto: p, cantidad: p.quantity, estado: "", subtotal: p.quantity * p._price}
+            return {producto: p, cantidad: p.quantity, estado: "Pendiente", subtotal: p.quantity * p._price}
         })
 
         const orderData = {

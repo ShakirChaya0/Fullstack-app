@@ -31,12 +31,14 @@ function Table({ tableData, onClick, orders }: TableProps) {
 
     const isAssigned = orders.find((o) => o.nroMesa === _tableNum)
 
+    console.log(isAssigned)
+
     const handleClick = (e: React.MouseEvent) => {
         e.stopPropagation();
         onClick(tableData);
     };
     
-    const bgColor = isAssigned ? tableState[tableData._orders?.at(-1)?.estado ?? "Solicitado"] : "bg-red-600"
+    const bgColor = isAssigned ? tableState[isAssigned.estado ?? "Solicitado"] : "bg-red-600"
     
     return (
         <motion.div
@@ -90,10 +92,16 @@ export default function ShowWaiterTables() {
         onEvent("updatedOrderLineStatus", async () => {
             await queryClient.invalidateQueries({queryKey: ["waitersTable"]})
         })
+        onEvent("orderPaymentEvent", async () => {
+            await queryClient.invalidateQueries({queryKey: ["waitersTable"]})
+        })
 
         return () => {
             offEvent("waiterOrders", (data) => setOrders(data))
             offEvent("updatedOrderLineStatus", async () => {
+                await queryClient.invalidateQueries({queryKey: ["waitersTable"]})
+            })
+            offEvent("orderPaymentEvent", async () => {
                 await queryClient.invalidateQueries({queryKey: ["waitersTable"]})
             })
         }

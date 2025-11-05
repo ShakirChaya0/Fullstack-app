@@ -20,7 +20,7 @@ export class GenerateCheckUseCase {
         const orderFound = await this.orderRepository.getOne(orderId);
 
         if (!orderFound) throw new NotFoundError("Pedido no encontrado");
-        if (orderFound.status === "Pendiente_De_Pago" || orderFound.status === "Completado") {
+        if (orderFound.status === "Pendiente_De_Pago" || orderFound.status === "Completado" || orderFound.status === "Pendiente_De_Cobro") {
             if (!orderFound.waiter || !orderFound.table) throw new ServerError("El Mozo o la Mesa del pedido no existe");
 
             const information = await this.informationRepository.getInformation();
