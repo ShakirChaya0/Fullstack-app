@@ -24,6 +24,8 @@ export const useApiClient = () => {
 
             if (newAccessToken) {
                 response = await makeRequest(newAccessToken);
+
+                console.log("REFRESH AUTOMATICO");
             } else {
                 logout();
                 toast.warn('Sesión expirada. Por favor, inicie sesión de nuevo.');
