@@ -4,7 +4,7 @@
   "main": "app.js",
   "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "vitest",
     "start": "node build/app.js",
     "dev": "tsx watch src/app.ts",
     "build": "tsc"
@@ -41,6 +41,7 @@
     "@types/nodemailer": "^7.0.1",
     "prisma": "^6.11.1",
     "tsx": "^4.20.3",
-    "typescript": "^5.8.3"
+    "typescript": "^5.8.3",
+    "vitest": "^4.0.18"
   }
 }

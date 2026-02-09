@@ -43,15 +43,15 @@ export class RegisterReservation {
     return null;
   }
 
-private combineDateTime(date: Date, time: string): Date {
-  const [hours, minutes] = time.split(":").map(Number);
-  
-  // Crear fecha en hora local
-  const localDate = new Date(date);
-  localDate.setHours(hours, minutes, 0, 0);
-  
-  return localDate; // Devolver en hora local, no convertir a UTC aquí
-}
+  private combineDateTime(date: Date, time: string): Date {
+    const [hours, minutes] = time.split(":").map(Number);
+
+    // Crear fecha en hora local
+    const localDate = new Date(date);
+    localDate.setHours(hours, minutes, 0, 0);
+
+    return localDate; // Devolver en hora local, no convertir a UTC aquí
+  }
 
   public async execute(data: SchemaReservation, clientId: string): Promise<Reservation | null> {
     const policy = await this.policyRepository.getPolicy();
@@ -97,7 +97,7 @@ private combineDateTime(date: Date, time: string): Date {
     // Si la hora seleccionada es de madrugada (00:00 - apertura)
      let adjustedSelectedTime = selectedTimeMinutes;
       if (selectedTimeMinutes < aperturaMinutesTotal) {
-       adjustedSelectedTime = selectedTimeMinutes + 24 * 60;
+        adjustedSelectedTime = selectedTimeMinutes + 24 * 60;
       }
     
       if (adjustedSelectedTime < aperturaMinutesTotal || adjustedSelectedTime > cierreMinutesTotal) {
