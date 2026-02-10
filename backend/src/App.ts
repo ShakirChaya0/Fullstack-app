@@ -92,3 +92,5 @@ server.listen(PORT, () => {
     
     runReservationCheckJob();
 })
+
+export default app
