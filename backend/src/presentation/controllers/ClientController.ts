@@ -56,7 +56,7 @@ export class ClientController {
                 estadoCliente: client.states
             }
 
-            res.status(201).json(filteredClient);
+            res.status(200).json(filteredClient);
         } catch (error) {
             next(error)
         }
@@ -78,7 +78,7 @@ export class ClientController {
                 fechaNacimiento: clientByUserName.birthDate,
                 telefono: clientByUserName.phone
             }
-            res.status(201).json(filteredClient);
+            res.status(200).json(filteredClient);
         } catch(error) {
             next(error);
         }

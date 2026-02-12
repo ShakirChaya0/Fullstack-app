@@ -16,7 +16,7 @@ export class GenerateCheckUseCase {
         private checkService = new CheckService()
     ){}
     
-    async execute(orderId: number): Promise<{ order: Order, check: Check}> {
+    async execute(orderId: number): Promise<{ order: Order, check: Check }> {
         const orderFound = await this.orderRepository.getOne(orderId);
 
         if (!orderFound) throw new NotFoundError("Pedido no encontrado");
