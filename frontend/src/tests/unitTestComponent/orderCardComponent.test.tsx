@@ -1,12 +1,12 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import OrderCard from "../features/KitchenOrders/components/OrderCard";
+import OrderCard from "../../features/KitchenOrders/components/OrderCard";
 import type {
     FoodType,
     OrderLineStatus,
     OrderStatus,
-} from "../features/KitchenOrders/types/SharedTypes";
+} from "../../features/KitchenOrders/types/SharedTypes";
 
 describe("OrderCard", () => {
     beforeEach(() => {
