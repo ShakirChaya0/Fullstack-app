@@ -1,6 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { render, screen } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
+import { render, screen, fireEvent } from "@testing-library/react";
 import OrderCard from "../../features/KitchenOrders/components/OrderCard";
 import type {
     FoodType,
@@ -89,12 +88,11 @@ describe("OrderCard", () => {
     });
 
     it("deberia ejecutarse onSelect prop al hacer click", async () => {
-        const user = userEvent.setup();
 
         render(<OrderCard {...baseProps} />);
 
         const pressingComponent = screen.getByRole("orderCard");
-        await user.click(pressingComponent);
+        fireEvent.click(pressingComponent);
 
         expect(baseProps.onSelect).toHaveBeenCalledTimes(1);
     });

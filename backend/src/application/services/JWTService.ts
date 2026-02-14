@@ -8,7 +8,7 @@ export class JWTService {
         private readonly refreshTokenSecret: string = process.env.REFRESH_TOKEN_SECRET || "",
         private readonly resetPasswordTokenSecret: string = process.env.RESET_PASSWORD_TOKEN_SECRET || "",
         private readonly confirmEmailTokenSecret: string = process.env.CONFIRM_EMAIL_TOKEN_SECRET || ""
-    ) {}
+    ) { }
 
     public generateAccessToken(payload: JwtPayloadInterface): string {
         return jwt.sign(payload, this.accessTokenSecret, { expiresIn: "15m" });
@@ -17,7 +17,7 @@ export class JWTService {
     public verifyAccessToken(token: string): JwtPayloadInterface {
         return jwt.verify(token, this.accessTokenSecret) as JwtPayloadInterface;
     }
-    
+
     public generateRefreshToken(payload: JwtPayloadInterface): string {
         return jwt.sign(payload, this.refreshTokenSecret, { expiresIn: "7d" });
     }
@@ -48,7 +48,7 @@ export class JWTService {
         if (!decoded || typeof decoded === "string" || !("userId" in decoded)) {
             throw new UnauthorizedError("Token inválido o sin id");
         }
-    
+
         return { userId: (decoded as JwtPayload).userId as string };
     }
 }

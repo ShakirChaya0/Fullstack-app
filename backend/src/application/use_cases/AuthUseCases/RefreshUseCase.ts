@@ -10,23 +10,21 @@ export class RefreshUseCase {
         private readonly userRepository = new UserRepository(),
         private readonly jwtService = new JWTService(),
         private readonly refreshTokenRepository = new RefreshTokenRepository()
-    ) {}
+    ) { }
 
-    async execute(refreshToken: string): Promise<{ accessToken: string, refreshToken: string }> {
-        try{
+    async execute(refreshToken: string): Promise<{ accessToken: string }> {
+        try {
             const token = await this.refreshTokenRepository.getRefreshToken(refreshToken)
 
-            if(!token || token.revocado) throw new UnauthorizedError('Token inválido o revocado')
+            if (!token || token.revocado) throw new UnauthorizedError('Token inválido o revocado')
 
             const payload = this.jwtService.verifyRefreshToken(refreshToken);
-            
+
             if (typeof payload === 'string') throw new UnauthorizedError("Token inválido o expirado");
 
             const user = await this.userRepository.findById(payload.idUsuario);
 
             if (!user) throw new NotFoundError("Usuario no encontrado");
-
-            await this.refreshTokenRepository.revokeToken(refreshToken);
 
             const newAccessToken = this.jwtService.generateAccessToken({
                 idUsuario: user.userId,
@@ -35,18 +33,20 @@ export class RefreshUseCase {
                 username: user.userName
             });
 
-            const newRefreshToken = this.jwtService.generateRefreshToken({
-                idUsuario: user.userId,
-                email: user.email,
-                tipoUsuario: user.userType as UserType,
-                username: user.userName
-            });
+            // await this.refreshTokenRepository.revokeToken(refreshToken);
 
-            const endDate = new Date(Date.now() + 1 * 60 * 1000); 
+            // const newRefreshToken = this.jwtService.generateRefreshToken({
+            //     idUsuario: user.userId,
+            //     email: user.email,
+            //     tipoUsuario: user.userType as UserType,
+            //     username: user.userName
+            // });
 
-            await this.refreshTokenRepository.saveRefreshedToken(user.userId, newRefreshToken, endDate);
+            // const endDate = new Date(Date.now() + 1 * 60 * 1000); 
 
-            return { accessToken: newAccessToken, refreshToken: newRefreshToken };
+            // await this.refreshTokenRepository.saveRefreshedToken(user.userId, newRefreshToken, endDate);
+
+            return { accessToken: newAccessToken };
         }
         catch (error) {
             throw new UnauthorizedError("Token inválido o expirado");

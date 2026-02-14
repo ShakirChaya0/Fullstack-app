@@ -13,13 +13,13 @@ import { IClienteRepository } from "../../../domain/repositories/IClientReposito
 
 type ClientWithUsuario = Prisma.ClientesGetPayload<{
     include: {
-        Usuarios: true , 
+        Usuarios: true,
         EstadosCliente: true,
         Reserva: {
-            include : {
+            include: {
                 Mesas_Reservas: {
                     include: {
-                        Mesa:true
+                        Mesa: true
                     }
                 }
             }
@@ -37,13 +37,13 @@ export class ClientRepository implements IClienteRepository {
                     include: {
                         Mesas_Reservas: {
                             include: {
-                                Mesa:true
+                                Mesa: true
                             }
                         }
                     }
                 }
             }
-        }); 
+        });
         return clients.map((client) => { return this.toDomainEntity(client) });
     }
 
@@ -56,9 +56,9 @@ export class ClientRepository implements IClienteRepository {
                 Usuarios: true,
                 EstadosCliente: {
                     orderBy: {
-                        fechaActualizacion: 'desc' 
+                        fechaActualizacion: 'desc'
                     },
-                    take: 1 
+                    take: 1
                 },
                 Reserva: {
                     include: {
@@ -72,7 +72,7 @@ export class ClientRepository implements IClienteRepository {
             }
         });
 
-        if(!client) return null; 
+        if (!client) return null;
 
         return this.toDomainEntity(client);
     }
@@ -102,11 +102,11 @@ export class ClientRepository implements IClienteRepository {
             },
         });
 
-        if (!clientFound) return null; 
-        
+        if (!clientFound) return null;
+
         return this.toDomainEntity(clientFound);
-    } 
-    
+    }
+
     async createClient(data: SchemaCliente): Promise<Client> {
         try {
             const newClient = await prisma.clientes.create({
@@ -132,7 +132,7 @@ export class ClientRepository implements IClienteRepository {
                         include: {
                             Mesas_Reservas: {
                                 include: {
-                                    Mesa:true
+                                    Mesa: true
                                 }
                             }
                         }
@@ -164,14 +164,14 @@ export class ClientRepository implements IClienteRepository {
                 }
             });
 
-            const updatedClient = await prisma.clientes.update ({
-                where: { idCliente: id }, 
+            const updatedClient = await prisma.clientes.update({
+                where: { idCliente: id },
                 data: {
                     nombre: data.nombre,
                     apellido: data.apellido,
                     telefono: data.telefono,
                     fechaNacimiento: data.fechaNacimiento,
-                }, 
+                },
                 include: {
                     Usuarios: true,
                     EstadosCliente: true,
@@ -188,7 +188,7 @@ export class ClientRepository implements IClienteRepository {
             });
             return this.toDomainEntity(updatedClient);
         }
-        catch(error: any) {
+        catch (error: any) {
             if (error?.code === 'P2002' && error?.meta?.target?.includes('nombreUsuario')) {
                 throw new ConflictError("El nombre de usuario ingresado ya está en uso");
             } else if (error?.code === 'P2002' && error?.meta?.target?.includes('email')) {
@@ -217,26 +217,26 @@ export class ClientRepository implements IClienteRepository {
     public async getClientByOtherDatas(clientPublicInfo: ClientPublicInfo): Promise<Client | null> {
         const client = await prisma.clientes.findFirst({
             where: {
-                nombre: clientPublicInfo.nombre, 
-                apellido: clientPublicInfo.apellido, 
+                nombre: clientPublicInfo.nombre,
+                apellido: clientPublicInfo.apellido,
                 telefono: clientPublicInfo.telefono
-            }, 
+            },
             include: {
-                Usuarios: true , 
+                Usuarios: true,
                 EstadosCliente: true,
-                    Reserva: {
-                        include : {
-                            Mesas_Reservas: {
-                                include: {
-                                    Mesa:true
-                                }
+                Reserva: {
+                    include: {
+                        Mesas_Reservas: {
+                            include: {
+                                Mesa: true
                             }
                         }
                     }
+                }
             }
-        }); 
+        });
 
-        if(!client) return null;
+        if (!client) return null;
 
         return this.toDomainEntity(client);
     }
@@ -244,29 +244,29 @@ export class ClientRepository implements IClienteRepository {
     private toDomainEntity(client: ClientWithUsuario): Client {
 
         const clientPublicInfo: ClientPublicInfo = {
-            nombre: client.nombre, 
-            apellido: client.apellido, 
+            nombre: client.nombre,
+            apellido: client.apellido,
             telefono: client.telefono
         }
 
         const reservations = client.Reserva.map(reservation => {
             return new Reservation(
-                reservation.idReserva, 
+                reservation.idReserva,
                 reservation.fechaReserva,
-                reservation.horarioReserva.toISOString().slice(11, 16), 
-                reservation.fechaCancelacion, 
-                reservation.cantidadComensales, 
-                reservation.estado, 
-                clientPublicInfo, 
-                reservation.Mesas_Reservas.map(table => new Table (
-                    table.Mesa.nroMesa, 
-                    table.Mesa.capacidad, 
+                reservation.horarioReserva.toISOString().slice(11, 16),
+                reservation.fechaCancelacion,
+                reservation.cantidadComensales,
+                reservation.estado,
+                clientPublicInfo,
+                reservation.Mesas_Reservas.map(table => new Table(
+                    table.Mesa.nroMesa,
+                    table.Mesa.capacidad,
                     table.Mesa.estado
                 ))
             )
         })
 
-        const estados = client.EstadosCliente.map( state => { 
+        const estados = client.EstadosCliente.map(state => {
             return new ClientState(state.fechaActualizacion, state.estado)
         })
 
@@ -278,12 +278,12 @@ export class ClientRepository implements IClienteRepository {
             client.Usuarios.tipoUsuario,
             client.nombre,
             client.apellido,
-            client.telefono, 
+            client.telefono,
             client.fechaNacimiento,
             client.emailVerificado,
-            estados, 
+            estados,
             reservations
-        );  
+        );
     }
 
 }

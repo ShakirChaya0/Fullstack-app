@@ -56,12 +56,12 @@ export class AuthController {
             const result = await this.refreshUC.execute(token);
 
             res
-                .cookie("refreshToken", result.refreshToken, {
-                    httpOnly: true,
-                    secure: this.isProduction,
-                    sameSite: this.isProduction ? "none" : "lax",
-                    maxAge: 1000 * 60 * 60 * 24 * 7, 
-                })
+                // .cookie("refreshToken", result.refreshToken, {
+                //     httpOnly: true,
+                //     secure: this.isProduction,
+                //     sameSite: this.isProduction ? "none" : "lax",
+                //     maxAge: 1000 * 60 * 60 * 24 * 7, 
+                // })
                 .status(200).json({ token: result.accessToken });
         } catch (error) {
             next(error);

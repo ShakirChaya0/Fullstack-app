@@ -1,5 +1,5 @@
 import { createTransport } from "nodemailer";
-import { getResetPasswordTemplate, getVerificationTemplate } from "./mailTemplates.js";
+import { getResetPasswordTemplate, getVerificationTemplate } from "../../shared/constants/mailTemplates.js";
 
 export class MailerService {
     constructor(

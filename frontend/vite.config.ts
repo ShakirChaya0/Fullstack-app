@@ -6,9 +6,14 @@ import tailwindcss from "@tailwindcss/vite";
 export default defineConfig({
     plugins: [react(), tailwindcss()],
     test: {
-        globals: true, // Permite usar describe/it/expect sin importarlos
-        environment: "jsdom", // Simula un navegador
-        setupFiles: "./src/tests/setup.ts", // Archivo de setup global
-        css: true, // Procesa imports de CSS sin romper
+        globals: true,
+        environment: "jsdom",
+        setupFiles: "./src/tests/setup.ts",
+        css: true,
+        exclude: [
+            "**/node_modules/**",
+            "**/e2e/**",
+            "**/*.spec.ts",
+        ],
     },
 });
