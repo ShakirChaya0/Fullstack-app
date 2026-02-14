@@ -28,15 +28,3 @@ export class OrderSocketService {
         this.eventEmitter.emitToRoom(`mozo:${order.waiter?.username}`, event, order.toWaiterInfo());
     } 
 }
-
-/*
-    console.log(`📡 Emitiendo evento: ${event} para pedido #${order.idOrder}`);
-    
-    if (tokenQRData) {
-        const room = `comensal:${tokenQRData.tokenQR}`;
-        console.log(`📤 Emitiendo a sala: ${room}`);
-        this.eventEmitter.emitToRoom(room, event, order.toClientInfo());
-    } else {
-        console.warn('⚠️ No se encontró token QR para la mesa');
-    }
-*/

@@ -46,20 +46,3 @@ export async function AuthSocketMiddleware(socket: Socket, next: (err?: Error) =
     console.log('  Socket autenticado - qrToken final:', qrToken);
     next();
 }
-
-/*
-    // Leer qrToken desde las cookies HTTP
-    let qrToken = socket.handshake.auth.qrToken;
-    
-    // Si no está en auth, intentar leerlo desde las cookies
-    if (!qrToken) {
-        const cookies = socket.handshake.headers.cookie;
-        if (cookies) {
-            const cookieArray = cookies.split(';');
-            const qrCookie = cookieArray.find(cookie => cookie.trim().startsWith('qrToken='));
-            if (qrCookie) {
-                qrToken = qrCookie.split('=')[1];
-            }
-        }
-    }
-*/

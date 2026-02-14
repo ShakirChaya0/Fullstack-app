@@ -57,32 +57,3 @@ export function SocketServerConnection(server: Http2Server) {
     return ioConnection;
 }
 
-/*
-ioConnection.on('connection', async (socket: AuthenticatedSocket) => {
-    console.log('🔌 Nueva conexión - Socket ID:', socket.id);
-    console.log('👤 Usuario:', socket.user?.username);
-    console.log('🎫 QR Token:', socket.qrToken);
-
-    if (socket.user?.tipoUsuario === "SectorCocina") {
-        socket.join("cocina");
-        console.log('👨‍🍳 Socket unido a sala: cocina');
-        // ... resto del código
-    }
-    else if (socket.user?.tipoUsuario === "Mozo") {
-        const room = `mozo:${socket.user.username}`;
-        socket.join(room);
-        console.log(`🧑‍💼 Socket unido a sala: ${room}`);
-        // ... resto del código
-    }
-    else if (socket.qrToken) {
-        const room = `comensal:${socket.qrToken}`;
-        socket.join(room);
-        console.log(`🍽️ Socket unido a sala: ${room}`); //   IMPORTANTE
-        // ... resto del código
-    } else {
-        console.warn('⚠️ Socket sin tipo de usuario ni qrToken');
-    }
-
-    registerOrderHandlers(ioConnection, socket);
-});
-*/
