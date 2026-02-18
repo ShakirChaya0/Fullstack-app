@@ -11,6 +11,7 @@ export const ReservationSchema = z.object({
     if (val instanceof Date) {
       return new Date(val.getFullYear(), val.getMonth(), val.getDate());
     }
+    return val;
   }, z.date().refine(date => {
     const today = new Date();
     today.setHours(0,0,0,0);
@@ -39,6 +40,7 @@ export const ReservationSchema = z.object({
   cancelationDate: z.preprocess((val) => {
       if (!val) return undefined;
       if (typeof val === "string" || val instanceof Date) return new Date(val);
+      return val;
   }, z.date().optional())
 }); 
 
