@@ -5,8 +5,8 @@
   "type": "module",
   "scripts": {
     "test": "vitest",
-    "start": "node build/app.js",
-    "dev": "tsx watch src/app.ts",
+    "start": "node build/App.js",
+    "dev": "tsx watch src/App.ts",
     "build": "tsc"
   },
   "keywords": [],
