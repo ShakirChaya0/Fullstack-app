@@ -1,0 +1,13 @@
+import { Router } from "express";
+import { AdminController } from "../controllers/AdminController.js";
+
+export function AdminRouter() {
+    const adminRouter = Router();
+    const adminController = new AdminController();
+
+    adminRouter.get('/', (req, res, next) => { adminController.getAdmin(req, res, next) });
+
+    adminRouter.patch('/update', (req, res, next) => { adminController.updateAdminProfile(req, res, next) });
+
+    return adminRouter
+}

@@ -1,0 +1,252 @@
+import * as React from "react";
+import AppBar from "@mui/material/AppBar";
+import Box from "@mui/material/Box";
+import Toolbar from "@mui/material/Toolbar";
+import Typography from "@mui/material/Typography";
+import IconButton from "@mui/material/IconButton";
+import MenuIcon from "@mui/icons-material/Menu";
+import AccountCircle from "@mui/icons-material/AccountCircle";
+import MenuItem from "@mui/material/MenuItem";
+import Menu from "@mui/material/Menu";
+import Drawer from "@mui/material/Drawer";
+import List from "@mui/material/List";
+import ListItem from "@mui/material/List";
+import ListItemButton from "@mui/material/ListItemButton";
+import ListItemText from "@mui/material/ListItemText";
+import { NavLink, useNavigate } from "react-router";
+import useAuth from "../hooks/useAuth";
+import restauranteWhite from "../../shared/utils/assets/restauranteWhite.png";
+
+// --- Links de navegación ---
+const navLinks = [
+  { label: "Registrar Reserva", path: "/Cliente/Reserva" },
+  { label: "Registro de Reservas", path: "/Cliente/Reserva/Historial" }
+];
+
+// --- Componente de link individual ---
+const NavLinkItem = ({ to, label }: { to: string; label: string }) => (
+  <Typography variant="h6" component="div">
+    <NavLink
+      to={to}
+      end
+      className={({ isActive }) =>
+        `
+        relative pb-1 transition-all duration-300 
+        ${isActive ? "text-white font-bold after:w-full after:left-0" : "text-white/70 font-normal after:w-0 after:left-1/2"}
+        after:content-[''] after:absolute after:bottom-0 after:h-[2px] after:bg-white after:transition-all after:duration-300
+      `
+      }
+    >
+      {label}
+    </NavLink>
+  </Typography>
+);
+
+export default function ClientHeader() {
+  const { logout, user } = useAuth();
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const [drawerOpen, setDrawerOpen] = React.useState(false);
+  const navigate = useNavigate();
+
+
+
+  // Controladores del menú y modal
+  const handleMenu = (event: React.MouseEvent<HTMLElement>) => setAnchorEl(event.currentTarget);
+  const handleClose = () => setAnchorEl(null);
+  const toggleDrawer = (open: boolean) => () => setDrawerOpen(open);
+  const handelLogout = () => {
+    logout() 
+    navigate("/login")
+  } 
+  return (
+    <>
+      <AppBar
+        position="static"
+        sx={{
+          bgcolor: "#222222",
+          height: "4rem",
+          boxShadow: "0px 2px 6px rgba(0,0,0,0.3)",
+        }}
+      >
+        <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
+          {/* --- Sección Izquierda --- */}
+          <Box sx={{ display: "flex", alignItems: "center" }}>
+            {/* Botón menú (mobile) */}
+            <IconButton
+              size="large"
+              edge="start"
+              color="inherit"
+              aria-label="menu"
+              sx={{ display: { xs: "block", md: "none" }, mb: "0.5rem" }}
+              onClick={toggleDrawer(true)}
+            >
+              <MenuIcon />
+            </IconButton>
+
+            {/* Logo (desktop) */}
+            <NavLink
+              to="/Cliente"
+              style={{
+                textDecoration: "none",
+                color: "inherit",
+                display: "flex",
+                alignItems: "center",
+              }}
+            >
+              <IconButton sx={{ display: { xs: "none", md: "block" } }} color="inherit">
+                <img
+                  src={restauranteWhite}
+                  alt="Logo Restaurante"
+                  style={{ height: "2rem", width: "auto" }}
+                />
+              </IconButton>
+            </NavLink>
+          </Box>
+
+          {/* --- Links (solo desktop) --- */}
+          <Box
+            sx={{
+              flexGrow: 1,
+              display: { xs: "none", md: "flex" },
+              gap: 3,
+              ml: 2,
+              alignItems: "center",
+            }}
+          >
+      {navLinks.map((link) => {
+  if (link.label === "Registrar Reserva") {
+    return (
+      <Typography key={link.path} variant="h6" component="div">
+        <Box
+          component="button"
+          sx={{
+            background: "none",
+            border: "none",
+            cursor: "pointer",
+            p: 0,
+            color: "inherit",
+          }}
+        >
+          <NavLink
+            to={link.path}
+            end
+            className={({ isActive }) =>
+              `
+              relative pb-1 transition-all duration-300 
+              ${isActive ? "text-white font-bold after:w-full after:left-0" : "text-white/70 font-normal after:w-0 after:left-1/2"}
+              after:content-[''] after:absolute after:bottom-0 after:h-[2px] after:bg-white after:transition-all after:duration-300
+            `
+            }
+          >
+            {link.label}
+          </NavLink>
+        </Box>
+      </Typography>
+    );
+  }
+  return <NavLinkItem key={link.path} to={link.path} label={link.label} />;
+})}
+          </Box>
+
+          {/* --- Perfil Usuario --- */}
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+            <Typography
+              variant="body1"
+              sx={{ fontWeight: 500, display: { xs: "none", sm: "block" } }}
+            >
+              {user?.username || "Invitado"}
+            </Typography>
+            <IconButton onClick={handleMenu} color="inherit" sx={{ p: 0 }}>
+              <AccountCircle sx={{ fontSize: "2rem" }} />
+            </IconButton>
+
+            <Menu
+              id="menu-appbar"
+              anchorEl={anchorEl}
+              anchorOrigin={{ vertical: "top", horizontal: "right" }}
+              keepMounted
+              transformOrigin={{ vertical: "top", horizontal: "right" }}
+              open={Boolean(anchorEl)}
+              onClose={handleClose}
+            >
+              <MenuItem onClick={handleClose}>
+                <NavLink
+                  to="/Cliente/Perfil"
+                  style={{ textDecoration: "none", color: "inherit", width: "100%" }}
+                >
+                  Mi Perfil
+                </NavLink>
+              </MenuItem>
+              <MenuItem onClick={handelLogout}>Cerrar Sesión</MenuItem>
+            </Menu>
+          </Box>
+
+          {/* --- Drawer (Mobile) --- */}
+          <Drawer anchor="left" open={drawerOpen} onClose={toggleDrawer(false)}>
+            <Box
+              sx={{ width: 250 }}
+              role="presentation"
+              onClick={toggleDrawer(false)}
+              onKeyDown={toggleDrawer(false)}
+            >
+              <div className="text-center py-4 font-bold">
+                <h1>Panel Cliente</h1>
+              </div>
+              <List>
+                <ListItem disablePadding key="/Cliente">
+                  <NavLink
+                    to="/Cliente"
+                    end
+                    style={{ textDecoration: "none", width: "100%" }}
+                  >
+                    {({ isActive }) => (
+                      <ListItemButton
+                        disableRipple
+                        sx={{
+                          bgcolor: isActive ? "black" : "transparent",
+                          color: isActive ? "white" : "inherit",
+                          transition: "background-color 0.2s ease, color 0.2s ease",
+                          "&:hover": {
+                             bgcolor: isActive ? "grey.900" : "rgba(0,0,0,0.1)",
+                          },
+                        }}
+                      >
+                        <ListItemText primary="Panel Principal" />
+                      </ListItemButton>
+                    )}
+                  </NavLink>
+                  </ListItem>
+                {navLinks.map((link) => (
+                  <ListItem disablePadding>
+                  <NavLink
+                    key={link.path}
+                    to={link.path}
+                    end
+                    style={{ textDecoration: "none", color: "inherit" }}
+                  >
+                  {({ isActive }) => (
+                        <ListItemButton
+                          disableRipple
+                          sx={{
+                            bgcolor: isActive ? "black" : "transparent",
+                            color: isActive ? "white" : "inherit",
+                            transition: "background-color 0.2s ease, color 0.2s ease",
+                            "&:hover": {
+                              bgcolor: isActive ? "grey.900" : "rgba(0,0,0,0.1)",
+                            },
+                          }}
+                        >
+                          <ListItemText primary={link.label} />
+                        </ListItemButton>
+                    )}
+                  </NavLink>
+                </ListItem>
+                ))}
+              </List>
+            </Box>
+          </Drawer>
+        </Toolbar>
+      </AppBar>
+    </>
+  );
+}

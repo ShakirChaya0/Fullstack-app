@@ -1,0 +1,32 @@
+###
+GET http://localhost:3000/productos
+
+###
+GET http://localhost:3000/productos/id/34
+
+###
+GET http://localhost:3000/productos/nombre/Whisky
+
+###
+GET http://localhost:3000/productos/tipoProducto/Bebida
+
+###
+POST http://localhost:3000/productos/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzdWFyaW8iOiJlNTM0YjUyMS1iNzEwLTRhNjQtOGUyOC1iMTZkMTY5ZDVlYjQiLCJlbWFpbCI6ImFkbWluQGdtYWlsLmNvbSIsInRpcG9Vc3VhcmlvIjoiQWRtaW5pc3RyYWRvciIsInVzZXJuYW1lIjoiYWRtaW4iLCJpYXQiOjE3NTU2MDk2MzEsImV4cCI6MTc1NjIxNDQzMX0.56jCQ5DHfhVtDWciHrmX6b1WWK12rbIiLx3AfLQ5p48
+Content-Type: application/json
+
+{
+    "nombre": "Whisky",
+    "descripcion": "Blue Label",
+    "estado": "Disponible",
+    "esAlcoholica": true
+}   
+
+###
+PATCH http://localhost:3000/productos/id/3
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzdWFyaW8iOiJlNTM0YjUyMS1iNzEwLTRhNjQtOGUyOC1iMTZkMTY5ZDVlYjQiLCJlbWFpbCI6ImFkbWluQGdtYWlsLmNvbSIsInRpcG9Vc3VhcmlvIjoiQWRtaW5pc3RyYWRvciIsInVzZXJuYW1lIjoiYWRtaW4iLCJpYXQiOjE3NTU2MDk2MzEsImV4cCI6MTc1NjIxNDQzMX0.56jCQ5DHfhVtDWciHrmX6b1WWK12rbIiLx3AfLQ5p48
+Content-Type: application/json
+
+{
+    "estado": "No_Disponible"
+}

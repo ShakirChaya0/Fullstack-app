@@ -1,0 +1,32 @@
+### GET ALL
+GET http://localhost:3000/sugerencias?filter=ACTIVES
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzdWFyaW8iOiJlMTBjNmRmYS0xYjUxLTRhZGItOGI1MC1iYTIzMjgzNmU3YWMiLCJlbWFpbCI6ImNvY2luYUBnbWFpbC5jb20iLCJ0aXBvVXN1YXJpbyI6IlNlY3RvckNvY2luYSIsInVzZXJuYW1lIjoiY29jaW5hIiwiaWF0IjoxNzU1Nzc3NjIwLCJleHAiOjE3NTYzODI0MjB9.svoj3XAHVJBSSO5QNCH1iWMlio8V2NytfszPeb7Euxg
+
+### GET ACTIVES
+GET http://localhost:3000/sugerencias?filter=ACTIVES
+
+### CREATE SUGGESTION
+POST http://localhost:3000/sugerencias
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzdWFyaW8iOiJlMTBjNmRmYS0xYjUxLTRhZGItOGI1MC1iYTIzMjgzNmU3YWMiLCJlbWFpbCI6ImNvY2luYUBnbWFpbC5jb20iLCJ0aXBvVXN1YXJpbyI6IlNlY3RvckNvY2luYSIsInVzZXJuYW1lIjoiY29jaW5hIiwiaWF0IjoxNzU1Nzc3NjIwLCJleHAiOjE3NTYzODI0MjB9.svoj3XAHVJBSSO5QNCH1iWMlio8V2NytfszPeb7Euxg
+Content-Type: application/json
+
+{
+    "idProducto": 1,
+    "fechaDesde": "11/09/2025",
+    "fechaHasta": "20/09/2025"
+}
+
+
+### MODIFY SUGGESTION USE CASE
+### STEP 1
+GET http://localhost:3000/sugerencias/search?idProducto=2&fechaDesde=2025-06-25T00:00:00.000Z
+
+### STEP 2
+PATCH http://localhost:3000/sugerencias?idProducto=3&fechaDesde=2025-06-25T00:00:00Z
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzdWFyaW8iOiJlMTBjNmRmYS0xYjUxLTRhZGItOGI1MC1iYTIzMjgzNmU3YWMiLCJlbWFpbCI6ImNvY2luYUBnbWFpbC5jb20iLCJ0aXBvVXN1YXJpbyI6IlNlY3RvckNvY2luYSIsInVzZXJuYW1lIjoiY29jaW5hIiwiaWF0IjoxNzU1Nzc3NjIwLCJleHAiOjE3NTYzODI0MjB9.svoj3XAHVJBSSO5QNCH1iWMlio8V2NytfszPeb7Euxg
+Content-Type: application/json
+
+{
+    "idProducto": 3,
+    "fechaHasta": "21/09/2025"
+}

@@ -1,0 +1,68 @@
+### Por parte del Cliente
+POST http://localhost:3000/pedidos/
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzdWFyaW8iOiI0Njc3NTgyMy1kYTM2LTQ0NGQtYjgyMS0zZmZmNWZiYTMxZjQiLCJlbWFpbCI6InNoYWtpcmNoYXlhMjAwNUBnbWFpbC5jb20iLCJ0aXBvVXN1YXJpbyI6IkNsaWVudGUiLCJ1c2VybmFtZSI6Ikpvc2VCXzIwMDA0IiwiaWF0IjoxNzYwMDI0MjQyLCJleHAiOjE3NjA2MjkwNDJ9.-bToQhrRnnmKPuRt1Yg-oM_xOacLh9MvFH_ayYYjTcs
+Cookie: QrToken=03d4af66-bc48-480f-a737-138cefe3bad8
+
+{
+  "order": {
+    "cantidadCubiertos": 4,
+    "observacion": "assd",
+    "items": [
+        {
+        "nombre": "Whisky",
+        "monto": 150000.00,
+        "cantidad": 1
+        }
+    ]
+    }
+}
+
+
+### Por parte del Cliente NO registrado
+POST http://localhost:3000/pedidos/
+Content-Type: application/json 
+Cookie: 17134ce5-d71b-494d-ba32-999bf44a0906
+
+{
+    "order": {
+        "cantidadCubiertos": 3,
+        "observacion": "Flan con dulce de leche",
+        "items": [
+            {
+            "nombre": "Pan Sin TAC",
+            "tipo": "Postre",
+            "monto": 150.25,
+            "cantidad": 4
+            },
+            {
+            "nombre": "Flan",
+            "tipo": "Postre",
+            "monto": 2000,
+            "cantidad": 2
+            }
+        ]
+        
+    }
+}
+
+### Por parte del Mozo
+POST http://localhost:3000/pedidos/
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzdWFyaW8iOiI5OTAyM2M2Mi05YjY2LTQxYTMtYWFjMi1jODU3MDk5ZmQ1NzMiLCJlbWFpbCI6ImZyYW5jb25pY29sYXNAZ21haWwuY29tIiwidGlwb1VzdWFyaW8iOiJNb3pvIiwidXNlcm5hbWUiOiJmcmFuY29uaWNvbGFzIiwiaWF0IjoxNzU1ODk0ODI0LCJleHAiOjE3NTY0OTk2MjR9.xlIBviwBybKfRl8HjGjPJF0wtNtHjq77jAjpV2MS3kE
+
+{
+    "tableNumber": 1,
+    "order": {
+        "cantidadCubiertos": 4,
+        "observacion": "Flan y Pan caseros",
+        "items": [
+            {
+            "nombre": "Empanada de Carne",
+            "tipo": "Entrada",
+            "monto": 7000,
+            "cantidad": 1
+            }
+        ]
+    }
+}

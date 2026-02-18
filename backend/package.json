@@ -1,0 +1,49 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "main": "app.js",
+  "type": "module",
+  "scripts": {
+    "test": "vitest",
+    "start": "node build/app.js",
+    "dev": "tsx watch src/app.ts",
+    "build": "tsc"
+  },
+  "keywords": [],
+  "author": "",
+  "prisma": {
+    "schema": "src/infrastructure/database/prisma/schema.prisma"
+  },
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "@prisma/client": "6.10.1",
+    "bcryptjs": "3.0.2",
+    "cookie-parser": "1.4.7",
+    "cors": "2.8.5",
+    "dotenv": "17.2.0",
+    "express": "5.1.0",
+    "jsonwebtoken": "9.0.2",
+    "mercadopago": "2.8.0",
+    "node-cron": "4.2.1",
+    "nodemailer": "^7.0.6",
+    "qrcode": "^1.5.4",
+    "resolve-pkg-maps": "^1.0.0",
+    "socket.io": "4.8.1",
+    "uuid": "^11.1.0",
+    "zod": "3.25.64"
+  },
+  "devDependencies": {
+    "@types/cookie-parser": "^1.4.9",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.3",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/nodemailer": "^7.0.1",
+    "@types/supertest": "^6.0.3",
+    "prisma": "^6.11.1",
+    "supertest": "^7.2.2",
+    "tsx": "^4.20.3",
+    "typescript": "^5.8.3",
+    "vitest": "^4.0.18"
+  }
+}

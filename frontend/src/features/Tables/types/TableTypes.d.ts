@@ -1,0 +1,4 @@
+export type statusTable = 'Libre' |'Ocupada';
+
+
+

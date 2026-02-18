@@ -1,0 +1,28 @@
+###
+GET http://localhost:3000/clientes/
+
+###
+GET http://localhost:3000/clientes/id/991bd649-5fea-48e9-8062-e3cd12d0bb4d
+
+###
+POST http://localhost:3000/clientes/
+Content-Type: application/json
+
+{
+    "nombreUsuario": "cliente12",
+    "contrasenia": "Franco1234",
+    "nombre": "Franco",
+    "apellido": "Sussi",
+    "fechaNacimiento": "27/07/2004",
+    "telefono": "341534728",
+    "email": "cliente12@gmail.com"
+}
+
+###
+PATCH http://localhost:3000/clientes/update
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzdWFyaW8iOiIzYjE2MzE1MC0yNzZiLTQ4NTUtODgwNi05MDlkNmI2YjMzOTIiLCJlbWFpbCI6Impvc2VicHBAZ21haWwuY29tIiwidGlwb1VzdWFyaW8iOiJDbGllbnRlIiwidXNlcm5hbWUiOiJKb3NlQl8yMDA0IiwiaWF0IjoxNzU1OTEyMzc3LCJleHAiOjE3NTY1MTcxNzd9.aQeiTlhjcIiFDXM8G1DMMvDanFE5OZT9wlTMYEEHcYM
+Content-Type: application/json
+
+{
+    "nombre": "franco nicolas"
+}

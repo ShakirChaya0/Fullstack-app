@@ -1,0 +1,29 @@
+### CASO DE USO PAGAR PEDIDO
+### Generar cuenta
+GET http://localhost:3000/pagos/cuenta/1
+
+### Pagar con MP
+POST http://localhost:3000/pagos/mp/37
+
+### Pagar en efectivo/Tarjeta
+POST http://localhost:3000/pagos/tarjeta/1
+
+### Registrar pago de la cuenta
+POST http://localhost:3000/pagos/pagado?idPedido=15&metodoPago=Efectivo
+
+
+### CRUD PAGOS
+### Todos los Pagos
+GET http://localhost:3000/pagos
+
+### get by order
+GET http://localhost:3000/pagos/pedido/1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzdWFyaW8iOiIzYTIwMDQyNS0zYTU2LTRmYWEtYTA3Yy1lY2UwYjdkMmFjZWQiLCJlbWFpbCI6Im1hcnRpbmdhbHZhbm9AZ21haWwuY29tIiwidGlwb1VzdWFyaW8iOiJNb3pvIiwidXNlcm5hbWUiOiJIZXJsYXVtYXJzYW4iLCJpYXQiOjE3NTUyNjkzNzAsImV4cCI6MTc1NTg3NDE3MH0.Q_1_SvJYatPlXhRCf76JbzxxQl0FReAv6h8PpcPLPbc
+
+### GetByDayRange
+GET http://localhost:3000/pagos/fechas?fechaDesde=2025-08-04T00:00:00.000Z&fechaHasta=2025-08-06T00:00:00.000Z
+
+### GetByPaymentMethod
+
+GET http://localhost:3000/pagos/metodoPago/Debito
+

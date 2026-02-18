@@ -1,0 +1,78 @@
+@import "tailwindcss";
+
+html {
+    scroll-behavior: smooth;
+}
+
+:root {
+  /* ============================= */
+  /*  PALETA GENERAL (APP BASE)  */
+  /* ============================= */
+
+  /* Primary */
+  --primary-100: #FF6600;  /* Botones principales, llamadas a la acción */
+  --primary-200: #FF983F;  /* Hover o estados secundarios */
+  --primary-300: #FFFFA1;  /* Destacados suaves */
+
+  /* Secondary */
+  --secondary-100: #0F766E; /* Verde teal base */
+  --secondary-200: #115E59; /* Verde teal oscuro */
+  --secondary-300: #149E90; /* Hover / activo */
+
+  /* Accent */
+  --accent-100: #F5F5F5;  /* Fondos suaves */
+  --accent-200: #929292;  /* Iconos / bordes */
+  --accent-300: #6B6B6B;  /* Contraste medio */
+
+  /* Background */
+  --background-100: #FFFFFF; /* Fondo principal */
+  --background-200: #F5F5F5; /* Secciones secundarias */
+  --background-300: #CCCCCC; /* Elementos de bajo nivel */
+  --background-400: #E6F4F3; /* Fondo diferenciado con tinte teal */
+
+  /* Text */
+  --text-100: #1D1F21;  /* Texto principal */
+  --text-200: #444648;  /* Texto secundario */
+  --text-300: #F5F5F5;  /* Texto claro sobre fondo oscuro */
+  --text-400: #0F766E;  /* Texto destacado en verde */
+
+  /* Neutral */
+  --neutral-100: #E0E0E0;  /* Bordes, líneas */
+  --neutral-200: #B0B0B0;  /* Iconos apagados */
+  --neutral-300: #707070;  /* Texto deshabilitado */
+
+
+  /* ==================================== */
+  /*  PALETA ADMINISTRADOR (EJECUTIVA) */
+  /* ==================================== */
+
+  /* Primarios */
+  --admin-primary-100: #0F766E;  /* Teal */
+  --admin-primary-200: #115E59;  /* Teal Dark */
+  --admin-primary-300: #149E90;  /* Teal Light Hover */
+
+  /* Secundarios */
+  --admin-secondary-100: #FF6600; /* Orange Action */
+  --admin-secondary-200: #FF983F; /* Orange Light */
+
+  /* Fondos */
+  --admin-bg-100: #FFFFFF; /* Main White */
+  --admin-bg-200: #F5F5F5; /* Dashboard Gray */
+  --admin-bg-300: #E0E0E0; /* Card Gray */
+  --admin-bg-400: #1D1F21; /* Dark Panel (sidebar/header) */
+
+  /* Textos */
+  --admin-text-100: #1D1F21; /* Dark Primary */
+  --admin-text-200: #444648; /* Gray Body */
+  --admin-text-300: #6B6B6B; /* Muted Gray */
+  --admin-text-400: #F5F5F5; /* Light on Dark */
+
+  /* Neutros */
+  --admin-neutral-100: #CCCCCC; /* Líneas y soporte */
+  --admin-neutral-200: #B0B0B0; /* Iconos apagados */
+  --admin-neutral-300: #707070; /* Texto deshabilitado */
+
+  /* Accentos */
+  --admin-accent-100: #E6F4F3; /* Teal Tint */
+  --admin-accent-200: #FFEFE5; /* Orange Tint */
+}

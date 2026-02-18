@@ -1,0 +1,272 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Producto {
+  idProducto    Int           @id @default(autoincrement())
+  nombre        String        @unique(map: "uniqueName") @db.VarChar(30)
+  descripcion   String        @db.VarChar(255)
+  estado        estado
+  esAlcoholica  Boolean?
+  esVegetariana Boolean?
+  esVegana      Boolean?
+  tipo          tipo?
+  esSinGluten   Boolean?
+  Precios       Precios[]
+  Sugerencias   Sugerencias[]
+}
+
+model PoliticasRestaurante {
+  idPolitica                      Int    @id @default(autoincrement())
+  minutosTolerancia               Int    @default(15)
+  horarioMaximoDeReserva          String @db.VarChar
+  horasDeAnticipacionParaCancelar Int    @default(6)
+  horasDeAnticipacionParaReservar Int    @default(6)
+  limiteDeNoAsistencias           Int    @default(3)
+  cantDiasDeshabilitacion         Int    @default(90)
+  porcentajeIVA                   Int    @default(21)
+  montoCubiertosPorPersona        Int    @default(5)
+}
+
+model InformacionRestaurante {
+  idInformacion        Int    @id @default(autoincrement())
+  nombreRestaurante    String @db.VarChar
+  direccionRestaurante String @db.VarChar
+  razonSocial          String @db.VarChar
+  telefonoContacto     String @db.VarChar
+}
+
+model Horarios {
+  diaSemana    Int      @id @default(autoincrement())
+  horaApertura DateTime @db.Time(6)
+  horaCierre   DateTime @db.Time(6)
+}
+
+model Mesa {
+  nroMesa        Int              @id @default(autoincrement())
+  capacidad      Int
+  estado         estadoMesa
+  Mesas_Reservas Mesas_Reservas[]
+  Pedido         Pedido[]
+  QRToken        QRToken?
+}
+
+model Sugerencias {
+  fechaDesde DateTime @db.Date
+  fechaHasta DateTime @db.Date
+  idProducto Int
+  Producto   Producto @relation(fields: [idProducto], references: [idProducto], onDelete: NoAction, onUpdate: NoAction, map: "producto_sugerencia")
+
+  @@id([idProducto, fechaDesde], map: "Sugerencias_PK")
+}
+
+model Novedad {
+  idNovedad   Int      @id(map: "Novedades_pkey") @default(autoincrement())
+  titulo      String   @unique(map: "titulo_unique") @db.VarChar
+  descripcion String   @db.VarChar
+  fechaInicio DateTime @db.Date
+  fechaFin    DateTime @db.Date
+}
+
+model Precios {
+  idProducto  Int
+  fechaActual DateTime @db.Timestamp(6)
+  monto       Decimal  @db.Decimal(10, 2)
+  Producto    Producto @relation(fields: [idProducto], references: [idProducto], onDelete: Cascade, onUpdate: NoAction, map: "producto_fkey")
+
+  @@id([idProducto, fechaActual])
+}
+
+model Administrador {
+  idAdmin  String   @id @db.Uuid
+  nombre   String   @db.VarChar(255)
+  apellido String   @db.VarChar(255)
+  dni      String   @unique(map: "unique_dni") @db.VarChar(10)
+  telefono String   @db.VarChar(20)
+  Usuarios Usuarios @relation(fields: [idAdmin], references: [idUsuario], onDelete: NoAction, onUpdate: NoAction, map: "Admin_fkey")
+}
+
+model Clientes {
+  idCliente       String           @id @db.Uuid
+  nombre          String           @db.VarChar(255)
+  apellido        String           @db.VarChar(255)
+  telefono        String           @db.VarChar(20)
+  fechaNacimiento DateTime         @db.Date
+  emailVerificado Boolean          @default(false)
+  Usuarios        Usuarios         @relation(fields: [idCliente], references: [idUsuario], onDelete: NoAction, onUpdate: NoAction, map: "Cliente_fkey")
+  EstadosCliente  EstadosCliente[]
+  Reserva         Reserva[]
+}
+
+model Mozos {
+  nombre   String    @db.VarChar(255)
+  apellido String    @db.VarChar(255)
+  telefono String    @unique(map: "unique_telefono_mozo") @db.VarChar(20)
+  idMozo   String    @id(map: "Mozo_pkey") @db.Uuid
+  dni      String    @unique(map: "unique_dni_mozo") @db.VarChar(10)
+  Usuarios Usuarios  @relation(fields: [idMozo], references: [idUsuario], onDelete: Cascade, onUpdate: NoAction, map: "Mozo_fkey")
+  Pedido   Pedido[]
+  QRToken  QRToken[]
+}
+
+model Usuarios {
+  idUsuario     String           @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  nombreUsuario String           @unique(map: "unique_username") @db.VarChar(255)
+  email         String           @unique(map: "unique_email") @db.VarChar(255)
+  contrasenia   String           @db.VarChar(255)
+  tipoUsuario   TipoUsuario_Type
+  Administrador Administrador?
+  Clientes      Clientes?
+  Mozos         Mozos?
+  RefreshTokens RefreshTokens[]
+}
+
+model EstadosCliente {
+  fechaActualizacion DateTime      @db.Date
+  idCliente          String        @db.Uuid
+  estado             EstadoCliente
+  Clientes           Clientes      @relation(fields: [idCliente], references: [idCliente], onDelete: NoAction, onUpdate: NoAction, map: "idCliente")
+
+  @@id([idCliente, fechaActualizacion], map: "estadoCliente_pkey")
+}
+
+model Linea_De_Pedido {
+  nroLinea       Int
+  idPedido       Int
+  cantidad       Int
+  estado         estadoLP
+  nombreProducto String   @db.VarChar
+  monto          Decimal  @db.Decimal
+  tipoComida     tipo?
+  Pedido         Pedido   @relation(fields: [idPedido], references: [idPedido], onDelete: NoAction, onUpdate: NoAction, map: "idPedido")
+
+  @@id([idPedido, nroLinea], map: "linea_pKey")
+  @@map("Linea De Pedido")
+}
+
+model Pedido {
+  idPedido        Int               @id @default(autoincrement())
+  horaInicio      DateTime          @db.Time(6)
+  estado          estadoPedido
+  cantCubiertos   Int
+  observaciones   String            @db.VarChar
+  nroMesa         Int?
+  idMozo          String?           @db.Uuid
+  Linea_De_Pedido Linea_De_Pedido[]
+  Pagos           Pagos[]
+  Mozos           Mozos?            @relation(fields: [idMozo], references: [idMozo], onUpdate: NoAction, map: "idMozo")
+  Mesa            Mesa?             @relation(fields: [nroMesa], references: [nroMesa], onUpdate: NoAction, map: "nroMesa")
+}
+
+model Pagos {
+  idPago          Int         @id @default(autoincrement())
+  idPedido        Int
+  metodoPago      metodosPago
+  fechaPago       DateTime    @db.Date
+  idTransaccionMP String?     @db.VarChar
+  Pedido          Pedido      @relation(fields: [idPedido], references: [idPedido], onDelete: Cascade, map: "pedidos_fk")
+}
+
+model RefreshTokens {
+  idToken         String   @id @db.Uuid
+  idUsuario       String   @db.Uuid
+  token           String   @unique(map: "uniqueToken") @db.VarChar
+  fechaCreacion   DateTime @db.Timestamptz(6)
+  fechaExpiracion DateTime @db.Timestamptz(6)
+  revocado        Boolean  @default(false)
+  Usuarios        Usuarios @relation(fields: [idUsuario], references: [idUsuario], onDelete: Cascade, onUpdate: NoAction, map: "userFK")
+}
+
+model QRToken {
+  nroMesa       Int      @id
+  idMozo        String   @db.Uuid
+  tokenQR       String   @unique(map: "uniqueTokenQR") @db.VarChar
+  revocado      Boolean  @default(false)
+  fechaCreacion DateTime @default(now())
+  Mozos         Mozos    @relation(fields: [idMozo], references: [idMozo], onDelete: Cascade, onUpdate: NoAction, map: "idMozo")
+  Mesa          Mesa     @relation(fields: [nroMesa], references: [nroMesa], onDelete: Cascade, onUpdate: NoAction, map: "nroMesa")
+}
+
+model Mesas_Reservas {
+  idReserva Int
+  nroMesa   Int
+  Mesa      Mesa    @relation(fields: [nroMesa], references: [nroMesa], onDelete: Cascade, onUpdate: NoAction, map: "Mesa_fKey")
+  Reserva   Reserva @relation(fields: [idReserva], references: [idReserva], onDelete: NoAction, onUpdate: NoAction, map: "Reserva_fKey")
+
+  @@id([idReserva, nroMesa])
+}
+
+model Reserva {
+  idReserva          Int              @id @default(autoincrement())
+  fechaReserva       DateTime         @db.Date
+  horarioReserva     DateTime         @db.Time(6)
+  fechaCancelacion   DateTime?        @db.Date
+  cantidadComensales Int
+  estado             EstadoReserva
+  idCliente          String           @db.Uuid
+  Mesas_Reservas     Mesas_Reservas[]
+  Clientes           Clientes         @relation(fields: [idCliente], references: [idCliente], onDelete: NoAction, onUpdate: NoAction, map: "idCliente_fKey")
+}
+
+enum estado {
+  Disponible
+  No_Disponible @map("No Disponible")
+}
+
+enum tipo {
+  Plato_Principal  @map("Plato Principal")
+  Entrada
+  Postre
+  EMPTY_ENUM_VALUE @map("")
+}
+
+enum estadoMesa {
+  Libre
+  Ocupada
+}
+
+enum TipoUsuario_Type {
+  Administrador
+  SectorCocina
+  Mozo
+  Cliente
+}
+
+enum EstadoCliente {
+  Habilitado
+  Deshabilitado
+}
+
+enum estadoLP {
+  Pendiente
+  En_Preparacion @map("En Preparacion")
+  Terminada
+}
+
+enum estadoPedido {
+  Solicitado
+  En_Preparacion     @map("En Preparacion")
+  Completado
+  Pendiente_De_Pago  @map("Pendiente De Pago")
+  Pagado
+  Pendiente_De_Cobro @map("Pendiente De Cobro")
+}
+
+enum metodosPago {
+  MercadoPago
+  Efectivo
+  Debito
+  Credito
+}
+
+enum EstadoReserva {
+  Realizada
+  Asistida
+  No_Asistida @map("No Asistida")
+  Cancelada
+}

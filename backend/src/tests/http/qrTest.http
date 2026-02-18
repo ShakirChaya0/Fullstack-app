@@ -1,0 +1,11 @@
+###
+POST http://localhost:3000/qr/
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzdWFyaW8iOiIzODIzZjZjOC1kYTUzLTRkMWMtYTE4Ny03NGFkYjIyMzFjOTciLCJlbWFpbCI6Impvc2VicHBAZ21haWwuY29tIiwidGlwb1VzdWFyaW8iOiJNb3pvIiwidXNlcm5hbWUiOiJKb3NlQl8yMDA0IiwiaWF0IjoxNzU5MzQzNTI3LCJleHAiOjE3NTkzNDM3MDd9.ZYPeVpcjGDlm9UDSX4DRMuS4_1EiDzTpK3X4LIhgYDU
+
+{
+    "tableNumber": 1
+}
+
+###
+GET http://localhost:3000/qr?qrToken=98873676-7460-41f5-bcd7-be1b3eeadd1d&mesa=16

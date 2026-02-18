@@ -1,0 +1,12 @@
+###
+GET http://localhost:3000/cocina
+
+###
+PATCH http://localhost:3000/cocina
+Content-Type: application/json
+
+{
+    "email": "juancitoPeraz@gmail.com",
+    "nombreUsuario": "Raul Gomez",
+    "contrasenia": "asdasdasdaasdasdsd"
+}

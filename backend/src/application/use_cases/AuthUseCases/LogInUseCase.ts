@@ -1,0 +1,43 @@
+import { UserRepository } from "../../../infrastructure/database/repository/UserRepository.js";
+import { UnauthorizedError } from "../../../shared/exceptions/UnauthorizedError.js";
+import { JWTService } from "../../services/JWTService.js";
+import { PasswordHashingService } from "../../services/PasswordHashing.js";
+import { UUID } from "crypto";
+import { RefreshTokenRepository } from "../../../infrastructure/database/repository/RefreshTokenRepository.js";
+import { UserType } from "../../../shared/types/SharedTypes.js";
+import { User } from "../../../domain/entities/User.js";
+
+export class LoginUseCase{
+    constructor(
+        private readonly jwtService = new JWTService(),
+        private readonly userRepository = new UserRepository(),
+        private readonly hashService = new PasswordHashingService(),
+        private readonly refreshTokenRepository = new RefreshTokenRepository() 
+    ){}
+    
+    async execute(email: string, password: string): Promise<{ accessToken: string, refreshToken: string, user: User }> {
+        const user = await this.userRepository.findByEmail(email)
+
+        if(!user) throw new UnauthorizedError("Email o contraseña incorrectos")
+
+        const isPasswordValid = await this.hashService.comparePasswords(password, user.password)
+
+        if(!isPasswordValid) throw new UnauthorizedError("Email o contraseña incorrectos")
+
+        const payload = {
+            idUsuario: user.userId as UUID,
+            email: user.email,
+            tipoUsuario: user.userType as UserType,
+            username: user.userName
+        }
+
+        const accessToken = this.jwtService.generateAccessToken(payload)
+        const refreshToken = this.jwtService.generateRefreshToken(payload)
+
+        const endDate = new Date(Date.now() + 15 * 60 * 1000);
+
+        await this.refreshTokenRepository.saveRefreshedToken(user.userId, refreshToken, endDate)
+
+        return { accessToken, refreshToken, user }
+    }
+}

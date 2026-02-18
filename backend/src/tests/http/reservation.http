@@ -1,0 +1,29 @@
+### Crear reserva
+POST http://localhost:3000/reservas/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzdWFyaW8iOiI2OWIzZGZiZS02NmQyLTQwMjUtYjQ1Ni05M2I0NWE3MmVlZDkiLCJlbWFpbCI6InRlc3Q0QGdtYWlsLmNvbSIsInRpcG9Vc3VhcmlvIjoiQ2xpZW50ZSIsInVzZXJuYW1lIjoiVGVzdDQiLCJpYXQiOjE3NTU5MDE4NTIsImV4cCI6MTc1NjUwNjY1Mn0.eJB81eLrOBL0JRslnz0ImRx_xkSJ-QRb9FuKwtGDZG4
+Content-Type: application/json
+
+{
+    "fechaReserva" : "23/08/2025",
+    "horarioReserva": "13:00",
+    "cantidadComensales": 4
+}
+
+### Obtener reserva por Id
+GET http://localhost:3000/reservas/55
+
+
+### Obtener reserva por fecha
+GET http://localhost:3000/reservas?date=2025-08-14
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzdWFyaW8iOiIzYTIwMDQyNS0zYTU2LTRmYWEtYTA3Yy1lY2UwYjdkMmFjZWQiLCJlbWFpbCI6Im1hcnRpbmdhbHZhbm9AZ21haWwuY29tIiwidGlwb1VzdWFyaW8iOiJNb3pvIiwidXNlcm5hbWUiOiJIZXJsYXVtYXJzYW4iLCJpYXQiOjE3NTUyNjkzNzAsImV4cCI6MTc1NTg3NDE3MH0.Q_1_SvJYatPlXhRCf76JbzxxQl0FReAv6h8PpcPLPbc
+
+### Obtener reserva por id de Cliente
+GET http://localhost:3000/reservas/cliente/991bd649-5fea-48e9-8062-e3cd12d0bb4d
+
+### Actualizar solo el estado de la reserva, dependiendo de la query que se mande
+PATCH http://localhost:3000/reservas/estado/3?estado=Cancelada
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzdWFyaW8iOiI5OTAyM2M2Mi05YjY2LTQxYTMtYWFjMi1jODU3MDk5ZmQ1NzMiLCJlbWFpbCI6ImZyYW5jb25pY29sYXNAZ21haWwuY29tIiwidGlwb1VzdWFyaW8iOiJNb3pvIiwidXNlcm5hbWUiOiJmcmFuY29uaWNvbGFzIiwiaWF0IjoxNzU1NjA3NjE4LCJleHAiOjE3NTYyMTI0MTh9.MqukPxFbUks8dqBIIUCECjNZ1FjnTp5mjhBckap1FJ4
+
+### Obtener reserva por nombre y apellido del Cliente
+GET http://localhost:3000/reservas/clienteReserva?nombre=testNombre&apellido=Pepe
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzdWFyaW8iOiI5OTAyM2M2Mi05YjY2LTQxYTMtYWFjMi1jODU3MDk5ZmQ1NzMiLCJlbWFpbCI6ImZyYW5jb25pY29sYXNAZ21haWwuY29tIiwidGlwb1VzdWFyaW8iOiJNb3pvIiwidXNlcm5hbWUiOiJmcmFuY29uaWNvbGFzIiwiaWF0IjoxNzU1NjA3NjE4LCJleHAiOjE3NTYyMTI0MTh9.MqukPxFbUks8dqBIIUCECjNZ1FjnTp5mjhBckap1FJ4

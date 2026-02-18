@@ -1,0 +1,25 @@
+###
+GET http://localhost:3000/horarios/
+
+###
+GET http://localhost:3000/horarios/id/3
+
+###
+POST http://localhost:3000/horarios/
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzdWFyaW8iOiJlNTM0YjUyMS1iNzEwLTRhNjQtOGUyOC1iMTZkMTY5ZDVlYjQiLCJlbWFpbCI6ImFkbWluQGdtYWlsLmNvbSIsInRpcG9Vc3VhcmlvIjoiQWRtaW5pc3RyYWRvciIsInVzZXJuYW1lIjoiYWRtaW4iLCJpYXQiOjE3NTU2MDk2MzEsImV4cCI6MTc1NjIxNDQzMX0.56jCQ5DHfhVtDWciHrmX6b1WWK12rbIiLx3AfLQ5p48
+Content-Type: application/json
+
+{
+    "diaSemana": 4,   
+    "horaApertura": "23:00",
+    "horaCierre": "12:00"
+}
+
+###
+PATCH http://localhost:3000/horarios/update/0
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzdWFyaW8iOiJlNTM0YjUyMS1iNzEwLTRhNjQtOGUyOC1iMTZkMTY5ZDVlYjQiLCJlbWFpbCI6InBlcGVAZ21haWwuY29tIiwidGlwb1VzdWFyaW8iOiJBZG1pbmlzdHJhZG9yIiwidXNlcm5hbWUiOiJQZXBlUm9kcmlndWV6MTIzIiwiaWF0IjoxNzU1ODk3MTg3LCJleHAiOjE3NTY1MDE5ODd9.lhtKtmKIos7OOuwNPXuup1oVb1Hd9Ts6UFnQKZiMFFY
+Content-Type: application/json
+
+{
+    "horaApertura": "20:00"
+}

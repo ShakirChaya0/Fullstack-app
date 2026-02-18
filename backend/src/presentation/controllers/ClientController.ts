@@ -1,0 +1,128 @@
+import { Request, Response, NextFunction } from "express";
+import { GetClientUseCase } from "../../application/use_cases/ClientUseCases/GetClientUseCase.js";
+import { ValidationError } from "../../shared/exceptions/ValidationError.js";
+import { GetClientByIdUser } from "../../application/use_cases/ClientUseCases/GetClientByIdUser.js";
+import { validateClient, validateClientPartial } from "../../shared/validators/ClientZod.js";
+import { RegisterClientUseCase } from "../../application/use_cases/ClientUseCases/RegisterClientUseCase.js";
+import { UpdateClientUseCase } from "../../application/use_cases/ClientUseCases/UpdateClientUseCase.js";
+import { GetClientByUserNameUseCase } from "../../application/use_cases/ClientUseCases/GetClientByUsernameUseCase.js";
+import { AuthenticatedRequest } from "../middlewares/AuthMiddleware.js";
+
+export class ClientController {
+    constructor(
+        private readonly getClientUseCase = new GetClientUseCase(), 
+        private readonly getClientByIdUser = new GetClientByIdUser(),
+        private readonly getClientByUserName = new GetClientByUserNameUseCase(), 
+        private readonly registerClientUseCase = new RegisterClientUseCase(), 
+        private readonly updateClientUseCase = new UpdateClientUseCase()
+    ){}
+
+    public async getAll(req:Request, res:Response, next: NextFunction){
+        try {
+            const clients = await this.getClientUseCase.execute();
+            
+            const filteredClient = clients.map(c => {  
+                return {
+                    nombreUsuario: c.userName, 
+                    email: c.email,
+                    nombre: c.name, 
+                    apellido: c.lastname, 
+                    telefono: c.phone, 
+                    fechaNacimiento: c.birthDate,
+                    estados: c.states
+                }
+            })
+            res.status(200).json(filteredClient);
+        } catch(error){
+            next(error)
+        }
+    }
+
+    public async getClientById(req:Request, res:Response, next: NextFunction) {
+        try {
+            const idUser = req.params.idUsuario; 
+            if(!idUser) {
+                throw new ValidationError("Se ingreso un ID válido")
+            }
+
+            const client = await this.getClientByIdUser.execute(idUser);
+            const filteredClient = {
+                nombreUsuario:client.userName, 
+                email: client.email, 
+                nombre: client.name, 
+                apellido: client.lastname,
+                fechaNacimiento: client.birthDate,
+                telefono: client.phone, 
+                estadoCliente: client.states
+            }
+
+            res.status(200).json(filteredClient);
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    public async getClientByUsername(req: Request, res: Response, next: NextFunction) {
+        try {
+            const userN = req.params.nombreUsuario;
+            if(!userN) {
+                throw new ValidationError('El nombre de usuario es incorrecto');
+            }
+
+            const clientByUserName = await this.getClientByUserName.execute(userN);
+            const filteredClient = {
+                nombreUsuario:  clientByUserName.userName, 
+                email: clientByUserName.email, 
+                nombre: clientByUserName.name, 
+                apellido: clientByUserName.lastname,
+                fechaNacimiento: clientByUserName.birthDate,
+                telefono: clientByUserName.phone
+            }
+            res.status(200).json(filteredClient);
+        } catch(error) {
+            next(error);
+        }
+    }
+
+    public async createClient(req: Request, res: Response, next: NextFunction) {
+        try {
+            const data = req.body;
+            const validation = validateClient(data); 
+
+            await this.registerClientUseCase.execute(validation);
+            
+            res.status(201).send();
+        } 
+        catch(error) {
+            next(error);
+        }
+    }
+
+    public async updateClient(req: AuthenticatedRequest, res: Response, next: NextFunction) {
+        try {
+            const id = req.user?.idUsuario;
+
+            if (!id) throw new ValidationError('No se ingreso un ID válido');
+
+            const newData = req.body
+            const validation = validateClientPartial(newData);
+
+            const updateClient =  await this.updateClientUseCase.execute(id,validation)
+            
+            const filteredClient = {
+                nombreUsuario: updateClient.userName,
+                email: updateClient.email,
+                nombre: updateClient.name,
+                apellido: updateClient.lastname,
+                fechaNacimiento: updateClient.birthDate,
+                telefono: updateClient.phone,
+                emailVerificado: updateClient.emailVerified
+            }
+            
+            res.status(201).json(filteredClient);
+        } 
+        catch (error) {
+            next(error); 
+        }
+    }
+}

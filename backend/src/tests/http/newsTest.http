@@ -1,0 +1,33 @@
+###
+GET http://localhost:3000/novedades?page=1&status=Activas
+
+###
+GET http://localhost:3000/novedades/title/asd?page=1&status=Activas
+
+###
+GET http://localhost:3000/novedades/actives
+
+###
+POST http://localhost:3000/novedades
+Content-Type: application/json
+
+{
+    "titulo": "Nasdasdssa",
+    "descripcion": "ajasfafsdafasdadasdf",
+    "fechaInicio": "2025/12/25",
+    "fechaFin": "2025/12/25"
+}
+
+###
+PATCH http://localhost:3000/novedades/2
+Content-Type: application/json
+
+{
+    "titulo": "aaaaaaaaaaaa",
+    "descripcion": "aaaaaaaaaaaaaaa",
+    "fechaInicio": "2025/12/24",
+    "fechaFin": "2025/12/25"
+}
+
+###
+DELETE http://localhost:3000/novedades/173
