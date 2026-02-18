@@ -6,13 +6,11 @@ import { printStyles } from "../constants/PaymentConstants";
 import { useCheck } from "../hooks/useCheck";
 import CheckSkeleton from "./CheckSkeleton";
 import { lazy } from "react";
-import { useBlockNavigation } from "../../../shared/hooks/useBlockNavigation";
 import { useParams } from "react-router";
 import SelectMethodModal from "../../Tables/components/SelectMethodModal";
 const CheckPDF = lazy(() => import("../components/CheckPDF"));
 
 export default function CheckPage() {
-  // useBlockNavigation(true)
   const idPedido = useParams()
   const { data: check, isLoading, isError } = useCheck(idPedido.idPedido);
   

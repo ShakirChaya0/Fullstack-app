@@ -31,8 +31,6 @@ function Table({ tableData, onClick, orders }: TableProps) {
 
     const isAssigned = orders.find((o) => o.nroMesa === _tableNum)
 
-    console.log(isAssigned)
-
     const handleClick = (e: React.MouseEvent) => {
         e.stopPropagation();
         onClick(tableData);

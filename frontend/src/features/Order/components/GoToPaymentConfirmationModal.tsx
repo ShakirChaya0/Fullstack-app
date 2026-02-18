@@ -37,7 +37,7 @@ export function PaymentConfirmationModal() {
         }
 
         // URL que dispare CUU pagar Pedido
-        navigate('/Cliente/Pedido/Cuenta', {replace: true})
+        navigate(`/Cliente/Pedido/Cuenta/${order.idPedido}`, {replace: true})
     }
 
     return (

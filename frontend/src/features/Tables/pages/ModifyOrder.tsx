@@ -13,6 +13,7 @@ import { getConsolidatedLinesToModify } from '../../Order/utils/getConsolidatedL
 import { consolidateOrderLines, rebuildOrderWithConsolidatedLines } from '../utils/joinUpdatedOrderLines';
 import { getLinesToDelete } from '../../Order/utils/getLinesToDelete';
 import { useQueryClient } from '@tanstack/react-query';
+import { formatCurrency } from '../../../shared/utils/formatCurrency';
 
 export default function ModifyOrder() {
     const { data: products } = useProducts();
@@ -200,11 +201,11 @@ export default function ModifyOrder() {
         sendEvent("deleteOrderLine", { orderId: existingOrder?.idPedido, lineNumber });
     };
 
-    const calculateTotal = (): string => {
-        return existingOrder?.lineasPedido.reduce((total, item) => {
-            const price = products?.find((p) => p._name === item.nombreProducto)?._price ?? 1
-            return total + price * item.cantidad
-        }, 0).toFixed(2) ?? "";
+    const calculateTotal = (): number => {
+        return +(existingOrder?.lineasPedido.reduce((total, item) => {
+                const price = products?.find((p) => p._name === item.nombreProducto)?._price ?? 1
+                return total + price * item.cantidad
+            }, 0).toFixed(2) ?? 0)
     };
 
     const handleSubmitOrder = (e: FormEvent<HTMLFormElement>) => {
@@ -330,7 +331,7 @@ export default function ModifyOrder() {
                                              >
                                                  <ListItemText
                                                      primary={<Typography fontWeight="medium">{`${item.nombreProducto} (x${item.cantidad})`}</Typography>}
-                                                     secondary={`$${(price * item.cantidad).toFixed(2)}`}
+                                                     secondary={`${formatCurrency(+(price * item.cantidad).toFixed(2), "es-AR", "ARS")}`}
                                                  />
                                              </ListItem>
                                               {index < existingOrder.lineasPedido.length - 1 && <Divider component="li" />}
@@ -340,7 +341,7 @@ export default function ModifyOrder() {
                                 </List>
                                  <Divider sx={{ my: 2 }} />
                                 <Typography variant="h5" align="right" sx={{ mt: 2, mr: 2 }} fontWeight="bold">
-                                    Total: ${calculateTotal()}
+                                    Total: {formatCurrency(calculateTotal(), "es-AR", "ARS")}
                                 </Typography>
                                 <Box sx={{ mt: 3 }}>
                                      <TextField

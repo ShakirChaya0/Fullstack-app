@@ -92,7 +92,7 @@ export default function ClientRouter() {
           </Suspense>
         }/>
 
-        <Route path="/Pedido/Cuenta" element={
+        <Route path="/Pedido/Cuenta/:idPedido" element={
           <Suspense fallback={<CheckSkeleton />}>
             <CheckPage />
           </Suspense>

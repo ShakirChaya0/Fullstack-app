@@ -13,11 +13,11 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzdWFyaW8iOiJlN
 ###
 POST http://localhost:3000/mozos
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzdWFyaW8iOiI4ZmUyNmIwMC04ZWQ0LTQ2ZDgtYWQ1OC0wZjk4MDA2MjNlMGUiLCJlbWFpbCI6ImFkbWluQGdtYWlsLmNvbSIsInRpcG9Vc3VhcmlvIjoiQWRtaW5pc3RyYWRvciIsInVzZXJuYW1lIjoiYWRtaW4iLCJpYXQiOjE3NTk1MjAyMDEsImV4cCI6MTc1OTUyMDM4MX0.K8FBZXU8ArytwB2zDcbs6CXD5cqTj7YSUaxUhnW4rv0
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZFVzdWFyaW8iOiJjOGViMDMyOC0zYWEyLTRlYzItOTA0Yi05MTMzZTA0NWFjNzAiLCJlbWFpbCI6ImFkbWluQGdtYWlsLmNvbSIsInRpcG9Vc3VhcmlvIjoiQWRtaW5pc3RyYWRvciIsInVzZXJuYW1lIjoiYWRtaW4iLCJpYXQiOjE3NzEzNTUxNjksImV4cCI6MTc3MTM1NjA2OX0.cxTRCjNADWzdmAxIjZmZ74hp-lp2udFyF6G7Mabze5Y
 
 {
     "nombreUsuario": "FranMozo",
-    "contrasenia": "Password1234",
+    "contrasenia": "Passw1",
     "nombre": "Franco",
     "apellido": "Sussi",
     "dni": "45804817",

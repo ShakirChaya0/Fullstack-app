@@ -9,6 +9,7 @@ import { useParams } from 'react-router';
 import useSaveTableOrder from '../hooks/useSaveTableOrder';
 import type { LineaPedido } from '../../Order/interfaces/Order';
 import { toast } from 'react-toastify';
+import { formatCurrency } from '../../../shared/utils/formatCurrency';
 
 
 type OrderItemComida = Comida & { quantity: number };
@@ -43,8 +44,8 @@ export default function CreateOrder() {
         setOrderItems(orderItems.filter(item => item._productId !== productId));
     };
 
-    const calculateTotal = (): string => {
-        return orderItems.reduce((total, item) => total + item._price * item.quantity, 0).toFixed(2);
+    const calculateTotal = (): number => {
+        return +orderItems.reduce((total, item) => total + item._price * item.quantity, 0).toFixed(2);
     };
 
     const handleSubmitOrder = (e: FormEvent<HTMLFormElement>) => {
@@ -154,7 +155,7 @@ export default function CreateOrder() {
                                         >
                                             <ListItemText
                                                 primary={<Typography fontWeight="medium">{`${item._name} (x${item.quantity})`}</Typography>}
-                                                secondary={`$${(item._price * item.quantity).toFixed(2)}`}
+                                                secondary={`${formatCurrency(+(item._price * item.quantity).toFixed(2), "es-AR", "ARS")}`}
                                             />
                                         </ListItem>
                                          {index < orderItems.length - 1 && <Divider component="li" />}
@@ -163,7 +164,7 @@ export default function CreateOrder() {
                                 </List>
                                  <Divider sx={{ my: 2 }} />
                                 <Typography variant="h5" align="right" sx={{ mt: 2, mr: 2 }} fontWeight="bold">
-                                    Total: ${calculateTotal()}
+                                    Total: {formatCurrency(calculateTotal(), "es-AR", "ARS")}
                                 </Typography>
                                 <Box sx={{ mt: 3 }}>
                                      <TextField
