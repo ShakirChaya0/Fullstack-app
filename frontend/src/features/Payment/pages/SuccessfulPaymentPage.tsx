@@ -1,15 +1,19 @@
 import { useNavigate } from "react-router";
 import Lottie from "lottie-react";
 import successAnimation from "../assets/success_animation.json";
+import { useEffect } from "react";
 
 export default function SuccessfulPaymentPage() {
-    // useBlockNavigation(true, "¿Seguro que quieres salir?")
     // const { handleRecoveyInitialState } = useOrderActions()
     const navigate = useNavigate();
     // handleRecoveyInitialState()
     const handleClick = () => {
         navigate("/") // poner la ruta de la landing page cuando la implementemos
     }
+
+    useEffect(() => {
+        localStorage.clear()
+    }, [])
 
     return (
         <div className="bg-[var(--background-200)] w-full flex items-center justify-center p-4">

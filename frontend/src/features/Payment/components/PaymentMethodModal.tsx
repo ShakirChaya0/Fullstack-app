@@ -6,7 +6,7 @@ import { CreditCardIcon } from "./IconComponents";
 export default function PaymentMethodModal() {
     const [isOpen, setIsOpen] = useState<boolean>(false);
     const handleClose = useCallback(() => setIsOpen(false), []);
-
+    
     return (
         <>
             <button

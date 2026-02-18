@@ -22,8 +22,8 @@ export default function PaymentMethodSelector({ onClose }: PaymentMethodSelector
         if (!data.paymentMethod) {
             toast.warn("Debe seleccionar un método de pago");
             return
-        }
-
+        } 
+        
         mutate(data.paymentMethod as PaymentMethod)
     }
 

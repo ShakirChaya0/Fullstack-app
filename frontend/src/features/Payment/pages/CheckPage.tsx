@@ -6,14 +6,16 @@ import { printStyles } from "../constants/PaymentConstants";
 import { useCheck } from "../hooks/useCheck";
 import CheckSkeleton from "./CheckSkeleton";
 import { lazy } from "react";
-import { useParams } from "react-router";
+import { useLocation, useParams } from "react-router";
 import SelectMethodModal from "../../Tables/components/SelectMethodModal";
 const CheckPDF = lazy(() => import("../components/CheckPDF"));
 
 export default function CheckPage() {
   const idPedido = useParams()
+  const location = useLocation()
   const { data: check, isLoading, isError } = useCheck(idPedido.idPedido);
   
+
   return (
     <>
       {isLoading ? <CheckSkeleton /> 
@@ -55,7 +57,7 @@ export default function CheckPage() {
                     )}
                   </PDFDownloadLink>
                   {
-                    !idPedido ? (
+                    !location.pathname.includes("Mozo") ? (
                       <PaymentMethodModal />
                     ) : (
                       <SelectMethodModal currentTable={+idPedido.idPedido!}/>

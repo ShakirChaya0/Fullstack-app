@@ -25,11 +25,13 @@ export default function FinishedOrder() {
     const navigate = useNavigate()
     const { onEvent, offEvent, sendEvent } = useWebSocket();
     const { apiCall } = useApiClient();
-
     const handleStatusChangeRef = useRef<(data: OrderClientInfo) => void>(() => {});
     const orderStatusRef = useRef<OrderStatus>(order.estado);
     
     useEffect(() => {
+        if(order.estado !== "Solicitado" && order.estado !== "Completado" && order.estado !== "En_Preparacion"){
+            navigate(`/Cliente/Pedido/Cuenta/${order.idPedido}`)
+        }
         const handleOrderUpdate = (data: OrderClientInfo) => {
             console.log('📨 Actualización de modificación recibida:', data);
             handleStatusChangeRef.current(data);

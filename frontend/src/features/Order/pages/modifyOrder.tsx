@@ -29,7 +29,6 @@ export default function ModifyOrder() {
         handleRecoveryCurrentState
     } = useOrderActions();
     const { onEvent, offEvent, sendEvent } = useWebSocket();
-    
     useEffect(() => {
         const handleOrderUpdate = (data: OrderClientInfo) => {
             console.log('📨 Actualización recibida en modifyOrder:', data);

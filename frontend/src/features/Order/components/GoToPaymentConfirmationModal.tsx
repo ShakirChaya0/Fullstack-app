@@ -14,7 +14,12 @@ export function PaymentConfirmationModal() {
 
     useEffect(() => {
         const handleOpenModal = () => {
-            setIsModalOpen(true);
+            if(order.estado === "Pendiente_De_Pago" || order.estado === "Pendiente_De_Cobro" || order.estado === "Pagado"){
+                navigate(`/Cliente/Pedido/Cuenta/${order.idPedido}`)
+            }
+            else {
+                setIsModalOpen(true);
+            }
         };
 
         // Escuchar el evento personalizado para abrir la modal
