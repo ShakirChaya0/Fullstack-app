@@ -37,10 +37,14 @@ SocketServerConnection(server)
 
 const PORT = process.env.PORT ?? 3000
 
-app.use(cors({
-    origin: `${process.env.FRONTEND_URL}`,
-    credentials: true
-}))
+const corsOptions = {
+    origin: process.env.FRONTEND_URL,
+    credentials: true,
+    optionsSuccessStatus: 200
+};
+
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions));
 
 app.use(express.json())
 
