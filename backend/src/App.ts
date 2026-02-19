@@ -40,7 +40,9 @@ const PORT = process.env.PORT ?? 3000
 const corsOptions = {
     origin: process.env.FRONTEND_URL,
     credentials: true,
-    optionsSuccessStatus: 200
+    optionsSuccessStatus: 200,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
 };
 
 app.use(cors(corsOptions));
