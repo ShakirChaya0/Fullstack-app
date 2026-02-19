@@ -39,29 +39,29 @@ SocketServerConnection(server)
 
 const PORT = process.env.PORT ?? 3000
 
+const rawFrontendUrl = process.env.FRONTEND_URL?.trim();
+console.log('--- DEBUG DE ENTORNO ---');
+console.log('FRONTEND_URL configurada como:', `"${rawFrontendUrl}"`);
+
 const allowedOrigins = [
-    process.env.FRONTEND_URL, 
+    rawFrontendUrl,
+    'https://sabores-deluxe-restaurante.vercel.app',
     'http://localhost:5173',
     'http://localhost:3000'
-].filter(Boolean) as string[]
+].filter(Boolean) as string[];
+
+console.log('Orígenes permitidos finales:', allowedOrigins);
+console.log('------------------------');
 
 const corsOptions: cors.CorsOptions = {
-    origin: (origin, callback) => {
-        if (!origin || allowedOrigins.includes(origin)) {
-            callback(null, true);
-        } else {
-            console.warn(`CORS bloqueado para el origen: ${origin}`);
-            callback(new Error('Not allowed by CORS'));
-        }
-    },
+    origin: allowedOrigins, 
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'], 
-    optionsSuccessStatus: 204 
-}
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
+    optionsSuccessStatus: 204
+};
 
-app.use(cors(corsOptions))
-app.options('(.*)', cors(corsOptions));
+app.use(cors(corsOptions));
 
 app.use(express.json())
 
