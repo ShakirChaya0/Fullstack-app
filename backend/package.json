@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "test": "vitest",
-    "start": "node build/app.js",
+    "start": "node build/App.js",
     "dev": "tsx watch src/App.ts",
     "build": "tsc"
   },
