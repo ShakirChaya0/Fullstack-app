@@ -38,7 +38,11 @@ SocketServerConnection(server)
 const PORT = process.env.PORT ?? 3000
 
 const corsOptions = {
-    origin: process.env.FRONTEND_URL,
+    origin: [
+        'https://sabores-deluxe-restaurante.vercel.app',
+        'http://localhost:5173',
+        'http://localhost:3000'
+    ],
     credentials: true,
     optionsSuccessStatus: 200,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],

@@ -13,7 +13,11 @@ export function SocketServerConnection(server: Http2Server) {
             maxDisconnectionDuration: 1000 * 60
         },
         cors: {
-            origin: process.env.FRONTEND_URL,
+            origin: [
+                'https://sabores-deluxe-restaurante.vercel.app',
+                'http://localhost:5173',
+                'http://localhost:3000'
+            ],
             credentials: true,
             methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE']
         }
