@@ -5,7 +5,7 @@ import { useNavigate } from "react-router"
 import { PaymentConfirmationModal } from "../../Order/components/GoToPaymentConfirmationModal"
 import { StatusIndicator } from "../../Order/components/StatusIndicator"
 import { useWebSocket } from "../../../shared/hooks/useWebSocket"
-import { useEffect, useRef } from "react"
+import { useEffect, useRef, useState } from "react"
 import { useOrderActions } from "../../../shared/hooks/useOrderActions"
 import type { OrderClientInfo, OrderStatus, Pedido } from "../../Order/interfaces/Order"
 import { formatCurrency } from "../../../shared/utils/formatCurrency"
@@ -14,116 +14,23 @@ import { rebuildOrderWithConsolidatedLines } from "../../Order/utils/rebuildOrde
 import { getConsolidatedLinesToModify } from "../../Order/utils/getConsolidatedLinesToModify";
 import { getLinesToDelete } from "../../Order/utils/getLinesToDelete";
 import { toast } from "react-toastify";
-import { determineAmountModificationProductLines } from "../../Order/utils/determineAmountModificationProductLines"
-import useApiClient from "../../../shared/hooks/useApiClient"
-import { requestProductInfo } from "../../Order/services/requestProductInfo"
-import type { Bebida, Comida } from "../interfaces/products"
 
 export default function FinishedOrder() {
     const order = useAppSelector((state) => state.order)
-    const { handleAddToCart, hanldeRemoveFromCart, handleModifyObservation, handleModifyCutleryAmount, handleModifyOrderStatus, handleRecoveryCurrentState } = useOrderActions()
+    const { handleModifyOrderStatus, handleRecoveryCurrentState } = useOrderActions()
     const navigate = useNavigate()
     const { onEvent, offEvent, sendEvent } = useWebSocket();
-    const { apiCall } = useApiClient();
     const handleStatusChangeRef = useRef<(data: OrderClientInfo) => void>(() => {});
-    const orderStatusRef = useRef<OrderStatus>(order.estado);
+    const [orderStatus, setOrderStatus] = useState<OrderStatus>(order.estado);
     
     useEffect(() => {
         if(order.estado !== "Solicitado" && order.estado !== "Completado" && order.estado !== "En_Preparacion"){
             navigate(`/Cliente/Pedido/Cuenta/${order.idPedido}`)
         }
-        const handleOrderUpdate = (data: OrderClientInfo) => {
-            console.log('📨 Actualización de modificación recibida:', data);
-            handleStatusChangeRef.current(data);
-
-            // Evaluamos lineas modificadas
-            const productosModificados = determineAmountModificationProductLines(data.lineasPedido, order.lineasPedido)
-            
-            productosModificados.forEach(lpToModify => {
-                if(lpToModify.diferencia > 0) { //Cantidad a agregar
-                    for (let index = 0; index < lpToModify.diferencia; index++) {
-                        handleAddToCart(lpToModify.producto.producto)
-                    }
-                } else if (lpToModify.diferencia < 0) { // Cantidad a eliminar
-                    for (let index = 0; index < lpToModify.diferencia; index++) {
-                        hanldeRemoveFromCart({ nombreProducto: lpToModify.producto.producto._name })
-                    }
-                }
-            })
-
-            //Evaluamos modificación de observación
-            if(data.observaciones !== order.observaciones) {
-                handleModifyObservation(data.observaciones)
-            }
-
-            //Evaluamos modificación de cantidad de cubiertos
-            if(data.comensales !== order.comensales) {
-                handleModifyCutleryAmount(data.comensales)
-            }
-
-            toast.info('El mozo ha modificado su pedido')
-        };
-
-        const handleOrderAdd = async (data: OrderClientInfo) => {
-            console.log('📨 Actualización de add recibida:', data);
-            handleStatusChangeRef.current(data);
-            
-            //Evaluamos los nuevos productos
-            const lineasPendientesActuales = data.lineasPedido.filter(lp => lp.estado === 'Pendiente')
-
-            // Filtrar las que NO existían en el pedido previo
-            const productosAdicionales = lineasPendientesActuales.filter(lp => {
-                const isValid = order.lineasPedido.find(existingLp => 
-                    existingLp.producto._name === lp.nombreProducto && 
-                    existingLp.estado === 'Pendiente'
-                )
-                if(!isValid) return true
-                else return false
-            });
-
-            //Service para obtener la data
-            try {
-                const productosPromises = productosAdicionales.map(nuevoProducto => 
-                    requestProductInfo(apiCall, nuevoProducto.nombreProducto)
-                )
-                const productosData: (Comida | Bebida)[] = await Promise.all(productosPromises)
-
-                productosData.forEach(dataProducto => {
-                    handleAddToCart(dataProducto)
-                })
-            } catch (error) {
-                console.error('Error al obtener productos:', error)
-                toast.error('Error al agregar algunos productos')
-            }
-
-            toast.info('El mozo ha añadido nuevas lineas a su pedido')
-        };
-
-        const handleOrderDelete = (data: OrderClientInfo) => {
-            console.log('📨 Actualización de delete recibida:', data);
-            handleStatusChangeRef.current(data);
-
-            //Evaluamos los nuevos productos a borrar
-            const lineasPosiblesAEliminar = order.lineasPedido.filter(lp => lp.estado === 'Pendiente')
-
-            const productoAEliminar = lineasPosiblesAEliminar.filter(lp => {
-                const existsInServer = data.lineasPedido.filter(lp => lp.estado === 'Pendiente').find(serverLp => 
-                    serverLp.nombreProducto === lp.producto._name
-                );
-                return !existsInServer;
-            });
-
-            productoAEliminar.forEach(lpAEliminar => {
-                hanldeRemoveFromCart({ nombreProducto: lpAEliminar.producto._name })
-            })
-
-            toast.info('El mozo ha eliminado lineas de su pedido')
-        };
-
         const handleOrderUpdateByKitchen = (data: OrderClientInfo) => { 
             console.log('📨 Data recibida:', data);
             console.log('📨 lineasPedido:', data.lineasPedido); // Ver estructura exacta
-            
+
             const previousOrder: Pedido = JSON.parse(localStorage.getItem('order')!);
             const consolidatedOrderLines = consolidateOrderLines(data.lineasPedido);
             
@@ -191,7 +98,7 @@ export default function FinishedOrder() {
 
     // Sincronizar ref cuando Redux cambie
     useEffect(() => {
-        orderStatusRef.current = order.estado;
+        setOrderStatus(order.estado)
     }, [order.estado]); //   Se actualiza cuando Redux cambia
 
     //   Actualizar el ref si las dependencias cambian
@@ -214,7 +121,7 @@ export default function FinishedOrder() {
 
     return (
         <div className="flex flex-col justify-center w-full">
-            <StatusIndicator currentStatus={ order.estado }></StatusIndicator>
+            <StatusIndicator currentStatus={ orderStatus }></StatusIndicator>
             <section className="flex flex-col w-full items-center h-auto mb-10">
                 <div 
                     className="md:border flex flex-col py-4 md:border-gray-300 md:shadow-2xl 
