@@ -37,20 +37,26 @@ SocketServerConnection(server)
 
 const PORT = process.env.PORT ?? 3000
 
-const corsOptions = {
-    origin: [
-        'https://sabores-deluxe-restaurante.vercel.app',
-        'http://localhost:5173',
-        'http://localhost:3000'
-    ],
+const allowedOrigins = [
+    process.env.FRONTEND_URL, 
+    'http://localhost:5173',
+    'http://localhost:3000'
+].filter(Boolean) as string[];
+
+const corsOptions: cors.CorsOptions = {
+    origin: (origin, callback) => {
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
     credentials: true,
-    optionsSuccessStatus: 200,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization']
 };
 
 app.use(cors(corsOptions));
-app.options('*', cors(corsOptions));
 
 app.use(express.json())
 
