@@ -31,6 +31,8 @@ import { RoleMiddleware } from './presentation/middlewares/RoleMiddleware.js';
 dotenv.config()
 const app = express()
 
+app.set('trust proxy', 1)
+
 export const server: Http2Server = createServer(app)
 
 SocketServerConnection(server)
@@ -41,22 +43,25 @@ const allowedOrigins = [
     process.env.FRONTEND_URL, 
     'http://localhost:5173',
     'http://localhost:3000'
-].filter(Boolean) as string[];
+].filter(Boolean) as string[]
 
 const corsOptions: cors.CorsOptions = {
     origin: (origin, callback) => {
         if (!origin || allowedOrigins.includes(origin)) {
             callback(null, true);
         } else {
+            console.warn(`CORS bloqueado para el origen: ${origin}`);
             callback(new Error('Not allowed by CORS'));
         }
     },
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization']
-};
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'], 
+    optionsSuccessStatus: 204 
+}
 
-app.use(cors(corsOptions));
+app.use(cors(corsOptions))
+app.options('(.*)', cors(corsOptions));
 
 app.use(express.json())
 
