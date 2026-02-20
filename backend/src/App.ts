@@ -28,40 +28,32 @@ import { runReservationCheckJob } from './infrastructure/jobs/CheckReservationsJ
 import { SocketServerConnection } from './presentation/sockets/SocketServerConnection.js'
 import { RoleMiddleware } from './presentation/middlewares/RoleMiddleware.js';
 
-dotenv.config()
-const app = express()
+const PORT = process.env.PORT || 3000;
 
-app.set('trust proxy', 1)
+dotenv.config();
+const app = express();
 
-export const server: Http2Server = createServer(app)
-
-SocketServerConnection(server)
-
-const PORT = process.env.PORT ?? 3000
-
-const rawFrontendUrl = process.env.FRONTEND_URL?.trim();
-console.log('--- DEBUG DE ENTORNO ---');
-console.log('FRONTEND_URL configurada como:', `"${rawFrontendUrl}"`);
+app.set('trust proxy', 1);
 
 const allowedOrigins = [
-    rawFrontendUrl,
-    'https://sabores-deluxe-restaurante.vercel.app',
-    'http://localhost:5173',
-    'http://localhost:3000'
+    process.env.FRONTEND_URL?.trim(), 
+    'http://localhost:3000',
+    'http://localhost:5173'
 ].filter(Boolean) as string[];
 
-console.log('Orígenes permitidos finales:', allowedOrigins);
-console.log('------------------------');
-
 const corsOptions: cors.CorsOptions = {
-    origin: allowedOrigins, 
+    origin: allowedOrigins,
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
-    optionsSuccessStatus: 204
+    allowedHeaders: ['Content-Type', 'Authorization']
 };
 
-app.use(cors(corsOptions));
+app.use(cors(corsOptions)); 
+app.use(express.json());   
+app.use(cookieParser());    
+
+export const server = createServer(app);
+SocketServerConnection(server);
 
 app.use(express.json())
 
