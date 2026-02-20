@@ -52,7 +52,7 @@ app.use(cors(corsOptions));
 app.use(express.json());   
 app.use(cookieParser());    
 
-export const server = createServer(app);
+export const server: Http2Server = createServer(app);
 SocketServerConnection(server);
 
 app.use(express.json())
