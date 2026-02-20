@@ -110,7 +110,7 @@ export default function ClientRouter() {
           </Suspense>
         }/>
 
-        <Route path="/Pedido/Pago/Fallo" element={
+        <Route path="/Pedido/Pago/Fallo/:idPedido" element={
           <Suspense fallback={<PaymentStatusSkeleton />}>
             <FailurePaymentPage />
           </Suspense>

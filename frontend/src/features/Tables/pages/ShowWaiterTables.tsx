@@ -23,13 +23,13 @@ const tableState = {
         "Pendiente_De_Pago": "bg-orange-500",
         "Pendiente_De_Cobro": "bg-amber-600", 
         "Pagado": "bg-green-600",   
-        "Ningun pedido": "bg-red-600"         
+        "Sin_pedido_activo": "bg-red-600"         
 };
 
 function Table({ tableData, onClick, orders }: TableProps) {
     const { _tableNum, _capacity } = tableData;
 
-    const isAssigned = orders.find((o) => o.nroMesa === _tableNum)
+    const isAssigned = orders.find((o) => o.nroMesa === _tableNum && o.estado !== "Pagado")
 
     const handleClick = (e: React.MouseEvent) => {
         e.stopPropagation();
@@ -73,9 +73,8 @@ export default function ShowWaiterTables() {
           if ( t._state === "Ocupada"){
               if (orders.length === 0) return true
             
-              if (orders.some((o) => o.idMozo === user?.idUsuario)) return true
+              if (orders.at(-1)?.idMozo === user?.idUsuario) return true
           }
-
         
           return false
         })?.sort((a, b) => a._tableNum - b._tableNum)
@@ -130,7 +129,7 @@ export default function ShowWaiterTables() {
                                           Estados de los pedidos de cada mesa
                                         </h1>
                                         <ul className="flex flex-wrap gap-y-4 gap-x-6">
-                                          {(["Solicitado", "En_Preparacion", "Completado", "Pendiente_De_Pago", "Pendiente_De_Cobro", "Pagado", "Ningun pedido"] as OrderStatus[]).map((status) => (
+                                          {(["Solicitado", "En_Preparacion", "Completado", "Pendiente_De_Pago", "Pendiente_De_Cobro", "Sin_pedido_activo"] as OrderStatus[]).map((status) => (
                                             <li key={status} className="flex items-center text-sm">
                                               <span className={`w-3 h-3 rounded-full mr-3 ${tableState[status]}`}></span>
                                               <span className="text-gray-700">

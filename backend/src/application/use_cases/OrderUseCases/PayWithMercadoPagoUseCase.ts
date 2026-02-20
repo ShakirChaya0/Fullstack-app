@@ -38,7 +38,7 @@ export class PayWithMercadoPagoUseCase {
             },
             back_urls: {
                 success: `${process.env.FRONTEND_URL}/Cliente/Pedido/Pago/Exito`, 
-                failure: `${process.env.FRONTEND_URL}/Cliente/Pedido/Pago/Fallo`, 
+                failure: `${process.env.FRONTEND_URL}/Cliente/Pedido/Pago/Fallo/${order.orderId}`, 
                 pending: `${process.env.FRONTEND_URL}/Cliente/Pedido/Pago/Pendiente` 
             },
             auto_return: "approved",
