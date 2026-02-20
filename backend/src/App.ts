@@ -1,7 +1,7 @@
 import express from 'express'
 import cors from "cors"
 import dotenv from 'dotenv';
-import { createServer, Server as Http2Server } from 'node:http'
+import { createServer, Server } from 'node:http'
 import { ErrorHandler } from './presentation/middlewares/ErrorHandler.js'
 import { ProductosRouter } from './presentation/routes/ProductsRoute.js'
 import { NewsRouter } from './presentation/routes/NewsRoute.js'
@@ -28,28 +28,35 @@ import { runReservationCheckJob } from './infrastructure/jobs/CheckReservationsJ
 import { SocketServerConnection } from './presentation/sockets/SocketServerConnection.js'
 import { RoleMiddleware } from './presentation/middlewares/RoleMiddleware.js';
 
-dotenv.config()
-const app = express()
+dotenv.config();
+const app = express();
 
-export const server: Http2Server = createServer(app)
+app.set('trust proxy', 1);
 
-SocketServerConnection(server)
+export const allowedOrigins = [
+    process.env.FRONTEND_URL?.trim(),
+    'https://sabores-deluxe-restaurante.vercel.app',
+    'http://localhost:3000',
+    'http://localhost:5173'
+].filter(Boolean) as string[];
 
-const PORT = process.env.PORT ?? 3000
-
-const corsOptions = {
-    origin: process.env.FRONTEND_URL,
+app.use(cors({
+    origin: allowedOrigins,
     credentials: true,
-    optionsSuccessStatus: 200,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization']
-};
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
+    optionsSuccessStatus: 204 
+}));
 
-app.use(cors(corsOptions))
+app.use(express.json());   
+app.use(cookieParser());
 
-app.use(express.json())
+export const server: Server = createServer(app);
+SocketServerConnection(server);
 
-app.use(cookieParser())
+app.get('/health', (req, res) => {
+    res.status(200).json({ status: 'ok' }) 
+});
 
 app.use("/auth", AuthRouter())
 
@@ -92,9 +99,10 @@ app.use((req, res, next) => {
 
 app.use(ErrorHandler)
 
-server.listen(PORT, () => {
-    console.log(`Server running on port http://localhost:${PORT}`)
-    
+const PORT = Number(process.env.PORT) || 3000;
+server.listen(PORT, '0.0.0.0', () => { 
+    console.log(`Server running on port ${PORT}`);
+
     runReservationCheckJob();
 })
 

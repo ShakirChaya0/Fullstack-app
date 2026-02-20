@@ -1,4 +1,4 @@
-import { Server as Http2Server} from 'node:http';
+import { Server as HttpServer} from 'node:http';
 import { Server } from 'socket.io'
 import { AuthenticatedSocket, AuthSocketMiddleware } from '../middlewares/AuthSocketMiddleware.js';
 import { OrderController } from '../controllers/OrderController.js';
@@ -6,16 +6,21 @@ import { registerOrderHandlers } from './handlers/OrderHandler.js';
 
 export let ioConnection: Server;
 
-export function SocketServerConnection(server: Http2Server) {
+export function SocketServerConnection(server: HttpServer) {
     console.log('Estoy socket server conecction')
     ioConnection = new Server(server, {
         connectionStateRecovery: {
             maxDisconnectionDuration: 1000 * 60
         },
         cors: {
-            origin: process.env.FRONTEND_URL,
+            origin: [
+                process.env.FRONTEND_URL?.trim(),
+                'https://sabores-deluxe-restaurante.vercel.app',
+                'http://localhost:3000',
+                'http://localhost:5173'
+            ].filter(Boolean) as string[],
             credentials: true,
-            methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE']
+            methods: ['GET', 'POST']
         }
     });
       

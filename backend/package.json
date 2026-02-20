@@ -7,7 +7,7 @@
     "test": "vitest",
     "start": "node build/App.js",
     "dev": "tsx watch src/App.ts",
-    "build": "tsc"
+    "build": "prisma generate && tsc"
   },
   "keywords": [],
   "author": "",
