@@ -2,7 +2,7 @@ import { toast } from 'react-toastify';
 import useAuth from './useAuth';
 
 export const useApiClient = () => {
-    const { accessToken, refreshAccessToken, logout } = useAuth();
+    const { accessToken, refreshAccessToken, logout, isAuthenticated } = useAuth();
 
     const apiCall = async (url: string, options: RequestInit = {}) => {
         const makeRequest = async (token: string | null) => {
@@ -20,6 +20,11 @@ export const useApiClient = () => {
         let response = await makeRequest(accessToken);
 
         if (response.status === 401) {
+            // Si el usuario nunca estuvo autenticado (invitado), no mostrar alerta de sesión expirada
+            if (!isAuthenticated && !accessToken) {
+                return response;
+            }
+
             const newAccessToken = await refreshAccessToken(); 
 
             if (newAccessToken) {

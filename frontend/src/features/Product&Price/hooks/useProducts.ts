@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import { sortAndNormalizeProductPrice } from "../utils/sortAndNormilizeProductPrice";
 import useApiClient from "../../../shared/hooks/useApiClient";
 
-export const useProductsWithFilters = (initialPage = 1, initialLimit = 9) => {
+export const useProductsWithFilters = (initialPage = 1, initialLimit = 27) => {
     const { apiCall } = useApiClient();   
     const [page, setPage] = useState(initialPage)
     const [limit, setLimit] = useState(initialLimit)
