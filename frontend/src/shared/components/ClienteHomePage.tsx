@@ -199,9 +199,8 @@ export default function App() {
         },
         {
             icon: CalendarCheckIcon,
-            title: "Registro de Reservas",
-            description:
-                "Consulta y administra todas las reservas existentes en el calendario del salón.",
+            title: "Historial de Reservas",
+            description: "Consulta y administra todas sus reservas.",
             color: "green",
             href: "../Reserva/Historial",
         },

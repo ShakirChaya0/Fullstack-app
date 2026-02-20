@@ -20,7 +20,7 @@ import restauranteWhite from "../../shared/utils/assets/restauranteWhite.png";
 // --- Links de navegación ---
 const navLinks = [
     { label: "Registrar Reserva", path: "/Cliente/Reserva" },
-    { label: "Registro de Reservas", path: "/Cliente/Reserva/Historial" },
+    { label: "Historial de Reservas", path: "/Cliente/Reserva/Historial" },
 ];
 
 // --- Componente de link individual ---
@@ -120,7 +120,7 @@ export default function ClientHeader() {
                             alignItems: "center",
                         }}
                     >
-                        {isAuthenticated ??
+                        {isAuthenticated &&
                             navLinks.map((link) => {
                                 if (link.label === "Registrar Reserva") {
                                     return (
@@ -185,7 +185,7 @@ export default function ClientHeader() {
                             <AccountCircle sx={{ fontSize: "2rem" }} />
                         </IconButton>
 
-                        {isAuthenticated ?? (
+                        {isAuthenticated && (
                             <Menu
                                 id="menu-appbar"
                                 anchorEl={anchorEl}
@@ -273,7 +273,7 @@ export default function ClientHeader() {
                                         )}
                                     </NavLink>
                                 </ListItem>
-                                {isAuthenticated ??
+                                {isAuthenticated &&
                                     navLinks.map((link) => (
                                         <ListItem disablePadding>
                                             <NavLink
