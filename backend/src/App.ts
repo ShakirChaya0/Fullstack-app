@@ -44,18 +44,15 @@ app.use(cors({
     origin: allowedOrigins,
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization']
-})); 
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
+    optionsSuccessStatus: 204 
+}));
 
 app.use(express.json());   
-app.use(cookieParser());    
+app.use(cookieParser());
 
 export const server: Server = createServer(app);
 SocketServerConnection(server);
-
-app.use(express.json())
-
-app.use(cookieParser())
 
 app.use("/auth", AuthRouter())
 
@@ -100,8 +97,8 @@ app.use(ErrorHandler)
 
 const PORT = Number(process.env.PORT) || 3000;
 server.listen(PORT, '0.0.0.0', () => { 
-    console.log(`Server running on port http://localhost:${PORT}`)
-    
+    console.log(`Server running on port ${PORT}`);
+
     runReservationCheckJob();
 })
 

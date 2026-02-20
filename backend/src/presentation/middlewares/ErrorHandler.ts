@@ -5,11 +5,10 @@ type PossibleError = Error & {
 }
 
 export const ErrorHandler: ErrorRequestHandler = (error: PossibleError, req: Request, res: Response, next: NextFunction) => {
-    if (error.statusCode) {
-        res.status(error.statusCode).json({ name: error.name, message: error.message });
-    }
+    const statusCode = error.statusCode || 500;
     
-    // Si el error no es ninguno de los anteriores, se considera un error interno del servidor
-    // CAMBIAR A SERVER ERROR
-    else res.status(500).json(error);
+    res.status(statusCode).json({ 
+        name: error.name || "Error", 
+        message: error.message || "Internal Server Error" 
+    });
 }

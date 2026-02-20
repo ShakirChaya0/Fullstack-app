@@ -3,7 +3,6 @@ import { Server } from 'socket.io'
 import { AuthenticatedSocket, AuthSocketMiddleware } from '../middlewares/AuthSocketMiddleware.js';
 import { OrderController } from '../controllers/OrderController.js';
 import { registerOrderHandlers } from './handlers/OrderHandler.js';
-import { allowedOrigins } from '../../App.js';
 
 export let ioConnection: Server;
 
@@ -14,7 +13,12 @@ export function SocketServerConnection(server: HttpServer) {
             maxDisconnectionDuration: 1000 * 60
         },
         cors: {
-            origin: allowedOrigins,
+            origin: [
+                process.env.FRONTEND_URL?.trim(),
+                'https://sabores-deluxe-restaurante.vercel.app',
+                'http://localhost:3000',
+                'http://localhost:5173'
+            ].filter(Boolean) as string[],
             credentials: true,
             methods: ['GET', 'POST']
         }
