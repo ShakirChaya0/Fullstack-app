@@ -1,7 +1,7 @@
 import express from 'express'
 import cors from "cors"
 import dotenv from 'dotenv';
-import { createServer, Server as Http2Server } from 'node:http'
+import { createServer, Server } from 'node:http'
 import { ErrorHandler } from './presentation/middlewares/ErrorHandler.js'
 import { ProductosRouter } from './presentation/routes/ProductsRoute.js'
 import { NewsRouter } from './presentation/routes/NewsRoute.js'
@@ -28,31 +28,29 @@ import { runReservationCheckJob } from './infrastructure/jobs/CheckReservationsJ
 import { SocketServerConnection } from './presentation/sockets/SocketServerConnection.js'
 import { RoleMiddleware } from './presentation/middlewares/RoleMiddleware.js';
 
-const PORT = process.env.PORT || 3000;
-
 dotenv.config();
 const app = express();
 
 app.set('trust proxy', 1);
 
-const allowedOrigins = [
-    process.env.FRONTEND_URL?.trim(), 
+export const allowedOrigins = [
+    process.env.FRONTEND_URL?.trim(),
+    'https://sabores-deluxe-restaurante.vercel.app',
     'http://localhost:3000',
     'http://localhost:5173'
 ].filter(Boolean) as string[];
 
-const corsOptions: cors.CorsOptions = {
+app.use(cors({
     origin: allowedOrigins,
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization']
-};
+})); 
 
-app.use(cors(corsOptions)); 
 app.use(express.json());   
 app.use(cookieParser());    
 
-export const server: Http2Server = createServer(app);
+export const server: Server = createServer(app);
 SocketServerConnection(server);
 
 app.use(express.json())
@@ -100,7 +98,8 @@ app.use((req, res, next) => {
 
 app.use(ErrorHandler)
 
-server.listen(PORT, () => {
+const PORT = Number(process.env.PORT) || 3000;
+server.listen(PORT, '0.0.0.0', () => { 
     console.log(`Server running on port http://localhost:${PORT}`)
     
     runReservationCheckJob();
