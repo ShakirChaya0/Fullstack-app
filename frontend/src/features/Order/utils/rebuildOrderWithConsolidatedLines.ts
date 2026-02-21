@@ -1,48 +1,62 @@
-import type { OrderLineClientInfo, Pedido } from "../interfaces/Order";
+import type {
+    ConsolidatedOrderLine,
+    LineaPedido,
+    Pedido,
+} from "../interfaces/Order";
+import type { OrderLineStatus } from "../../KitchenOrders/types/SharedTypes";
 
 const findMatchingPreviousLine = (
-    consolidatedLine: OrderLineClientInfo,
-    previousOrderLines: any[]
+    consolidatedLine: ConsolidatedOrderLine,
+    previousOrderLines: LineaPedido[],
 ) => {
     // Primero intentar match exacto: nombre + estado
-    const exactMatch = previousOrderLines.find(prevLine =>
-        prevLine.producto._name === consolidatedLine.nombreProducto &&
-        prevLine.estado === consolidatedLine.estado
-    )
-    if (exactMatch) return exactMatch
+    const exactMatch = previousOrderLines.find(
+        (prevLine) =>
+            prevLine.producto._name === consolidatedLine.nombreProducto &&
+            prevLine.estado === consolidatedLine.estado,
+    );
+    if (exactMatch) return exactMatch;
 
     // Fallback: solo por nombre (caso de línea nueva que no existía antes)
-    return previousOrderLines.find(prevLine =>
-        prevLine.producto._name === consolidatedLine.nombreProducto
-    )
-}
+    return previousOrderLines.find(
+        (prevLine) =>
+            prevLine.producto._name === consolidatedLine.nombreProducto,
+    );
+};
 
 export const rebuildOrderWithConsolidatedLines = (
     previousOrder: Pedido,
-    consolidatedOrderLines: OrderLineClientInfo[]
-) => {
-    const newOrderLines = consolidatedOrderLines.map(consolidatedLine => {
+    consolidatedOrderLines: ConsolidatedOrderLine[],
+): Pedido => {
+    const newOrderLines: LineaPedido[] = [];
+
+    consolidatedOrderLines.forEach((consolidatedLine) => {
         const matchingPrevLine = findMatchingPreviousLine(
             consolidatedLine,
-            previousOrder.lineasPedido
+            previousOrder.lineasPedido,
         );
 
         if (matchingPrevLine) {
-            return {
+            newOrderLines.push({
                 ...matchingPrevLine,
+                // Sincronizamos lineNumbers con nroLineas del backend (array)
+                lineNumbers: consolidatedLine.nroLineas,
                 cantidad: consolidatedLine.cantidad,
-                estado: consolidatedLine.estado,
-                subtotal: matchingPrevLine.producto._price * consolidatedLine.cantidad,
-            };
+                estado: consolidatedLine.estado as OrderLineStatus,
+                subtotal:
+                    matchingPrevLine.producto._price *
+                    consolidatedLine.cantidad,
+            });
+        } else {
+            // Si no encuentra coincidencia, advertencia (no debería ocurrir)
+            console.warn(
+                `No se encontró línea previa para: ${consolidatedLine.nombreProducto}`,
+            );
         }
-
-        // Si no encuentra coincidencia, advertencia (no debería ocurrir)
-        console.warn(`No se encontró línea previa para: ${consolidatedLine.nombreProducto}`);
-        return null;
-    }).filter(line => line !== null);
+    });
 
     return {
         ...previousOrder,
-        lineasPedido: newOrderLines
+        lineasPedido: newOrderLines,
     };
 };

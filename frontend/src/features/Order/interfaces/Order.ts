@@ -9,7 +9,7 @@ export type LineaPedido = {
     cantidad: number,
     estado: OrderLineStatus,
     subtotal: number;
-    lineNumber?: number;
+    lineNumbers?: number[];
     tipo?: string;
     esAlcoholica?: boolean
 }
@@ -42,6 +42,11 @@ export interface OrderLineClientInfo {
     cantidad: number,
     estado: string,
     nroLinea?: number
+}
+
+// Tipo extendido usado SOLO después de consolidar en el frontend
+export interface ConsolidatedOrderLine extends OrderLineClientInfo {
+    nroLineas: number[]
 }
 
 export interface OrderClientInfo {

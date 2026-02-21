@@ -1,7 +1,9 @@
-import type { OrderLineClientInfo } from "../interfaces/Order";
+import type { ConsolidatedOrderLine } from "../interfaces/Order";
 
-export const getConsolidatedLinesToModify = (consolidatedOrderLines: OrderLineClientInfo[]) => {
-    return consolidatedOrderLines.filter(line =>
-        line.estado === 'Pendiente' || line.estado === 'Terminada'
+export const getConsolidatedLinesToModify = (
+    consolidatedOrderLines: ConsolidatedOrderLine[],
+) => {
+    return consolidatedOrderLines.filter(
+        (line) => line.estado === "Pendiente" || line.estado === "Terminada",
     );
 };
