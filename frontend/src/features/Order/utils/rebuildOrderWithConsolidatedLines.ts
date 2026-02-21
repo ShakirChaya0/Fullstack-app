@@ -4,10 +4,18 @@ const findMatchingPreviousLine = (
     consolidatedLine: OrderLineClientInfo,
     previousOrderLines: any[]
 ) => {
-    return previousOrderLines.find(prevLine => 
+    // Primero intentar match exacto: nombre + estado
+    const exactMatch = previousOrderLines.find(prevLine =>
+        prevLine.producto._name === consolidatedLine.nombreProducto &&
+        prevLine.estado === consolidatedLine.estado
+    )
+    if (exactMatch) return exactMatch
+
+    // Fallback: solo por nombre (caso de línea nueva que no existía antes)
+    return previousOrderLines.find(prevLine =>
         prevLine.producto._name === consolidatedLine.nombreProducto
-    );
-};
+    )
+}
 
 export const rebuildOrderWithConsolidatedLines = (
     previousOrder: Pedido,
@@ -27,7 +35,7 @@ export const rebuildOrderWithConsolidatedLines = (
                 subtotal: matchingPrevLine.producto._price * consolidatedLine.cantidad,
             };
         }
-        
+
         // Si no encuentra coincidencia, advertencia (no debería ocurrir)
         console.warn(`No se encontró línea previa para: ${consolidatedLine.nombreProducto}`);
         return null;

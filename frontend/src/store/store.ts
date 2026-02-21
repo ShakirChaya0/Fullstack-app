@@ -8,9 +8,9 @@ export const store = configureStore({
     reducer: {
         order: orderSlice
     },
-    middleware: (getDefaultMiddleware) => 
-      getDefaultMiddleware().concat(orderStorageMiddleware)
-}) 
+    middleware: (getDefaultMiddleware) =>
+        getDefaultMiddleware().concat(orderStorageMiddleware)
+})
 
 export type RootState = ReturnType<typeof store.getState>
 export type AppDispatch = typeof store.dispatch

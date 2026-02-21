@@ -9,9 +9,9 @@ import { PartialOrderMinimal } from "../../../shared/validators/OrderZod.js";
 export class UpdateOrderUseCase {
     constructor(
         private readonly orderRepository = new OrderRepository()
-    ){}
+    ) { }
 
-    public async execute(orderId: number, lineNumbers: number[] | undefined, data: Partial<PartialOrderMinimal>): Promise<Order>{
+    public async execute(orderId: number, lineNumbers: number[] | undefined, data: Partial<PartialOrderMinimal>): Promise<Order> {
         console.log('🔍 [UpdateOrderUseCase] Iniciando execute con datos:');
         console.log('   - orderId:', orderId);
         console.log('   - lineNumbers:', lineNumbers);
@@ -19,7 +19,7 @@ export class UpdateOrderUseCase {
 
         console.log('📋 [UpdateOrderUseCase] Paso 1: Obteniendo orden...');
         const order = await this.orderRepository.getOne(orderId)
-        
+
         if (!order) {
             console.log('❌ [UpdateOrderUseCase] Orden no encontrada');
             throw new NotFoundError("Pedido no encontradó");
@@ -27,7 +27,7 @@ export class UpdateOrderUseCase {
         console.log('  [UpdateOrderUseCase] Orden encontrada, estado:', order.status);
 
         console.log('🔍 [UpdateOrderUseCase] Paso 2: Verificando líneas en preparación...');
-        const isInProcess =  order.orderLines.some(line => {
+        const isInProcess = order.orderLines.some(line => {
             console.log('   - Verificando línea:', line.lineNumber, 'estado:', line.status);
             return line.status == "En_Preparacion";
         });
@@ -35,11 +35,15 @@ export class UpdateOrderUseCase {
 
         console.log('🔍 [UpdateOrderUseCase] Paso 3: Validando items vs preparación...');
         console.log('   - isInProcess:', isInProcess, ', data.items:', !!data.items);
-        if(isInProcess && data.items) {
-            console.log('❌ [UpdateOrderUseCase] Error: Líneas en preparación y items presente');
-            throw new BusinessError(`No se puede modificar el pedido, debido a que se intento modificar líneas de pedido que ya estan en preparación`)
+        if (lineNumbers && data.items) {
+            const linesToModifyInProcess = lineNumbers.some(num =>
+                order.orderLines.find(l => l.lineNumber === num)?.status === 'En_Preparacion'
+            );
+            if (linesToModifyInProcess) {
+                throw new BusinessError(`No se puede modificar líneas que ya están en preparación`)
+            }
         }
- 
+
         console.log('🔍 [UpdateOrderUseCase] Paso 4: Validando observación...');
         console.log('   - order.status:', order.status, ', data.observacion:', !!data.observacion);
         if (order.status != "Solicitado" && data.observacion) {
@@ -63,7 +67,7 @@ export class UpdateOrderUseCase {
                 console.log('❌ [UpdateOrderUseCase] Error: Longitudes no coinciden');
                 throw new ValidationError("La cantidad de números de líneas y de items debe ser la misma");
             }
-            
+
             console.log('   - Validando cada item...');
             data.items.forEach((item, index) => {
                 console.log(`     - Item ${index}:`, item);
