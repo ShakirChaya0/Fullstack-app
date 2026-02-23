@@ -39,7 +39,8 @@ export class AuthController {
                 .cookie("refreshToken", refreshToken, {
                     httpOnly: true,
                     secure: this.isProduction,
-                    sameSite: this.isProduction ? "none" : "lax",
+                    /* sameSite: this.isProduction ? "none" : "lax", */ /* ANTES  */
+                    sameSite: "lax",
                     maxAge: 1000 * 60 * 60 * 24 * 7,
                 })
                 .status(200).json({ token: accessToken });
