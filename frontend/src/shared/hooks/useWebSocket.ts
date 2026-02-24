@@ -22,9 +22,14 @@ export function useWebSocket(): WebSocketHook {
 
     useEffect(() => {
         setConnecting(true);
+
+        const qrToken = sessionStorage.getItem('qrToken');
         
         const socket = io(`${import.meta.env.VITE_WEBSOCKET_BACKEND_URL}`, {
-            auth: accessToken ? { jwt: accessToken } : {},
+            auth: {
+                ...(accessToken && { jwt: accessToken }),
+                ...(qrToken && { qrToken }),
+            },
             withCredentials: true,  
             transports: ['websocket', 'polling'] 
         });

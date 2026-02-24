@@ -5,6 +5,8 @@ export default async function fetchQR (apiCall: (url: string, options?: RequestI
         if (response.status == 404) throw new Error("No se encontro el qr o la mesa respectiva, comuníquese con el personal");
         if (response.status == 422) throw new Error("El QR no es válido, comuníquese con el personal");
     } else {
+        const data = await response.json();
+        sessionStorage.setItem('qrToken', data.qrToken);
         return true
     }
 }
