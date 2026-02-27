@@ -35,7 +35,7 @@ export function useMutationProductRegistration ({ newProduct, setNewProduct, set
 
         setModalError('')
 
-        toast.success('Producto registrado con exito')
+        toast.success('Producto registrado con éxito')
 
         // Cerrando la modal
         setIsModalOpen(false)
@@ -65,7 +65,7 @@ export function useMutationProductModification ({ newProduct, productBefModifica
 
         setModalError('')
 
-        toast.success('Producto modificado con exito')
+        toast.success('Producto modificado con éxito')
 
         // Cerrando la modal
         onClose()

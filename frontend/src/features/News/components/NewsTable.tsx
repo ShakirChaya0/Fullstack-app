@@ -148,7 +148,7 @@ const NewsRow = React.memo(function NewsRow({ news, handleDeleteNews }: { news: 
       <StyledTableCell align="center">{news._startDate.split("T")[0]}</StyledTableCell>
       <StyledTableCell align="center">{news._endDate.split("T")[0]}</StyledTableCell>
       <StyledTableCell align="center" sx={{ display: 'flex', gap: "5px", justifyContent: "center" }}>
-        <ModalProvider news={news} fn={updateNews} msgs={{ SuccessMsg: "Novedad modificada con exito", ErrorMsg: "Error al modificar una novedad" }} ButtonName={"Modificar"}>
+        <ModalProvider news={news} fn={updateNews} msgs={{ SuccessMsg: "Novedad modificada con éxito", ErrorMsg: "Error al modificar una novedad" }} ButtonName={"Modificar"}>
           <ModalNews/>
         </ModalProvider>
         <DeleteNewsModal handleDeleteNews={handleDeleteNews} News={news}/>  

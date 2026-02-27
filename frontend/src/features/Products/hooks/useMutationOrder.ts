@@ -50,7 +50,7 @@ export function useMutationOrderRegistration(order: Pedido) {
             };
 
             handleRecoveryCurrentState({ updatedPreviousOrder: syncedOrder });
-            toast.success("Pedido registrado con exito");
+            toast.success("Pedido registrado con éxito");
             navigate("/Cliente/Menu/PedidoConfirmado/");
         },
         onError: (error) => {

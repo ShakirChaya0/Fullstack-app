@@ -88,7 +88,7 @@ export default function FinishedOrder() {
                                             Cant: {lp.cantidad}
                                         </p>
                                         <p className="text-sm font-bold">
-                                            Estado: {lp.estado}
+                                            Estado: {lp.estado == 'En_Preparacion' ? 'En Preparacion' : lp.estado}
                                         </p>
                                         <p className="text-sm font-bold">
                                             Precio:{" "}
