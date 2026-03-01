@@ -1,4 +1,4 @@
-import { type FC, Fragment, useEffect } from 'react';
+import { type FC, Fragment, useCallback, useEffect } from 'react';
 import { motion, AnimatePresence, type Variants } from 'framer-motion';
 import type { ITable } from '../interfaces/ITable';
 import { useNavigate } from 'react-router';
@@ -6,6 +6,7 @@ import ModalQR from './ModalQR';
 import { useTableMutation } from '../hooks/useTableMutation';
 import SelectMethodModal from './SelectMethodModal';
 import { useQueryClient } from '@tanstack/react-query';
+import ModalFreeTable from './ModalFreeTable';
 
 // --- Icono de Cierre (SVG) ---
 const CloseIcon: FC<{ className?: string }> = ({ className }) => (
@@ -23,7 +24,6 @@ const CloseIcon: FC<{ className?: string }> = ({ className }) => (
   </svg>
 );
 
-// --- Props del Componente Modal ---
 interface ModalShowTableProps {
   open: boolean;
   onClose: () => void;
@@ -31,7 +31,6 @@ interface ModalShowTableProps {
   title?: string;
 }
 
-// --- Componente ModalShowTable (Esqueleto) ---
 export const ModalShowTable: FC<ModalShowTableProps> = ({ open, onClose, title, currentTable }) => {
   const navigate = useNavigate()
   const { mutate, isPending } = useTableMutation()
@@ -78,9 +77,9 @@ export const ModalShowTable: FC<ModalShowTableProps> = ({ open, onClose, title, 
     navigate(`${url}`)
   }
 
-  const handleFreeTable = () => {
+  const handleFreeTable = useCallback(() => {
     mutate({action: "updateState", _tableNum: currentTable._tableNum, _state: "Libre"})
-  }
+  }, [currentTable._tableNum])
 
   return (
     <AnimatePresence>
@@ -137,15 +136,7 @@ export const ModalShowTable: FC<ModalShowTableProps> = ({ open, onClose, title, 
                   </div>
                 </div>
                 <ModalQR tableNum={currentTable._tableNum}/>
-                <button 
-                    onClick={handleFreeTable}
-                    disabled={(!isRealease || isPending)}
-                    className={`w-full px-4 py-4 text-sm mt-5 font-medium text-white 
-                    ${!isRealease ? "bg-amber-950/30" : "bg-amber-600 hover:bg-amber-700 active:scale-95 active:bg-amber-800 cursor-pointer"}
-                    rounded-lg transition-all`}
-                >
-                    Liberar Mesa
-                </button>
+                <ModalFreeTable handleFreeTable={handleFreeTable}/>
               </div>
                         
               <div className="mt-auto flex flex-col gap-3">

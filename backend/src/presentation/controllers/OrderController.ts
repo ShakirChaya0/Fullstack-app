@@ -54,6 +54,8 @@ export class OrderController {
             if(!validatedOrder.success) throw new ValidationError(`Validation failed: ${validatedOrder.error.message}`);
             const createdOrder = await this.registerOrderUseCase.execute(validatedOrder.data, user?.idUsuario, user?.tipoUsuario, qrToken, tableNumber ? +tableNumber : undefined);
 
+            console.log("ORDEN CREADAA: ", createdOrder)
+
             try {
                 await this.orderSocketService.emitOrderEvent("newOrder", createdOrder);
             } catch (error) {

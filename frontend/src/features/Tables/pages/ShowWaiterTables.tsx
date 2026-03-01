@@ -73,7 +73,7 @@ export default function ShowWaiterTables() {
           if ( t._state === "Ocupada"){
               if (orders.length === 0) return true
             
-              if (orders.at(-1)?.idMozo === user?.idUsuario) return true
+              if ((orders.at(-1)?.idMozo === user?.idUsuario) || (orders.at(-1)?.estado === "Pagado")) return true
           }
         
           return false
@@ -85,7 +85,13 @@ export default function ShowWaiterTables() {
 
     useEffect(() => {
         localStorage.removeItem("modifyOrder")
+
+        const handleNewOrder = async () => {
+            await queryClient.invalidateQueries({queryKey: ["waitersTable"]})
+        } 
+
         onEvent("waiterOrders", (data) => setOrders(data))
+        onEvent("newOrder", handleNewOrder)
         onEvent("updatedOrderLineStatus", async () => {
             await queryClient.invalidateQueries({queryKey: ["waitersTable"]})
         })
@@ -94,6 +100,7 @@ export default function ShowWaiterTables() {
         })
 
         return () => {
+            offEvent("newOrder", handleNewOrder)
             offEvent("waiterOrders", (data) => setOrders(data))
             offEvent("updatedOrderLineStatus", async () => {
                 await queryClient.invalidateQueries({queryKey: ["waitersTable"]})
@@ -102,7 +109,7 @@ export default function ShowWaiterTables() {
                 await queryClient.invalidateQueries({queryKey: ["waitersTable"]})
             })
         }
-    }, [])
+    }, [user?.idUsuario, queryClient])
 
     const handleSelectTable = useCallback((table: ITable) => {
         setOpen(!open)

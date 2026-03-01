@@ -25,6 +25,6 @@ export class OrderSocketService {
         }
 
         this.eventEmitter.emitToRoom('cocina', event, order.toKitchenInfo());
-        this.eventEmitter.emitToRoom(`mozo:${order.waiter?.username}`, event, order.toWaiterInfo());
+        this.eventEmitter.emitToRoom("mozos", event, order.toWaiterInfo());
     } 
 }

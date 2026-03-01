@@ -42,8 +42,10 @@ export function SocketServerConnection(server: HttpServer) {
     }
     else if (socket.user?.tipoUsuario === "Mozo") {
         const room = `mozo:${socket.user.username}`;
+        const globalRoom = "mozos"
         socket.join(room);
-        console.log(`🧑‍💼 Socket unido a sala: ${room}`);
+        socket.join(globalRoom)
+        console.log(`🧑‍💼 Socket unido a sala: ${room}, Room global ${globalRoom}`);
 
         const waiterOrders = await orderController.getOrdersByWaiter(socket.user.idUsuario);
         socket.emit('waiterOrders', waiterOrders);
