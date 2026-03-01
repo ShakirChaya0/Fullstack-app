@@ -49,6 +49,7 @@ export const orderSlice = createSlice({
             if (pendingIndex !== undefined) {
                 // Incrementar la existente
                 const lp = state.lineasPedido[pendingIndex];
+                if (lp.cantidad >= 20) return state; // Límite de cantidad por línea
                 state.lineasPedido[pendingIndex] = {
                     ...lp,
                     cantidad: lp.cantidad + 1,

@@ -1,3 +1,4 @@
+import React from "react";
 import {
     Table,
     TableBody,
@@ -31,6 +32,7 @@ import { getLinesToDelete } from "../utils/getLinesToDelete";
 import { rebuildOrderWithConsolidatedLines } from "../utils/rebuildOrderWithConsolidatedLines";
 import { getConsolidatedLinesToModify } from "../utils/getConsolidatedLinesToModify";
 import { splitConsolidatedModification } from "../utils/splitConsolidatedModification";
+import { groupLines, getClientLineType, TYPE_ORDER, formatTypeName } from "../utils/groupOrderLinesByType";
 
 export default function ModifyOrder() {
     const navigate = useNavigate();
@@ -594,74 +596,86 @@ export default function ModifyOrder() {
                             <p className="text-center">Pedido Vacio</p>
                         </>
                     )}
-                    {order.lineasPedido.map((lp) => (
-                        <div
-                            key={`${lp.producto._name}_${lp.estado}`}
-                            className="flex flex-col gap-2 border #e5e7eb rounded-xl shadow-sm p-3"
-                        >
-                            <div className="flex justify-between items-center">
-                                <div className="flex flex-col max-w-[200px]">
-                                    <span className="font-semibold">
-                                        {lp.producto._name}
-                                    </span>
-                                    <span className="text-sm text-gray-600 max-h-[60px] overflow-y-auto pr-1">
-                                        {lp.producto._description}
-                                    </span>
-                                    <span className="text-orange-600 font-bold">
-                                        {formatCurrency(
-                                            lp.subtotal,
-                                            "es-AR",
-                                            "ARS",
-                                        )}
-                                    </span>
-                                    <span>
-                                        <span className="font-medium">
-                                            {lp.estado
-                                                .replace("_", " ")
-                                                .replace("o", "ó")}
-                                        </span>
-                                    </span>
-                                </div>
+                    {(() => {
+                        const grouped = groupLines(order.lineasPedido, getClientLineType);
+                        return TYPE_ORDER.map((type) =>
+                            grouped[type] ? (
+                                <div key={type}>
+                                    <h3 className="text-lg font-semibold text-teal-800 mb-2 border-b border-gray-300 pb-1 capitalize">
+                                        {formatTypeName(type)}
+                                    </h3>
+                                    {grouped[type].map((lp) => (
+                                        <div
+                                            key={`${lp.producto._name}_${lp.estado}`}
+                                            className="flex flex-col gap-2 border #e5e7eb rounded-xl shadow-sm p-3 mb-3"
+                                        >
+                                            <div className="flex justify-between items-center">
+                                                <div className="flex flex-col max-w-[200px]">
+                                                    <span className="font-semibold">
+                                                        {lp.producto._name}
+                                                    </span>
+                                                    <span className="text-sm text-gray-600 max-h-[60px] overflow-y-auto pr-1">
+                                                        {lp.producto._description}
+                                                    </span>
+                                                    <span className="text-orange-600 font-bold">
+                                                        {formatCurrency(
+                                                            lp.subtotal,
+                                                            "es-AR",
+                                                            "ARS",
+                                                        )}
+                                                    </span>
+                                                    <span>
+                                                        <span className="font-medium">
+                                                            {lp.estado
+                                                                .replace("_", " ")
+                                                                .replace("o", "ó")}
+                                                        </span>
+                                                    </span>
+                                                </div>
 
-                                <div className="text-right">
-                                    <p className="text-sm font-bold">
-                                        Cant: {lp.cantidad}
-                                    </p>
-                                    <p className="text-sm font-bold">
-                                        Precio:{" "}
-                                        {formatCurrency(
-                                            lp.producto._price * lp.cantidad,
-                                            "es-AR",
-                                            "ARS",
-                                        )}
-                                    </p>
-                                </div>
-                            </div>
+                                                <div className="text-right">
+                                                    <p className="text-sm font-bold">
+                                                        Cant: {lp.cantidad}
+                                                    </p>
+                                                    <p className="text-sm font-bold">
+                                                        Precio:{" "}
+                                                        {formatCurrency(
+                                                            lp.producto._price * lp.cantidad,
+                                                            "es-AR",
+                                                            "ARS",
+                                                        )}
+                                                    </p>
+                                                </div>
+                                            </div>
 
-                            <div className="self-end border rounded-md transition-all duration-200 bg-orange-500 text-white font-medium flex flex-row justify-around items-center gap-1 w-fit">
-                                {lp.estado === "Pendiente" && (
-                                    <button
-                                        onClick={() =>
-                                            handleRemove(lp.producto._name)
-                                        }
-                                        className={`h-full w-full py-1.5 px-2 rounded-md transition-all ease-linear duration-150 
-                                    'cursor-pointer bg-orange-500 hover:scale-105 hover:bg-orange-600 active:bg-orange-700 active:scale-100'`}
-                                    >
-                                        <RemoveCircleOutlineIcon />
-                                    </button>
-                                )}
-                                <p className="px-2 py-1">{lp.cantidad}</p>
-                                {lp.estado === "Pendiente" && (
-                                    <button
-                                        onClick={() => handleAdd(lp)}
-                                        className={`h-full w-full py-1.5 px-2 rounded-md transition-all ease-linear duration-150 'cursor-pointer bg-orange-500 hover:scale-105 hover:bg-orange-600 active:bg-orange-700 active:scale-100'`}
-                                    >
-                                        <ControlPointIcon />
-                                    </button>
-                                )}
-                            </div>
-                        </div>
-                    ))}
+                                            <div className="self-end border rounded-md transition-all duration-200 bg-orange-500 text-white font-medium flex flex-row justify-around items-center gap-1 w-fit">
+                                                {lp.estado === "Pendiente" && (
+                                                    <button
+                                                        onClick={() =>
+                                                            handleRemove(lp.producto._name)
+                                                        }
+                                                        className={`h-full w-full py-1.5 px-2 rounded-md transition-all ease-linear duration-150 
+                                                    'cursor-pointer bg-orange-500 hover:scale-105 hover:bg-orange-600 active:bg-orange-700 active:scale-100'`}
+                                                    >
+                                                        <RemoveCircleOutlineIcon />
+                                                    </button>
+                                                )}
+                                                <p className="px-2 py-1">{lp.cantidad}</p>
+                                                {lp.estado === "Pendiente" && (
+                                                    <button
+                                                        onClick={() => handleAdd(lp)}
+                                                        className={`h-full w-full py-1.5 px-2 rounded-md transition-all ease-linear duration-150 'cursor-pointer bg-orange-500 hover:scale-105 hover:bg-orange-600 active:bg-orange-700 active:scale-100'`}
+                                                    >
+                                                        <ControlPointIcon />
+                                                    </button>
+                                                )}
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            ) : null
+                        );
+                    })()}
 
                     <div className="flex flex-col gap-3 mt-4">
                         <div className="flex flex-row gap-3 items-center">
@@ -673,6 +687,7 @@ export default function ModifyOrder() {
                                 name="cantidad"
                                 type="number"
                                 min={1}
+                                max={50}
                                 id="cantComensales"
                                 placeholder="ej:1"
                                 className="py-0.5 px-1 w-12 outline-0 rounded-lg bg-gray-200"
@@ -695,6 +710,7 @@ export default function ModifyOrder() {
                                 }`}
                                 placeholder="ej: sin cebolla en la hamburguesa"
                                 rows={4}
+                                maxLength={255}
                                 id="obsMobile"
                                 ref={observacionesRef}
                                 defaultValue={order.observaciones}
@@ -776,7 +792,19 @@ export default function ModifyOrder() {
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                {order.lineasPedido.map((lp) => (
+                                {(() => {
+                                    const grouped = groupLines(order.lineasPedido, getClientLineType);
+                                    return TYPE_ORDER.map((type) =>
+                                        grouped[type] ? (
+                                            <React.Fragment key={type}>
+                                                <TableRow>
+                                                    <TableCell colSpan={7} sx={{ backgroundColor: '#f0fdfa', py: 1 }}>
+                                                        <span className="text-lg font-semibold text-teal-800 capitalize">
+                                                            {formatTypeName(type)}
+                                                        </span>
+                                                    </TableCell>
+                                                </TableRow>
+                                                {grouped[type].map((lp) => (
                                     <TableRow
                                         sx={{
                                             backgroundColor:
@@ -814,7 +842,7 @@ export default function ModifyOrder() {
                                         <TableCell align="center">
                                             {lp.estado
                                                 .replace("_", " ")
-                                                .replace("o", "ó")}
+                                                .replace("o", "\u00f3")}
                                         </TableCell>
                                         <TableCell align="center">
                                             <div
@@ -853,7 +881,11 @@ export default function ModifyOrder() {
                                             </div>
                                         </TableCell>
                                     </TableRow>
-                                ))}
+                                                ))}
+                                            </React.Fragment>
+                                        ) : null
+                                    );
+                                })()}
                             </TableBody>
                         </Table>
                     </TableContainer>
@@ -873,6 +905,7 @@ export default function ModifyOrder() {
                                 name="cantidad"
                                 type="number"
                                 min={1}
+                                max={50}
                                 id="cantComensalesDesktop"
                                 placeholder="ej:1"
                                 className="py-0.5 px-1 w-12 outline-0 rounded-lg bg-gray-200"
@@ -901,6 +934,7 @@ export default function ModifyOrder() {
                                 placeholder="ej: sin cebolla en la hamburguesa"
                                 rows={4}
                                 id="obsDesktop"
+                                maxLength={255}
                                 ref={observacionesRef}
                                 defaultValue={order.observaciones}
                                 disabled={order.estado === "En_Preparacion"}

@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import type { OrderStatus } from "../../Order/interfaces/Order";
 import { formatCurrency } from "../../../shared/utils/formatCurrency";
 import { useOrderUpdateHandler } from "../../Order/hooks/useOrderUpdateHandler";
+import { groupLines, getClientLineType, TYPE_ORDER, formatTypeName } from "../../Order/utils/groupOrderLinesByType";
 
 export default function FinishedOrder() {
     const order = useAppSelector((state) => state.order);
@@ -62,47 +63,59 @@ export default function FinishedOrder() {
                     </div>
 
                     <div className="flex flex-col gap-4 p-3">
-                        {order.lineasPedido.map((lp) => (
-                            <div
-                                key={`${lp.producto._name}_${lp.estado}`}
-                                className="flex flex-col gap-2 border border-gray-300 rounded-xl shadow-sm p-3"
-                            >
-                                <div className="flex justify-between items-center">
-                                    <div className="flex flex-col max-w-[200px]">
-                                        <span className="font-semibold">
-                                            {lp.producto._name}
-                                        </span>
-                                        <span className="text-sm text-gray-600 pr-1">
-                                            {lp.producto._description}
-                                        </span>
-                                        <span className="text-orange-600 font-bold">
-                                            {formatCurrency(
-                                                lp.subtotal,
-                                                "es-AR",
-                                                "ARS",
-                                            )}
-                                        </span>
+                        {(() => {
+                            const grouped = groupLines(order.lineasPedido, getClientLineType);
+                            return TYPE_ORDER.map((type) =>
+                                grouped[type] ? (
+                                    <div key={type}>
+                                        <h3 className="text-lg font-semibold text-teal-800 mb-2 border-b border-gray-300 pb-1 capitalize">
+                                            {formatTypeName(type)}
+                                        </h3>
+                                        {grouped[type].map((lp) => (
+                                            <div
+                                                key={`${lp.producto._name}_${lp.estado}`}
+                                                className="flex flex-col gap-2 border border-gray-300 rounded-xl shadow-sm p-3 mb-3"
+                                            >
+                                                <div className="flex justify-between items-center">
+                                                    <div className="flex flex-col max-w-[200px]">
+                                                        <span className="font-semibold">
+                                                            {lp.producto._name}
+                                                        </span>
+                                                        <span className="text-sm text-gray-600 pr-1">
+                                                            {lp.producto._description}
+                                                        </span>
+                                                        <span className="text-orange-600 font-bold">
+                                                            {formatCurrency(
+                                                                lp.subtotal,
+                                                                "es-AR",
+                                                                "ARS",
+                                                            )}
+                                                        </span>
+                                                    </div>
+                                                    <div className="text-right">
+                                                        <p className="text-sm font-bold">
+                                                            Cant: {lp.cantidad}
+                                                        </p>
+                                                        <p className="text-sm font-bold">
+                                                            Estado: {lp.estado == 'En_Preparacion' ? 'En Preparacion' : lp.estado}
+                                                        </p>
+                                                        <p className="text-sm font-bold">
+                                                            Precio:{" "}
+                                                            {formatCurrency(
+                                                                lp.producto._price *
+                                                                    lp.cantidad,
+                                                                "es-AR",
+                                                                "ARS",
+                                                            )}
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        ))}
                                     </div>
-                                    <div className="text-right">
-                                        <p className="text-sm font-bold">
-                                            Cant: {lp.cantidad}
-                                        </p>
-                                        <p className="text-sm font-bold">
-                                            Estado: {lp.estado == 'En_Preparacion' ? 'En Preparacion' : lp.estado}
-                                        </p>
-                                        <p className="text-sm font-bold">
-                                            Precio:{" "}
-                                            {formatCurrency(
-                                                lp.producto._price *
-                                                    lp.cantidad,
-                                                "es-AR",
-                                                "ARS",
-                                            )}
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                        ))}
+                                ) : null
+                            );
+                        })()}
 
                         <div className="flex flex-row gap-2 justify-between">
                             <label className="font-bold text-gray-700">

@@ -1,3 +1,4 @@
+import React from "react"
 import {
   Table,
   TableBody,
@@ -21,6 +22,7 @@ import { OrderTotalAmount } from "../utils/OrderTotalAmount"
 import { useNavigate } from "react-router"
 import { isAModifiedOrder } from "../utils/isAModifiedOrder"
 import { formatCurrency } from "../../../shared/utils/formatCurrency"
+import { groupLines, getClientLineType, TYPE_ORDER, formatTypeName } from "../../Order/utils/groupOrderLinesByType"
 
 export default function ConfirmOrder() {
   const navigate = useNavigate()
@@ -40,7 +42,7 @@ export default function ConfirmOrder() {
       event.preventDefault()
       const formData = new FormData(event.currentTarget)
       const data = Object.fromEntries(formData.entries())
-      if(+data.cantidad <= 0) {
+      if(+data.cantidad <= 0 && +data.cantidad > 50) {
         toast.error('Cantidad de comensales invalida');
         return; // No actualizar nada
       }
@@ -84,67 +86,79 @@ export default function ConfirmOrder() {
                   <p className="text-center mb-4">Pedido Vacio</p>
               </>
           }
-          {order.lineasPedido.map((lp) => (
-            <div
-              key={lp.producto._name}
-              className="flex flex-col gap-2 border border-gray-300 rounded-xl shadow-sm p-3"
-            >
-              <div className="flex justify-between items-center">
-                <div className="flex flex-col max-w-[200px]">
-                  <span className="font-semibold">{lp.producto._name}</span>
-                  <span
-                    className="
-                      text-sm text-gray-600
-                      max-h-[60px] 
-                      overflow-y-auto 
-                      pr-1
-                    "
-                  >
-                    {lp.producto._name}
-                  </span>
-                  <span className="text-orange-600 font-bold">
-                    {formatCurrency(lp.subtotal, 'es-AR', 'ARS')}
-                  </span>
-                </div>
+          {(() => {
+            const grouped = groupLines(order.lineasPedido, getClientLineType);
+            return TYPE_ORDER.map((type) =>
+              grouped[type] ? (
+                <div key={type}>
+                  <h3 className="text-lg font-semibold text-teal-800 mb-2 border-b border-gray-300 pb-1 capitalize">
+                    {formatTypeName(type)}
+                  </h3>
+                  {grouped[type].map((lp) => (
+                    <div
+                      key={lp.producto._name}
+                      className="flex flex-col gap-2 border border-gray-300 rounded-xl shadow-sm p-3 mb-3"
+                    >
+                      <div className="flex justify-between items-center">
+                        <div className="flex flex-col max-w-[200px]">
+                          <span className="font-semibold">{lp.producto._name}</span>
+                          <span
+                            className="
+                              text-sm text-gray-600
+                              max-h-[60px] 
+                              overflow-y-auto 
+                              pr-1
+                            "
+                          >
+                            {lp.producto._name}
+                          </span>
+                          <span className="text-orange-600 font-bold">
+                            {formatCurrency(lp.subtotal, 'es-AR', 'ARS')}
+                          </span>
+                        </div>
 
-                <div className="text-right">
-                  <p className="text-sm font-bold">Cant: {lp.cantidad}</p>
-                  <p className="text-sm font-bold">Precio: {formatCurrency(lp.producto._price * lp.cantidad, 'es-AR', 'ARS')}</p>
-                </div>
-              </div>
+                        <div className="text-right">
+                          <p className="text-sm font-bold">Cant: {lp.cantidad}</p>
+                          <p className="text-sm font-bold">Precio: {formatCurrency(lp.producto._price * lp.cantidad, 'es-AR', 'ARS')}</p>
+                        </div>
+                      </div>
 
-              <div
-                className="self-end border rounded-md 
-                transition-all duration-200 bg-orange-500
-                text-white font-medium flex flex-row justify-around 
-                items-center gap-1 w-fit"
-              >
-                <button
-                  onClick={() => handleRemove(lp.producto._name)}
-                  className="cursor-pointer h-full w-full py-1.5 px-2 bg-orange-500 hover:scale-105
-                   hover:bg-orange-600 rounded-l-md transition-all ease-linear duration-150
-                   active:bg-orange-700 active:scale-100"
-                >
-                  <RemoveCircleOutlineIcon/>
-                </button>
-                <p>{lp.cantidad}</p>
-                <button
-                  onClick={() => handleAdd(lp)}
-                  className="cursor-pointer h-full w-full py-1.5 px-2 bg-orange-500 hover:scale-105
-                   hover:bg-orange-600 rounded-r-md transition-all ease-linear duration-150 
-                   active:bg-orange-700 active:scale-100"
-                >
-                  <ControlPointIcon/>
-                </button>
-              </div>
-            </div>
-          ))}
+                      <div
+                        className="self-end border rounded-md 
+                        transition-all duration-200 bg-orange-500
+                        text-white font-medium flex flex-row justify-around 
+                        items-center gap-1 w-fit"
+                      >
+                        <button
+                          onClick={() => handleRemove(lp.producto._name)}
+                          className="cursor-pointer h-full w-full py-1.5 px-2 bg-orange-500 hover:scale-105
+                           hover:bg-orange-600 rounded-l-md transition-all ease-linear duration-150
+                           active:bg-orange-700 active:scale-100"
+                        >
+                          <RemoveCircleOutlineIcon/>
+                        </button>
+                        <p>{lp.cantidad}</p>
+                        <button
+                          onClick={() => handleAdd(lp)}
+                          className="cursor-pointer h-full w-full py-1.5 px-2 bg-orange-500 hover:scale-105
+                           hover:bg-orange-600 rounded-r-md transition-all ease-linear duration-150 
+                           active:bg-orange-700 active:scale-100"
+                        >
+                          <ControlPointIcon/>
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : null
+            );
+          })()}
           <form className="flex flex-col gap-3" onSubmit={handleSubmit}>
             <div className="flex flex-row gap-3">
               <label htmlFor="cantComensales">
                 Cantidad de comensales: 
               </label>
-                <input name="cantidad" type="number" min={0} placeholder="ej:12" id="cantComensales" 
+                <input name="cantidad" type="number" min={0} max={50} placeholder="ej:12" id="cantComensales" 
                 className="py-0.5 px-1 w-12 outline-0 rounded-lg bg-gray-200"
                 defaultValue={order.comensales !== 0 ? order.comensales : undefined}
                 onInput={(e) => {
@@ -159,7 +173,9 @@ export default function ConfirmOrder() {
               name="observaciones" 
               className="bg-gray-200 rounded-2xl py-2 px-4" 
               placeholder="ej: Carne al punto justo" 
-              rows={4} id=""
+              rows={4} 
+              maxLength={255}
+              id=""
               onChange={(e) => {
                 if (e.currentTarget.value.trim() == '') {
                   e.currentTarget.value = ''
@@ -199,41 +215,57 @@ export default function ConfirmOrder() {
                       </TableRow>
                   </TableHead>
                   <TableBody> 
-                  {order.lineasPedido.map((lp) => (
-                      <TableRow key={lp.producto._name}>
-                          <TableCell>{lp.producto._name}</TableCell>
-                          <TableCell>{lp.producto._description}</TableCell>
-                          <TableCell align="right">{lp.cantidad}</TableCell>
-                          <TableCell align="right">{formatCurrency(lp.producto._price, 'es-AR', 'ARS')}</TableCell>
-                          <TableCell align="right">{formatCurrency(lp.subtotal, 'es-AR', 'ARS')}</TableCell>
-                          <TableCell align="center">
-                              <div
-                                className="self-center border rounded-md 
-                                transition-all duration-200 bg-orange-500
-                                text-white font-medium flex flex-row justify-around 
-                                items-center gap-1 w-fit"
-                              >
-                                  <button
-                                    onClick={() => handleRemove(lp.producto._name)}
-                                    className="cursor-pointer h-full w-full py-1.5 px-2 bg-orange-500 hover:scale-105
-                                      hover:bg-orange-600 rounded-l-md transition-all ease-linear duration-150
-                                      active:bg-orange-700 active:scale-100"
+                  {(() => {
+                    const grouped = groupLines(order.lineasPedido, getClientLineType);
+                    return TYPE_ORDER.map((type) =>
+                      grouped[type] ? (
+                        <React.Fragment key={type}>
+                          <TableRow>
+                            <TableCell colSpan={6} sx={{ backgroundColor: '#f0fdfa', py: 1 }}>
+                              <span className="text-lg font-semibold text-teal-800 capitalize">
+                                {formatTypeName(type)}
+                              </span>
+                            </TableCell>
+                          </TableRow>
+                          {grouped[type].map((lp) => (
+                            <TableRow key={lp.producto._name}>
+                              <TableCell>{lp.producto._name}</TableCell>
+                              <TableCell>{lp.producto._description}</TableCell>
+                              <TableCell align="right">{lp.cantidad}</TableCell>
+                              <TableCell align="right">{formatCurrency(lp.producto._price, 'es-AR', 'ARS')}</TableCell>
+                              <TableCell align="right">{formatCurrency(lp.subtotal, 'es-AR', 'ARS')}</TableCell>
+                              <TableCell align="center">
+                                  <div
+                                    className="self-center border rounded-md 
+                                    transition-all duration-200 bg-orange-500
+                                    text-white font-medium flex flex-row justify-around 
+                                    items-center gap-1 w-fit"
                                   >
-                                    <RemoveCircleOutlineIcon/>
-                                  </button>
-                                  <p>{lp.cantidad}</p>
-                                  <button
-                                    onClick={() => handleAdd(lp)}
-                                    className="cursor-pointer h-full w-full py-1.5 px-2 bg-orange-500 hover:scale-105
-                                      hover:bg-orange-600 rounded-r-md transition-all ease-linear duration-150 
-                                      active:bg-orange-700 active:scale-100"
-                                  >
-                                    <ControlPointIcon/>
-                                  </button>
-                              </div>
-                          </TableCell>
-                      </TableRow>
-                      ))}
+                                      <button
+                                        onClick={() => handleRemove(lp.producto._name)}
+                                        className="cursor-pointer h-full w-full py-1.5 px-2 bg-orange-500 hover:scale-105
+                                          hover:bg-orange-600 rounded-l-md transition-all ease-linear duration-150
+                                          active:bg-orange-700 active:scale-100"
+                                      >
+                                        <RemoveCircleOutlineIcon/>
+                                      </button>
+                                      <p>{lp.cantidad}</p>
+                                      <button
+                                        onClick={() => handleAdd(lp)}
+                                        className="cursor-pointer h-full w-full py-1.5 px-2 bg-orange-500 hover:scale-105
+                                          hover:bg-orange-600 rounded-r-md transition-all ease-linear duration-150 
+                                          active:bg-orange-700 active:scale-100"
+                                      >
+                                        <ControlPointIcon/>
+                                      </button>
+                                  </div>
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </React.Fragment>
+                      ) : null
+                    );
+                  })()}
                   </TableBody>
               </Table>
           </TableContainer>
@@ -245,7 +277,7 @@ export default function ConfirmOrder() {
                       <label htmlFor="cantComensales">
                         Cantidad de comensales: 
                       </label>
-                        <input required name="cantidad" type="number" min={1} id="cantComensales" placeholder="ej:1" 
+                        <input required name="cantidad" type="number" min={1} max={50} id="cantComensales" placeholder="ej:1" 
                         className="py-0.5 px-1 w-12 outline-0 rounded-lg bg-gray-200"
                         defaultValue={order.comensales !== 0 ? order.comensales : undefined}
                         onInput={(e) => {
@@ -260,6 +292,7 @@ export default function ConfirmOrder() {
                         className="bg-gray-200 rounded-2xl py-2 px-4 outline-0" 
                         placeholder="ej: Carne al punto justo" rows={4} 
                         id=""
+                        maxLength={255}
                         defaultValue={order.observaciones !== '' ? order.observaciones : undefined}
                         onChange={(e) => {
                           if (e.currentTarget.value.trim() == '') {
