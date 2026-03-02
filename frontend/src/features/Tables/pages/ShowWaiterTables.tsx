@@ -68,16 +68,16 @@ export default function ShowWaiterTables() {
     const queryClient = useQueryClient()
 
     const tables = data?.filter((t) => {
-          const orders = t._orders ?? []
+        const orders = t._orders ?? [] 
+
+        if ( t._state === "Ocupada"){
+            if (orders.length === 0) return true
+          
+            if ((orders.at(-1)?.idMozo === user?.idUsuario) || (orders.at(-1)?.estado === "Pagado")) return true
+        }
     
-          if ( t._state === "Ocupada"){
-              if (orders.length === 0) return true
-            
-              if ((orders.at(-1)?.idMozo === user?.idUsuario) || (orders.at(-1)?.estado === "Pagado")) return true
-          }
-        
-          return false
-        })?.sort((a, b) => a._tableNum - b._tableNum)
+        return false
+    })?.sort((a, b) => a._tableNum - b._tableNum)
 
     const handleToggleModal = useCallback(() => {
         setOpen(!open)
@@ -116,6 +116,10 @@ export default function ShowWaiterTables() {
         setCurrentTable(table)
     }, [setOpen, open]);
     
+    const handleRefreshPage = () => {
+        window.location.reload()
+    }
+
     return (
         <>
             {
@@ -126,9 +130,19 @@ export default function ShowWaiterTables() {
                                 { open && <div className='absolute w-full h-full bg-black opacity-50 inset-0' onClick={handleToggleModal}></div>}
                                 { currentTable && <ModalShowTable onClose={handleToggleModal} open={open} currentTable={currentTable}/>}
                                 <header className="mb-6 flex flex-col w-full">
-                                    <div className='self-center justify-self-center'>
-                                        <h1 className="text-4xl font-bold text-center text-gray-700">Mesas ocupadas del restaurante</h1>
-                                        <p className="text-center text-gray-500 mt-1">Haz click en una mesa para visualizar su información.</p>
+                                    <div className="relative flex items-center justify-center mb-10 w-full">
+                                        <div className="text-center">
+                                            <h1 className="text-4xl font-extrabold text-slate-800 tracking-tight">Mesas ocupadas del restaurante</h1>
+                                            <p className="text-gray-500 mt-1">Haz click en una mesa para visualizar su información.</p>
+                                        </div>
+                                        <div className="absolute right-0 top-1/2 -translate-y-1/2 hidden md:block">
+                                            <button 
+                                                onClick={handleRefreshPage} 
+                                                className={`flex cursor-pointer items-center justify-center space-x-2 bg-white border border-gray-200 px-5 py-2.5 rounded-xl shadow-sm hover:bg-gray-50 hover:border-blue-300 hover:text-blue-600 transition-all text-gray-600 font-semibold text-sm group`}
+                                            >
+                                                <span>Recargar Mesas</span>
+                                            </button>
+                                        </div>
                                     </div>
                                     <div className="bg-gray-100 flex items-center justify-center p-4 font-sans">
                                       <div className="w-full max-w-md bg-white rounded-xl shadow-lg p-6">

@@ -11,7 +11,7 @@ export class JWTService {
     ) { }
 
     public generateAccessToken(payload: JwtPayloadInterface): string {
-        return jwt.sign(payload, this.accessTokenSecret, { expiresIn: "15m" });
+        return jwt.sign(payload, this.accessTokenSecret, { expiresIn: "6h" });
     }
 
     public verifyAccessToken(token: string): JwtPayloadInterface {
