@@ -34,7 +34,7 @@ interface ModalShowTableProps {
 export const ModalShowTable: FC<ModalShowTableProps> = ({ open, onClose, title, currentTable }) => {
   const navigate = useNavigate()
   const { mutate, isPending } = useTableMutation()
-  const isModify = currentTable._orders?.find((o) => ((o.idMozo) && ( o.estado !== "Completado" && o.estado !== "Pagado" && o.estado !== "Pendiente_De_Pago" && o.estado !== "Pendiente_De_Cobro")))
+  const isModify = currentTable._orders?.find((o) => ((o.idMozo) && ( o.estado !== "Pagado" && o.estado !== "Pendiente_De_Pago" && o.estado !== "Pendiente_De_Cobro")))
   const isRealease =  (currentTable._orders?.at(-1) === undefined) || (currentTable._orders?.at(-1)?.estado === "Pagado")
   const queryClient = useQueryClient()
 
@@ -61,6 +61,7 @@ export const ModalShowTable: FC<ModalShowTableProps> = ({ open, onClose, title, 
   };
 
   const handleGenerateCheck = async () => {
+    onClose()
     navigate(`/Mozo/Pedido/Cuenta/${currentTable._orders?.at(-1)?.idPedido}`)
   }
 
@@ -71,6 +72,7 @@ export const ModalShowTable: FC<ModalShowTableProps> = ({ open, onClose, title, 
   };
 
   const handleCreateOrder = () => {
+    onClose()
     localStorage.removeItem("modifyOrder")
     const url = !isModify ? `/Mozo/CargarPedido/${currentTable._tableNum}` : `/Mozo/ModificarPedido/${currentTable._tableNum}`
     if (isModify) localStorage.setItem("modifyOrder", JSON.stringify(isModify))

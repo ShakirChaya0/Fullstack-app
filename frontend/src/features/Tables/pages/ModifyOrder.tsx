@@ -23,6 +23,7 @@ export default function ModifyOrder() {
     const nroMesa = useParams()
     const isModifyByWaiter = useRef(false)
     const [existingOrder, setExistingOrder] = useState<PedidoBackend | null>(JSON.parse(localStorage.getItem("modifyOrder") ?? ""))
+    const originalOrderRef = useRef<PedidoBackend | null>(JSON.parse(localStorage.getItem("modifyOrder") ?? ""))
     const { sendEvent, onEvent, offEvent } = useWebSocket()
     const queryClient = useQueryClient()
 
@@ -39,25 +40,6 @@ export default function ModifyOrder() {
                 updatedPreviousOrder.estado = data.estado
                 updatedPreviousOrder.observaciones = data.observaciones
     
-                const lineasAModificar = getConsolidatedLinesToModify(consolidatedOrderLines);
-                if (lineasAModificar.length > 0) {
-                    sendEvent("modifyOrder", {
-                        orderId: existingOrder.idPedido,
-                        lineNumbers: lineasAModificar.map(lp => lp.nroLinea),
-                        data: {
-                            items: lineasAModificar.map(lp => ({ cantidad: lp.cantidad }))
-                        }
-                    });
-                }
-
-                const lineasAEliminar = getLinesToDelete(data.lineasPedido, consolidatedOrderLines);
-                lineasAEliminar.forEach(nroLinea => {
-                    sendEvent("deleteOrderLine", {
-                        orderId: existingOrder.idPedido,
-                        lineNumber: nroLinea
-                    });
-                });
-
                 setExistingOrder({
                     ...updatedPreviousOrder,
                     lineasPedido: updatedPreviousOrder.lineasPedido.map((lp) => {
@@ -99,11 +81,13 @@ export default function ModifyOrder() {
             localStorage.setItem("modifyOrder", JSON.stringify(data))
             setExistingOrder(data)
             toast.success("Se eliminó con éxito la línea de pedido")
+            navigate("/Mozo/Mesas/")
         })
         onEvent("addedOrderLine", (data) => {
             localStorage.setItem("modifyOrder", JSON.stringify(data))
             setExistingOrder(data)
             toast.success("Se agregó con éxito la nueva línea de pedido")
+            navigate("/Mozo/Mesas/")
         })
         return () => {
             offEvent("updatedOrderLineStatus", async (data) => {
@@ -128,77 +112,68 @@ export default function ModifyOrder() {
                 localStorage.setItem("modifyOrder", JSON.stringify(data))
                 setExistingOrder(data)
                 toast.success("Se eliminó con éxito la línea de pedido")
+                navigate("/Mozo/Mesas/")
             })
             offEvent("addedOrderLine", (data) => {
                 localStorage.setItem("modifyOrder", JSON.stringify(data))
                 setExistingOrder(data)
                 toast.success("Se agregó con éxito la nueva línea de pedido")
+                navigate("/Mozo/Mesas/")    
             })
         }
 
     }, [])
 
     const handleAddProduct = (): void => {
-        isModifyByWaiter.current = true
-        if (selectedProduct && quantity > 0) {
-            const existingItemIndex = existingOrder?.lineasPedido.findIndex((lp) => (lp.nombreProducto === selectedProduct._name) && lp.estado === "Pendiente") ?? 0
-            let orderLines;
-            const product = products?.find((p) => p._name === selectedProduct._name)
+        if (selectedProduct && quantity > 0 && existingOrder) {
+            const existingItemIndex = existingOrder.lineasPedido.findIndex((lp) => (lp.nombreProducto === selectedProduct._name) && lp.estado === "Pendiente");
+            
+            const updatedLineas = [...existingOrder.lineasPedido];
+            
             if (existingItemIndex > -1) {
-                const cantidad = existingOrder?.lineasPedido[existingItemIndex].cantidad ? existingOrder.lineasPedido[existingItemIndex].cantidad += 1 : 1
-                orderLines = [
-                    {
-                        nombre: selectedProduct._name, 
-                        monto: selectedProduct._price, 
-                        cantidad: cantidad,
-                        tipo: (product && "_type" in product) ? product._type : undefined
-                    }
-                ]
+                // Incrementar cantidad del item existente
+                updatedLineas[existingItemIndex].cantidad += quantity;
             } else {
-                orderLines = [
-                    {
-                        nombre: selectedProduct._name, 
-                        monto: selectedProduct._price, 
-                        cantidad: quantity,
-                        tipo: (product && "_type" in product) ? product._type : undefined 
-                    }
-                ]
+                // Agregar nueva línea con nroLinea temporal (se asignará en backend)
+                const maxNroLinea = Math.max(...existingOrder.lineasPedido.map(lp => lp.nroLinea || 0), 0);
+                updatedLineas.push({
+                    nombreProducto: selectedProduct._name,
+                    cantidad: quantity,
+                    nroLinea: maxNroLinea + 1,
+                    tipo: (selectedProduct && "_type" in selectedProduct) ? selectedProduct._type : undefined,
+                    estado: "Pendiente"
+                });
             }
 
-            const isPrep = existingOrder?.lineasPedido.some((lp) => (lp.nombreProducto === selectedProduct._name) && (lp.estado === "Pendiente"))
-            const linea = existingOrder?.lineasPedido.find((lp) => (lp.nombreProducto === selectedProduct._name) && (lp.estado === "Pendiente"))
+            setExistingOrder({
+                ...existingOrder,
+                lineasPedido: updatedLineas
+            });
 
-            if (!isPrep) {
-                sendEvent("addOrderLine", {orderId: existingOrder?.idPedido, orderLines: orderLines})
-            }
-            else {
-                const order = {
-                    orderId: existingOrder?.idPedido,
-                    lineNumbers: [linea?.nroLinea],
-                    data: {
-                        cantidadCubiertos: existingOrder?.cantidadCubiertos,
-                        observacion: existingOrder?.observaciones,
-                        items: orderLines
-                    }
-                }
-                sendEvent("modifyOrder", order)
-            }
             setSelectedProduct(null);
             setQuantity(1);
         }
     };
 
-    const handleRemoveItem = (indexToRemove: number, nameProduct: string, lineNumber: number | undefined): void => {
-        isModifyByWaiter.current = true
-        const correspondingLine = existingOrder?.lineasPedido.filter(
+    const handleRemoveItem = (nameProduct: string, lineNumber: number | undefined): void => {
+        if (!existingOrder) return;
+        
+        const correspondingLine = existingOrder.lineasPedido.filter(
             (lp) => (lp.nombreProducto === nameProduct) && (lp.nroLinea === lineNumber)).find((lp) => lp.estado === "Pendiente");
-
-        if (!correspondingLine || correspondingLine.estado !== "Pendiente") {
+        console.log(existingOrder.lineasPedido, nameProduct)
+        if (correspondingLine?.estado !== "Pendiente") {
             toast.warning("No se puede eliminar esta línea porque ya está en preparación o fue entregada");
             return;
         }
 
-        sendEvent("deleteOrderLine", { orderId: existingOrder?.idPedido, lineNumber });
+        const updatedLineas = existingOrder.lineasPedido.filter(
+            (lp) => !(lp.nombreProducto === nameProduct && lp.nroLinea === lineNumber)
+        );
+
+        setExistingOrder({
+            ...existingOrder,
+            lineasPedido: updatedLineas
+        });
     };
 
     const calculateTotal = (): number => {
@@ -228,9 +203,45 @@ export default function ModifyOrder() {
             return;
         }
 
+        // Detectar líneas nuevas (que no estaban en la orden original)
+        const newLines = existingOrder!.lineasPedido.filter(currentLine =>
+            !originalOrderRef.current?.lineasPedido.some(originalLine =>
+                originalLine.nombreProducto === currentLine.nombreProducto &&
+                originalLine.nroLinea === currentLine.nroLinea
+            )
+        );
+
+        // Detectar líneas eliminadas (que estaban en la orden original pero ya no están)
+        const deletedLines = originalOrderRef.current?.lineasPedido.filter(originalLine =>
+            !existingOrder!.lineasPedido.some(currentLine =>
+                currentLine.nombreProducto === originalLine.nombreProducto &&
+                currentLine.nroLinea === originalLine.nroLinea
+            )
+        ) ?? [];
+
+        // 1. Agregar líneas nuevas
+        if (newLines.length > 0) {
+            const orderLines = newLines.map(line => ({
+                nombre: line.nombreProducto,
+                monto: products?.find((p) => p._name === line.nombreProducto)?._price ?? 1,
+                cantidad: line.cantidad,
+                tipo: line.tipo
+            }));
+            sendEvent("addOrderLine", { orderId: existingOrder?.idPedido, orderLines });
+        }
+
+        // 2. Eliminar líneas eliminadas
+        deletedLines.forEach(line => {
+            sendEvent("deleteOrderLine", {
+                orderId: existingOrder?.idPedido,
+                lineNumber: line.nroLinea
+            });
+        });
+
+        // 3. Modificar la orden (cambios de cantidad, comensales, observaciones)
         const lineasDePedido = existingOrder?.lineasPedido.map((lp) => {
             const precio = products?.find((p) => p._name === lp.nombreProducto)?._price ?? 1
-            return {producto: lp, cantidad: lp.cantidad, estado: "En_Preparacion", subtotal: lp.cantidad * precio}
+            return {producto: lp, cantidad: lp.cantidad, estado: "Pendiente", subtotal: lp.cantidad * precio}
         })
 
         const orderData = {
@@ -245,7 +256,7 @@ export default function ModifyOrder() {
             lineNumbers: orderData.nrolineasDePedido,
             data: {
                 cantidadCubiertos: orderData.comensales,
-                observacion: orderData.observaciones === existingOrder?.observaciones ? undefined : orderData.observaciones,
+                observacion: orderData.observaciones === originalOrderRef.current?.observaciones ? undefined : orderData.observaciones,
                 items: lineasDePedido
             }
         }
@@ -322,7 +333,7 @@ export default function ModifyOrder() {
                                                      <IconButton 
                                                      edge="end" 
                                                      aria-label="delete" 
-                                                     onClick={() => handleRemoveItem(index, item.nombreProducto, item.nroLinea)}
+                                                     onClick={() => handleRemoveItem(item.nombreProducto, item.nroLinea)}
                                                      disabled={!isPending}
                                                      >
                                                          <DeleteIcon color={isPending ? "error" : "disabled"}  />

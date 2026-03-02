@@ -6,30 +6,29 @@ import { CircularProgress } from '@mui/material';
 import { getTablesWithOrders } from '../services/getTablesWithOrders';
 import useAuth from '../../../shared/hooks/useAuth';
 import { useWebSocket } from '../../../shared/hooks/useWebSocket';
-import type { OrderStatus, WaiterOrder } from '../../Order/interfaces/Order';
+import type { OrderStatus } from '../../Order/interfaces/Order';
 import { useWaitersTables } from '../hooks/useWaitersTable';
 import { useQueryClient } from '@tanstack/react-query';
 
 interface TableProps {
     tableData: ITable;
     onClick: (table: ITable) => void;
-    orders: WaiterOrder[]
 }
 
 const tableState = {
         "Solicitado": "bg-blue-500", 
         "En_Preparacion": "bg-yellow-500",
         "Completado": "bg-emerald-500",       
-        "Pendiente_De_Pago": "bg-orange-500",
-        "Pendiente_De_Cobro": "bg-amber-600", 
+        "Pendiente_De_Pago": "bg-orange-400",
+        "Pendiente_De_Cobro": "bg-amber-700", 
         "Pagado": "bg-green-600",   
         "Sin_pedido_activo": "bg-red-600"         
 };
 
-function Table({ tableData, onClick, orders }: TableProps) {
-    const { _tableNum, _capacity } = tableData;
+function Table({ tableData, onClick }: TableProps) {
+    const { _tableNum, _capacity, _orders } = tableData;
 
-    const isAssigned = orders.find((o) => o.nroMesa === _tableNum && o.estado !== "Pagado")
+    const isAssigned = _orders?.find((o) => o.estado !== "Pagado") ?? null
 
     const handleClick = (e: React.MouseEvent) => {
         e.stopPropagation();
@@ -62,7 +61,6 @@ export default function ShowWaiterTables() {
     const { data, isLoading, isError} = useWaitersTables(getTablesWithOrders)
     const [open, setOpen] = useState(false)
     const [currentTable, setCurrentTable] = useState<ITable | null>(null)
-    const [orders, setOrders] = useState<WaiterOrder[] | null>(null)
     const { onEvent, offEvent } = useWebSocket()
     const { user } = useAuth()
     const queryClient = useQueryClient()
@@ -79,37 +77,39 @@ export default function ShowWaiterTables() {
         return false
     })?.sort((a, b) => a._tableNum - b._tableNum)
 
+    // Actualizar currentTable cuando los datos se refrescan
+    useEffect(() => {
+        if (currentTable && data) {
+            const updatedTable = data.find(t => t._tableNum === currentTable._tableNum)
+            if (updatedTable) {
+                setCurrentTable(updatedTable)
+            }
+        }
+    }, [data, currentTable?._tableNum])
+
     const handleToggleModal = useCallback(() => {
         setOpen(!open)
     }, [setOpen, open])
 
+    const handleNewOrder = useCallback(async () => {
+        console.log("🔄 Invalidating waitersTable query...")
+        await queryClient.invalidateQueries({queryKey: ["waitersTable"]})
+        console.log("✅ Query invalidated, tables should re-render")
+    }, [queryClient])
+
     useEffect(() => {
         localStorage.removeItem("modifyOrder")
 
-        const handleNewOrder = async () => {
-            await queryClient.invalidateQueries({queryKey: ["waitersTable"]})
-        } 
-
-        onEvent("waiterOrders", (data) => setOrders(data))
         onEvent("newOrder", handleNewOrder)
-        onEvent("updatedOrderLineStatus", async () => {
-            await queryClient.invalidateQueries({queryKey: ["waitersTable"]})
-        })
-        onEvent("orderPaymentEvent", async () => {
-            await queryClient.invalidateQueries({queryKey: ["waitersTable"]})
-        })
+        onEvent("updatedOrderLineStatus", handleNewOrder)
+        onEvent("orderPaymentEvent", handleNewOrder)
 
         return () => {
             offEvent("newOrder", handleNewOrder)
-            offEvent("waiterOrders", (data) => setOrders(data))
-            offEvent("updatedOrderLineStatus", async () => {
-                await queryClient.invalidateQueries({queryKey: ["waitersTable"]})
-            })
-            offEvent("orderPaymentEvent", async () => {
-                await queryClient.invalidateQueries({queryKey: ["waitersTable"]})
-            })
+            offEvent("updatedOrderLineStatus", handleNewOrder)
+            offEvent("orderPaymentEvent", handleNewOrder)
         }
-    }, [user?.idUsuario, queryClient])
+    }, [handleNewOrder, onEvent, offEvent])
 
     const handleSelectTable = useCallback((table: ITable) => {
         setOpen(!open)
@@ -169,7 +169,6 @@ export default function ShowWaiterTables() {
                                         key={table._tableNum}
                                         tableData={table}
                                         onClick={handleSelectTable}
-                                        orders={orders ?? []}
                                       />
                                     ))}
                                   </div>

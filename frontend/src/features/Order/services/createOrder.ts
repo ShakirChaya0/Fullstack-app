@@ -2,7 +2,7 @@ import type { Pedido, OrderWithTableId, OrderWithOutId } from "../interfaces/Ord
 
 export async function createOrder (
 apiCall: (url: string, options?: RequestInit) => Promise<Response>,    
-orderData: Pedido | OrderWithTableId | OrderWithOutId) {   
+orderData: Pedido | OrderWithTableId | OrderWithOutId) {  
     const tableNumber = "tableNumber" in orderData ? { tableNumber: orderData.tableNumber } : null 
     const bodyReq = {
         ...tableNumber,
@@ -27,6 +27,7 @@ orderData: Pedido | OrderWithTableId | OrderWithOutId) {
             })
         }
     }
+    console.log(bodyReq) 
 
     const response = await apiCall('pedidos', {
         method: 'POST',

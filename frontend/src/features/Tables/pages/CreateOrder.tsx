@@ -1,15 +1,16 @@
-import React, { useState, type FormEvent } from 'react';
+import React, { useEffect, useState, type FormEvent } from 'react';
 import { Autocomplete, TextField, Button, List, ListItem, ListItemText, IconButton, Card, CardContent, Typography, Grid, Box, Divider } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import { useProducts } from '../../Products/hooks/useProducts';
 import type { Bebida, Comida } from '../../Products/interfaces/products';
-import { useParams } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 import useSaveTableOrder from '../hooks/useSaveTableOrder';
 import type { LineaPedido } from '../../Order/interfaces/Order';
 import { toast } from 'react-toastify';
 import { formatCurrency } from '../../../shared/utils/formatCurrency';
+import { useQueryClient } from '@tanstack/react-query';
 
 
 type OrderItemComida = Comida & { quantity: number };
@@ -21,7 +22,9 @@ export default function CreateOrder() {
     const [quantity, setQuantity] = useState<number>(1);
     const [orderItems, setOrderItems] = useState<(OrderItemComida | OrderItemBebida)[]>([]);
     const nroMesa = useParams()
-    const { mutate, isPending, isError, failureReason } = useSaveTableOrder()
+    const { mutate, isPending, isError, failureReason, isSuccess } = useSaveTableOrder()
+    const navigate = useNavigate()
+    const queryClient = useQueryClient()
 
     const handleAddProduct = (): void => {
         if (selectedProduct && quantity > 0) {
@@ -79,6 +82,18 @@ export default function CreateOrder() {
 
         mutate({observaciones: orderData.observaciones, comensales: orderData.comensales, tableNumber: +nroMesa.nroMesa!, lineasPedido: orderData.lineasDePedido })
     };
+
+    useEffect(() => {
+
+        if(isSuccess) {
+            navigate("/Mozo/Mesas/");
+            (
+                async () => {
+                    await queryClient.invalidateQueries({queryKey: ["waitersTable"]})
+                }
+            )()
+        }
+    }, [isSuccess])
 
 
     return (
