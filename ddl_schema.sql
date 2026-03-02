@@ -1,3 +1,5 @@
+-- Esquema Autogenerado por pgAdmin
+
 --
 -- PostgreSQL database dump
 --
