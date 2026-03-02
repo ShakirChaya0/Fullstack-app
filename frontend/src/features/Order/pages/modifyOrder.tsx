@@ -45,6 +45,11 @@ export default function ModifyOrder() {
         handleRecoveryCurrentState,
     } = useOrderActions();
     const { onEvent, offEvent, sendEvent } = useWebSocket();
+
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, []);
+
     useEffect(() => {
         /*         const handleOrderUpdate = (data: OrderClientInfo) => {
             console.log('📨 Actualización recibida en modifyOrder:', data);
@@ -442,6 +447,22 @@ export default function ModifyOrder() {
             return;
         }
 
+        if (hayComensalesModificados || hayObservacionesModificadas) {
+            // Solo cambios en comensales u observaciones, sin cambios de productos
+            sendEvent("modifyOrder", {
+                orderId: order.idPedido,
+                lineNumbers: [],
+                data: {
+                    cantidadCubiertos: hayComensalesModificados
+                        ? newOrderData.comensales
+                        : undefined,
+                    observacion: hayObservacionesModificadas
+                        ? newOrderData.observaciones
+                        : undefined,
+                },
+            });
+        }
+
         // ✅ Procesar productos modificados con lógica de consolidación
         if (hayProductosModificados) {
             productosModificados.forEach((modifiedLp) => {
@@ -494,12 +515,8 @@ export default function ModifyOrder() {
                             orderId: order.idPedido,
                             lineNumbers: split.toModify,
                             data: {
-                                cantidadCubiertos: hayComensalesModificados
-                                    ? newOrderData.comensales
-                                    : undefined,
-                                observacion: hayObservacionesModificadas
-                                    ? newOrderData.observaciones
-                                    : undefined,
+                                cantidadCubiertos: undefined,
+                                observacion: undefined,
                                 items: [
                                     {
                                         cantidad: split.newQuantity,
@@ -520,12 +537,8 @@ export default function ModifyOrder() {
                         orderId: order.idPedido,
                         lineNumbers: lineNumbers,
                         data: {
-                            cantidadCubiertos: hayComensalesModificados
-                                ? newOrderData.comensales
-                                : undefined,
-                            observacion: hayObservacionesModificadas
-                                ? newOrderData.observaciones
-                                : undefined,
+                            cantidadCubiertos: undefined,
+                            observacion: undefined,
                             items: [
                                 {
                                     cantidad: modifiedLp.cantidad,
@@ -535,21 +548,8 @@ export default function ModifyOrder() {
                     });
                 }
             });
-        } else if (hayComensalesModificados || hayObservacionesModificadas) {
-            // Solo cambios en comensales u observaciones, sin cambios de productos
-            sendEvent("modifyOrder", {
-                orderId: order.idPedido,
-                lineNumbers: [],
-                data: {
-                    cantidadCubiertos: hayComensalesModificados
-                        ? newOrderData.comensales
-                        : undefined,
-                    observacion: hayObservacionesModificadas
-                        ? newOrderData.observaciones
-                        : undefined,
-                },
-            });
-        }
+        } 
+        
 
         toast.success("Todos los cambios hechos");
 

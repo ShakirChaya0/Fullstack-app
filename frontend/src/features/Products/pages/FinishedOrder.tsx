@@ -17,6 +17,10 @@ export default function FinishedOrder() {
     useOrderUpdateHandler(); // ← toda la lógica del WebSocket vive acá
 
     useEffect(() => {
+        window.scrollTo(0, 0);
+    }, []);
+
+    useEffect(() => {
         if (
             order.estado !== "Solicitado" &&
             order.estado !== "Completado" &&

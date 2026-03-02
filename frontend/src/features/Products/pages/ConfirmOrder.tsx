@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useEffect } from "react"
 import {
   Table,
   TableBody,
@@ -29,6 +29,10 @@ export default function ConfirmOrder() {
   const order = useAppSelector((state) => state.order)
   const { handleAddToCart, hanldeRemoveFromCart, handleConfirmOrder } = useOrderActions()
   const { saveOrderMutation } = useMutationOrderRegistration(order)
+
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, []);
 
   const handleAdd = (lp: LineaPedido) => {
     handleAddToCart(lp.producto)

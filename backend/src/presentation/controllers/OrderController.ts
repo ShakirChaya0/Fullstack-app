@@ -113,7 +113,9 @@ export class OrderController {
     public async updateOrder(orderId: number, lineNumbers: number[] | undefined, data: Partial<PartialOrderMinimal>) {
         if(isNaN(orderId)) throw new ValidationError("El número de Pedido debe ser válido");
 
-        if ((lineNumbers && !data.items) || (!lineNumbers && data.items)) 
+        const hasLineNumbers = lineNumbers && lineNumbers.length > 0;
+        const hasItems = data.items && data.items.length > 0;
+        if ((hasLineNumbers && !hasItems) || (!hasLineNumbers && hasItems)) 
             throw new ValidationError("Para modificar lineas, se requieren los números de las líneas y los items a modificar en conjunto");
     
         const validatedOrder = ValidateOrderPartialMinimal(data);

@@ -46,7 +46,7 @@ export class UpdateOrderUseCase {
 
         console.log('🔍 [UpdateOrderUseCase] Paso 4: Validando observación...');
         console.log('   - order.status:', order.status, ', data.observacion:', !!data.observacion);
-        if (order.status != "Solicitado" && data.observacion) {
+        if (order.status == "En_Preparacion" && data.observacion) {
             console.log('❌ [UpdateOrderUseCase] Error: No se puede modificar observación');
             throw new BusinessError(`No se puede modificar la observación. El pedido ya se encuentra en preparación`)
         }

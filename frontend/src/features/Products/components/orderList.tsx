@@ -63,8 +63,8 @@ export function OrderList() {
                 /* Mobile */
                 shadow-2xl border p-4 border-gray-300 rounded-t-2xl md:rounded-2xl
                  bg-white bottom-0 left-0 w-full 
-                fixed z-50 overflow-auto transition-all md:transition-transform duration-500
-                ${isOpen ? "h-9/12 z-50" : "h-[85px]"}
+                fixed z-50 transition-all md:transition-transform duration-500
+                ${isOpen ? "h-9/12 z-50 overflow-auto" : "h-[85px] overflow-hidden"}
 
                 /* Desktop */
                 md:fixed md:top-0 md:w-96 md:block md:left-12/12 md:h-full md:rounded-none
