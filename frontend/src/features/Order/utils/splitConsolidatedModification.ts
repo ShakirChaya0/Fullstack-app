@@ -42,13 +42,19 @@ export const splitConsolidatedModification = (
     const lineNumbersToDelete = lineNumbers.slice(-quantityDifference);
     const lineNumbersToKeep = lineNumbers.slice(0, -quantityDifference);
 
+    if (lineNumbersToKeep.length > 0) {
+        return {
+            toDelete: lineNumbersToDelete,
+            toModify: lineNumbersToKeep,
+            newQuantity: modified.cantidad,
+        };
+    }
+
+    // quantityDifference >= lineNumbers.length:
+    // conservar la ÚLTIMA línea (no borrarla), borrar todas las demás
     return {
-        toDelete: lineNumbersToDelete,
-        toModify:
-            lineNumbersToKeep.length > 0 ? lineNumbersToKeep : [lineNumbers[0]],
-        newQuantity:
-            lineNumbersToKeep.length > 0
-                ? modified.cantidad
-                : Math.max(1, modified.cantidad),
+        toDelete: lineNumbers.slice(0, -1),
+        toModify: [lineNumbers[lineNumbers.length - 1]],
+        newQuantity: modified.cantidad,
     };
 };

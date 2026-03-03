@@ -7,6 +7,7 @@ export default async function fetchQR (apiCall: (url: string, options?: RequestI
     } else {
         const data = await response.json();
         sessionStorage.setItem('qrToken', data.qrToken);
+        localStorage.removeItem('order');
         return true
     }
 }
