@@ -59,7 +59,7 @@ export class OrderRepository implements IOrderRepository {
         
         const now = new Date();
         const baTime = toZonedTime(now, this.TIMEZONE);
-        const timeAsDate = new Date(1970, 0, 1, baTime.getHours(), baTime.getMinutes(), baTime.getSeconds());
+        const timeAsDate = new Date(1970, 0, 1, baTime.getHours() + 3, baTime.getMinutes(), baTime.getSeconds());
         
         const createdOrder = await prisma.pedido.create({
             data: {
