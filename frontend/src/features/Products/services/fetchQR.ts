@@ -8,6 +8,7 @@ export default async function fetchQR (apiCall: (url: string, options?: RequestI
         const data = await response.json();
         sessionStorage.setItem('qrToken', data.qrToken);
         localStorage.removeItem('order');
+        window.location.reload();
         return true
     }
 }
