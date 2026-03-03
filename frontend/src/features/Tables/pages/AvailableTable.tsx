@@ -50,7 +50,6 @@ export default function AvailableTable() {
       // Llamada al backend
       await updateTable({ action: "updateState", _tableNum: tableNum, _state: "Ocupada" });
 
-      toast.success(`Mesa ${tableNum} ocupada correctamente`);
     } catch (err) {
       toast.error(`Error al ocupar la mesa ${tableNum}`);
       console.error(err);
@@ -68,6 +67,10 @@ export default function AvailableTable() {
     setCapacity('');
     setShowOnlyFree(false);
   };
+
+  const handleRefreshPage = () => {
+      window.location.reload()
+  }
 
  if (isLoading) {
     return (
@@ -150,7 +153,14 @@ export default function AvailableTable() {
               </div>
             </div>
 
-            <div className="col-span-1">
+            <div className="flex flex-row gap-6 col-span-1">
+              <button
+                onClick={handleRefreshPage}
+                className="cursor-pointer w-full bg-gray-200 text-gray-800 font-bold py-2 px-4 rounded-lg hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-opacity-50 transition-colors duration-300"
+              >
+                Refrescar Mesas
+              </button>
+
               <button
                 onClick={handleResetFilters}
                 className="cursor-pointer w-full bg-gray-200 text-gray-800 font-bold py-2 px-4 rounded-lg hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-opacity-50 transition-colors duration-300"

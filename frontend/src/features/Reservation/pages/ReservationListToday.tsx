@@ -54,7 +54,7 @@ export default function ReservationsView() {
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-800 leading-tight">¡Atención!</h2>
           </div>
           <p className="text-gray-600 mb-4">
-            No se econtrarón ningúna reserva para el dia de hoy.
+            No se encontró ninguna reserva para el dia de hoy
           </p>
           <button
             onClick={() => navigate("/Mozo")}

@@ -109,7 +109,7 @@ export const ModalShowTable: FC<ModalShowTableProps> = ({ open, onClose, title, 
               <h2 className="text-xl font-semibold text-gray-800">{title ?? `Mesa ${currentTable._tableNum}`}</h2>
               <button
                 onClick={onClose}
-                className="p-2 rounded-full text-gray-500 hover:bg-gray-100 hover:text-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all"
+                className="p-2 cursor-pointer rounded-full text-gray-500 hover:bg-gray-100 hover:text-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all"
                 aria-label="Cerrar modal"
               >
                 <CloseIcon className="w-6 h-6" />

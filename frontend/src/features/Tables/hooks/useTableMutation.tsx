@@ -55,21 +55,15 @@ export function useTableMutation() {
       await queryClient.invalidateQueries({ queryKey: ["tables"] });
       await queryClient.invalidateQueries({ queryKey: ["waitersTable"] });
 
-      const messages = {
-        create: "Mesa creada exitosamente",
-        updateCapacity: "Capacidad actualizada correctamente",
-        updateState: "Estado de mesa actualizado",
-        delete: "Mesa eliminada",
-      };
-
-      const types = {
-        create: toast.success,
-        updateCapacity: toast.info,
-        updateState: toast.info,
-        delete: toast.warn,
-      };
-
-      types[variables.action](messages[variables.action]);
+      if (variables.action === "create") {
+        toast.success("Mesa creada exitosamente");
+      }
+      else if (variables.action === "updateCapacity") {
+        toast.info("Capacidad actualizada correctamente");
+      }
+      else if (variables.action === "delete") {
+        toast.info("Mesa eliminada");
+      }
     },
 
     onError: (error) => {

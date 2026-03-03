@@ -134,9 +134,9 @@ export default function ShowWaiterTables() {
                                         <div className="mt-4 lg:mt-0 lg:absolute lg:right-0">
                                             <button 
                                                 onClick={handleRefreshPage} 
-                                                className="flex cursor-pointer items-center justify-center space-x-2 bg-white border border-gray-200 px-5 py-2.5 rounded-xl shadow-sm hover:bg-gray-50 hover:border-blue-300 hover:text-blue-600 transition-all text-gray-600 font-semibold text-sm group"
+                                                className="cursor-pointer w-full border-2 border-gray-700 bg-white text-gray-800 font-bold py-2 px-4 rounded-lg hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-opacity-50 transition-colors duration-300"
                                             >
-                                                <span>Recargar Mesas</span>
+                                                <span>Refrescar Pedidos</span>
                                             </button>
                                         </div>
                                     </div>
