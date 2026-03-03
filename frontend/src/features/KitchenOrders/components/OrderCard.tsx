@@ -12,9 +12,14 @@ export default function OrderCard({ order, onSelect }: OrderCardProps) {
 
     useEffect(() => {
         const calculateTime = () => {
-            const [hours, minutes] = order.horaInicio.split(":").map(Number);
-            const start = new Date();
-            start.setHours(hours, minutes, 0, 0);
+            const [hours, minutes, seconds = "0"] = order.horaInicio.split(":");
+            const startUTC = new Date();
+            startUTC.setUTCHours(
+                parseInt(hours),
+                parseInt(minutes),
+                parseInt(seconds),
+                0
+            );
 
             const now = new Date();
             let diffSeconds = Math.floor(
