@@ -9,7 +9,7 @@ import { OrderLine } from "../../../domain/entities/OrderLine.js";
 import { ProductoVO } from "../../../domain/value-objects/ProductVO.js";
 import { OrderLineSchema, OrderSchema, PartialOrderMinimal } from "../../../shared/validators/OrderZod.js";
 import { FoodType, OrderLineStatus, OrderStatus } from "../../../shared/types/SharedTypes.js";
-import { formatInTimeZone } from 'date-fns-tz';
+import { toZonedTime, formatInTimeZone } from 'date-fns-tz';
 
 type OrderWithAll = Prisma.PedidoGetPayload<{
     include: { Mesa: true, Linea_De_Pedido: true, Mozos: { include: { Usuarios: true }} }
@@ -61,7 +61,8 @@ export class OrderRepository implements IOrderRepository {
         const timeString = formatInTimeZone(now, this.TIMEZONE, 'HH:mm:ss');
         const [hours, minutes, seconds] = timeString.split(':').map(Number);
         
-        const timeAsDate = new Date(Date.UTC(1970, 0, 1, hours, minutes, seconds));
+        const dateInBuenosAires = new Date(1970, 0, 1, hours, minutes, seconds);
+        const timeAsDate = toZonedTime(dateInBuenosAires, this.TIMEZONE);
         
         const createdOrder = await prisma.pedido.create({
             data: {
