@@ -9,7 +9,7 @@ import { OrderLine } from "../../../domain/entities/OrderLine.js";
 import { ProductoVO } from "../../../domain/value-objects/ProductVO.js";
 import { OrderLineSchema, OrderSchema, PartialOrderMinimal } from "../../../shared/validators/OrderZod.js";
 import { FoodType, OrderLineStatus, OrderStatus } from "../../../shared/types/SharedTypes.js";
-import { toZonedTime, formatInTimeZone } from 'date-fns-tz';
+import { toZonedTime } from 'date-fns-tz';
 
 type OrderWithAll = Prisma.PedidoGetPayload<{
     include: { Mesa: true, Linea_De_Pedido: true, Mozos: { include: { Usuarios: true }} }
