@@ -9,9 +9,7 @@ import { useNavigate, useParams } from 'react-router';
 import { toast } from 'react-toastify';
 import { useWebSocket } from '../../../shared/hooks/useWebSocket';
 import type { PedidoBackend } from '../interfaces/OrderTable';
-import { getConsolidatedLinesToModify } from '../../Order/utils/getConsolidatedLinesToModify';
 import { consolidateOrderLines, rebuildOrderWithConsolidatedLines } from '../utils/joinUpdatedOrderLines';
-import { getLinesToDelete } from '../../Order/utils/getLinesToDelete';
 import { useQueryClient } from '@tanstack/react-query';
 import { formatCurrency } from '../../../shared/utils/formatCurrency';
 
@@ -80,13 +78,11 @@ export default function ModifyOrder() {
         onEvent("deletedOrderLine", (data) => {
             localStorage.setItem("modifyOrder", JSON.stringify(data))
             setExistingOrder(data)
-            toast.success("Se eliminó con éxito la línea de pedido")
             navigate("/Mozo/Mesas/")
         })
         onEvent("addedOrderLine", (data) => {
             localStorage.setItem("modifyOrder", JSON.stringify(data))
             setExistingOrder(data)
-            toast.success("Se agregó con éxito la nueva línea de pedido")
             navigate("/Mozo/Mesas/")
         })
         return () => {
@@ -111,13 +107,11 @@ export default function ModifyOrder() {
             offEvent("deletedOrderLine", (data) => {
                 localStorage.setItem("modifyOrder", JSON.stringify(data))
                 setExistingOrder(data)
-                toast.success("Se eliminó con éxito la línea de pedido")
                 navigate("/Mozo/Mesas/")
             })
             offEvent("addedOrderLine", (data) => {
                 localStorage.setItem("modifyOrder", JSON.stringify(data))
                 setExistingOrder(data)
-                toast.success("Se agregó con éxito la nueva línea de pedido")
                 navigate("/Mozo/Mesas/")    
             })
         }
@@ -219,6 +213,19 @@ export default function ModifyOrder() {
             )
         ) ?? [];
 
+        // Detectar líneas con cambios de cantidad
+        const modifiedLines = existingOrder!.lineasPedido.filter(currentLine => {
+            const originalLine = originalOrderRef.current?.lineasPedido.find(ol =>
+                ol.nombreProducto === currentLine.nombreProducto &&
+                ol.nroLinea === currentLine.nroLinea
+            );
+            return originalLine && originalLine.cantidad !== currentLine.cantidad;
+        });
+
+        // Detectar cambios en comensales y observaciones
+        const comensalesChanged = +data.comensales !== (originalOrderRef.current?.cantidadCubiertos ?? 0);
+        const observacionesChanged = (data.observacion as string) !== (originalOrderRef.current?.observaciones ?? "");
+
         // 1. Agregar líneas nuevas
         if (newLines.length > 0) {
             const orderLines = newLines.map(line => ({
@@ -238,29 +245,31 @@ export default function ModifyOrder() {
             });
         });
 
-        // 3. Modificar la orden (cambios de cantidad, comensales, observaciones)
-        const lineasDePedido = existingOrder?.lineasPedido.map((lp) => {
-            const precio = products?.find((p) => p._name === lp.nombreProducto)?._price ?? 1
-            return {producto: lp, cantidad: lp.cantidad, estado: "Pendiente", subtotal: lp.cantidad * precio}
-        })
+        // 3. Modificar la orden solo si hay cambios en cantidad, comensales u observaciones
+        if (modifiedLines.length > 0 || comensalesChanged || observacionesChanged) {
+            const lineasDePedido = existingOrder?.lineasPedido.map((lp) => {
+                const precio = products?.find((p) => p._name === lp.nombreProducto)?._price ?? 1
+                return {producto: lp, cantidad: lp.cantidad, estado: "Pendiente", subtotal: lp.cantidad * precio}
+            })
 
-        const orderData = {
-            comensales: +data.comensales,
-            observaciones: data.observacion as string,
-            lineasDePedido: lineasDePedido,
-            nrolineasDePedido: existingOrder?.lineasPedido.map((lp) => lp.nroLinea),
-        };
+            const orderData = {
+                comensales: +data.comensales,
+                observaciones: data.observacion as string,
+                lineasDePedido: lineasDePedido,
+                nrolineasDePedido: existingOrder?.lineasPedido.map((lp) => lp.nroLinea),
+            };
 
-        const order = {
-            orderId: existingOrder?.idPedido,
-            lineNumbers: orderData.nrolineasDePedido,
-            data: {
-                cantidadCubiertos: orderData.comensales,
-                observacion: orderData.observaciones === originalOrderRef.current?.observaciones ? undefined : orderData.observaciones,
-                items: lineasDePedido
+            const order = {
+                orderId: existingOrder?.idPedido,
+                lineNumbers: orderData.nrolineasDePedido,
+                data: {
+                    cantidadCubiertos: orderData.comensales,
+                    observacion: orderData.observaciones === originalOrderRef.current?.observaciones ? undefined : orderData.observaciones,
+                    items: lineasDePedido
+                }
             }
+            sendEvent("modifyOrder", order)
         }
-        sendEvent("modifyOrder", order)
     };
 
     return (

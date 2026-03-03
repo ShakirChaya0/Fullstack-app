@@ -92,14 +92,10 @@ export default function ShowWaiterTables() {
     }, [setOpen, open])
 
     const handleNewOrder = useCallback(async () => {
-        console.log("🔄 Invalidating waitersTable query...")
         await queryClient.invalidateQueries({queryKey: ["waitersTable"]})
-        console.log("✅ Query invalidated, tables should re-render")
     }, [queryClient])
 
     useEffect(() => {
-        localStorage.removeItem("modifyOrder")
-
         onEvent("newOrder", handleNewOrder)
         onEvent("updatedOrderLineStatus", handleNewOrder)
         onEvent("orderPaymentEvent", handleNewOrder)
@@ -130,15 +126,15 @@ export default function ShowWaiterTables() {
                                 { open && <div className='absolute w-full h-full bg-black opacity-50 inset-0' onClick={handleToggleModal}></div>}
                                 { currentTable && <ModalShowTable onClose={handleToggleModal} open={open} currentTable={currentTable}/>}
                                 <header className="mb-6 flex flex-col w-full">
-                                    <div className="relative flex items-center justify-center mb-10 w-full">
+                                    <div className="relative flex flex-col items-center justify-center mb-5 w-full lg:flex-row">
                                         <div className="text-center">
                                             <h1 className="text-4xl font-extrabold text-slate-800 tracking-tight">Mesas ocupadas del restaurante</h1>
                                             <p className="text-gray-500 mt-1">Haz click en una mesa para visualizar su información.</p>
                                         </div>
-                                        <div className="absolute right-0 top-1/2 -translate-y-1/2 hidden md:block">
+                                        <div className="mt-4 lg:mt-0 lg:absolute lg:right-0">
                                             <button 
                                                 onClick={handleRefreshPage} 
-                                                className={`flex cursor-pointer items-center justify-center space-x-2 bg-white border border-gray-200 px-5 py-2.5 rounded-xl shadow-sm hover:bg-gray-50 hover:border-blue-300 hover:text-blue-600 transition-all text-gray-600 font-semibold text-sm group`}
+                                                className="flex cursor-pointer items-center justify-center space-x-2 bg-white border border-gray-200 px-5 py-2.5 rounded-xl shadow-sm hover:bg-gray-50 hover:border-blue-300 hover:text-blue-600 transition-all text-gray-600 font-semibold text-sm group"
                                             >
                                                 <span>Recargar Mesas</span>
                                             </button>

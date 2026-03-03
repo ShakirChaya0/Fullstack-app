@@ -1,19 +1,11 @@
 import { useCallback, useState } from "react";
 import { Backdrop, Fade, Modal } from "@mui/material";
 import PaymentMethodSelector from "./PaymentMethodSelect";
-import { useLocation, useNavigate } from "react-router";
 
 export default function SelectMethodModal({currentTable}: {currentTable: number | undefined }) {
     const [isOpen, setIsOpen] = useState<boolean>(false);
-    const navigate = useNavigate()
-    const location = useLocation();
     const handleClose = useCallback(() =>{ 
-        if (location.pathname.includes("Cuenta")) {
-            navigate("/Mozo/Mesas")
-        }
-        else {
-            setIsOpen(false)
-        }
+        setIsOpen(false)
     }, []);
 
     return (

@@ -138,7 +138,9 @@ export const ModalShowTable: FC<ModalShowTableProps> = ({ open, onClose, title, 
                   </div>
                 </div>
                 <ModalQR tableNum={currentTable._tableNum}/>
-                <ModalFreeTable handleFreeTable={handleFreeTable}/>
+                {
+                  (isRealease && !isPending) && <ModalFreeTable handleFreeTable={handleFreeTable}/>
+                }
               </div>
                         
               <div className="mt-auto flex flex-col gap-3">
