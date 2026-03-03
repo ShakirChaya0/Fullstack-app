@@ -21,22 +21,16 @@ export class AddOrderLineUseCase {
             await this.orderRepository.changeState(order, "En_Preparacion")
         }
 
-        let aux = false;
 
-        for (const item of orderLines) {
-            const existItem = await this.productRepository.getByUniqueName(item.nombre)
-            if (!existItem) {
-                aux = true;
-                break; 
-            }
-        }
+        const results = await Promise.all(orderLines.map(item => this.productRepository.getByUniqueName(item.nombre)))
+        const aux = results.some(item => !item)
 
         if (aux) {
             throw new NotFoundError(`No se encontró uno de los productos`);
         }
 
         const newOrder = await this.orderRepository.addOrderLines(orderId, orderLines)
-
+        console.log("nueva order: ", newOrder.orderLines)
         return newOrder
     }
 }

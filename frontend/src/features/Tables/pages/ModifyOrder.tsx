@@ -7,7 +7,7 @@ import { useProducts } from '../../Products/hooks/useProducts';
 import type { Bebida, Comida } from '../../Products/interfaces/products';
 import { useNavigate, useParams } from 'react-router';
 import { toast } from 'react-toastify';
-import { useWebSocket } from '../../../shared/hooks/useWebSocket';
+import { useWebSocket, type OrderEmitEvent, type OrderOnEvent } from '../../../shared/hooks/useWebSocket';
 import type { PedidoBackend } from '../interfaces/OrderTable';
 import { consolidateOrderLines, rebuildOrderWithConsolidatedLines } from '../utils/joinUpdatedOrderLines';
 import { useQueryClient } from '@tanstack/react-query';
@@ -226,50 +226,72 @@ export default function ModifyOrder() {
         const comensalesChanged = +data.comensales !== (originalOrderRef.current?.cantidadCubiertos ?? 0);
         const observacionesChanged = (data.observacion as string) !== (originalOrderRef.current?.observaciones ?? "");
 
-        // 1. Agregar líneas nuevas
-        if (newLines.length > 0) {
-            const orderLines = newLines.map(line => ({
-                nombre: line.nombreProducto,
-                monto: products?.find((p) => p._name === line.nombreProducto)?._price ?? 1,
-                cantidad: line.cantidad,
-                tipo: line.tipo
-            }));
-            sendEvent("addOrderLine", { orderId: existingOrder?.idPedido, orderLines });
-        }
-
-        // 2. Eliminar líneas eliminadas
-        deletedLines.forEach(line => {
-            sendEvent("deleteOrderLine", {
-                orderId: existingOrder?.idPedido,
-                lineNumber: line.nroLinea
+        // Función auxiliar para enviar evento y esperar respuesta
+        const sendEventAndWait = (eventName: OrderEmitEvent, eventData: any, responseEventName: OrderOnEvent): Promise<void> => {
+            return new Promise((resolve) => {
+                const handler = () => {
+                    offEvent(responseEventName, handler);
+                    resolve();
+                };
+                onEvent(responseEventName, handler);
+                sendEvent(eventName, eventData);
             });
-        });
+        };
 
-        // 3. Modificar la orden solo si hay cambios en cantidad, comensales u observaciones
-        if (modifiedLines.length > 0 || comensalesChanged || observacionesChanged) {
-            const lineasDePedido = existingOrder?.lineasPedido.map((lp) => {
-                const precio = products?.find((p) => p._name === lp.nombreProducto)?._price ?? 1
-                return {producto: lp, cantidad: lp.cantidad, estado: "Pendiente", subtotal: lp.cantidad * precio}
-            })
+        (async () => {
+            if (newLines.length > 0) {
+                const orderLines = newLines.map(line => ({
+                    nombre: line.nombreProducto,
+                    monto: products?.find((p) => p._name === line.nombreProducto)?._price ?? 1,
+                    cantidad: line.cantidad,
+                    tipo: line.tipo
+                }));
+                await sendEventAndWait(
+                    "addOrderLine",
+                    { orderId: existingOrder?.idPedido, orderLines },
+                    "addedOrderLine"
+                );
+            }
 
-            const orderData = {
-                comensales: +data.comensales,
-                observaciones: data.observacion as string,
-                lineasDePedido: lineasDePedido,
-                nrolineasDePedido: existingOrder?.lineasPedido.map((lp) => lp.nroLinea),
-            };
-
-            const order = {
-                orderId: existingOrder?.idPedido,
-                lineNumbers: orderData.nrolineasDePedido,
-                data: {
-                    cantidadCubiertos: orderData.comensales,
-                    observacion: orderData.observaciones === originalOrderRef.current?.observaciones ? undefined : orderData.observaciones,
-                    items: lineasDePedido
+            if (deletedLines.length > 0) {
+                for (const line of deletedLines) {
+                    await sendEventAndWait(
+                        "deleteOrderLine",
+                        {
+                            orderId: existingOrder?.idPedido,
+                            lineNumber: line.nroLinea
+                        },
+                        "deletedOrderLine"
+                    );
                 }
             }
-            sendEvent("modifyOrder", order)
-        }
+
+            // 3. Modificar la orden solo si hay cambios en cantidad, comensales u observaciones
+            if (modifiedLines.length > 0 || comensalesChanged || observacionesChanged) {
+                const lineasDePedido = existingOrder?.lineasPedido.map((lp) => {
+                    const precio = products?.find((p) => p._name === lp.nombreProducto)?._price ?? 1
+                    return {producto: lp, cantidad: lp.cantidad, estado: "Pendiente", subtotal: lp.cantidad * precio}
+                })
+
+                const orderData = {
+                    comensales: +data.comensales,
+                    observaciones: data.observacion as string,
+                    lineasDePedido: lineasDePedido,
+                    nrolineasDePedido: existingOrder?.lineasPedido.map((lp) => lp.nroLinea),
+                };
+
+                const order = {
+                    orderId: existingOrder?.idPedido,
+                    lineNumbers: orderData.nrolineasDePedido,
+                    data: {
+                        cantidadCubiertos: orderData.comensales,
+                        observacion: orderData.observaciones === originalOrderRef.current?.observaciones ? undefined : orderData.observaciones,
+                        items: lineasDePedido
+                    }
+                }
+                sendEvent("modifyOrder", order)
+            }
+        })();
     };
 
     return (

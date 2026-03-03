@@ -2,8 +2,8 @@ import { useEffect, useRef, useState } from "react";
 import { io, Socket } from "socket.io-client";
 import useAuth from "./useAuth";
 
-type OrderOnEvent = "activeOrders" | "waiterOrders" | "newOrder" | "updatedOrderStatus" | "updatedOrderLineStatus" | "addedOrderLine" | "modifiedOrderLine" | "deletedOrderLine" | "orderPaymentEvent" | "errorEvent"
-type OrderEmitEvent = "updateLineStatus" | "addOrderLine" | "modifyOrder" | "deleteOrderLine";
+export type OrderOnEvent = "activeOrders" | "waiterOrders" | "newOrder" | "updatedOrderStatus" | "updatedOrderLineStatus" | "addedOrderLine" | "modifiedOrderLine" | "deletedOrderLine" | "orderPaymentEvent" | "errorEvent"
+export type OrderEmitEvent = "updateLineStatus" | "addOrderLine" | "modifyOrder" | "deleteOrderLine";
 
 type WebSocketHook = {
     connected: boolean;
