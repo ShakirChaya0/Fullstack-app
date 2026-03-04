@@ -22,7 +22,11 @@ El sistema contempla distintos roles de usuario y automatiza procesos clave, opt
 **Tipo:** Proyecto fullstack con carpetas separadas `frontend/` y `backend/`.
 
 **Frontend:** React + TypeScript, React Query, Redux, React Router, MUI.  
-**Backend:** TypeScript (Node), arquitectura por capas / DDD.  
+**Backend:** TypeScript (Node), arquitectura por capas / DDD.
+
+[Enlace al sistema corriendo en deploy](https://sabores-deluxe-restaurante.vercel.app/login)
+
+[Enlace a carpeta Drive con videos demo del sistema](https://drive.google.com/drive/folders/156pQCt0N3GDBhqn1xxx9-utJ638zbD_f?usp=sharing)
 
 **Ejecución en Desarrollo:** Ejecutar backend y frontend en consolas separadas.
 

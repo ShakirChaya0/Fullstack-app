@@ -63,9 +63,6 @@ export class CUU02RegisterOrder {
         
         const createdOrder = await this.orderRepository.create(order, !qrtoken ? userId! : qrTokenData!.idMozo, !qrtoken ? tableNumberIsWaiter! : qrTokenData!.nroMesa)
         
-        console.log("💀💀💀💀💀💀 createdOrder.table --> " + createdOrder.table);
-        console.log("💀💀💀💀💀💀 createdOrder.table.tableNum --> " + createdOrder.table!.tableNum);
-
         await this.qrTokenRepository.revoke(createdOrder.table!.tableNum); 
 
         return createdOrder
