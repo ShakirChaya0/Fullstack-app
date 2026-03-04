@@ -9,15 +9,12 @@ import { OrderLine } from "../../../domain/entities/OrderLine.js";
 import { ProductoVO } from "../../../domain/value-objects/ProductVO.js";
 import { OrderLineSchema, OrderSchema, PartialOrderMinimal } from "../../../shared/validators/OrderZod.js";
 import { FoodType, OrderLineStatus, OrderStatus } from "../../../shared/types/SharedTypes.js";
-import { toZonedTime } from 'date-fns-tz';
 
 type OrderWithAll = Prisma.PedidoGetPayload<{
-    include: { Mesa: true, Linea_De_Pedido: true, Mozos: { include: { Usuarios: true }} }
+    include: { Mesa: true, Linea_De_Pedido: true, Mozos: { include: { Usuarios: true } } }
 }>;
 
 export class OrderRepository implements IOrderRepository {
-
-    private readonly TIMEZONE = 'America/Argentina/Buenos_Aires';
 
     public async getActiveOrders(): Promise<Order[]> {
         const orders = await prisma.pedido.findMany({
@@ -29,8 +26,8 @@ export class OrderRepository implements IOrderRepository {
             include: {
                 Mesa: true,
                 Linea_De_Pedido: true,
-                Mozos: { 
-                    include: { Usuarios: true } 
+                Mozos: {
+                    include: { Usuarios: true }
                 }
             }
         });
@@ -46,8 +43,8 @@ export class OrderRepository implements IOrderRepository {
             include: {
                 Mesa: true,
                 Linea_De_Pedido: true,
-                Mozos: { 
-                    include: { Usuarios: true } 
+                Mozos: {
+                    include: { Usuarios: true }
                 }
             }
         });
@@ -55,12 +52,10 @@ export class OrderRepository implements IOrderRepository {
         return orders.map(or => { return this.toDomainEntity(or) })
     }
 
-    public async create(order: OrderSchema, waiterId: string, tableNumber: number): Promise<Order>{
-        
-        const now = new Date();
-        const baTime = toZonedTime(now, this.TIMEZONE);
-        const timeAsDate = new Date(1970, 0, 1, baTime.getHours() + 3, baTime.getMinutes(), baTime.getSeconds());
-        
+    public async create(order: OrderSchema, waiterId: string, tableNumber: number): Promise<Order> {
+
+        const timeAsDate = new Date(Date.UTC(1970, 0, 1, (new Date).getHours() - 3, (new Date).getMinutes(), 0));
+
         const createdOrder = await prisma.pedido.create({
             data: {
                 horaInicio: timeAsDate,
@@ -70,36 +65,36 @@ export class OrderRepository implements IOrderRepository {
                 nroMesa: tableNumber,
                 idMozo: waiterId,
                 Linea_De_Pedido: {
-                create: order.items.map((linea, index) => ({
-                    nroLinea: index + 1,
-                    nombreProducto: linea.nombre,
-                    monto: linea.monto,
-                    estado: 'Pendiente',
-                    cantidad: linea.cantidad,
-                    tipoComida: linea.tipo || null
-                }))
+                    create: order.items.map((linea, index) => ({
+                        nroLinea: index + 1,
+                        nombreProducto: linea.nombre,
+                        monto: linea.monto,
+                        estado: 'Pendiente',
+                        cantidad: linea.cantidad,
+                        tipoComida: linea.tipo || null
+                    }))
                 }
             },
             include: {
                 Mesa: true,
                 Linea_De_Pedido: true,
-                Mozos: { 
-                    include: { Usuarios: true } 
+                Mozos: {
+                    include: { Usuarios: true }
                 }
             }
         });
 
         return this.toDomainEntity(createdOrder)
     }
-    
+
     public async getOne(id: number): Promise<Order | null> {
         const order = await prisma.pedido.findUnique({
             where: { idPedido: id },
             include: {
                 Mesa: true,
                 Linea_De_Pedido: true,
-                Mozos: { 
-                    include: { Usuarios: true } 
+                Mozos: {
+                    include: { Usuarios: true }
                 }
             }
         });
@@ -137,19 +132,19 @@ export class OrderRepository implements IOrderRepository {
                                 nroLinea: lineNumber
                             }
                         },
-                        data: { estado: status}
+                        data: { estado: status }
                     }
                 }
             },
             include: {
                 Mesa: true,
                 Linea_De_Pedido: true,
-                Mozos: { 
-                    include: { Usuarios: true } 
+                Mozos: {
+                    include: { Usuarios: true }
                 }
             }
         })
-        
+
         return this.toDomainEntity(updatedOrder)
     }
 
@@ -158,7 +153,7 @@ export class OrderRepository implements IOrderRepository {
             where: { idPedido: orderId },
             data: {
                 Linea_De_Pedido: {
-                    create: orderLines.map( linea => ({
+                    create: orderLines.map(linea => ({
                         nroLinea: 0, //El trigger en BD pondrá el valor correspondiente
                         nombreProducto: linea.nombre,
                         monto: linea.monto,
@@ -171,8 +166,8 @@ export class OrderRepository implements IOrderRepository {
             include: {
                 Mesa: true,
                 Linea_De_Pedido: true,
-                Mozos: { 
-                    include: { Usuarios: true } 
+                Mozos: {
+                    include: { Usuarios: true }
                 }
             }
         })
@@ -196,7 +191,7 @@ export class OrderRepository implements IOrderRepository {
                         },
                         data: {
                             cantidad: itemsToProcess ? itemsToProcess[index].cantidad : undefined,
-                        } 
+                        }
                     }))
                 }
             },
@@ -227,8 +222,8 @@ export class OrderRepository implements IOrderRepository {
             include: {
                 Mesa: true,
                 Linea_De_Pedido: true,
-                Mozos: { 
-                    include: { Usuarios: true } 
+                Mozos: {
+                    include: { Usuarios: true }
                 }
             }
         })
@@ -239,18 +234,18 @@ export class OrderRepository implements IOrderRepository {
     private toDomainEntity(order: OrderWithAll): Order {
         const table = order.Mesa ? new Table(order.Mesa.nroMesa, order.Mesa.capacidad, order.Mesa.estado) : undefined;
         const waiter = order.Mozos ? new Waiter(
-                    order.Mozos.Usuarios.idUsuario as UUID,
-                    order.Mozos.Usuarios.nombreUsuario,
-                    order.Mozos.Usuarios.email,
-                    order.Mozos.Usuarios.contrasenia,
-                    order.Mozos.Usuarios.tipoUsuario,
-                    order.Mozos.nombre,
-                    order.Mozos.apellido,
-                    order.Mozos.dni,
-                    order.Mozos.telefono
-                )
-                : undefined;
-        
+            order.Mozos.Usuarios.idUsuario as UUID,
+            order.Mozos.Usuarios.nombreUsuario,
+            order.Mozos.Usuarios.email,
+            order.Mozos.Usuarios.contrasenia,
+            order.Mozos.Usuarios.tipoUsuario,
+            order.Mozos.nombre,
+            order.Mozos.apellido,
+            order.Mozos.dni,
+            order.Mozos.telefono
+        )
+            : undefined;
+
         const publicWaiter = waiter?.toPublicInfo();
 
         const orderLines = order.Linea_De_Pedido.map((ol) => {
@@ -266,7 +261,7 @@ export class OrderRepository implements IOrderRepository {
 
         return new Order(
             order.idPedido,
-            order.horaInicio.toISOString().slice(11,16),
+            order.horaInicio.toISOString().slice(11, 16),
             order.estado as OrderStatus,
             order.cantCubiertos,
             order.observaciones,
