@@ -32,7 +32,7 @@ export class QRTokenRepository implements IQRTokenRepository {
     }
 
     public async revoke(nroMesa: number): Promise<void> {
-        await prisma.qRToken.update({
+        await prisma.qRToken.updateMany({
             where: { nroMesa: nroMesa },
             data: { revocado: true }
         });

@@ -2,7 +2,6 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import type { ITable } from '../interfaces/ITable';
 import { ModalShowTable } from '../components/ModalShowTable';
-import { CircularProgress } from '@mui/material';
 import { getTablesWithOrders } from '../services/getTablesWithOrders';
 import useAuth from '../../../shared/hooks/useAuth';
 import { useWebSocket } from '../../../shared/hooks/useWebSocket';
@@ -16,13 +15,13 @@ interface TableProps {
 }
 
 const tableState = {
-        "Solicitado": "bg-blue-500", 
-        "En_Preparacion": "bg-yellow-500",
-        "Completado": "bg-emerald-500",       
-        "Pendiente_De_Pago": "bg-orange-400",
-        "Pendiente_De_Cobro": "bg-amber-700", 
-        "Pagado": "bg-green-600",   
-        "Sin_pedido_activo": "bg-red-600"         
+    "Solicitado": "bg-blue-500", 
+    "En_Preparacion": "bg-yellow-500",
+    "Completado": "bg-emerald-500",       
+    "Pendiente_De_Pago": "bg-orange-400",
+    "Pendiente_De_Cobro": "bg-amber-700", 
+    "Pagado": "bg-green-600",   
+    "Sin_pedido_activo": "bg-red-600"         
 };
 
 function Table({ tableData, onClick }: TableProps) {
@@ -211,7 +210,14 @@ export default function ShowWaiterTables() {
                             </div>
                         </div>
                     )
-                ) : (<CircularProgress/>)
+                ) : (
+                    <div className="w-full bg-gray-100 min-h-screen font-sans flex items-center justify-center">
+                        <div className="bg-white rounded-lg p-8 shadow-md text-center">
+                            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-teal-700 mx-auto mb-4"></div>
+                            <p className="text-gray-600">Cargando datos de las mesas...</p>
+                        </div>
+                    </div>
+                )
             }
         </>
     );

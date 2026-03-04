@@ -81,6 +81,7 @@ export const ModalShowTable: FC<ModalShowTableProps> = ({ open, onClose, title, 
 
   const handleFreeTable = useCallback(() => {
     mutate({action: "updateState", _tableNum: currentTable._tableNum, _state: "Libre"})
+    onClose()
   }, [currentTable._tableNum])
 
   return (
