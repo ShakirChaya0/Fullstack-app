@@ -5,36 +5,22 @@ export class MailerService {
     private readonly transporter;
 
     constructor() {
-        if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
-            throw new Error("EMAIL_USER o EMAIL_PASS no están configuradas");
+        // Validar que las variables existan
+        if (!process.env.BREVO_SMTP_USER || !process.env.BREVO_SMTP_PASS) {
+            throw new Error("BREVO_SMTP_USER o BREVO_SMTP_PASS no están configuradas");
         }
 
         this.transporter = createTransport({
-            host: "smtp.gmail.com",
+            host: "smtp-relay.brevo.com",
             port: 587,
             secure: false,
             auth: {
-                user: process.env.EMAIL_USER,
-                pass: process.env.EMAIL_PASS,
+                user: process.env.BREVO_SMTP_USER,
+                pass: process.env.BREVO_SMTP_PASS,
             },
-            tls: {
-                rejectUnauthorized: true
-            },
-
-            connectionTimeout: 5000,
-            socketTimeout: 10000,
         });
 
-        this.verifyConnection();
-    }
-
-    private async verifyConnection() {
-        try {
-            await this.transporter.verify();
-            console.log("[MailerService] ✅ Conexión SMTP verificada correctamente");
-        } catch (error) {
-            console.error("[MailerService] ⚠️ Error verificando conexión SMTP:", error);
-        }
+        console.log("[MailerService] ✅ Inicializado con Brevo SMTP");
     }
 
     public async sendResetPasswordEmail(userEmail: string, token: string) {
@@ -42,15 +28,17 @@ export class MailerService {
         const mailBody = getResetPasswordTemplate(resetLink);
 
         try {
-            await this.transporter.sendMail({
-                from: `"Soporte Restaurante" <${process.env.EMAIL_USER}>`,
+            const info = await this.transporter.sendMail({
+                from: `"Soporte Restaurante" <noreply@saboresdeluxe.com>`,
                 to: userEmail,
                 subject: "Restablece tu contraseña",
                 html: mailBody,
             });
-            console.log("[MailerService] ✅ Reset email enviado a:", userEmail);
-        } catch (error) {
-            console.error("[MailerService] ❌ Error enviando reset email a", userEmail, ":", error);
+
+            console.log("[MailerService] ✅ Reset email enviado a:", userEmail, "| ID:", info.messageId);
+            return info;
+        } catch (error: any) {
+            console.error("[MailerService] ❌ Error enviando reset email a", userEmail, ":", error.message);
             throw error;
         }
     }
@@ -60,15 +48,17 @@ export class MailerService {
         const emailBody = getVerificationTemplate(verifyUrl);
 
         try {
-            await this.transporter.sendMail({
-                from: `"Soporte Restaurante" <${process.env.EMAIL_USER}>`,
+            const info = await this.transporter.sendMail({
+                from: `"Soporte Restaurante" <noreply@saboresdeluxe.com>`,
                 to: userEmail,
                 subject: "Verifica tu dirección de correo electrónico",
                 html: emailBody,
             });
-            console.log("[MailerService] ✅ Verification email enviado a:", userEmail);
-        } catch (error) {
-            console.error("[MailerService] ❌ Error enviando verification email a", userEmail, ":", error);
+
+            console.log("[MailerService] ✅ Verification email enviado a:", userEmail, "| ID:", info.messageId);
+            return info;
+        } catch (error: any) {
+            console.error("[MailerService] ❌ Error enviando verification email a", userEmail, ":", error.message);
             throw error;
         }
     }
