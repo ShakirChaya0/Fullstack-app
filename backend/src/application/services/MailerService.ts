@@ -5,7 +5,6 @@ export class MailerService {
     private readonly transporter;
 
     constructor() {
-        // Validar que las variables existan
         if (!process.env.BREVO_SMTP_USER || !process.env.BREVO_SMTP_PASS) {
             throw new Error("BREVO_SMTP_USER o BREVO_SMTP_PASS no están configuradas");
         }
@@ -29,7 +28,7 @@ export class MailerService {
 
         try {
             const info = await this.transporter.sendMail({
-                from: `"Soporte Restaurante" <noreply@saboresdeluxe.com>`,
+                from: `"Soporte Restaurante" <${process.env.BREVO_SMTP_USER}>`,
                 to: userEmail,
                 subject: "Restablece tu contraseña",
                 html: mailBody,
@@ -49,7 +48,7 @@ export class MailerService {
 
         try {
             const info = await this.transporter.sendMail({
-                from: `"Soporte Restaurante" <noreply@saboresdeluxe.com>`,
+                from: `"Soporte Restaurante" <${process.env.BREVO_SMTP_USER}>`,
                 to: userEmail,
                 subject: "Verifica tu dirección de correo electrónico",
                 html: emailBody,
