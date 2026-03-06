@@ -5,6 +5,10 @@ export class MailerService {
     private readonly transporter;
 
     constructor() {
+        if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+            throw new Error("EMAIL_USER o EMAIL_PASS no están configuradas");
+        }
+
         this.transporter = createTransport({
             host: "smtp.gmail.com",
             port: 587,
@@ -14,10 +18,23 @@ export class MailerService {
                 pass: process.env.EMAIL_PASS,
             },
             tls: {
-                ciphers: 'SSLv3',
-                rejectUnauthorized: false
-            }
+                rejectUnauthorized: true
+            },
+
+            connectionTimeout: 5000,
+            socketTimeout: 10000,
         });
+
+        this.verifyConnection();
+    }
+
+    private async verifyConnection() {
+        try {
+            await this.transporter.verify();
+            console.log("[MailerService] ✅ Conexión SMTP verificada correctamente");
+        } catch (error) {
+            console.error("[MailerService] ⚠️ Error verificando conexión SMTP:", error);
+        }
     }
 
     public async sendResetPasswordEmail(userEmail: string, token: string) {
@@ -31,8 +48,9 @@ export class MailerService {
                 subject: "Restablece tu contraseña",
                 html: mailBody,
             });
+            console.log("[MailerService] ✅ Reset email enviado a:", userEmail);
         } catch (error) {
-            console.error("[MailerService] Error enviando reset email:", error);
+            console.error("[MailerService] ❌ Error enviando reset email a", userEmail, ":", error);
             throw error;
         }
     }
@@ -48,8 +66,9 @@ export class MailerService {
                 subject: "Verifica tu dirección de correo electrónico",
                 html: emailBody,
             });
+            console.log("[MailerService] ✅ Verification email enviado a:", userEmail);
         } catch (error) {
-            console.error("[MailerService] Error enviando verification email:", error);
+            console.error("[MailerService] ❌ Error enviando verification email a", userEmail, ":", error);
             throw error;
         }
     }
