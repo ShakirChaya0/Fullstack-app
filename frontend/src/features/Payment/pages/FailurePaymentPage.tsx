@@ -1,10 +1,15 @@
 import Lottie from "lottie-react";
 import { useNavigate, useParams } from "react-router";
 import errorAnimation from "../assets/error_animation.json";
+import { useEffect } from "react";
 
 export default function FailurePaymentPage() {
     const idPedido = useParams()
     const navigate = useNavigate();
+
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, []);
 
     const handleClick = () => {
         navigate(`/Cliente/Pedido/Cuenta/${idPedido.idPedido}`, { replace: true })

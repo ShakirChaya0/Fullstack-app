@@ -7,6 +7,7 @@ import useApiClient from "../../../shared/hooks/useApiClient";
 import { useQuery } from "@tanstack/react-query";
 import WaitingForQR from "../components/WaitingForQR";
 import { useOrderUpdateHandler } from "../../Order/hooks/useOrderUpdateHandler";
+import { useEffect } from "react";
 
 export default function Menu(){
     const [searchParams, setSearchParams] = useSearchParams()
@@ -15,6 +16,10 @@ export default function Menu(){
     const mesa = searchParams?.get("mesa");
     const hasQrParams = (qrToken ? true : false) && (mesa ? true : false);
     useOrderUpdateHandler()
+
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, []);
 
     const { isLoading, isError } = useQuery({
         queryKey: ['qr'],

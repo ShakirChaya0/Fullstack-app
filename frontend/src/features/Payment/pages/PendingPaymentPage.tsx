@@ -18,6 +18,10 @@ export default function PendingPaymentPage() {
     }, []);
 
     useEffect(() => {
+        window.scrollTo(0, 0);
+    }, []);
+
+    useEffect(() => {
         onEvent("orderPaymentEvent", handleStatusChange);
 
         return () => {

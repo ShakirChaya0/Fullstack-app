@@ -12,6 +12,10 @@ export default function SuccessfulPaymentPage() {
     }
 
     useEffect(() => {
+        window.scrollTo(0, 0);
+    }, []);
+
+    useEffect(() => {
         localStorage.clear()
         sessionStorage.removeItem('qrToken')
     }, [])

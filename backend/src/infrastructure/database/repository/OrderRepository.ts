@@ -35,6 +35,26 @@ export class OrderRepository implements IOrderRepository {
         return orders.map(or => { return this.toDomainEntity(or) })
     }
 
+    public async getActiveOrderByTableNumber(tableNumber: number): Promise<Order | null> {
+        const order = await prisma.pedido.findFirst({
+            where: {
+                nroMesa: tableNumber,
+            },
+            orderBy: { idPedido: 'desc' },
+            include: {
+                Mesa: true,
+                Linea_De_Pedido: true,
+                Mozos: {
+                    include: { Usuarios: true }
+                }
+            }
+        });
+
+        if (!order) return null;
+
+        return this.toDomainEntity(order);
+    }
+
     public async getOrdersByWaiter(waiterId: string): Promise<Order[]> {
         const orders = await prisma.pedido.findMany({
             where: {

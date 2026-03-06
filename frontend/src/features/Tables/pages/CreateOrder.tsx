@@ -55,18 +55,19 @@ export default function CreateOrder() {
         e.preventDefault()
         const form = new FormData(e.currentTarget)
         const data = Object.fromEntries(form.entries())
-        if (+data.comensales < 0) {
-            toast.warning("Los comensales no están en un formato correcto")
+
+        if (+data.comensales <= 0 || +data.comensales > 50) {
+            toast.warning("Cantidad de comensales invalida");
             return
         }
 
-        if (+data.cantidad < 0) {
-            toast.warning("La cantidad no está en un formato correcto")
-            return
+        if (data.observacion.toString().length > 500) {
+            toast.error("La observación debe tener menos de 500 caracteres");
+            return;
         }
 
         if (orderItems.length === 0) {
-            toast.warning("Los comensales no están en un formato correcto")
+            toast.warning("No se puede registrar un pedido vacío")
             return;
         }
 
@@ -129,9 +130,9 @@ export default function CreateOrder() {
                                     type="number"
                                     name='cantidad'
                                     value={quantity}
-                                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => setQuantity(Math.max(1, parseInt(e.target.value, 10) || 1))}
+                                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => setQuantity(Math.min(20, Math.max(1, parseInt(e.target.value, 10) || 1)))}
                                     margin="normal"
-                                    InputProps={{ inputProps: { min: 1 } }}
+                                    InputProps={{ inputProps: { min: 1, max: 20 } }}
                                     required
                                     disabled={isPending}
                                 />
@@ -190,6 +191,7 @@ export default function CreateOrder() {
                                         margin="normal"
                                         name='comensales'
                                         disabled={isPending}
+                                        InputProps={{ inputProps: { min: 1, max: 50 } }}
                                     />
                                     <TextField
                                         fullWidth
@@ -200,6 +202,7 @@ export default function CreateOrder() {
                                         placeholder="Ej: sin sal, punto de cocción, etc."
                                         name='observacion'
                                         disabled={isPending}
+                                        inputProps={{ maxLength: 255 }}
                                     />
                                 </Box>
                                 <Button

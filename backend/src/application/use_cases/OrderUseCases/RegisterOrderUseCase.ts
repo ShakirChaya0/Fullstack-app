@@ -43,7 +43,7 @@ export class CUU02RegisterOrder {
             const table = await this.tableRepository.getByNumTable(tableNumberIsWaiter)
 
             if (!table) {
-                throw new NotFoundError(`No se encontro un la mesa con el numero de mesa: ${tableNumberIsWaiter}`);
+                throw new NotFoundError(`No se encontro la mesa con el numero: ${tableNumberIsWaiter}`);
             }
         }
         
@@ -59,6 +59,16 @@ export class CUU02RegisterOrder {
 
         if (aux) {
             throw new NotFoundError(`No se encontró uno de los productos`);
+        }
+
+        if (userType === 'Mozo') {
+            let orderAlreadyExists: Order | null 
+            orderAlreadyExists = await this.orderRepository.getActiveOrderByTableNumber(tableNumberIsWaiter!)
+    
+            if(orderAlreadyExists && orderAlreadyExists?.status !== 'Pagado') { // Las ordenes finalizadas deben estar en estado 'Pagado'
+                throw new BusinessError(`Ya existe una orden activa para la mesa ${tableNumberIsWaiter}`);
+            }
+
         }
         
         const createdOrder = await this.orderRepository.create(order, !qrtoken ? userId! : qrTokenData!.idMozo, !qrtoken ? tableNumberIsWaiter! : qrTokenData!.nroMesa)
