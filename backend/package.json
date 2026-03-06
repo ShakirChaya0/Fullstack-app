@@ -30,6 +30,7 @@
     "node-cron": "4.2.1",
     "nodemailer": "^7.0.6",
     "qrcode": "^1.5.4",
+    "resend": "^6.9.3",
     "resolve-pkg-maps": "^1.0.0",
     "socket.io": "4.8.1",
     "uuid": "^11.1.0",
