@@ -1,19 +1,23 @@
-import { Resend } from 'resend';
+import { createTransport } from "nodemailer";
 import { getResetPasswordTemplate, getVerificationTemplate } from "../../shared/constants/mailTemplates.js";
 
 export class MailerService {
-    private readonly resend: Resend;
-    private readonly fromEmail: string;
+    private readonly transporter;
 
     constructor() {
-        this.resend = new Resend(process.env.RESEND_API_KEY);
-        this.fromEmail = process.env.MAIL_FROM || "onboarding@resend.dev";
-
-        if (!process.env.RESEND_API_KEY) {
-            console.warn('[MailerService] RESEND_API_KEY is not set. Email sending will fail.');
-        } else {
-            console.info('[MailerService] Resend service initialized.');
-        }
+        this.transporter = createTransport({
+            host: "smtp.gmail.com",
+            port: 587,
+            secure: false,
+            auth: {
+                user: process.env.EMAIL_USER,
+                pass: process.env.EMAIL_PASS,
+            },
+            tls: {
+                ciphers: 'SSLv3',
+                rejectUnauthorized: false
+            }
+        });
     }
 
     public async sendResetPasswordEmail(userEmail: string, token: string) {
@@ -21,18 +25,15 @@ export class MailerService {
         const mailBody = getResetPasswordTemplate(resetLink);
 
         try {
-            const { data, error } = await this.resend.emails.send({
-                from: `Soporte Restaurante <${this.fromEmail}>`,
-                to: [userEmail],
+            await this.transporter.sendMail({
+                from: `"Soporte Restaurante" <${process.env.EMAIL_USER}>`,
+                to: userEmail,
                 subject: "Restablece tu contraseña",
                 html: mailBody,
             });
-
-            if (error) throw error;
-            return data;
-        } catch (err: any) {
-            console.error(`[MailerService] Failed to send reset password email to ${userEmail}:`, err?.message ?? err);
-            throw err;
+        } catch (error) {
+            console.error("[MailerService] Error enviando reset email:", error);
+            throw error;
         }
     }
 
@@ -41,18 +42,15 @@ export class MailerService {
         const emailBody = getVerificationTemplate(verifyUrl);
 
         try {
-            const { data, error } = await this.resend.emails.send({
-                from: `Soporte Restaurante <${this.fromEmail}>`,
-                to: [userEmail],
+            await this.transporter.sendMail({
+                from: `"Soporte Restaurante" <${process.env.EMAIL_USER}>`,
+                to: userEmail,
                 subject: "Verifica tu dirección de correo electrónico",
                 html: emailBody,
             });
-
-            if (error) throw error;
-            return data;
-        } catch (err: any) {
-            console.error(`[MailerService] Failed to send verification email to ${userEmail}:`, err?.message ?? err);
-            throw err;
+        } catch (error) {
+            console.error("[MailerService] Error enviando verification email:", error);
+            throw error;
         }
     }
 }
