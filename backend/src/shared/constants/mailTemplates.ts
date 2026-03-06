@@ -17,7 +17,7 @@ export const getResetPasswordTemplate = (resetLink: string): string => {
             <p style="font-size: 16px; line-height: 1.6; margin-top: 30px;">Gracias,<br>El equipo de Soporte Restaurante</p>
         </div>
         <div style="text-align: center; padding: 20px; font-size: 12px; color: #999999;">
-            <p>&copy; 2025 Nombre del Restaurante. Todos los derechos reservados.</p>
+            <p>&copy; 2025 Sabores Deluxe. Todos los derechos reservados.</p>
         </div>
     </div>
     `;
@@ -43,7 +43,7 @@ export const getVerificationTemplate = (verifyUrl: string): string => {
             <p style="font-size: 16px; line-height: 1.6; margin-top: 30px;">Gracias,<br>El equipo de Soporte Restaurante</p>
         </div>
         <div style="text-align: center; padding: 20px; font-size: 12px; color: #999999;">
-            <p>&copy; 2025 Nombre del Restaurante. Todos los derechos reservados.</p>
+            <p>&copy; 2025 Sabores Deluxe. Todos los derechos reservados.</p>
             <p>Has recibido este correo porque te has registrado en nuestro sitio web.</p>
         </div>
     </div>
