@@ -130,30 +130,45 @@ export class PaymentController {
 
     public async registerPayment(req: Request, res: Response, next: NextFunction) {
         try {
+            res.status(200).send('OK');
+
             const { id, topic } = req.query
-            let order;
             if (topic && topic == "payment") {
-                const payment = await new Payment(mercadoPagoClient).get({ id: Number(id) });
-
-                const {orderId, metodoPago} = JSON.parse(payment.external_reference!); 
-
-                order = await this.registerPaymentUseCase.execute(orderId, metodoPago, `${payment.id}`)
+                this.processPaymentWebhook(Number(id)).catch(err => {
+                    console.error('Error procesando webhook:', err);
+                });            
             }
-            else{
+            else {
                 const { idPedido, metodoPago } = req.query;
-                if (!idPedido || isNaN(+idPedido)) throw new ValidationError("El ID enviado debe ser un número");
-                if (metodoPago !== "MercadoPago" && metodoPago !== "Efectivo" && metodoPago !== "Debito" && metodoPago !== "Credito") 
-                    throw new ValidationError("Método de pago inválido");
-    
-                order = await this.registerPaymentUseCase.execute(+idPedido, metodoPago, null);
+
+                if (!idPedido || isNaN(+idPedido)) {
+                    console.error('El ID enviado debe ser un número:', idPedido);
+                    return;
+                } 
+
+                this.processManualPayment(+idPedido, metodoPago as string).catch(err => {
+                    console.error('Error procesando pago manual:', err);
+                });            
             }
-
-            await this.orderSocketService.emitOrderEvent("orderPaymentEvent", order);
-
-            res.status(204).send();
         }
         catch (err) {
-            next(err);
+            console.error('Error en registerPayment:', err);
         }
+    }
+
+    private async processPaymentWebhook(paymentId: number) {
+        const payment = await new Payment(mercadoPagoClient).get({ id: paymentId });
+        const { orderId, metodoPago } = JSON.parse(payment.external_reference!);
+        
+        const order = await this.registerPaymentUseCase.execute(orderId, metodoPago, `${payment.id}`);
+        await this.orderSocketService.emitOrderEvent("orderPaymentEvent", order);
+    }
+
+    private async processManualPayment(orderId: number, metodoPago: string) {
+        if (metodoPago !== "MercadoPago" && metodoPago !== "Efectivo" && metodoPago !== "Debito" && metodoPago !== "Credito") 
+            throw new ValidationError("Método de pago inválido");
+
+        const order = await this.registerPaymentUseCase.execute(orderId, metodoPago, null);
+        await this.orderSocketService.emitOrderEvent("orderPaymentEvent", order);
     }
 }

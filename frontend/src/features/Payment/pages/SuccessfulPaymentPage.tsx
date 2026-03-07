@@ -8,7 +8,7 @@ export default function SuccessfulPaymentPage() {
     const navigate = useNavigate();
     // handleRecoveyInitialState()
     const handleClick = () => {
-        navigate("/") // poner la ruta de la landing page cuando la implementemos
+        navigate("/login") // poner la ruta de la landing page cuando la implementemos
     }
 
     useEffect(() => {

@@ -24,10 +24,10 @@ type PreferenceType = {
     notification_url: string
 }
 
-export class MercadoPagoService{
-    public async createPreference (data: PreferenceType): Promise<PreferenceResponse> {
+export class MercadoPagoService {
+    public async createPreference(data: PreferenceType): Promise<PreferenceResponse> {
         const draft = new Preference(mercadoPagoClient)
-        const preference = await draft.create({ body: data});
+        const preference = await draft.create({ body: data });
         return preference;
     }
 }

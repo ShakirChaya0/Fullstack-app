@@ -20,8 +20,11 @@ export class PayWithMercadoPagoUseCase {
             throw new BusinessError('El pedido debe estar pendiente de pago para poder abonarse con Mercado Pago');
         }
 
-        const policy = await this.policyRepository.getPolicy()
+        const policy = await this.policyRepository.getPolicy();
         const iva = policy.porcentajeIVA;
+        const cutleryAmount = policy.montoCubiertosPorPersona;
+
+        const totalWithCutlery = order.calculateTotal(iva).total + order.calculateCutleryTotal(cutleryAmount);
 
         const draft = {
             items: [
@@ -29,7 +32,7 @@ export class PayWithMercadoPagoUseCase {
                     id: `${order.orderId}`,
                     title: `Pagar Pedido: ${order.orderId}`,
                     quantity: 1,
-                    unit_price: order.calculateTotal(iva).total + order.calculateCutleryTotal(policy.montoCubiertosPorPersona)
+                    unit_price: totalWithCutlery
                 }
             ],
             payment_methods: {
@@ -45,6 +48,9 @@ export class PayWithMercadoPagoUseCase {
             external_reference: JSON.stringify({orderId: order.orderId, metodoPago: "MercadoPago"}),
             notification_url: `${process.env.BACKEND_URL}/pagos/pagado`, 
         }
+
+        console.log('🔔🔔🔔🔔🔔🔔🔔🔔 Notification URL:', draft.notification_url);
+        console.log('🔙🔙🔙🔙🔙🔙🔙 Back URLs:', draft.back_urls);
 
         const preference = await this.mpService.createPreference(draft)
         
