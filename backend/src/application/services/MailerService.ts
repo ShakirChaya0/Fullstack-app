@@ -7,13 +7,14 @@ export class MailerService {
 
     constructor() {
         this.apiKey = process.env.BREVO_API_KEY!;
-        this.senderEmail = process.env.BREVO_SMTP_USER!;
+        // Usar un email REAL verificado, no el usuario SMTP
+        this.senderEmail = process.env.EMAIL_USER!;
 
         if (!this.apiKey || !this.senderEmail) {
-            throw new Error("BREVO_API_KEY o BREVO_SMTP_USER no están configuradas");
+            throw new Error("BREVO_API_KEY o EMAIL_FROM no están configuradas");
         }
 
-        console.log("[MailerService] ✅ Inicializado con Brevo API");
+        console.log("[MailerService] ✅ Inicializado con Brevo API | From:", this.senderEmail);
     }
 
     public async sendResetPasswordEmail(userEmail: string, token: string) {
@@ -43,7 +44,7 @@ export class MailerService {
             console.log("[MailerService] ✅ Reset email enviado a:", userEmail, "| ID:", response.data.messageId);
             return response.data;
         } catch (error: any) {
-            console.error("[MailerService] ❌ Error enviando reset email a", userEmail, ":", error.message);
+            console.error("[MailerService] ❌ Error enviando reset email a", userEmail, ":", error.response?.data || error.message);
             throw error;
         }
     }
@@ -75,7 +76,7 @@ export class MailerService {
             console.log("[MailerService] ✅ Verification email enviado a:", userEmail, "| ID:", response.data.messageId);
             return response.data;
         } catch (error: any) {
-            console.error("[MailerService] ❌ Error enviando verification email a", userEmail, ":", error.message);
+            console.error("[MailerService] ❌ Error enviando verification email a", userEmail, ":", error.response?.data || error.message);
             throw error;
         }
     }
