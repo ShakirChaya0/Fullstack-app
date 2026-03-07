@@ -1,25 +1,19 @@
-import { createTransport } from "nodemailer";
+import axios from 'axios';
 import { getResetPasswordTemplate, getVerificationTemplate } from "../../shared/constants/mailTemplates.js";
 
 export class MailerService {
-    private readonly transporter;
+    private apiKey: string;
+    private senderEmail: string;
 
     constructor() {
-        if (!process.env.BREVO_SMTP_USER || !process.env.BREVO_SMTP_PASS) {
-            throw new Error("BREVO_SMTP_USER o BREVO_SMTP_PASS no están configuradas");
+        this.apiKey = process.env.BREVO_API_KEY!;
+        this.senderEmail = process.env.BREVO_SMTP_USER!;
+
+        if (!this.apiKey || !this.senderEmail) {
+            throw new Error("BREVO_API_KEY o BREVO_SMTP_USER no están configuradas");
         }
 
-        this.transporter = createTransport({
-            host: "smtp-relay.brevo.com",
-            port: 587,
-            secure: false,
-            auth: {
-                user: process.env.BREVO_SMTP_USER,
-                pass: process.env.BREVO_SMTP_PASS,
-            },
-        });
-
-        console.log("[MailerService] ✅ Inicializado con Brevo SMTP");
+        console.log("[MailerService] ✅ Inicializado con Brevo API");
     }
 
     public async sendResetPasswordEmail(userEmail: string, token: string) {
@@ -27,15 +21,27 @@ export class MailerService {
         const mailBody = getResetPasswordTemplate(resetLink);
 
         try {
-            const info = await this.transporter.sendMail({
-                from: `"Soporte Restaurante" <${process.env.BREVO_SMTP_USER}>`,
-                to: userEmail,
-                subject: "Restablece tu contraseña",
-                html: mailBody,
-            });
+            const response = await axios.post(
+                'https://api.brevo.com/v3/smtp/email',
+                {
+                    to: [{ email: userEmail }],
+                    sender: {
+                        email: this.senderEmail,
+                        name: 'Soporte Restaurante'
+                    },
+                    subject: 'Restablece tu contraseña',
+                    htmlContent: mailBody,
+                },
+                {
+                    headers: {
+                        'api-key': this.apiKey,
+                        'Content-Type': 'application/json',
+                    }
+                }
+            );
 
-            console.log("[MailerService] ✅ Reset email enviado a:", userEmail, "| ID:", info.messageId);
-            return info;
+            console.log("[MailerService] ✅ Reset email enviado a:", userEmail, "| ID:", response.data.messageId);
+            return response.data;
         } catch (error: any) {
             console.error("[MailerService] ❌ Error enviando reset email a", userEmail, ":", error.message);
             throw error;
@@ -47,15 +53,27 @@ export class MailerService {
         const emailBody = getVerificationTemplate(verifyUrl);
 
         try {
-            const info = await this.transporter.sendMail({
-                from: `"Soporte Restaurante" <${process.env.BREVO_SMTP_USER}>`,
-                to: userEmail,
-                subject: "Verifica tu dirección de correo electrónico",
-                html: emailBody,
-            });
+            const response = await axios.post(
+                'https://api.brevo.com/v3/smtp/email',
+                {
+                    to: [{ email: userEmail }],
+                    sender: {
+                        email: this.senderEmail,
+                        name: 'Soporte Restaurante'
+                    },
+                    subject: 'Verifica tu dirección de correo electrónico',
+                    htmlContent: emailBody,
+                },
+                {
+                    headers: {
+                        'api-key': this.apiKey,
+                        'Content-Type': 'application/json',
+                    }
+                }
+            );
 
-            console.log("[MailerService] ✅ Verification email enviado a:", userEmail, "| ID:", info.messageId);
-            return info;
+            console.log("[MailerService] ✅ Verification email enviado a:", userEmail, "| ID:", response.data.messageId);
+            return response.data;
         } catch (error: any) {
             console.error("[MailerService] ❌ Error enviando verification email a", userEmail, ":", error.message);
             throw error;
