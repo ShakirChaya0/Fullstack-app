@@ -33,7 +33,6 @@ export default function ResetPasswordForm() {
         onError: (error) => {
             toast.error("No se pudo restablecer la contraseña.");
             setError((error as Error).message);
-            console.log(error);
         },
     });
 

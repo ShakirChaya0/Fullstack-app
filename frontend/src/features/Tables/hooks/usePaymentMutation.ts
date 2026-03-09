@@ -6,14 +6,14 @@ import type { PaymentMethod } from "../../Payment/types/PaymentSharedTypes";
 
 export function usePaymentMutation(idPedido: number) {
     const { apiCall } = useApiClient();
-    
+
     return useMutation({
-        mutationFn: (method: PaymentMethod) => payOrder(apiCall, idPedido, method), 
+        mutationFn: (method: PaymentMethod) => payOrder(apiCall, idPedido, method),
         onSuccess: () => {
             toast.success("Se cobró con éxito el pedido")
         },
         onError: (error) => {
-            console.log(error)
+            console.error(error)
             toast.error(`Error al seleccionar el método de pago: ${error.message}`);
         },
     });

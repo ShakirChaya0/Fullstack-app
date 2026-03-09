@@ -9,7 +9,7 @@ export function runReservationCheckJob() {
         try {
             await checkExpiredReservations.execute();
         } catch (error) {
-            console.log(error);
+            console.error(error);
         }
     });
 }

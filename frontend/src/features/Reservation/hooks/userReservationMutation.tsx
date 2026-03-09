@@ -63,7 +63,7 @@ export default function useReservationMutation({ handleError, onSuccess }: UseRe
     onError: (err) => {
       toast.error(err.message);
       handleError(err.message);
-      console.log(err);
+      console.error(err);
     },
   });
 }

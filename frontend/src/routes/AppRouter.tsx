@@ -17,10 +17,7 @@ const Login = lazy(() => import("../features/Login/pages/Login"));
 
 export default function AppRouter() {
     const { isAuthenticated, user, isLoading } = useAuth();
-
-    console.log("AppRouter - isAuthenticated:", isAuthenticated);
-    console.log("AppRouter - user:", user);
-
+    
     return (
         <Routes>
 

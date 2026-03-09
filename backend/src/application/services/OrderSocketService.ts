@@ -13,15 +13,10 @@ export class OrderSocketService {
 
     public async emitOrderEvent(event: OrderEvent, order: Order) {
         const tokenQRData = await this.qrRepository.getQRByTableNumber(order.table!.tableNum);
-        
-        console.log(`📡 Emitiendo evento: ${event} para pedido #${order.orderId}`);
-        
+
         if (tokenQRData) {
             const room = `comensal:${tokenQRData.tokenQR}`;
-            console.log(`📤 Emitiendo a sala: ${room}`);
             this.eventEmitter.emitToRoom(room, event, order.toClientInfo());
-        } else {
-            console.warn('⚠️ No se encontró token QR para la mesa');
         }
 
         this.eventEmitter.emitToRoom('cocina', event, order.toKitchenInfo());

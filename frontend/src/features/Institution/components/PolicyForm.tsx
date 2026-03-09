@@ -18,7 +18,7 @@ export default function PolicyForm({ data }: {data: Policy}) {
     },
     onError: (err) => {
       toast.error("No se pudo actualizar las políticas");
-      console.log(err);
+      console.error(err);
     },
   });
 

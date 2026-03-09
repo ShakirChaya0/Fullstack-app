@@ -30,7 +30,6 @@ export class AddOrderLineUseCase {
         }
 
         const newOrder = await this.orderRepository.addOrderLines(orderId, orderLines)
-        console.log("nueva order: ", newOrder.orderLines)
         return newOrder
     }
 }

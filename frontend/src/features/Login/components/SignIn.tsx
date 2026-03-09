@@ -31,12 +31,10 @@ const SignIn: React.FC<SignInProps> = ({ onSwitchToSignUp, isMobile = false }) =
   } = useForm<FormData>();
 
   const onSubmit = async (data: FormData) => {
-    const response = await login(data.email, data.password);
-    if (response?.success) {
-      toast.success("Inicio de sesión exitoso");
-    } else {
-      toast.error("Error al iniciar sesión: " + (response?.error || "Error desconocido"));
-    }
+  const response = await login(data.email, data.password);
+  if (!response?.success) {
+    toast.error("Error al iniciar sesión");
+  }
   };
 
   return (

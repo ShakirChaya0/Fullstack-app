@@ -58,7 +58,6 @@ export default function ModifyOrder() {
 
 
         onEvent("updatedOrderLineStatus", async (data) => {
-            console.log("La cocina modificó el estado del pedido")
             await queryClient.invalidateQueries({queryKey: ["waitersTable"]})
             handleOrderUpdateByKitchen(data)
             navigate("/Mozo/Mesas/")
@@ -87,7 +86,6 @@ export default function ModifyOrder() {
         })
         return () => {
             offEvent("updatedOrderLineStatus", async (data) => {
-                console.log("La cocina modificó el estado del pedido")
                 await queryClient.invalidateQueries({queryKey: ["waitersTable"]})
                 handleOrderUpdateByKitchen(data)
                 navigate("/Mozo/Mesas/")
@@ -154,7 +152,6 @@ export default function ModifyOrder() {
         
         const correspondingLine = existingOrder.lineasPedido.filter(
             (lp) => (lp.nombreProducto === nameProduct) && (lp.nroLinea === lineNumber)).find((lp) => lp.estado === "Pendiente");
-        console.log(existingOrder.lineasPedido, nameProduct)
         if (correspondingLine?.estado !== "Pendiente") {
             toast.warning("No se puede eliminar esta línea porque ya está en preparación o fue entregada");
             return;

@@ -15,7 +15,6 @@ export function useMutationNews ({fn, SuccessMsg, ErrorMsg}: {fn: (apiCall: (url
       },
       onError: (err) => {
         toast.error(`${err}`)
-        console.log(ErrorMsg)
       },
       onSettled: async () => {
         await queryClient.invalidateQueries({queryKey: ["News"]})

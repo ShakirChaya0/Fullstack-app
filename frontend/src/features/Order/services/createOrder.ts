@@ -27,7 +27,6 @@ orderData: Pedido | OrderWithTableId | OrderWithOutId) {
             })
         }
     }
-    console.log(bodyReq) 
 
     const response = await apiCall('pedidos', {
         method: 'POST',

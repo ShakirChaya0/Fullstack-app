@@ -81,7 +81,7 @@ export default function WaitersTable ({waiters, handleResetPage}: {waiters: Back
         onError: (err, variables, context) => {
             toast.error("Error al eliminar al mozo")
             if (context?.previousState) queryClient.setQueryData(["Waiters", currentPage, query], context.previousState)
-            console.log(err)
+            console.error(err)
           },
         onSettled: async () => {
           await queryClient.invalidateQueries({queryKey: ["Waiters"]})

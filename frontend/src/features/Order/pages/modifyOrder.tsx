@@ -51,18 +51,7 @@ export default function ModifyOrder() {
     }, []);
 
     useEffect(() => {
-        /*         const handleOrderUpdate = (data: OrderClientInfo) => {
-            console.log('📨 Actualización recibida en modifyOrder:', data);
-            handleModifyOrderStatus({
-                newOrderStatus: data.estado, 
-                orderLinesData: data.lineasPedido
-            });
-        }; */
-
         const handleOrderUpdateByKitchen = (data: OrderClientInfo) => {
-            console.log("📨 Data recibida:", data);
-            console.log("📨 lineasPedido:", data.lineasPedido);
-
             const previousOrder: Pedido = JSON.parse(
                 localStorage.getItem("previousOrder")!,
             );
@@ -70,24 +59,10 @@ export default function ModifyOrder() {
                 data.lineasPedido,
             );
 
-            console.log("📊 Consolidadas:", consolidatedOrderLines);
-
-            // Verificar estados antes de reconstruir
-            consolidatedOrderLines.forEach((line) => {
-                console.log(
-                    `Línea ${line.nroLinea}: ${line.nombreProducto} - Estado: "${line.estado}" - Cantidad: ${line.cantidad}`,
-                );
-            });
-
             const updatedPreviousOrder = rebuildOrderWithConsolidatedLines(
                 previousOrder,
                 consolidatedOrderLines,
             );
-
-            console.log(
-                "📋 updatedPreviousOrder.lineasPedido:",
-                updatedPreviousOrder.lineasPedido,
-            ); // Ver líneas finales
 
             updatedPreviousOrder.idPedido = data.idPedido;
             updatedPreviousOrder.estado = data.estado;
@@ -216,8 +191,7 @@ export default function ModifyOrder() {
         const lineasEliminar = previousOrder.lineasPedido.filter(
             (lp) => lp.estado === "Pendiente",
         );
-        console.log("Lineas a eliminar");
-        console.log(lineasEliminar);
+
         const productosEliminados = lineasEliminar.filter(
             (lp) =>
                 !newOrderData.lineasPedido.some(
@@ -226,9 +200,6 @@ export default function ModifyOrder() {
                         newLp.estado === "Pendiente",
                 ),
         );
-
-        console.log();
-        console.log(productosEliminados);
 
         // Evaluamos lineas modificadas
         const productosModificados = newOrderData.lineasPedido.filter((lp) => {
@@ -256,45 +227,14 @@ export default function ModifyOrder() {
             newOrderData.comensales === previousOrder.comensales &&
             newOrderData.observaciones === previousOrder.observaciones
         ) {
-            toast.warning(
-                "No se detectaron cambios, mantenemos su pedido original",
-            );
             localStorage.removeItem("previousOrder");
             localStorage.removeItem("modification");
             navigate(`/Cliente/Menu/PedidoConfirmado/`);
             return;
         }
 
-        // 🔍 DEBUG: Información de cambios detectados
-        console.log("=== ANÁLISIS DE MODIFICACIONES ===");
-        console.log(
-            "📊 Productos nuevos:",
-            productosNuevos.length,
-            productosNuevos,
-        );
-        console.log(
-            "🗑️ Productos eliminados:",
-            productosEliminados.length,
-            productosEliminados,
-        );
-        console.log(
-            "✏️ Productos modificados:",
-            productosModificados.length,
-            productosModificados,
-        );
-        console.log(
-            "👥 Comensales cambiados:",
-            newOrderData.comensales !== previousOrder.comensales,
-        );
-        console.log(
-            "📝 Observaciones cambiadas:",
-            newOrderData.observaciones !== previousOrder.observaciones,
-        );
-        console.log("🔄 Estado actual del pedido:", newOrderData.estado);
-
         //   LÓGICA CORREGIDA: Solo cambiar estado si hay cambios en productos
         const calcularEstadoFinalPedido = (): OrderStatus => {
-            console.log("🧮 Calculando estado final del pedido...");
 
             // Solo calcular nuevo estado si hay cambios en productos
             const hayCambiosEnProductos =
@@ -303,31 +243,21 @@ export default function ModifyOrder() {
                 productosModificados.length > 0;
 
             if (!hayCambiosEnProductos) {
-                console.log(
-                    "🔒 Sin cambios en productos - manteniendo estado:",
-                    newOrderData.estado,
-                );
                 return newOrderData.estado;
             }
 
             // Simular el estado final después de todas las modificaciones
             let lineasFinales = [...newOrderData.lineasPedido];
-            console.log("📋 Líneas iniciales:", lineasFinales.length);
 
             // Eliminar productos (sin importar su estado)
             productosEliminados.forEach((producto) => {
                 lineasFinales = lineasFinales.filter(
                     (lp) => lp.producto._name !== producto.producto._name,
                 );
-                console.log(
-                    `➖ Eliminado ${producto.producto._name}, líneas restantes:`,
-                    lineasFinales.length,
-                );
             });
 
             // Validar que no queden líneas vacías
             if (lineasFinales.length === 0) {
-                console.log("⚠️ No hay líneas finales, pedido vacío");
                 return "Solicitado"; // O manejar como error
             }
 
@@ -344,38 +274,30 @@ export default function ModifyOrder() {
                 ),
             };
 
-            console.log("📊 Estados presentes:", estadosPresentes);
-
-            // Aplicar jerarquía de estados
             // Prioridad: En_Preparacion > Terminada > Pendiente
             let nuevoEstado: OrderStatus;
 
             if (estadosPresentes.enPreparacion) {
                 // Si hay AL MENOS UNA línea en preparación
                 nuevoEstado = "En_Preparacion";
-                console.log("🍳 Hay líneas en preparación -> En_Preparacion");
             } else if (
                 estadosPresentes.terminada &&
                 !estadosPresentes.pendiente
             ) {
                 // Si TODAS están terminadas
                 nuevoEstado = "Completado";
-                console.log("✅ Todas las líneas terminadas -> Completado");
             } else if (
                 estadosPresentes.pendiente &&
                 !estadosPresentes.terminada
             ) {
                 // Si TODAS están pendientes
                 nuevoEstado = "Solicitado";
-                console.log("⏳ Todas las líneas pendientes -> Solicitado");
             } else {
                 // Estado mixto (pendiente + terminada, sin preparación)
                 // Depende de tu lógica, pero generalmente sería En_Preparacion o Solicitado
                 nuevoEstado = "En_Preparacion";
-                console.log("🔀 Estado mixto -> En_Preparacion (por defecto)");
             }
 
-            console.log("🎯 Estado calculado:", nuevoEstado);
             return nuevoEstado;
         };
 
@@ -383,9 +305,6 @@ export default function ModifyOrder() {
 
         // OPTIMISTIC UPDATE: Actualizar estado solo si cambia
         if (newOrderData.estado !== estadoFinalCalculado) {
-            console.log(
-                `🚀 Actualizando estado: ${newOrderData.estado} → ${estadoFinalCalculado}`,
-            );
             handleModifyOrderStatus({
                 newOrderStatus: estadoFinalCalculado,
                 orderLinesData: newOrderData.lineasPedido.map((lp) => ({
@@ -396,11 +315,6 @@ export default function ModifyOrder() {
                     nroLinea: lp.lineNumbers?.[0] || 0,
                 })),
             });
-        } else {
-            console.log(
-                "✨ Estado no cambia, manteniendo:",
-                newOrderData.estado,
-            );
         }
 
         if (productosNuevos.length > 0) {
@@ -474,17 +388,8 @@ export default function ModifyOrder() {
                 );
 
                 if (!originalLp) {
-                    console.warn(
-                        `⚠️ No encontrada línea original para: ${modifiedLp.producto._name} (${modifiedLp.estado})`,
-                    );
                     return;
                 }
-
-                console.log(
-                    `📝 Modificando ${modifiedLp.producto._name}: ${originalLp.cantidad}→${modifiedLp.cantidad}`,
-                    `lineNumbers:`,
-                    originalLp.lineNumbers,
-                );
 
                 // Si hay múltiples lineNumbers (consolidados), deducir qué eliminar
                 if (
@@ -494,11 +399,6 @@ export default function ModifyOrder() {
                     const split = splitConsolidatedModification(
                         originalLp,
                         modifiedLp,
-                    );
-
-                    console.log(
-                        `💔 Split para ${modifiedLp.producto._name}:`,
-                        split,
                     );
 
                     // Enviar deletes para los lineNumbers que se reducen
@@ -528,10 +428,6 @@ export default function ModifyOrder() {
                 } else {
                     // Línea simple sin consolidación - enviar directamente
                     const lineNumbers = originalLp.lineNumbers || [];
-                    console.log(
-                        `✏️ Modificar línea simple ${modifiedLp.producto._name} con lineNumbers:`,
-                        lineNumbers,
-                    );
 
                     sendEvent("modifyOrder", {
                         orderId: order.idPedido,
@@ -549,10 +445,6 @@ export default function ModifyOrder() {
                 }
             });
         } 
-        
-
-        toast.success("Todos los cambios hechos");
-
         localStorage.removeItem("previousOrder");
         localStorage.removeItem("modification");
 

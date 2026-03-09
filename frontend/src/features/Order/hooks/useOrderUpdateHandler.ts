@@ -18,31 +18,13 @@ export const useOrderUpdateHandler = () => {
 
     useEffect(() => {
         const handleOrderUpdateByKitchen = (data: OrderClientInfo) => {
-            console.log("🔍 [FinishedOrder] Evento recibido:", {
-                idPedido: data.idPedido,
-                estado: data.estado,
-                lineas: data.lineasPedido.length,
-                timestamp: new Date().toISOString(),
-            });
-
             const previousOrderRaw = localStorage.getItem("previousOrder");
-            console.log(
-                "🔍 [FinishedOrder] previousOrder en localStorage:",
-                previousOrderRaw ? "SÍ existe" : "No existe",
-            );
 
             // Caso normal: no hay modificación en vuelo, solo actualizar estado en Redux
             if (!previousOrderRaw) {
-                console.log(
-                    "✅ [FinishedOrder] Caso normal - reconstruyendo contra Redux actual",
-                );
                 // Consolidar las líneas del backend
                 const consolidatedOrderLines = consolidateOrderLines(
                     data.lineasPedido,
-                );
-                console.log(
-                    "🔍 [FinishedOrder] Líneas consolidadas:",
-                    consolidatedOrderLines,
                 );
 
                 // 🔑 CLAVE: Reconstruir contra `order` del Redux y sincronizar lineNumbers con BD
@@ -56,15 +38,6 @@ export const useOrderUpdateHandler = () => {
                 updatedOrder.estado = data.estado;
                 updatedOrder.observaciones = data.observaciones;
 
-                console.log(
-                    "🔍 [FinishedOrder] Order reconstruida:",
-                    updatedOrder.lineasPedido.map((lp) => ({
-                        lineNumbers: lp.lineNumbers,
-                        producto: lp.producto._name,
-                        estado: lp.estado,
-                    })),
-                );
-
                 handleRecoveryCurrentState({
                     updatedPreviousOrder: updatedOrder,
                 });
@@ -72,9 +45,6 @@ export const useOrderUpdateHandler = () => {
             }
 
             // Caso colisión: había una modificación del cliente en vuelo
-            console.log(
-                "⚠️ [FinishedOrder] Caso colisión - procesando modificación",
-            );
             const previousOrder: Pedido = JSON.parse(previousOrderRaw);
             const consolidatedOrderLines = consolidateOrderLines(
                 data.lineasPedido,
@@ -91,16 +61,8 @@ export const useOrderUpdateHandler = () => {
             const lineasAModificar = getConsolidatedLinesToModify(
                 consolidatedOrderLines,
             );
-            console.log(
-                "🔍 [FinishedOrder] Líneas a modificar:",
-                lineasAModificar.length,
-            );
 
             if (lineasAModificar.length > 0) {
-                console.log(
-                    "📤 [FinishedOrder] Enviando modifyOrder con orderId:",
-                    order.idPedido,
-                );
                 sendEvent("modifyOrder", {
                     orderId: order.idPedido,
                     lineNumbers: lineasAModificar.map((lp) => lp.nroLinea),
@@ -116,16 +78,8 @@ export const useOrderUpdateHandler = () => {
                 data.lineasPedido,
                 consolidatedOrderLines,
             );
-            console.log(
-                "🔍 [FinishedOrder] Líneas a eliminar:",
-                lineasAEliminar.length,
-            );
 
             lineasAEliminar.forEach((nroLinea) => {
-                console.log(
-                    "📤 [FinishedOrder] Enviando deleteOrderLine:",
-                    nroLinea,
-                );
                 sendEvent("deleteOrderLine", {
                     orderId: order.idPedido,
                     lineNumber: nroLinea,
@@ -143,11 +97,6 @@ export const useOrderUpdateHandler = () => {
 
         // Handler genérico para sincronizar lineNumbers cuando el backend envía actualizaciones
         const handleOrderSync = (data: OrderClientInfo) => {
-            console.log(
-                "🔄 [FinishedOrder] Sincronizando order con backend:",
-                data.idPedido,
-            );
-
             const consolidatedOrderLines = consolidateOrderLines(
                 data.lineasPedido,
             );
@@ -163,23 +112,16 @@ export const useOrderUpdateHandler = () => {
             handleRecoveryCurrentState({ updatedPreviousOrder: updatedOrder });
         };
 
-        console.log(
-            "📌 [FinishedOrder] Registrando listeners para eventos de pedido",
-        );
         onEvent("updatedOrderLineStatus", handleOrderUpdateByKitchen);
         onEvent("addedOrderLine", handleOrderSync);
         onEvent("modifiedOrderLine", handleOrderSync);
         onEvent("deletedOrderLine", handleOrderSync);
 
         return () => {
-            console.log(
-                "📌 [FinishedOrder] Removiendo listeners para eventos de pedido",
-            );
             offEvent("updatedOrderLineStatus", handleOrderUpdateByKitchen);
             offEvent("addedOrderLine", handleOrderSync);
             offEvent("modifiedOrderLine", handleOrderSync);
             offEvent("deletedOrderLine", handleOrderSync);
         };
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 };

@@ -5,12 +5,8 @@ import * as bcrypt from 'bcryptjs';
 
 async function generateAdminData() {
     const constraseñaDesea = '7891011';
-
     const uuid = randomUUID();
-    console.log('UUID generado:', uuid);
-
     const hashedPassword = await bcrypt.hash(constraseñaDesea, 10);
-    console.log('Contraseña hasheada:', hashedPassword);
 }
 
 // Ejecutar la función

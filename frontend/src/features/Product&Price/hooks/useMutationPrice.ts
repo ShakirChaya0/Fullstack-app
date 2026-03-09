@@ -25,7 +25,6 @@ export function useMutationPriceRegistration ({ newPrice, setNewPrice, setModalE
             }))
 
             setModalError('')
-            toast.success('Precio registrado con éxito')
             setIsModalOpen(false)
         },
         onError: (err: Error) => {
@@ -54,7 +53,6 @@ export function useMutationDeletePrice ({ idProducto, selectedPrice, setIsModalO
                 queryKey: ['products'],
                 exact: false 
             })
-            toast.success('Precio eliminado con éxito')
             setIsModalOpen(false)
         }
     })

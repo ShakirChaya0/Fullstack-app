@@ -15,7 +15,7 @@ export default function useSaveTableOrder() {
         },
         onError: (err) => {
             toast.error("Error al intentar crear el Pedido")
-            console.log(err)
+            console.error(err)
         }
     })
 }

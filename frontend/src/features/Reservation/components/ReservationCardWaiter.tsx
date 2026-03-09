@@ -55,7 +55,6 @@ export function ReservationCard({ reservation: initialReservation }: Reservation
             
             toast.success(`Mesa(s) ${reservation._table.map(t => t._tableNum).join(', ')} ocupada(s) automáticamente`);
           } catch (error) {
-            console.error('Error al actualizar mesas:', error);
             toast.error('La reserva se actualizó pero hubo un error al ocupar las mesas');
           }
         }

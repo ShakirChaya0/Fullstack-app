@@ -74,9 +74,6 @@ export const rebuildOrderWithConsolidatedLines = (
             }
 
             // Si no encuentra coincidencia, advertencia (no debería ocurrir)
-            console.warn(
-                `No se encontró línea previa para: ${consolidatedLine.nombreProducto}`,
-            );
             return null;
         })
         .filter((line) => line !== null);

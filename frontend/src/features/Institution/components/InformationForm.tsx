@@ -18,7 +18,7 @@ export default function InformationForm({ data }: { data: Information }) {
     },
     onError: (err) => {
       toast.error("Error al actualizar la información");
-      console.log(err);
+      console.error(err);
     },
   });
 

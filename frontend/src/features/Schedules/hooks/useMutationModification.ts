@@ -18,8 +18,6 @@ export function useMutationModification ({ schedules, originalSchedule, setError
       queryClient.invalidateQueries({ queryKey: ['schedules'] })
       setError(""); // Limpiar errores  
 
-      toast.success("Horarios modificados con éxito")
-
       // Redireccionar
       navigate('/Admin/Horarios')
     },

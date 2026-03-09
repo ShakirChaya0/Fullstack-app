@@ -9,8 +9,7 @@ export default function ProtectedPage({children}: {children?: React.ReactNode}) 
 
     // PASO 2: Handler más agresivo
     const handlePopState = () => {
-      console.log('Intento de navegación bloqueado - Método agresivo');
-      
+
       // A. Reemplazar la entrada actual para "resetear" la posición
       window.history.replaceState(null, "", window.location.href);
       

@@ -135,19 +135,16 @@ export class PaymentController {
             const { id, topic } = req.query
             if (topic && topic == "payment") {
                 this.processPaymentWebhook(Number(id)).catch(err => {
-                    console.error('Error procesando webhook:', err);
                 });            
             }
             else {
                 const { idPedido, metodoPago } = req.query;
 
                 if (!idPedido || isNaN(+idPedido)) {
-                    console.error('El ID enviado debe ser un número:', idPedido);
                     return;
                 } 
 
                 this.processManualPayment(+idPedido, metodoPago as string).catch(err => {
-                    console.error('Error procesando pago manual:', err);
                 });            
             }
         }

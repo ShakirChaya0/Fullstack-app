@@ -5,7 +5,6 @@ export async function payOrder(apiCall: (url: string, options?: RequestInit) => 
     method: "POST"
   });
 
-  console.log(response)
   if (!response.ok) {
     const error = await response.json();
     throw new Error(error.message);

@@ -76,12 +76,11 @@ export default function NewsTable ({data, handleResetPage}: {data: BackResults |
       if (currentPage > 1 && (totalItems - 1) <= (currentPage - 1) * itemsPerPage) {
         handleResetPage(currentPage - 1);
       }
-      toast.success("La novedad se eliminó con éxito")
     },
     onError: (err, variables, context) => {
         toast.error("Error al eliminar la novedad")
         if (context?.previousState) queryClient.setQueryData(["News", currentPage, query, filter], context.previousState)
-        console.log(err)
+        console.error(err)
       },
     onSettled: async () => {
       await queryClient.invalidateQueries({queryKey: ["News"]})

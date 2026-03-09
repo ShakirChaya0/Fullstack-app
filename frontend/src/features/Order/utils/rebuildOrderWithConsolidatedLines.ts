@@ -47,11 +47,6 @@ export const rebuildOrderWithConsolidatedLines = (
                     matchingPrevLine.producto._price *
                     consolidatedLine.cantidad,
             });
-        } else {
-            // Si no encuentra coincidencia, advertencia (no debería ocurrir)
-            console.warn(
-                `No se encontró línea previa para: ${consolidatedLine.nombreProducto}`,
-            );
         }
     });
 

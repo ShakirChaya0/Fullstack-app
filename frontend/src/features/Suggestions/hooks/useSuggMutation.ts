@@ -38,7 +38,7 @@ export function useSuggMutation({ handleClose, handleError, suggestion }: UseSug
                     _dateTo: data._dateTo
                 }, apiCall);
             }
-        },        
+        },
         onSuccess: async () => {
             await queryClient.invalidateQueries({ queryKey: ["suggestions"] });
             toast.success(`Se ${suggestion ? "modificó" : "creó"} la sugerencia con éxito`)
@@ -48,7 +48,7 @@ export function useSuggMutation({ handleClose, handleError, suggestion }: UseSug
         onError: (err) => {
             toast.error(`Error al ${suggestion ? "modificar" : "crear"} la sugerencia`);
             if (err instanceof Error) handleError(err.message);
-            console.log(err)
+            console.error(err)
         }
     })
 }

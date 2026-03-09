@@ -28,7 +28,6 @@ export default function VerifyEmail() {
         onError: (error) => {
             toast.error("No se pudo verificar el correo. Intente de nuevo más tarde");
             setStatus('error');
-            console.log((error as Error).message);
         },
     });
 
@@ -41,7 +40,6 @@ export default function VerifyEmail() {
         onError: (error) => {
             toast.error("No se pudo verificar el correo. Intente de nuevo más tarde");
             setStatus('error');
-            console.log((error as Error).message);
         },
     });
 
