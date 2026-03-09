@@ -17,11 +17,7 @@ export class UpdateOrderUseCase {
         if (!order) {
             throw new NotFoundError("Pedido no encontradó");
         }
-
-        const isInProcess = order.orderLines.some(line => {
-            return line.status == "En_Preparacion";
-        });
-
+        
         if (lineNumbers && data.items) {
             const linesToModifyInProcess = lineNumbers.some(num =>
                 order.orderLines.find(l => l.lineNumber === num)?.status === 'En_Preparacion'
