@@ -158,9 +158,9 @@ export class PaymentController {
 
     private async processPaymentWebhook(paymentId: number) {
         const payment = await new Payment(mercadoPagoClient).get({ id: paymentId });
-        const { orderId, metodoPago } = JSON.parse(payment.external_reference!);
+        const orderId = payment.external_reference!;
         
-        const order = await this.registerPaymentUseCase.execute(orderId, metodoPago, `${payment.id}`);
+        const order = await this.registerPaymentUseCase.execute(+orderId, "MercadoPago", `${payment.id}`);
         await this.orderSocketService.emitOrderEvent("orderPaymentEvent", order);
     }
 

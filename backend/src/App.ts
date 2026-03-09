@@ -54,10 +54,6 @@ app.use(cookieParser());
 export const server: Server = createServer(app);
 SocketServerConnection(server);
 
-app.get('/health', (req, res) => {
-    res.status(200).json({ status: 'ok' }) 
-});
-
 app.use("/auth", AuthRouter())
 
 app.use('/productos', ProductosRouter())

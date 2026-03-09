@@ -6,6 +6,7 @@ import { CircularProgress } from "@mui/material";
 import { toast } from "react-toastify";
 import { usePaymentMutation } from "../hooks/usePaymentMutation";
 import type { PaymentMethod } from "../../Payment/types/PaymentSharedTypes";
+import { useNavigate } from "react-router";
 
 type PaymentMethodSelectorProps = {
     onClose: () => void;
@@ -13,6 +14,7 @@ type PaymentMethodSelectorProps = {
 };
 
 export default function PaymentMethodSelector({ onClose, currentTable }: PaymentMethodSelectorProps) {
+    const navigate = useNavigate();
     const { mutate, isPending, isSuccess } = usePaymentMutation(currentTable ?? 1);
 
     if (isSuccess) onClose()
@@ -27,8 +29,9 @@ export default function PaymentMethodSelector({ onClose, currentTable }: Payment
             return
         }
 
+        mutate((data.paymentMethod as PaymentMethod));
 
-        mutate((data.paymentMethod as PaymentMethod))
+        navigate(`/Mozo/Mesas`);
     }
 
     return (

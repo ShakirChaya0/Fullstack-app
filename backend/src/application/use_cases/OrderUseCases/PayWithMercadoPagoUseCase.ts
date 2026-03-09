@@ -24,7 +24,7 @@ export class PayWithMercadoPagoUseCase {
         const iva = policy.porcentajeIVA;
         const cutleryAmount = policy.montoCubiertosPorPersona;
 
-        const totalWithCutlery = order.calculateTotal(iva).total + order.calculateCutleryTotal(cutleryAmount);
+        const totalWithCutlery = Number((order.calculateTotal(iva).total + order.calculateCutleryTotal(cutleryAmount)).toFixed(2));
 
         const draft = {
             items: [
@@ -45,12 +45,9 @@ export class PayWithMercadoPagoUseCase {
                 pending: `${process.env.FRONTEND_URL}/Cliente/Pedido/Pago/Pendiente` 
             },
             auto_return: "approved",
-            external_reference: JSON.stringify({orderId: order.orderId, metodoPago: "MercadoPago"}),
+            external_reference: order.orderId.toString(),
             notification_url: `${process.env.BACKEND_URL}/pagos/pagado`, 
         }
-
-        console.log('🔔🔔🔔🔔🔔🔔🔔🔔 Notification URL:', draft.notification_url);
-        console.log('🔙🔙🔙🔙🔙🔙🔙 Back URLs:', draft.back_urls);
 
         const preference = await this.mpService.createPreference(draft)
         
