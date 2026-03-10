@@ -84,7 +84,7 @@ INSERT INTO public."Producto" ("idProducto", "nombre", "descripcion", "estado", 
 (34, 'Ensalada de Frutas', 'Frutas de estación', 'Disponible', 'Postre', true, true, true, NULL),
 (35, 'Creme Brulee', 'Vainilla natural', 'Disponible', 'Postre', true, false, true, NULL),
 (36, 'Volcan de Chocolate', 'Centro líquido sin TACC', 'Disponible', 'Postre', true, false, true, NULL),
-(37, 'Panqueque con DDL', '2 unidades', 'Disponible', 'Postre', true, false, false, NULL),
+(37, 'Panqueque con DDL', '2 unidades', 'No Disponible', 'Postre', true, false, false, NULL),
 (38, 'Mousse de Limon', 'Cremoso y ácido', 'Disponible', 'Postre', true, false, true, NULL),
 (39, 'Carpaccio de Res', 'Finas láminas', 'Disponible', 'Entrada', false, false, true, NULL),
 (40, 'Bruschettas Veganas', 'Palta y tomate', 'Disponible', 'Entrada', true, true, false, NULL);
@@ -121,21 +121,21 @@ INSERT INTO public."Novedad" ("idNovedad", "titulo", "descripcion", "fechaInicio
 (7, 'Clase Gin', 'Preparación', '2026-03-02', '2026-03-03'),
 (8, 'San Patricio', 'Cerveza libre', '2026-03-04', '2026-03-06'),
 (9, 'Show Magia', 'Familiar', '2026-03-06', '2026-03-08'),
-(10, 'Brunch Dom', 'Desde 11hs', '2026-03-08', '2026-03-09'),
+(10, 'Brunch Dom', 'Desde 11hs', '2026-03-08', '2026-03-11'),
 (11, 'Postre Day', 'Degustación', '2026-03-10', '2026-03-12'),
-(12, 'Promo Amigos', '4x3 personas', '2026-03-12', '2026-03-14'),
-(13, 'Tabla Quesos', 'Regional', '2026-03-14', '2026-03-16'),
-(14, 'Rock Tributo', 'Acústico', '2026-03-16', '2026-03-18'),
-(15, 'Sorteo Cena', 'Aniversario', '2026-03-18', '2026-03-20');
+(12, 'Promo Amigos', '4x3 personas', '2026-03-10', '2026-03-14'),
+(13, 'Tabla Quesos', 'Regional', '2026-03-10', '2026-03-16'),
+(14, 'Rock Tributo', 'Acústico', '2026-03-10', '2026-03-18'),
+(15, 'Sorteo Cena', 'Aniversario', '2026-03-10', '2026-03-20');
 
 INSERT INTO public."Sugerencias" ("idProducto", "fechaDesde", "fechaHasta") VALUES
 (1, '2026-02-20', '2026-02-22'), (15, '2026-02-23', '2026-02-25'),
 (21, '2026-02-26', '2026-02-28'), (2, '2026-03-01', '2026-03-03'),
 (23, '2026-03-04', '2026-03-06'), (30, '2026-03-07', '2026-03-09'),
-(5, '2026-03-10', '2026-03-12'), (36, '2026-03-13', '2026-03-15'),
+(5, '2026-03-10', '2026-03-12'), (36, '2026-03-10', '2026-03-15'),
 (47, '2026-03-16', '2026-03-18'), (14, '2026-03-19', '2026-03-21'),
 (53, '2026-03-22', '2026-03-24'), (17, '2026-03-25', '2026-03-27'),
-(22, '2026-03-28', '2026-03-30'), (33, '2026-03-31', '2026-04-02'),
+(22, '2026-03-28', '2026-03-10'), (33, '2026-03-31', '2026-04-02'),
 (52, '2026-04-03', '2026-04-05');
 
 DO $$
@@ -167,19 +167,19 @@ BEGIN
     END LOOP;
 
     INSERT INTO public."Reserva" ("idReserva", "fechaReserva", "horarioReserva", "cantidadComensales", "estado", "idCliente") VALUES
-    (11, '2026-02-25', '20:30:00', 2, 'Realizada', '210f882e-8f88-485e-98ec-48e516b169b3'),
-    (12, '2026-02-25', '21:00:00', 4, 'Realizada', '26287d99-5c80-463d-9d6f-d6a865a1eb50'),
-    (13, '2026-02-27', '22:00:00', 2, 'Realizada', '210f882e-8f88-485e-98ec-48e516b169b3'),
-    (14, '2026-02-26', '20:00:00', 2, 'Realizada', '26287d99-5c80-463d-9d6f-d6a865a1eb50'),
-    (15, '2026-02-26', '21:30:00', 3, 'Realizada', '210f882e-8f88-485e-98ec-48e516b169b3'),
-    (16, '2026-02-27', '22:15:00', 2, 'Realizada', '26287d99-5c80-463d-9d6f-d6a865a1eb50');
+    (11, '2026-02-11', '20:30:00', 2, 'Realizada', '210f882e-8f88-485e-98ec-48e516b169b3'),
+    (12, '2026-02-11', '21:00:00', 4, 'Realizada', '26287d99-5c80-463d-9d6f-d6a865a1eb50'),
+    (13, '2026-02-13', '22:00:00', 2, 'Realizada', '210f882e-8f88-485e-98ec-48e516b169b3'),
+    (14, '2026-02-12', '20:00:00', 2, 'Realizada', '26287d99-5c80-463d-9d6f-d6a865a1eb50'),
+    (15, '2026-02-12', '21:30:00', 3, 'Realizada', '210f882e-8f88-485e-98ec-48e516b169b3'),
+    (16, '2026-02-13', '22:15:00', 2, 'Realizada', '26287d99-5c80-463d-9d6f-d6a865a1eb50');
 END $$;
 
 INSERT INTO public."InformacionRestaurante" ("idInformacion", "nombreRestaurante", "direccionRestaurante", "razonSocial", "telefonoContacto") 
 VALUES (1, 'Sabores Deluxe', 'Av. Pellegrini 1500', 'Resto Bar SRL', '3415324728');
 
 INSERT INTO public."PoliticasRestaurante" ("idPolitica", "minutosTolerancia", "horarioMaximoDeReserva", "horasDeAnticipacionParaCancelar", "horasDeAnticipacionParaReservar", "limiteDeNoAsistencias", "cantDiasDeshabilitacion", "porcentajeIVA", "montoCubiertosPorPersona") 
-VALUES (1, 15, '23:00', 12, 6, 3, 7, 21, 1200);
+VALUES (1, 15, '23:00', 12, 6, 3, 7, 21, 800);
 
 SELECT setval(pg_get_serial_sequence('public."Mesa"', 'nroMesa'), 10);
 SELECT setval(pg_get_serial_sequence('public."Producto"', 'idProducto'), 55);
