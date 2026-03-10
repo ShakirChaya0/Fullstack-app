@@ -122,11 +122,11 @@ INSERT INTO public."Novedad" ("idNovedad", "titulo", "descripcion", "fechaInicio
 (8, 'San Patricio', 'Cerveza libre', '2026-03-04', '2026-03-06'),
 (9, 'Show Magia', 'Familiar', '2026-03-06', '2026-03-08'),
 (10, 'Brunch Dom', 'Desde 11hs', '2026-03-08', '2026-03-11'),
-(11, 'Postre Day', 'Degustación', '2026-03-10', '2026-03-12'),
-(12, 'Promo Amigos', '4x3 personas', '2026-03-10', '2026-03-14'),
-(13, 'Tabla Quesos', 'Regional', '2026-03-10', '2026-03-16'),
-(14, 'Rock Tributo', 'Acústico', '2026-03-10', '2026-03-18'),
-(15, 'Sorteo Cena', 'Aniversario', '2026-03-10', '2026-03-20');
+(11, 'Postre Day', 'Degustación', '2026-03-08', '2026-03-12'),
+(12, 'Promo Amigos', '4x3 personas', '2026-03-08', '2026-03-14'),
+(13, 'Tabla Quesos', 'Regional', '2026-03-08', '2026-03-16'),
+(14, 'Rock Tributo', 'Acústico', '2026-03-08', '2026-03-18'),
+(15, 'Sorteo Cena', 'Aniversario', '2026-03-08', '2026-03-20');
 
 INSERT INTO public."Sugerencias" ("idProducto", "fechaDesde", "fechaHasta") VALUES
 (1, '2026-02-20', '2026-02-22'), (15, '2026-02-23', '2026-02-25'),
