@@ -107,7 +107,7 @@ export default function SuggestionForm({ handleClose, suggestion }: SuggestionFo
                                     return true;
                                 },
                             })}
-                            min={fechaDesdeValue || today}
+                            // min={fechaDesdeValue || today}
                             className="px-2 py-1 sm:px-4 sm:py-3 sm:text-lg border border-gray-300 rounded-lg sm:rounded-xl shadow-md focus:outline-none focus:ring-2 focus:ring-amber-600 focus:border-amber-600 transition" 
                             defaultValue={suggestion ? new Date(suggestion._dateTo).toISOString().split("T")[0] : ""}
                         />
