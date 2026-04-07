@@ -33,7 +33,7 @@ const SignIn: React.FC<SignInProps> = ({ onSwitchToSignUp, isMobile = false }) =
   const onSubmit = async (data: FormData) => {
   const response = await login(data.email, data.password);
   if (!response?.success) {
-    toast.error("Error al iniciar sesión");
+    toast.error(response?.error || "Error al iniciar sesión. Por favor, verifica tus credenciales.");
   }
   };
 
@@ -71,12 +71,6 @@ const SignIn: React.FC<SignInProps> = ({ onSwitchToSignUp, isMobile = false }) =
                   placeholder="Contraseña" 
                   {...register("password", {
                     required: "La contraseña es obligatoria",
-                    minLength: { value: 6, message: "La contraseña debe tener al menos 6 caracteres." },
-                    maxLength: { value: 100, message: "La contraseña no puede tener más de 100 caracteres." },
-                    pattern: {
-                        value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{6,}$/,
-                        message: "Debe incluir una mayúscula, una minúscula y un número."
-                    }
                   })}
                 />
                 <button
@@ -102,7 +96,7 @@ const SignIn: React.FC<SignInProps> = ({ onSwitchToSignUp, isMobile = false }) =
         </form>
 
         {/* El componente ForgotPassword se mueve fuera del formulario para funcionar correctamente */}
-        <ForgotPassword open={open} handleClose={handleClose} />
+        {/* <ForgotPassword open={open} handleClose={handleClose} />
         <div className="flex justify-center mt-5">
           <Link
             component="button"
@@ -113,7 +107,7 @@ const SignIn: React.FC<SignInProps> = ({ onSwitchToSignUp, isMobile = false }) =
           >
             ¿Olvidaste tu contraseña?
           </Link>
-        </div>
+        </div> */}
     
 
 

@@ -21,6 +21,7 @@ export function useProfileMutation(onEditModeChange: (editing: boolean) => void)
 
             setUser({ idUsuario: user!.idUsuario, email: userData.email!, tipoUsuario: user!.tipoUsuario, username: userData.nombreUsuario });
             onEditModeChange(false);
+            toast.success("Perfil actualizado con éxito");
         },
         onError: (error) => {
             toast.error(`Error al actualizar el perfil: ${error.message}`);

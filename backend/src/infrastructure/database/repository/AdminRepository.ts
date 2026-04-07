@@ -35,6 +35,12 @@ export class AdminRepository implements IAdminRepository {
 
     public async update(idAdmin: string, admin: PartialSchemaAdmin): Promise<Admin> {
         try {
+            const existingWaiterDNI = await prisma.mozos.findUnique({
+                where: { dni: admin.dni }
+            });
+
+            if (existingWaiterDNI) throw new ConflictError("El DNI ingresado ya esta en uso");
+
             const adminActualizar = await prisma.usuarios.update({
                 where: {idUsuario: idAdmin},
                 data: {
@@ -69,12 +75,13 @@ export class AdminRepository implements IAdminRepository {
         } catch(error: any) {
             if (error?.code === 'P2002' && error?.meta?.target?.includes('nombreUsuario')) {
                 throw new ConflictError("El nombre de usuario ingresado ya esta en uso");
-            } else if(error?.code === 'P2002' && error?.meta?.target?.includes('email')){
+            } else if (error?.code === 'P2002' && error?.meta?.target?.includes('email')){
                 throw new ConflictError("El email ingresado ya esta en uso");
-            } else if(error?.code === 'P2002' && error?.meta?.target?.includes('dni')){
-                throw new ConflictError("El DNI ingresado ya esta registrado");
-            }
-            else{
+            } else if (error?.code === 'P2002' && error?.meta?.target?.includes('dni')){
+                throw new ConflictError("El DNI ingresado ya esta en uso");
+            } else if (error instanceof ConflictError) {
+                throw error;
+            } else {
                 throw new ServiceError(`Error al actualizar datos del usuario: ${error.message}. Inténtelo de nuevo más tarde`);
             }
         }

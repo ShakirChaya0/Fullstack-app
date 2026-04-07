@@ -16,6 +16,12 @@ const limit = 5
 export class WaiterRepository implements IWaiterRepository {
     public async createWaiter(data: SchemaWaiter): Promise<Waiter> {
         try {
+            const existingAdminDNI = await prisma.administrador.findUnique({
+                where: { dni: data.dni }
+            });
+
+            if (existingAdminDNI) throw new ConflictError("El DNI ingresado ya esta en uso");
+
             const newWaiter = await prisma.mozos.create({
                 data: {
                     nombre: data.nombre,
@@ -42,11 +48,12 @@ export class WaiterRepository implements IWaiterRepository {
             } else if (error?.code === 'P2002' && error?.meta?.target?.includes('email')) {
                 throw new ConflictError("Ya existe un Mozo con ese email");
             } else if (error?.code === 'P2002' && error?.meta?.target?.includes('dni')) {
-                throw new ConflictError("Ya existe un Mozo con ese dni");
+                throw new ConflictError("El DNI ingresado ya esta en uso");
             } else if (error?.code === 'P2002' && error?.meta?.target?.includes('telefono')) {
                 throw new ConflictError("Ya existe un Mozo con ese telefono");
-            }
-            else {
+            } else if (error instanceof ConflictError) {
+                throw error;
+            } else {
                 throw new ServiceError(`Error al crear el Mozo: ${error.message}`);
             }
         }
@@ -101,6 +108,12 @@ export class WaiterRepository implements IWaiterRepository {
         try{
             const { nombreUsuario, email, contrasenia, ...mozoFields } = data
 
+            const existingAdminDNI = await prisma.administrador.findUnique({
+                where: { dni: data.dni }
+            });
+
+            if (existingAdminDNI) throw new ConflictError("El DNI ingresado ya esta en uso");
+
             const updatedWaiter = await prisma.mozos.update({
                 where: { idMozo },
                 data: {
@@ -127,8 +140,9 @@ export class WaiterRepository implements IWaiterRepository {
                 throw new ConflictError("El email ingresado ya está en uso");
             } else if (error?.code === 'P2002' && error?.meta?.target?.includes('dni')) {
                 throw new ConflictError("El DNI ingresado ya está en uso");
-            }
-            else {
+            } else if (error instanceof ConflictError) {
+                throw error;
+            } else {
                 throw new ServiceError(`Error al actualizar datos del usuario: ${error.message}. Inténtelo de nuevo más tarde`);
             }
         }
