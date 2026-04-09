@@ -15,7 +15,7 @@ import { OrderTotalAmount } from "../../Products/utils/OrderTotalAmount";
 import { useNavigate } from "react-router";
 import { PaymentConfirmationModal } from "../components/GoToPaymentConfirmationModal";
 import { useWebSocket } from "../../../shared/hooks/useWebSocket";
-import { useEffect, useRef } from "react";
+import { useEffect, useState } from "react";
 import { useOrderActions } from "../../../shared/hooks/useOrderActions";
 import type {
     LineaPedido,
@@ -33,10 +33,22 @@ import { rebuildOrderWithConsolidatedLines } from "../utils/rebuildOrderWithCons
 import { getConsolidatedLinesToModify } from "../utils/getConsolidatedLinesToModify";
 import { splitConsolidatedModification } from "../utils/splitConsolidatedModification";
 import { groupLines, getClientLineType, TYPE_ORDER, formatTypeName } from "../utils/groupOrderLinesByType";
+import useAuth from "../../../shared/hooks/useAuth";
+import { useApiClient } from "../../../shared/hooks/useApiClient";
+import { getClient } from "../../Client/Services/getClient";
 
 export default function ModifyOrder() {
     const navigate = useNavigate();
     const order = useAppSelector((state) => state.order);
+    const { user, isAuthenticated } = useAuth();
+    const { apiCall } = useApiClient();
+    const [isAdultClient, setIsAdultClient] = useState<boolean | null>(null);
+    const [comensalesInput, setComensalesInput] = useState(
+        String(order.comensales ?? ""),
+    );
+    const [observacionesInput, setObservacionesInput] = useState(
+        order.observaciones ?? "",
+    );
     const {
         handleAddToCart,
         hanldeRemoveFromCart,
@@ -49,6 +61,67 @@ export default function ModifyOrder() {
     useEffect(() => {
         window.scrollTo(0, 0);
     }, []);
+
+    useEffect(() => {
+        setComensalesInput(String(order.comensales ?? ""));
+        setObservacionesInput(order.observaciones ?? "");
+    }, [order.comensales, order.observaciones]);
+
+    useEffect(() => {
+        let isMounted = true;
+
+        const loadClientAge = async () => {
+            if (!(isAuthenticated && user?.tipoUsuario === "Cliente")) {
+                if (isMounted) setIsAdultClient(true);
+                return;
+            }
+
+            try {
+                const client = await getClient(apiCall, user.idUsuario);
+                const birthday = new Date(client.fechaNacimiento);
+                const today = new Date();
+                const age =
+                    today.getFullYear() -
+                    birthday.getFullYear() -
+                    (today <
+                    new Date(
+                        today.getFullYear(),
+                        birthday.getMonth(),
+                        birthday.getDate(),
+                    )
+                        ? 1
+                        : 0);
+
+                if (isMounted) setIsAdultClient(age >= 18);
+            } catch {
+                if (isMounted) setIsAdultClient(null);
+            }
+        };
+
+        loadClientAge();
+
+        return () => {
+            isMounted = false;
+        };
+    }, [apiCall, isAuthenticated, user?.idUsuario, user?.tipoUsuario]);
+
+    const isAlcoholicOrderLine = (line: LineaPedido): boolean => {
+        return (
+            line.esAlcoholica === true ||
+            ("_isAlcoholic" in line.producto &&
+                line.producto._isAlcoholic === true)
+        );
+    };
+
+    const isLoggedClient =
+        isAuthenticated && user?.tipoUsuario === "Cliente";
+
+    const hasPendingAgeValidation =
+        isLoggedClient && isAdultClient === null;
+
+    const isMinorLoggedClient =
+        isLoggedClient &&
+        isAdultClient === false;
 
     useEffect(() => {
         const handleOrderUpdateByKitchen = (data: OrderClientInfo) => {
@@ -121,10 +194,46 @@ export default function ModifyOrder() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
-    const comensalesRef = useRef<HTMLInputElement>(null);
-    const observacionesRef = useRef<HTMLTextAreaElement>(null);
+    const handleComensalesChange = (value: string) => {
+        if (value === "") {
+            setComensalesInput("");
+            return;
+        }
+
+        const parsedValue = Number(value);
+
+        if (Number.isNaN(parsedValue)) {
+            return;
+        }
+
+        if (parsedValue < 1) {
+            setComensalesInput("1");
+            return;
+        }
+
+        if (parsedValue > 50) {
+            setComensalesInput("50");
+            return;
+        }
+
+        setComensalesInput(value);
+    };
 
     const handleAdd = (lp: LineaPedido) => {
+        if (hasPendingAgeValidation && isAlcoholicOrderLine(lp)) {
+            toast.warning(
+                "No se pudo validar su edad. Intente nuevamente en unos segundos.",
+            );
+            return;
+        }
+
+        if (isMinorLoggedClient && isAlcoholicOrderLine(lp)) {
+            toast.warning(
+                "El cliente debe ser mayor de 18 años para pedir una bebida alcohólica",
+            );
+            return;
+        }
+
         handleAddToCart(lp.producto);
     };
 
@@ -138,14 +247,16 @@ export default function ModifyOrder() {
     };
 
     const handleConfirmModification = () => {
+        const parsedComensales = Number(comensalesInput);
+
         const newOrderData = {
             ...order,
-            comensales: parseInt(comensalesRef.current?.value || "0"),
-            observaciones: observacionesRef.current?.value || "",
+            comensales: Number.isNaN(parsedComensales) ? 0 : parsedComensales,
+            observaciones: observacionesInput,
         };
 
         //   Validar los datos propuestos
-        if (newOrderData.comensales <= 0) {
+        if (newOrderData.comensales <= 0 || newOrderData.comensales > 50) {
             toast.error("Cantidad de comensales invalida");
             return; // No actualizar nada
         }
@@ -156,6 +267,24 @@ export default function ModifyOrder() {
         if (newOrderData.lineasPedido.length === 0) {
             toast.error("No se puede registrar un pedido vacío");
             return; // No actualizar nada
+        }
+        if (
+            hasPendingAgeValidation &&
+            newOrderData.lineasPedido.some(isAlcoholicOrderLine)
+        ) {
+            toast.warning(
+                "No se pudo validar su edad. Intente nuevamente en unos segundos.",
+            );
+            return;
+        }
+        if (
+            isMinorLoggedClient &&
+            newOrderData.lineasPedido.some(isAlcoholicOrderLine)
+        ) {
+            toast.error(
+                "El cliente debe ser mayor de 18 años para pedir una bebida alcohólica",
+            );
+            return;
         }
 
         // Solo actualizar si TODO es válido
@@ -583,12 +712,12 @@ export default function ModifyOrder() {
                                 id="cantComensales"
                                 placeholder="ej:1"
                                 className="py-0.5 px-1 w-12 outline-0 rounded-lg bg-gray-200"
-                                ref={comensalesRef}
-                                defaultValue={order.comensales}
-                                onInput={(e) => {
-                                    if (e.currentTarget.valueAsNumber < 1)
-                                        e.currentTarget.value = "1";
-                                }}
+                                value={comensalesInput}
+                                onChange={(e) =>
+                                    handleComensalesChange(
+                                        e.currentTarget.value,
+                                    )
+                                }
                             />
                         </div>
                         <div className="flex flex-col">
@@ -602,10 +731,14 @@ export default function ModifyOrder() {
                                 }`}
                                 placeholder="ej: sin cebolla en la hamburguesa"
                                 rows={4}
-                                maxLength={255}
+                                maxLength={500}
                                 id="obsMobile"
-                                ref={observacionesRef}
-                                defaultValue={order.observaciones}
+                                value={observacionesInput}
+                                onChange={(e) =>
+                                    setObservacionesInput(
+                                        e.currentTarget.value,
+                                    )
+                                }
                                 disabled={order.estado === "En_Preparacion"}
                             />
                         </div>
@@ -801,12 +934,12 @@ export default function ModifyOrder() {
                                 id="cantComensalesDesktop"
                                 placeholder="ej:1"
                                 className="py-0.5 px-1 w-12 outline-0 rounded-lg bg-gray-200"
-                                ref={comensalesRef}
-                                defaultValue={order.comensales}
-                                onInput={(e) => {
-                                    if (e.currentTarget.valueAsNumber < 1)
-                                        e.currentTarget.value = "1";
-                                }}
+                                value={comensalesInput}
+                                onChange={(e) =>
+                                    handleComensalesChange(
+                                        e.currentTarget.value,
+                                    )
+                                }
                             />
                         </div>
                         <div className="flex flex-col">
@@ -826,9 +959,13 @@ export default function ModifyOrder() {
                                 placeholder="ej: sin cebolla en la hamburguesa"
                                 rows={4}
                                 id="obsDesktop"
-                                maxLength={255}
-                                ref={observacionesRef}
-                                defaultValue={order.observaciones}
+                                maxLength={500}
+                                value={observacionesInput}
+                                onChange={(e) =>
+                                    setObservacionesInput(
+                                        e.currentTarget.value,
+                                    )
+                                }
                                 disabled={order.estado === "En_Preparacion"}
                             />
                         </div>

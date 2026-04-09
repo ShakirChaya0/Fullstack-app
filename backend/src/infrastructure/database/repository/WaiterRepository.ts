@@ -50,7 +50,7 @@ export class WaiterRepository implements IWaiterRepository {
             } else if (error?.code === 'P2002' && error?.meta?.target?.includes('dni')) {
                 throw new ConflictError("El DNI ingresado ya esta en uso");
             } else if (error?.code === 'P2002' && error?.meta?.target?.includes('telefono')) {
-                throw new ConflictError("Ya existe un Mozo con ese telefono");
+                throw new ConflictError("Ya existe un Mozo con ese teléfono");
             } else if (error instanceof ConflictError) {
                 throw error;
             } else {
@@ -140,6 +140,8 @@ export class WaiterRepository implements IWaiterRepository {
                 throw new ConflictError("El email ingresado ya está en uso");
             } else if (error?.code === 'P2002' && error?.meta?.target?.includes('dni')) {
                 throw new ConflictError("El DNI ingresado ya está en uso");
+            } else if (error?.code === 'P2002' && error?.meta?.target?.includes('telefono')) {
+                throw new ConflictError("El teléfono ingresado ya está en uso");
             } else if (error instanceof ConflictError) {
                 throw error;
             } else {

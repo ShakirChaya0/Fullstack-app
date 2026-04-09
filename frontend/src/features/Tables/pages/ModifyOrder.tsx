@@ -65,7 +65,7 @@ export default function ModifyOrder() {
         onEvent("modifiedOrderLine", (data) => {
             setExistingOrder(data)
             if (isModifyByWaiter.current) {
-                toast.success("Se modificó con éxito su Pedido")
+                toast.success("Se modificó con éxito su pedido")
             }
             else {
                 toast.info("El cliente modificó el pedido")
@@ -77,11 +77,19 @@ export default function ModifyOrder() {
         onEvent("deletedOrderLine", (data) => {
             localStorage.setItem("modifyOrder", JSON.stringify(data))
             setExistingOrder(data)
+            if (isModifyByWaiter.current) {
+                toast.success("Se modificó con éxito su pedido")
+                isModifyByWaiter.current = false
+            }
             navigate("/Mozo/Mesas/")
         })
         onEvent("addedOrderLine", (data) => {
             localStorage.setItem("modifyOrder", JSON.stringify(data))
             setExistingOrder(data)
+            if (isModifyByWaiter.current) {
+                toast.success("Se modificó con éxito su pedido")
+                isModifyByWaiter.current = false
+            }
             navigate("/Mozo/Mesas/")
         })
         return () => {
@@ -94,7 +102,7 @@ export default function ModifyOrder() {
                 localStorage.setItem("modifyOrder", JSON.stringify(data))
                 setExistingOrder(data)
                 if (isModifyByWaiter.current) {
-                    toast.success("Se modificó con éxito su Pedido")
+                    toast.success("Se modificó con éxito su pedido")
                 }
                 else {
                     toast.info("El cliente modificó el pedido")
@@ -114,6 +122,7 @@ export default function ModifyOrder() {
             })
         }
 
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     const handleAddProduct = (): void => {
@@ -132,7 +141,7 @@ export default function ModifyOrder() {
                     nombreProducto: selectedProduct._name,
                     cantidad: quantity,
                     nroLinea: maxNroLinea + 1,
-                    tipo: (selectedProduct && "_type" in selectedProduct) ? selectedProduct._type : undefined,
+                    tipo: (selectedProduct && "_type" in selectedProduct) ? selectedProduct._type : null,
                     estado: "Pendiente"
                 });
             }
@@ -179,12 +188,22 @@ export default function ModifyOrder() {
         e.preventDefault()
         const form = new FormData(e.currentTarget)
         const data = Object.fromEntries(form.entries())
-        if (+data.comensales <= 0 || +data.comensales > 50) {
+        const comensalesValue = Number(
+            typeof data.comensales === "string" && data.comensales !== ""
+                ? data.comensales
+                : existingOrder?.cantidadCubiertos ?? 0,
+        )
+        const observacionValue =
+            typeof data.observacion === "string"
+                ? data.observacion
+                : existingOrder?.observaciones ?? ""
+
+        if (Number.isNaN(comensalesValue) || comensalesValue <= 0 || comensalesValue > 50) {
             toast.warning("Cantidad de comensales invalida");
             return
         }
 
-        if (data.observacion.toString().length > 500) {
+        if (observacionValue.length > 500) {
             toast.error("La observación debe tener menos de 500 caracteres");
             return;
         }
@@ -220,11 +239,24 @@ export default function ModifyOrder() {
         });
 
         // Detectar cambios en comensales y observaciones
-        const comensalesChanged = +data.comensales !== (originalOrderRef.current?.cantidadCubiertos ?? 0);
-        const observacionesChanged = (data.observacion as string) !== (originalOrderRef.current?.observaciones ?? "");
+        const comensalesChanged = comensalesValue !== (originalOrderRef.current?.cantidadCubiertos ?? 0);
+        const observacionesChanged = observacionValue !== (originalOrderRef.current?.observaciones ?? "");
+
+        if (
+            newLines.length === 0 &&
+            deletedLines.length === 0 &&
+            modifiedLines.length === 0 &&
+            !comensalesChanged &&
+            !observacionesChanged
+        ) {
+            isModifyByWaiter.current = false
+            toast.info("No se detectaron cambios en el pedido")
+            navigate("/Mozo/Mesas/")
+            return
+        }
 
         // Función auxiliar para enviar evento y esperar respuesta
-        const sendEventAndWait = (eventName: OrderEmitEvent, eventData: any, responseEventName: OrderOnEvent): Promise<void> => {
+        const sendEventAndWait = (eventName: OrderEmitEvent, eventData: unknown, responseEventName: OrderOnEvent): Promise<void> => {
             return new Promise((resolve) => {
                 const handler = () => {
                     offEvent(responseEventName, handler);
@@ -237,12 +269,17 @@ export default function ModifyOrder() {
 
         (async () => {
             if (newLines.length > 0) {
-                const orderLines = newLines.map(line => ({
-                    nombre: line.nombreProducto,
-                    monto: products?.find((p) => p._name === line.nombreProducto)?._price ?? 1,
-                    cantidad: line.cantidad,
-                    tipo: line.tipo
-                }));
+                const orderLines = newLines.map((line) => {
+                    const baseOrderLine = {
+                        nombre: line.nombreProducto,
+                        monto: products?.find((p) => p._name === line.nombreProducto)?._price ?? 1,
+                        cantidad: line.cantidad,
+                    }
+
+                    return line.tipo !== null && line.tipo !== undefined
+                        ? { ...baseOrderLine, tipo: line.tipo }
+                        : baseOrderLine
+                });
                 await sendEventAndWait(
                     "addOrderLine",
                     { orderId: existingOrder?.idPedido, orderLines },
@@ -265,25 +302,21 @@ export default function ModifyOrder() {
 
             // 3. Modificar la orden solo si hay cambios en cantidad, comensales u observaciones
             if (modifiedLines.length > 0 || comensalesChanged || observacionesChanged) {
-                const lineasDePedido = existingOrder?.lineasPedido.map((lp) => {
-                    const precio = products?.find((p) => p._name === lp.nombreProducto)?._price ?? 1
-                    return {producto: lp, cantidad: lp.cantidad, estado: "Pendiente", subtotal: lp.cantidad * precio}
-                })
+                const lineNumbersToModify = modifiedLines
+                    .map((lp) => lp.nroLinea)
+                    .filter((lineNumber): lineNumber is number => lineNumber !== undefined)
 
-                const orderData = {
-                    comensales: +data.comensales,
-                    observaciones: data.observacion as string,
-                    lineasDePedido: lineasDePedido,
-                    nrolineasDePedido: existingOrder?.lineasPedido.map((lp) => lp.nroLinea),
-                };
+                const itemsToModify = modifiedLines.map((lp) => ({
+                    cantidad: lp.cantidad,
+                }))
 
                 const order = {
                     orderId: existingOrder?.idPedido,
-                    lineNumbers: modifiedLines.length > 0 ? orderData.nrolineasDePedido : undefined,
+                    lineNumbers: lineNumbersToModify.length > 0 ? lineNumbersToModify : undefined,
                     data: {
-                        cantidadCubiertos: orderData.comensales,
-                        observacion: orderData.observaciones === originalOrderRef.current?.observaciones ? undefined : orderData.observaciones,
-                        items: modifiedLines.length > 0 ? lineasDePedido : undefined
+                        cantidadCubiertos: comensalesChanged ? comensalesValue : undefined,
+                        observacion: observacionesChanged ? observacionValue : undefined,
+                        items: itemsToModify.length > 0 ? itemsToModify : undefined,
                     }
                 }
                 sendEvent("modifyOrder", order)
@@ -310,10 +343,11 @@ export default function ModifyOrder() {
                                     options={products || []}
                                     getOptionLabel={(option) => option._name}
                                     value={selectedProduct}
-                                    onChange={(event: React.SyntheticEvent, newValue: Comida | Bebida | null) => {
+                                    onChange={(_: React.SyntheticEvent, newValue: Comida | Bebida | null) => {
                                         setSelectedProduct(newValue);
                                     }}
                                     isOptionEqualToValue={(option, value) => option._productId === value._productId}
+                                    noOptionsText="Producto no encontrado"
                                     renderInput={(params) => <TextField {...params} label="Buscar producto" margin="normal" />}                                    
                                 />
                                 <TextField
@@ -403,6 +437,7 @@ export default function ModifyOrder() {
                                         name='observacion'
                                         defaultValue={existingOrder?.observaciones}
                                         inputProps={{ maxLength: 255 }}
+                                        disabled={existingOrder?.estado === "En_Preparacion"}
                                     />
                                 </Box>
                                 <Button
