@@ -7,7 +7,7 @@ interface OrderLineWaiteInfo {
 export interface OrderWaiterInfo {
     idPedido: number,
     horaInicio: string,
-    nroMesa: number,
+    nroMesa: number | undefined,
     cantidadCubiertos: number,
     lineasPedido: OrderLineWaiteInfo[],
     estado: string,
