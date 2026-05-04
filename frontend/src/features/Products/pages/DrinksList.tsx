@@ -19,13 +19,15 @@ function DrinksList() {
     setQuery(event.currentTarget.value)
   }
 
-  const filteredDrinks = useMemo(() => {
+  const filteredDrinksAux = useMemo(() => {
     return (
       drinks?.filter((dat) =>
         dat._name.toLowerCase().includes(query.toLowerCase())
       ) ?? []
     )
   }, [drinks, query])
+
+  const filteredDrinks = filteredDrinksAux.filter((drink) => drink._state === 'Disponible');
 
   return (
     <>

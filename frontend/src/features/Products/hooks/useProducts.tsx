@@ -6,11 +6,14 @@ import fetchProducts from "../services/fetchProducts";
 export function useProducts () {
     const { apiCall } = useApiClient()
 
-    const {isLoading, isError, data} = useQuery<(Comida | Bebida)[]>({
+    const {isLoading, isError, data: dataAux} = useQuery<(Comida | Bebida)[]>({
         queryKey: ["Products"],
         queryFn: () => fetchProducts(apiCall),
         staleTime: Infinity,
         retry: 1
     })
+
+    const data = dataAux?.filter((products) => products._state === 'Disponible');
+
     return {isLoading, isError, data}
 }

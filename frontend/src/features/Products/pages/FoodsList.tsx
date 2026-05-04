@@ -20,9 +20,11 @@ function FoodsList () {
         setQuery(query)
     }, [])
 
-    const filteredFoods = useMemo(() => {
+    const filteredFoodsAux = useMemo(() => {
         return foods?.filter((food) => food._name.toLowerCase().includes(query.toLowerCase())) ?? [];
     }, [foods, query])
+
+    const filteredFoods = filteredFoodsAux.filter((food) => food._state === 'Disponible');
 
     return(
         <>
