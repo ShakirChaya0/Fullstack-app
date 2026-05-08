@@ -138,9 +138,13 @@ export const ModalShowTable: FC<ModalShowTableProps> = ({ open, onClose, title, 
                     </span>
                   </div>
                 </div>
-                <ModalQR tableNum={currentTable._tableNum}/>
                 {
-                  (isRealease && !isPending) && <ModalFreeTable handleFreeTable={handleFreeTable}/>
+                  (isRealease && !isPending) && (
+                    <>
+                      <ModalQR tableNum={currentTable._tableNum}/>
+                      <ModalFreeTable handleFreeTable={handleFreeTable}/>
+                    </>
+                  ) 
                 }
               </div>
                         
