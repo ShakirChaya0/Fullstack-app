@@ -74,7 +74,7 @@ export class OrderRepository implements IOrderRepository {
 
     public async create(order: OrderSchema, waiterId: string, tableNumber: number): Promise<Order> {
 
-        const timeAsDate = new Date(Date.UTC(1970, 0, 1, (new Date).getHours() - 3, (new Date).getMinutes(), 0));
+        const timeAsDate = new Date(Date.UTC(1970, 0, 1, (new Date).getHours(), (new Date).getMinutes(), 0));
 
         const createdOrder = await prisma.pedido.create({
             data: {

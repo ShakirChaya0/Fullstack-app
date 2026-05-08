@@ -4,11 +4,15 @@ import { getResetPasswordTemplate, getVerificationTemplate } from "../../shared/
 export class MailerService {
     private apiKey: string;
     private senderEmail: string;
+    private baseUrl: string;
 
     constructor() {
         this.apiKey = process.env.BREVO_API_KEY!;
         // Usar un email REAL verificado, no el usuario SMTP
         this.senderEmail = process.env.EMAIL_USER!;
+
+        // this.baseUrl = process.env.FRONTEND_URL!;
+        this.baseUrl = "http://localhost:5173";
 
         if (!this.apiKey || !this.senderEmail) {
             throw new Error("BREVO_API_KEY o EMAIL_FROM no están configuradas");
@@ -16,7 +20,7 @@ export class MailerService {
     }
 
     public async sendResetPasswordEmail(userEmail: string, token: string) {
-        const resetLink = `${process.env.FRONTEND_URL}/reset-password?token=${token}`;
+        const resetLink = `${this.baseUrl}/reset-password?token=${token}`;
         const mailBody = getResetPasswordTemplate(resetLink);
 
         try {
@@ -40,12 +44,17 @@ export class MailerService {
             );
             return response.data;
         } catch (error: any) {
+            console.error('[MailerService] Error al enviar email:', {
+                status: error?.response?.status,
+                data: error?.response?.data,
+                message: error?.message,
+            });
             throw error;
         }
     }
 
     public async sendVerificationEmail(userEmail: string, token: string) {
-        const verifyUrl = `${process.env.FRONTEND_URL}/verify-email?token=${token}`;
+        const verifyUrl = `${this.baseUrl}/verify-email?token=${token}`;
         const emailBody = getVerificationTemplate(verifyUrl);
 
         try {
@@ -69,6 +78,11 @@ export class MailerService {
             );
             return response.data;
         } catch (error: any) {
+            console.error('[MailerService] Error al enviar email:', {
+                status: error?.response?.status,
+                data: error?.response?.data,
+                message: error?.message,
+            });
             throw error;
         }
     }
