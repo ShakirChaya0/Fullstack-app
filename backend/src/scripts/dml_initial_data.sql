@@ -112,11 +112,12 @@ SELECT "idProducto", CURRENT_TIMESTAMP,
 CASE WHEN "idProducto" <= 40 THEN 8500.00 ELSE 2800.00 END FROM public."Producto";
 
 INSERT INTO public."Novedad" ("idNovedad", "titulo", "descripcion", "fechaInicio", "fechaFin") VALUES
-(1, 'Inauguración Terraza', 'Sector fumadores', '2026-02-18', '2026-02-25'),
-(2, 'Noche de Jazz', 'En vivo 21hs', '2026-02-20', '2026-02-21'),
-(3, 'Cata Malbec', 'Bodegas Salta', '2026-02-22', '2026-02-23'),
-(4, 'Sushi Fest', 'Opciones Roll', '2026-02-24', '2026-02-26'),
-(5, 'After Office', 'Tragos 2x1', '2026-02-26', '2026-02-28'),
+(1, 'Inauguración Terraza', 'Después de mucha espera, llegó el ansiado momento. Vení a conocer nuestra recién inaugurada terraza, con barra de tragos, decks, sector para fumadores y mucho más, todo con vista a nuestra hermosa ciudad.', '2026-04-18', '2026-05-25'),
+(2, 'Noche de Jazz', 'Tenemos como invitados a la banda JazzArg en nuestro restaurante. Vení a disfrutar de su repertorio en vivo este fin de semana a las 21hs.', '2026-04-20', '2026-05-21'),
+(3, 'Cata Malbec', 'Bodegas Salta', '2026-02-22', '2026-03-23'),
+(4, 'Sushi Fest', 'Opciones Roll', '2026-02-24', '2026-03-26'),
+(5, 'After Office', 'Trae a tus colegas y disfrutá de un hermoso After Office con un 2x1 en todas las bebidas alcohólicas de nuestra carta.
+Horario máximo: 20:30', '2026-04-26', '2026-05-28'),
 (6, 'Menú Otoño', 'Platos calientes', '2026-02-28', '2026-03-05'),
 (7, 'Clase Gin', 'Preparación', '2026-03-02', '2026-03-03'),
 (8, 'San Patricio', 'Cerveza libre', '2026-03-04', '2026-03-06'),
@@ -131,10 +132,10 @@ INSERT INTO public."Novedad" ("idNovedad", "titulo", "descripcion", "fechaInicio
 INSERT INTO public."Sugerencias" ("idProducto", "fechaDesde", "fechaHasta") VALUES
 (1, '2026-02-20', '2026-02-22'), (15, '2026-02-23', '2026-02-25'),
 (21, '2026-02-26', '2026-02-28'), (2, '2026-03-01', '2026-03-03'),
-(23, '2026-03-04', '2026-03-06'), (30, '2026-03-07', '2026-03-09'),
-(5, '2026-03-10', '2026-03-12'), (36, '2026-03-10', '2026-03-15'),
+(23, '2026-03-04', '2026-05-16'), (30, '2026-03-07', '2026-03-09'),
+(5, '2026-03-10', '2026-03-12'), (36, '2026-03-10', '2026-05-15'),
 (47, '2026-03-16', '2026-03-18'), (14, '2026-03-19', '2026-03-21'),
-(53, '2026-03-22', '2026-03-24'), (17, '2026-03-25', '2026-03-27'),
+(53, '2026-03-22', '2026-05-24'), (17, '2026-03-25', '2026-03-27'),
 (22, '2026-03-10', '2026-03-31'), (33, '2026-03-31', '2026-04-02'),
 (52, '2026-04-03', '2026-04-05');
 
