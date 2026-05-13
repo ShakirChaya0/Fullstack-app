@@ -217,7 +217,7 @@ export default function App() {
                     ¡Hola, {user?.username ?? "Invitado"}!
                 </h1>
                 <p className="mt-4 text-lg text-white">
-                    Bienvenida al sistema. Selecciona una opción para comenzar a
+                    Bienvenido al sistema, selecciona  una opción para comenzar a
                     gestionar.
                 </p>
                 {!isError && data && data?.length > 0 && (

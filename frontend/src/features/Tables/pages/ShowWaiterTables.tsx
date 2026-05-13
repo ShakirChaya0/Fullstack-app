@@ -149,7 +149,7 @@ export default function ShowWaiterTables() {
                                             <li key={status} className="flex items-center text-sm">
                                               <span className={`w-3 h-3 rounded-full mr-3 ${tableState[status]}`}></span>
                                               <span className="text-gray-700">
-                                                {status.replaceAll("_", " ")}
+                                                {status === 'En_Preparacion' ? status.replaceAll("_", " ").replaceAll('o', 'ó') : status.replaceAll("_", " ")}
                                               </span>
                                             </li>
                                           ))}
